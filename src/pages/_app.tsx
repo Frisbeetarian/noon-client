@@ -1,6 +1,8 @@
 import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
-
+import { Provider } from 'urql'
 import theme from '../theme'
+// import styles from './index.css'
+import './index.css'
 
 function MyApp({ Component, pageProps }) {
   return (
