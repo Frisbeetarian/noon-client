@@ -1,11 +1,7 @@
 import { ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import { Flex, IconButton } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import {
-  PostSnippetFragment,
-  PostsQuery,
-  useVoteMutation,
-} from '../generated/graphql'
+import { PostSnippetFragment, useVoteMutation } from '../generated/graphql'
 
 interface UpdootSectionProps {
   post: PostSnippetFragment
@@ -24,10 +20,12 @@ export const UpdootSection: React.FC<UpdootSectionProps> = ({ post }) => {
             return
           }
           setLoadingState('updoot-loading')
+
           await vote({
             postId: post.id,
             value: 1,
           })
+
           setLoadingState('not-loading')
         }}
         colorScheme={post.voteStatus === 1 ? 'green' : undefined}

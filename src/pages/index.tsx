@@ -32,22 +32,29 @@ const Index = () => {
       {fetching && !data ? (
         <div>...loading</div>
       ) : (
-        <Stack spacing={8}>
+        <Stack className="" spacing={8}>
           {data!.posts.posts.map((p) =>
             !p ? null : (
-              <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
+              <Flex
+                className="w-full text-white border-error"
+                key={p.id}
+                p={5}
+                shadow="md"
+                borderWidth="1px"
+              >
                 <UpdootSection post={p} />
-                <Box flex={1}>
+
+                <Box className="w-full" flex={1}>
                   <NextLink href="/post/[id]" as={`/post/${p.id}`}>
-                    <Link>
-                      <p>{p.id}</p>
+                    <Link className="prose">
                       <Heading fontSize="xl">{p.title}</Heading>
                     </Link>
                   </NextLink>
-                  <Text>Posted by: {p.creator.username}</Text>
+
+                  <Text className="prose">Posted by: {p.creator.username}</Text>
 
                   <Flex align="center">
-                    <Text flex={1} mt={4} className="">
+                    <Text flex={1} mt={4} className="prose">
                       {p.textSnippet}
                     </Text>
 

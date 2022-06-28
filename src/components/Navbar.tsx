@@ -21,13 +21,15 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     body = (
       <>
         <NextLink href="/login">
-          <Link color="black" mr={2}>
-            login
+          <Link mr={2}>
+            <span className="text-info">Login</span>
           </Link>
         </NextLink>
 
         <NextLink href="/register">
-          <Link color="black">register</Link>
+          <Link>
+            <span className="text-info">Register</span>
+          </Link>
         </NextLink>
       </>
     )
@@ -55,11 +57,18 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
   }
 
   return (
-    <Flex zIndex={1} position="sticky" top={0} bg="tomato" p={4}>
-      <Flex flex={1} m="auto" maxW={800} align="center">
+    <Flex
+      data-theme="mytheme"
+      className="bg-neutral"
+      zIndex={1}
+      position="sticky"
+      top={0}
+      p={4}
+    >
+      <Flex className="bg-neutral" flex={1} m="auto" maxW={800} align="center">
         <NextLink href="/">
           <Link>
-            <Heading>reddit 2</Heading>
+            <Heading className="text-info">Noon</Heading>
           </Link>
         </NextLink>
         <Box ml={'auto'}>{body}</Box>

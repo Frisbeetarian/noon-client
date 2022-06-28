@@ -1,8 +1,10 @@
 import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
-import { Provider } from 'urql'
+// import { Provider } from 'urql'
 import theme from '../theme'
 // import styles from './index.css'
 import './index.css'
+// import { Provider } from 'react-redux'
+import { wrapper } from '../store/store.js'
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -18,4 +20,5 @@ function MyApp({ Component, pageProps }) {
   )
 }
 
-export default MyApp
+// export default MyApp
+export default wrapper.withRedux(MyApp)

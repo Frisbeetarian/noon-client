@@ -1,31 +1,21 @@
 import React from 'react'
 import { Form, Formik } from 'formik'
 
-import {
-  Box,
-  Button,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  Link,
-} from '@chakra-ui/react'
-import { Wrapper } from '../components/Wrapper'
+import { Box, Button, Flex, Link } from '@chakra-ui/react'
 import { InputField } from '../components/InputField'
-import { useMutation } from 'urql'
-import { useRegisterMutation, useLoginMutation } from '../generated/graphql'
+import { useLoginMutation } from '../generated/graphql'
 import { toErrorMap } from '../utils/toErrorMap'
 import { useRouter } from 'next/dist/client/router'
 import { withUrqlClient } from 'next-urql'
 import { createUrqlClient } from '../utils/createUrqlClient'
+import { Layout } from '../components/Layout'
 import NextLink from 'next/link'
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter()
   const [, login] = useLoginMutation()
   return (
-    <Wrapper variant="small">
+    <Layout variant="small">
       <Formik
         initialValues={{ usernameOrEmail: '', password: '' }}
         onSubmit={async (values, { setErrors }) => {
@@ -76,7 +66,7 @@ const Login: React.FC<{}> = ({}) => {
           </Form>
         )}
       </Formik>
-    </Wrapper>
+    </Layout>
   )
 }
 
