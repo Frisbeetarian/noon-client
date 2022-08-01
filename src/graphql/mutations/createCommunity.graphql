@@ -1,0 +1,13 @@
+mutation CreateCommunity($input: CommunityInput!) {
+    createCommunity(input: $input) {
+        id
+        title
+        description
+        privacy
+        timezone
+        startDate
+        endDate
+        createdAt
+        updatedAt
+    }
+}

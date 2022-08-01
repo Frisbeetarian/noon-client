@@ -37,13 +37,14 @@ const errorExchange: Exchange =
     )
   }
 
-const cursorPagination = (mergeMode = 'after'): Resolver => {
+const eventsCursorPagination = (mergeMode = 'after'): Resolver => {
   return (_parent, fieldArgs, cache, info) => {
     const { parentKey: entityKey, fieldName } = info
 
     const allFields = cache.inspectFields(entityKey)
     const fieldInfos = allFields.filter((info) => info.fieldName === fieldName)
     const size = fieldInfos.length
+
     if (size === 0) {
       return undefined
     }
@@ -51,15 +52,17 @@ const cursorPagination = (mergeMode = 'after'): Resolver => {
     const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`
     const isItInTheCache = cache.resolve(
       cache.resolveFieldByKey(entityKey, fieldKey) as string,
-      'posts'
+      'events'
     )
+
     info.partial = !isItInTheCache
 
     let hasMore = true
     const results: string[] = []
+
     fieldInfos.forEach((fi) => {
       const key = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string
-      const data = cache.resolve(key, 'posts') as string[]
+      const data = cache.resolve(key, 'events') as string[]
       const _hasMore = cache.resolve(key, 'hasMore')
 
       if (!_hasMore) {
@@ -69,10 +72,11 @@ const cursorPagination = (mergeMode = 'after'): Resolver => {
     })
 
     return {
-      __typename: 'PaginatedPosts',
+      __typename: 'PaginatedEvents',
       hasMore,
-      posts: results,
+      events: results,
     }
+
     // const visited = new Set()
     // let result: NullArray<string> = []
     // let prevOffset: number | null = null
@@ -127,6 +131,117 @@ const cursorPagination = (mergeMode = 'after'): Resolver => {
   }
 }
 
+const postsCursorPagination = (mergeMode = 'after'): Resolver => {
+  return (_parent, fieldArgs, cache, info) => {
+    const { parentKey: entityKey, fieldName } = info
+
+    const allFields = cache.inspectFields(entityKey)
+    const fieldInfos = allFields.filter((info) => info.fieldName === fieldName)
+    const size = fieldInfos.length
+    if (size === 0) {
+      return undefined
+    }
+
+    const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`
+    const isItInTheCache = cache.resolve(
+      cache.resolveFieldByKey(entityKey, fieldKey) as string,
+      'posts'
+    )
+    info.partial = !isItInTheCache
+
+    let hasMore = true
+    const results: string[] = []
+    fieldInfos.forEach((fi) => {
+      const key = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string
+      const data = cache.resolve(key, 'posts') as string[]
+      const _hasMore = cache.resolve(key, 'hasMore')
+
+      if (!_hasMore) {
+        hasMore = _hasMore as boolean
+      }
+      results.push(...data)
+    })
+
+    return {
+      __typename: 'PaginatedPosts',
+      hasMore,
+      posts: results,
+    }
+  }
+}
+
+const filteredProfilesPagination = (mergeMode = 'after'): Resolver => {
+  return (_parent, fieldArgs, cache, info) => {
+    const { parentKey: entityKey, fieldName } = info
+
+    const allFields = cache.inspectFields(entityKey)
+    const fieldInfos = allFields.filter((info) => info.fieldName === fieldName)
+    const size = fieldInfos.length
+
+    if (size === 0) {
+      return undefined
+    }
+
+    const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`
+    const isItInTheCache = cache.resolve(
+      cache.resolveFieldByKey(entityKey, fieldKey) as string,
+      'eventToProfiles'
+    )
+    info.partial = !isItInTheCache
+
+    // let hasMore = true
+    const results: string[] = []
+    fieldInfos.forEach((fi) => {
+      const key = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string
+      const data = cache.resolve(key, 'eventToProfiles') as string[]
+      // const _hasMore = cache.resolve(key, 'hasMore')
+
+      // if (!_hasMore) {
+      //   hasMore = _hasMore as boolean
+      // }
+      results.push(...data)
+    })
+
+    return {
+      __typename: 'filteredProfilesPagination',
+      eventToProfiles: results,
+    }
+  }
+}
+
+const CommunitiesResolver = (mergeMode = 'after'): Resolver => {
+  return (_parent, fieldArgs, cache, info) => {
+    const { parentKey: entityKey, fieldName } = info
+
+    const allFields = cache.inspectFields(entityKey)
+    const fieldInfos = allFields.filter((info) => info.fieldName === fieldName)
+    const size = fieldInfos.length
+    if (size === 0) {
+      return undefined
+    }
+
+    const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`
+    const isItInTheCache = cache.resolve(
+      cache.resolveFieldByKey(entityKey, fieldKey) as string,
+      'communities'
+    )
+    info.partial = !isItInTheCache
+
+    const results: string[] = []
+    fieldInfos.forEach((fi) => {
+      const key = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string
+      const data = cache.resolve(key, 'communities') as string[]
+
+      results.push(...data)
+    })
+
+    return {
+      __typename: 'Communities',
+      communities: results,
+    }
+  }
+}
+
 function invalidateAllPosts(cache: Cache) {
   const allFields = cache.inspectFields('Query')
   const fieldInfos = allFields.filter((info) => info.fieldName === 'posts')
@@ -134,6 +249,17 @@ function invalidateAllPosts(cache: Cache) {
     cache.invalidate('Query', 'posts', fi.arguments || {})
   })
 }
+
+function invalidateAllEvents(cache: Cache) {
+  const allFields = cache.inspectFields('Query')
+  const fieldInfos = allFields.filter((info) => info.fieldName === 'events')
+  fieldInfos.forEach((fi) => {
+    cache.invalidate('Query', 'events', fi.arguments || {})
+  })
+}
+
+const transformToDate = (parent, _args, _cache, info) =>
+  new Date(parent[info.fieldName])
 
 export const createUrqlClient = (ssrExchange: any, ctx: any) => {
   let cookie = ''
@@ -156,10 +282,17 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
       cacheExchange({
         keys: {
           PaginatedPosts: () => null,
+          PaginatedEvents: () => null,
+          FilteredProfiles: () => null,
         },
         resolvers: {
           Query: {
-            posts: cursorPagination(),
+            posts: postsCursorPagination(),
+            events: eventsCursorPagination(),
+            eventToProfiles: filteredProfilesPagination(),
+            communities: {
+              description: '00009',
+            },
           },
         },
         updates: {
@@ -215,6 +348,12 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
               //   console.log('end')
               // })
             },
+            createEvent: (_result, args, cache, info) => {
+              invalidateAllEvents(cache)
+            },
+            // createCommunity: (_result, args, cache, info) => {
+            //   invalidateAllEvents(cache)
+            // },
             logout: (_result, args, cache, info) => {
               betterUpdateQuery<LogoutMutation, MeQuery>(
                 cache,

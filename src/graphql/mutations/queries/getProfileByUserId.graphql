@@ -1,0 +1,6 @@
+query GetProfileByUserId($userId: Int!) {
+    getProfileByUserId(userId: $userId) {
+        id
+        username
+    }
+}

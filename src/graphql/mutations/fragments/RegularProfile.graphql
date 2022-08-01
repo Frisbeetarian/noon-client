@@ -1,0 +1,4 @@
+fragment RegularProfile on Profile {
+    id
+    username
+}

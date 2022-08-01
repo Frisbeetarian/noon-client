@@ -1,4 +1,8 @@
 fragment RegularUser on User {
   id
   username
+  profile {
+    id
+    username
+  }
 }

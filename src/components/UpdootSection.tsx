@@ -1,7 +1,7 @@
-import { ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons'
-import { Flex, IconButton } from '@chakra-ui/react'
 import React, { useState } from 'react'
+import { Flex, IconButton } from '@chakra-ui/react'
 import { PostSnippetFragment, useVoteMutation } from '../generated/graphql'
+import { ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons'
 
 interface UpdootSectionProps {
   post: PostSnippetFragment
@@ -20,17 +20,15 @@ export const UpdootSection: React.FC<UpdootSectionProps> = ({ post }) => {
             return
           }
           setLoadingState('updoot-loading')
-
           await vote({
             postId: post.id,
             value: 1,
           })
-
           setLoadingState('not-loading')
         }}
-        colorScheme={post.voteStatus === 1 ? 'green' : undefined}
+        variantColor={post.voteStatus === 1 ? 'green' : undefined}
         isLoading={loadingState === 'updoot-loading'}
-        aria-label="Search database"
+        aria-label="updoot post"
         icon={<ChevronUpIcon />}
       />
       {post.points}
@@ -46,9 +44,9 @@ export const UpdootSection: React.FC<UpdootSectionProps> = ({ post }) => {
           })
           setLoadingState('not-loading')
         }}
-        colorScheme={post.voteStatus === -1 ? 'red' : undefined}
+        variantColor={post.voteStatus === -1 ? 'red' : undefined}
         isLoading={loadingState === 'downdoot-loading'}
-        aria-label="Search database"
+        aria-label="downdoot post"
         icon={<ChevronDownIcon />}
       />
     </Flex>

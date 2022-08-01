@@ -1,0 +1,3 @@
+fragment EventToProfileSnippet on EventToProfile {
+    id
+}

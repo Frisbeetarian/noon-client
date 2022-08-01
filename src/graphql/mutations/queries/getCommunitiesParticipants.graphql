@@ -1,0 +1,8 @@
+query GetCommunitiesParticipants($communitiesIds: [Int!]!) {
+    getCommunitiesParticipants(communitiesIds: $communitiesIds) {
+        id
+        profileId
+        communityId
+        participantUsername
+    }
+}

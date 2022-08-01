@@ -1,44 +1,60 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit'
+import { createSelector } from 'reselect'
 
-let lastId = 0;
+let lastId = 0
 
 const slice = createSlice({
-  name: "users",
-  initialState: [],
+  name: 'users',
+  initialState: {
+    user: {},
+  },
   reducers: {
     userAdded: (users, action) => {
       users.push({
         id: ++lastId,
         name: action.payload.name,
         bugsAssigned: [],
-      });
+      })
     },
     assignBugToUser: (users, action) => {
-      const { bugId, userId } = action.payload;
-      const index = users.findIndex((user) => user.id === userId);
-
+      const { bugId, userId } = action.payload
+      const index = users.findIndex((user) => user.id === userId)
       // const index = bugs.findIndex(bug => bug.id === action.payload.id)
-      users[index].bugsAssigned.push(bugId);
+      users[index].bugsAssigned.push(bugId)
+    },
+    setLoggedInUser: (users, action) => {
+      console.log('user in store: ', action.payload.user)
+
+      if (action.payload.user?.me) {
+        users.user = action.payload.user.me
+      }
+      // const { me } = action.payload.user
+      // users.user = me
     },
   },
-});
+})
 
 // selector
 export const getUser = (state, action) => {
-  return state.entities.users.filter((user) => user.id === action.id);
+  return state.entities.users.filter((user) => user.id === action.id)
   // return state.entities.bugs.filter(bug => !bug.resolved)
-};
+}
+
+export const getLoggedInUser = createSelector(
+  (state) => state.entities.users,
+  (user) => user
+)
 
 export const getBugsAssignedToUser = (state, action) => {
-  const user = state.entities.users.filter((user) => user.id === action.id);
-  const bugsForUser = [];
+  const user = state.entities.users.filter((user) => user.id === action.id)
+  const bugsForUser = []
 
   for (let index = 0; index <= user[0].bugsAssigned.length - 1; index++) {
     const bug = state.entities.bugs.filter(
       (bug) => bug.id === user[0].bugsAssigned[index]
-    );
+    )
 
-    bugsForUser.push(bug);
+    bugsForUser.push(bug)
     // const fef = [...bugsForUser, bug];
   }
 
@@ -53,8 +69,8 @@ export const getBugsAssignedToUser = (state, action) => {
         return [...bugsForUser, bug];
     })*/
 
-  return bugsForUser;
-};
+  return bugsForUser
+}
 
-export const { userAdded, assignBugToUser } = slice.actions;
-export default slice.reducer;
+export const { userAdded, assignBugToUser, setLoggedInUser } = slice.actions
+export default slice.reducer

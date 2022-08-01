@@ -1,0 +1,15 @@
+fragment EventSnippet on Event {
+    id
+    title
+    description
+    privacy
+    timezone
+    startDate
+    endDate
+    createdAt
+    updatedAt
+    creator {
+        id
+        username
+    }
+}

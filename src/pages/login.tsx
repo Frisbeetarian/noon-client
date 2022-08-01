@@ -1,33 +1,31 @@
 import React from 'react'
-import { Form, Formik } from 'formik'
-
-import { Box, Button, Flex, Link } from '@chakra-ui/react'
+import { Formik, Form } from 'formik'
+import { Box, Button, Link, Flex } from '@chakra-ui/react'
+import { Wrapper } from '../components/Wrapper'
 import { InputField } from '../components/InputField'
-import { useLoginMutation } from '../generated/graphql'
+import { useLoginMutation, MeQuery, MeDocument } from '../generated/graphql'
 import { toErrorMap } from '../utils/toErrorMap'
-import { useRouter } from 'next/dist/client/router'
+import { useRouter } from 'next/router'
 import { withUrqlClient } from 'next-urql'
 import { createUrqlClient } from '../utils/createUrqlClient'
-import { Layout } from '../components/Layout'
 import NextLink from 'next/link'
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter()
   const [, login] = useLoginMutation()
   return (
-    <Layout variant="small">
+    <Wrapper variant="small">
       <Formik
         initialValues={{ usernameOrEmail: '', password: '' }}
         onSubmit={async (values, { setErrors }) => {
-          console.log(values)
           const response = await login(values)
           if (response.data?.login.errors) {
             setErrors(toErrorMap(response.data.login.errors))
           } else if (response.data?.login.user) {
-            // worked
             if (typeof router.query.next === 'string') {
               router.push(router.query.next)
             } else {
+              // worked
               router.push('/')
             }
           }
@@ -38,14 +36,15 @@ const Login: React.FC<{}> = ({}) => {
             <InputField
               name="usernameOrEmail"
               placeholder="username or email"
-              label="Username or email"
+              label="Username or Email"
             />
+
             <Box mt={4}>
               <InputField
                 name="password"
-                type="password"
                 placeholder="password"
                 label="Password"
+                type="password"
               />
             </Box>
 
@@ -56,17 +55,17 @@ const Login: React.FC<{}> = ({}) => {
             </Flex>
 
             <Button
-              isLoading={isSubmitting}
               mt={4}
               type="submit"
-              colorScheme="teal"
+              isLoading={isSubmitting}
+              variantColor="teal"
             >
               login
             </Button>
           </Form>
         )}
       </Formik>
-    </Layout>
+    </Wrapper>
   )
 }
 

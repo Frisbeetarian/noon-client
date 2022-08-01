@@ -1,0 +1,18 @@
+query Event($id: Int!) {
+  event(id: $id) {
+    id
+    username
+    title
+    description
+    privacy
+    timezone
+    startDate
+    endDate
+    createdAt
+    updatedAt
+    creator {
+      id
+      username
+    }
+  }
+}

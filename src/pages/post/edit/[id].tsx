@@ -12,7 +12,7 @@ import { useGetIntId } from '../../../utils/useGetIntId'
 const EditPost = ({}) => {
   const router = useRouter()
   const intId = useGetIntId()
-  const [{ data, error, fetching }] = usePostQuery({
+  const [{ data, fetching }] = usePostQuery({
     pause: intId === -1,
     variables: {
       id: intId,
@@ -77,5 +77,4 @@ const EditPost = ({}) => {
     </Layout>
   )
 }
-
-export default withUrqlClient(createUrqlClient)(EditPost)
+export default withUrqlClient(createUrqlClient, { ssr: false })(EditPost)

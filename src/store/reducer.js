@@ -1,12 +1,12 @@
-import { combineReducers } from 'redux';
-import entitiesReducer from './entities';
+import { combineReducers } from 'redux'
+import entitiesReducer from './entities'
 // import bugsReducer from './bugs';
 // import projectsReducer from './projects';
 
 export default combineReducers({
-    entities: entitiesReducer,
-    // bugs: bugsReducer,
-    // projects: projectsReducer
+  entities: entitiesReducer,
+  // bugs: bugsReducer,
+  // projects: projectsReducer
 })
 
 // // import { BUG_ADDED, BUG_REMOVED } from "./actionTypes";

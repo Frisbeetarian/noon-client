@@ -1,21 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
 import { apiCallBegan } from './api'
-import moment from 'moment'
-import axios from 'axios'
-// const bugUpdated = createAction("bugUpdated");
-// let lastId = 0;
+let lastId = 0
 
 const slice = createSlice({
   name: 'bugs',
   initialState: {
-    list: [],
+    list: [
+      { name: 'bug1', id: 1, resolved: true },
+      { name: 'bug2', id: 2 },
+    ],
     loading: false,
     lastFetch: null,
   },
   reducers: {
     bugsRequested: (bugs, action) => {
       bugs.loading = true
+      console.log('FEWFWEGFWEGEWGWE')
     },
     bugsRequestFailed: (bugs, action) => {
       bugs.loading = false
@@ -46,10 +47,6 @@ const slice = createSlice({
   },
 })
 
-// action types
-// const BUG_ADDED = 'bugAdded';
-// const BUG_REMOVED = 'bugRemoved';
-// const BUG_RESOLVED = 'bugResolved';
 export const {
   bugAdded,
   bugResolved,
@@ -58,6 +55,7 @@ export const {
   bugsRequested,
   bugsRequestFailed,
 } = slice.actions
+
 export default slice.reducer
 
 // Action creators
@@ -66,18 +64,20 @@ const url = '/bugs'
 export const loadBugs = () => (dispatch, getState) => {
   const { lastFetch } = getState().entities.bugs
 
-  const diffInMinutes = moment().diff(moment(lastFetch), 'minutes')
+  // alert('FEWFEWFWEF')
 
-  if (diffInMinutes < 10) return
-
-  return dispatch(
-    apiCallBegan({
-      url,
-      onStart: bugsRequested.type,
-      onSuccess: bugsReceived.type,
-      onError: bugsRequestFailed.type,
-    })
-  )
+  return getState().entities.bugs
+  // const diffInMinutes = moment().diff(moment(lastFetch), 'minutes')
+  // if (diffInMinutes < 10) return
+  //
+  // return dispatch(
+  //   apiCallBegan({
+  //     url,
+  //     onStart: bugsRequested.type,
+  //     onSuccess: bugsReceived.type,
+  //     onError: bugsRequestFailed.type,
+  //   })
+  // )
 }
 
 // steps: make an api call
@@ -91,13 +91,16 @@ export const loadBugs = () => (dispatch, getState) => {
 //     }
 // }
 
-export const addBug = (bug) =>
-  apiCallBegan({
-    url,
-    method: 'post',
-    data: bug,
-    onSuccess: bugAdded.type,
-  })
+export const addBug = (bug) => {
+  return 'fewkfnwelkfnw'
+}
+
+// apiCallBegan({
+//   url,
+//   method: 'post',
+//   data: bug,
+//   onSuccess: bugAdded.type,
+// })
 
 export const resolveBug = (id) =>
   apiCallBegan({
@@ -136,8 +139,7 @@ export const getBug = (state, action) => {
 
 export const getUnresolvedBugs = createSelector(
   (state) => state.entities.bugs,
-  (state) => state.entities.projects,
-  (bugs, projects) => bugs.list.filter((bug) => !bug.resolved)
+  (bugs) => bugs.list.filter((bug) => !bug.resolved)
 )
 
 // action creators

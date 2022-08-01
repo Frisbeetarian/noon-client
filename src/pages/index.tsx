@@ -1,14 +1,40 @@
 import { Box, Button, Flex, Heading, Link, Stack, Text } from '@chakra-ui/react'
 import { withUrqlClient } from 'next-urql'
 import NextLink from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { EditDeletePostButtons } from '../components/EditDeletePostButtons'
 import { Layout } from '../components/Layout'
 import { UpdootSection } from '../components/UpdootSection'
 import { usePostsQuery } from '../generated/graphql'
 import { createUrqlClient } from '../utils/createUrqlClient'
 
+import { useAppDispatch, useAppSelector } from '../store/hooks'
+import { wrapper } from '../store/store'
+
+import {
+  bugAdded,
+  bugResolved,
+  getBug,
+  getUnresolvedBugs,
+  bugAssignedToUser,
+  loadBugs,
+  addBug,
+  resolveBug,
+  assignBugToUser,
+  bugsRequested,
+} from '../store/bugs'
+import { connect, useDispatch, useSelector } from 'react-redux'
+
+import { getLoggedInUser } from '../store/users'
+
+import { isServer } from '../utils/isServer'
+
 const Index = () => {
+  const dispatch = useDispatch()
+  const loggedInUser = useSelector(getLoggedInUser)
+
+  console.log('loggedInUser: ' + JSON.stringify(loggedInUser))
+
   const [variables, setVariables] = useState({
     limit: 15,
     cursor: null as null | string,
@@ -21,7 +47,7 @@ const Index = () => {
   if (!fetching && !data) {
     return (
       <div>
-        <div>query failed for some reason</div>
+        <div>you got query failed for some reason</div>
         <div>{error?.message}</div>
       </div>
     )
@@ -29,32 +55,26 @@ const Index = () => {
 
   return (
     <Layout>
-      {fetching && !data ? (
-        <div>...loading</div>
+      {!data && fetching ? (
+        <div>loading...</div>
       ) : (
-        <Stack className="" spacing={8}>
+        <Stack spacing={8}>
           {data!.posts.posts.map((p) =>
             !p ? null : (
-              <Flex
-                className="w-full text-white border-error"
-                key={p.id}
-                p={5}
-                shadow="md"
-                borderWidth="1px"
-              >
+              <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
                 <UpdootSection post={p} />
 
-                <Box className="w-full" flex={1}>
+                <Box flex={1}>
                   <NextLink href="/post/[id]" as={`/post/${p.id}`}>
-                    <Link className="prose">
+                    <Link>
                       <Heading fontSize="xl">{p.title}</Heading>
                     </Link>
                   </NextLink>
 
-                  <Text className="prose">Posted by: {p.creator.username}</Text>
+                  <Text>posted by {p.creator.username}</Text>
 
                   <Flex align="center">
-                    <Text flex={1} mt={4} className="prose">
+                    <Text flex={1} mt={4}>
                       {p.textSnippet}
                     </Text>
 
@@ -71,6 +91,7 @@ const Index = () => {
           )}
         </Stack>
       )}
+
       {data && data.posts.hasMore ? (
         <Flex>
           <Button
@@ -84,7 +105,7 @@ const Index = () => {
             m="auto"
             my={8}
           >
-            Load more
+            load more
           </Button>
         </Flex>
       ) : null}
@@ -92,4 +113,43 @@ const Index = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Index)
+// export const getServerSideProps = wrapper.getServerSideProps(
+//   (store) => async () => {
+//     // const response = await fetch(
+//     //   `https://reqres.in/api/users/${Math.floor(Math.random() * 10 + 1)}`
+//     // )
+//     // const { data } = await response.json()
+//     // store.dispatch(addUser(`${data.first_name} ${data.last_name}`))
+//     store.dispatch(addBug({ description: 'dewfewfew' }))
+//   }
+// )
+
+// const response = await fetch
+
+// const mapStateToProps = (state) => ({
+//   bugs: state.entities.bugs.list,
+// })
+
+// const mapDispatchToProps = (dispatch) => ({
+//   loadBugs: () => dispatch(loadBugs()),
+// })
+
+// connect(mapStateToProps, mapDispatchToProps)(Index)
+// export const getServerSideProps = wrapper.getServerSideProps(
+//   (store) => async () => {
+//     // const { id } = params
+//
+//     await store.dispatch(loadBugs)
+//
+//     console.log('State on server', store.getState())
+//
+//     return {
+//       props: {
+//         // id,
+//       },
+//     }
+//   }
+// )
+
+export default withUrqlClient(createUrqlClient, { ssr: false })(Index)
+// export default Index

@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { Form, Formik } from 'formik'
 import {
   Box,
@@ -14,16 +13,17 @@ import { InputField } from '../components/InputField'
 import { useMutation } from 'urql'
 import { useRegisterMutation } from '../generated/graphql'
 import { toErrorMap } from '../utils/toErrorMap'
-import { useRouter } from 'next/dist/client/router'
 import { withUrqlClient } from 'next-urql'
 import { createUrqlClient } from '../utils/createUrqlClient'
 import { Layout } from '../components/Layout'
+import { useRouter } from 'next/router'
 
 interface registerProps {}
 
 const Register: React.FC<registerProps> = ({}) => {
   const router = useRouter()
   const [, register] = useRegisterMutation()
+
   return (
     <Layout variant="small">
       <Formik
@@ -46,9 +46,11 @@ const Register: React.FC<registerProps> = ({}) => {
               placeholder="username"
               label="Username"
             />
+
             <Box mt={4}>
               <InputField name="email" placeholder="email" label="Email" />
             </Box>
+
             <Box mt={4}>
               <InputField
                 name="password"

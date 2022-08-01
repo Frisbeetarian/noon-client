@@ -1,0 +1,5 @@
+query Communities {
+  communities {
+      ...CommunitySnippet
+  }
+}

@@ -10,6 +10,9 @@ import { useGetPostFromUrl } from '../../utils/useGetPostFromUrl'
 
 const Post = ({}) => {
   const [{ data, error, fetching }] = useGetPostFromUrl()
+  console.log('data', data)
+  console.log('error', error)
+  console.log('fetching', fetching)
 
   if (fetching) {
     return (
@@ -44,4 +47,4 @@ const Post = ({}) => {
   )
 }
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Post)
+export default withUrqlClient(createUrqlClient, { ssr: false })(Post)
