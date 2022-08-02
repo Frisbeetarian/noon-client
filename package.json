@@ -29,6 +29,7 @@
     "react": "^17.0.2",
     "react-datepicker": "^4.8.0",
     "react-dom": "^17.0.2",
+    "react-icons": "^4.4.0",
     "react-is": "^17.0.2",
     "react-redux": "^8.0.2",
     "redis-commander": "^0.7.0",

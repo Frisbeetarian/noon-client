@@ -10,13 +10,15 @@ import {
 } from '@chakra-ui/react'
 
 import { withUrqlClient } from 'next-urql'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { EditDeletePostButtons } from '../../components/EditDeletePostButtons'
+
 import { Layout } from '../../components/Layout'
 import { createUrqlClient } from '../../utils/createUrqlClient'
 import CreateEvent from './create-community'
 
 import {
+  Community,
   useCommunitiesQuery,
   useEventsQuery,
   useGetCommunitiesParticipantsQuery,
@@ -26,28 +28,23 @@ import {
   useJoinEventMutation,
 } from '../../generated/graphql'
 
-// import {} from '../../generated/graphql'
-import { UpdootSection } from '../../components/UpdootSection'
 import NextLink from 'next/link'
-import { isServer } from '../../utils/isServer'
 import CreateCommunity from './create-community'
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { useSelector } from 'react-redux'
-import { getLoggedInUser } from '../../store/users'
+import { useDispatch, useSelector } from 'react-redux'
+import { getLoggedInUser, setLoggedInUser } from '../../store/users'
+import {
+  addCommunities,
+  addCommunity,
+  getCommunities,
+} from '../../store/communities'
+import SimpleSidebar from '../../components/Sidebar'
 
 const Communities = ({}) => {
+  const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
-  console.log('LOGGED IN USER: ', loggedInUser)
 
   const [{ data, error, fetching }] = useCommunitiesQuery()
-  // console.log('communities data: ', data?.communities)
-
-  const [{ data: profileData, fetching: profileFetching }] =
-    useGetProfileByUserIdQuery({
-      variables: {
-        userId: loggedInUser?.me?.id,
-      },
-    })
 
   const communitiesIds = []
   data?.communities.map((community) => {
@@ -63,56 +60,43 @@ const Communities = ({}) => {
   ] = useGetCommunitiesParticipantsQuery({
     variables: { communitiesIds: communitiesIds },
   })
-
   const setCommunities = []
-  // const participants = []
+  const communities = useSelector(getCommunities)
 
-  data?.communities.map(async (community) => {
-    const participants =
-      communitiesParticipants?.getCommunitiesParticipants.filter(
-        (communityParticipant) =>
-          communityParticipant.communityId === community.id
-      )
+  useEffect(() => {
+    if (data && communitiesParticipants) {
+      // console.log('communities in set effect: ', data?.communities)
 
-    // participants.map(async (participant) => {
-    //   if (participant.profileId === loggedInUser?.me.id) {
-    //     alert('Fewfew')
-    //     community.joined = true
-    //   }
-    // })
+      data?.communities.map(async (community) => {
+        const participants =
+          communitiesParticipants?.getCommunitiesParticipants.filter(
+            (communityParticipant) =>
+              communityParticipant.communityId === community.id
+          )
 
-    community = { ...community, participants: participants }
-    setCommunities.push(community)
+        community = { ...community, participants: participants }
 
-    // console.log('community: ', community)
-    // community.participants = participants
+        dispatch(addCommunity({ community: community }))
+        // console.log('cmomoef fonf: ', communities?.list?)
+        // setCommunities.push(community)
+      })
+    }
+  }, [data, communitiesParticipants])
 
-    // console.log('participants: ', participants)
+  useEffect(() => {}, [communities])
+  console.log('communities: ', communities)
 
-    // if (communityIsJoined) {
-    //   community.joined = true
-    // } else {
-    //   community.joined = false
-    // }
+  // const [{ data, error, fetching }] = useEventsQuery({
+  //   variables,
+  // })
 
-    //   community.participants = participants
-    //   // let entity = {
-    //   //   id: community.id,
-    //   //   title: community.title,
-    //   //   participants: participants,
-    //   //   creator: community.creator,
-    //   //   description: community.description,
-    //   //   startDate: community.startDate,
-    //   //   endDate: community.endDate,
-    //   //   privacy: community.privacy,
-    //   //   timezone: community.timezone,
-    //   //   updatedAt: community.updatedAt,
-    //   //   createdAt: community.createdAt,
-    //   // }
-    // setCommunities.push(entity)
-  })
+  // const [{ data: profileData, fetching: profileFetching }] =
+  //   useGetProfileByUserIdQuery({
+  //     variables: {
+  //       userId: loggedInUser?.me?.id,
+  //     },
+  //   })
 
-  // console.log('COMMUNITIES: ', setCommunities)
   const [, joinCommunity] = useJoinCommunityMutation()
 
   if (!fetching && !data) {
@@ -140,15 +124,22 @@ const Communities = ({}) => {
     return (
       <Layout>
         <CreateCommunity className="w-full"></CreateCommunity>
-
         <Box>could not find post</Box>
       </Layout>
     )
   }
 
+  function joinCommunityFunction(communityId: number) {
+    console.log('logging')
+    joinCommunity(communityId)
+  }
+
   return (
     <Layout>
-      <Button>Create Community</Button>
+      {/*<Button>Create Community</Button>*/}
+      <Box className="">
+        <SimpleSidebar />
+      </Box>
 
       {/*<Flex className="bg-orange-500 w-full">*/}
       <CreateCommunity className="w-full"></CreateCommunity>
@@ -162,15 +153,15 @@ const Communities = ({}) => {
       {/*  creatorId={data.post.creator.id}*/}
       {/*/>*/}
 
-      {fetching && !setCommunities ? (
+      {fetching && !communities && Object.keys(communities).length === 0 ? (
         <div>...loading</div>
       ) : (
         <Stack className="mt-8" spacing={8}>
-          {setCommunities?.map((e) =>
-            !e ? null : (
+          {Object.entries(communities).map((community, i) =>
+            !community ? null : (
               <Flex
                 className="w-full text-white border-error"
-                key={e.id}
+                key={i}
                 p={5}
                 shadow="md"
                 borderWidth="1px"
@@ -180,24 +171,24 @@ const Communities = ({}) => {
                 <Box className="w-full" flex={1}>
                   <NextLink
                     href="/communities/[id]"
-                    as={`/communities/${e.id}`}
+                    as={`/communities/${community[1].id}`}
                   >
                     <Link className="prose">
-                      <Heading fontSize="xl">{e.title}</Heading>
+                      <Heading fontSize="xl">{community[1].title}</Heading>
                     </Link>
                   </NextLink>
 
                   <Text className="prose">
-                    Created by: {e.creator.username}
+                    Created by: {community[1].creator.username}
                   </Text>
 
                   <Flex align="center">
                     <Text flex={1} mt={4} className="prose">
-                      {e.description}
+                      {community[1].description}
                     </Text>
 
                     <Stack className="" spacing={8}>
-                      {e.participants?.map((p) =>
+                      {community[1].participants?.map((p) =>
                         !p ? null : (
                           <Flex
                             className="w-full text-white border-error"
@@ -213,10 +204,10 @@ const Communities = ({}) => {
                     </Stack>
 
                     <Box ml="auto">
-                      <EditDeletePostButtons
-                        id={e.id}
-                        creatorId={e.creator.id}
-                      />
+                      {/*<EditDeletePostButtons*/}
+                      {/*  id={e.id}*/}
+                      {/*  creatorId={e.creator.id}*/}
+                      {/*/>*/}
 
                       <IconButton
                         onClick={async () => {
@@ -235,10 +226,12 @@ const Communities = ({}) => {
                         icon={<ChevronDownIcon />}
                       />
 
-                      {e.joined ? null : (
+                      {community[1].joined ? null : (
                         <Button
                           onClick={() => {
-                            joinCommunity({ communityId: e.id })
+                            joinCommunityFunction({
+                              communityId: community[1].id,
+                            })
                           }}
                         >
                           join community

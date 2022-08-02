@@ -4,6 +4,7 @@ import NextLink from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { EditDeletePostButtons } from '../components/EditDeletePostButtons'
 import { Layout } from '../components/Layout'
+
 import { UpdootSection } from '../components/UpdootSection'
 import { usePostsQuery } from '../generated/graphql'
 import { createUrqlClient } from '../utils/createUrqlClient'
@@ -23,10 +24,9 @@ import {
   assignBugToUser,
   bugsRequested,
 } from '../store/bugs'
+
 import { connect, useDispatch, useSelector } from 'react-redux'
-
 import { getLoggedInUser } from '../store/users'
-
 import { isServer } from '../utils/isServer'
 
 const Index = () => {

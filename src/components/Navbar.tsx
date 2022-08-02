@@ -9,7 +9,7 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import NextLink from 'next/link'
 import { useLogoutMutation, useMeQuery } from '../generated/graphql'
 import { isServer } from '../utils/isServer'
@@ -22,12 +22,15 @@ interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
   const router = useRouter()
+  const dispatch = useDispatch()
+
   const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
   })
 
-  const dispatch = useDispatch()
-  dispatch(setLoggedInUser({ user: data }))
+  useEffect(() => {
+    dispatch(setLoggedInUser({ user: data }))
+  }, [])
 
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
 

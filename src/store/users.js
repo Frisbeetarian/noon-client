@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
-
 let lastId = 0
 
 const slice = createSlice({
@@ -19,17 +18,12 @@ const slice = createSlice({
     assignBugToUser: (users, action) => {
       const { bugId, userId } = action.payload
       const index = users.findIndex((user) => user.id === userId)
-      // const index = bugs.findIndex(bug => bug.id === action.payload.id)
       users[index].bugsAssigned.push(bugId)
     },
     setLoggedInUser: (users, action) => {
-      console.log('user in store: ', action.payload.user)
-
       if (action.payload.user?.me) {
         users.user = action.payload.user.me
       }
-      // const { me } = action.payload.user
-      // users.user = me
     },
   },
 })

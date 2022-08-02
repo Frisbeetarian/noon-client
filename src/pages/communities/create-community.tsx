@@ -44,7 +44,8 @@ const CreateCommunity: React.FC<{}> = ({}) => {
 
       const { error } = await createCommunity({ input: values })
       if (!error) {
-        router.push('/')
+        console.log('FDEWFWEFWEFWE')
+        router.reload('/communities')
       }
       // alert(JSON.stringify(values, null, 2))
     },
