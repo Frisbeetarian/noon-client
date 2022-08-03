@@ -9,31 +9,24 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react'
-import React, { useEffect } from 'react'
+
+import React from 'react'
 import NextLink from 'next/link'
 import { useLogoutMutation, useMeQuery } from '../generated/graphql'
 import { isServer } from '../utils/isServer'
 import { useRouter } from 'next/router'
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { useDispatch } from 'react-redux'
-import { getLoggedInUser, setLoggedInUser } from '../store/users'
 
 interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
   const router = useRouter()
-  const dispatch = useDispatch()
 
   const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
   })
 
-  useEffect(() => {
-    dispatch(setLoggedInUser({ user: data }))
-  }, [])
-
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
-
   let body = null
 
   if (fetching) {
@@ -114,6 +107,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
         </Menu>
 
         <Box mr={4}>{data.me.username}</Box>
+
         <Button
           onClick={async () => {
             await logout()

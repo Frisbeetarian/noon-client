@@ -9,32 +9,13 @@ import { UpdootSection } from '../components/UpdootSection'
 import { usePostsQuery } from '../generated/graphql'
 import { createUrqlClient } from '../utils/createUrqlClient'
 
-import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { wrapper } from '../store/store'
-
-import {
-  bugAdded,
-  bugResolved,
-  getBug,
-  getUnresolvedBugs,
-  bugAssignedToUser,
-  loadBugs,
-  addBug,
-  resolveBug,
-  assignBugToUser,
-  bugsRequested,
-} from '../store/bugs'
-
-import { connect, useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
-import { isServer } from '../utils/isServer'
+// import { isServer } from '../utils/isServer'
+import ClientComponent from '../components/SocketIo/Client'
 
 const Index = () => {
-  const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
-
-  console.log('loggedInUser: ' + JSON.stringify(loggedInUser))
-
   const [variables, setVariables] = useState({
     limit: 15,
     cursor: null as null | string,
@@ -59,6 +40,8 @@ const Index = () => {
         <div>loading...</div>
       ) : (
         <Stack spacing={8}>
+          <ClientComponent />
+
           {data!.posts.posts.map((p) =>
             !p ? null : (
               <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
