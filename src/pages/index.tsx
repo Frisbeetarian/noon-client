@@ -9,13 +9,10 @@ import { UpdootSection } from '../components/UpdootSection'
 import { usePostsQuery } from '../generated/graphql'
 import { createUrqlClient } from '../utils/createUrqlClient'
 
-import { useDispatch, useSelector } from 'react-redux'
-import { getLoggedInUser } from '../store/users'
 // import { isServer } from '../utils/isServer'
 import ClientComponent from '../components/SocketIo/Client'
 
 const Index = () => {
-  const loggedInUser = useSelector(getLoggedInUser)
   const [variables, setVariables] = useState({
     limit: 15,
     cursor: null as null | string,
@@ -96,43 +93,4 @@ const Index = () => {
   )
 }
 
-// export const getServerSideProps = wrapper.getServerSideProps(
-//   (store) => async () => {
-//     // const response = await fetch(
-//     //   `https://reqres.in/api/users/${Math.floor(Math.random() * 10 + 1)}`
-//     // )
-//     // const { data } = await response.json()
-//     // store.dispatch(addUser(`${data.first_name} ${data.last_name}`))
-//     store.dispatch(addBug({ description: 'dewfewfew' }))
-//   }
-// )
-
-// const response = await fetch
-
-// const mapStateToProps = (state) => ({
-//   bugs: state.entities.bugs.list,
-// })
-
-// const mapDispatchToProps = (dispatch) => ({
-//   loadBugs: () => dispatch(loadBugs()),
-// })
-
-// connect(mapStateToProps, mapDispatchToProps)(Index)
-// export const getServerSideProps = wrapper.getServerSideProps(
-//   (store) => async () => {
-//     // const { id } = params
-//
-//     await store.dispatch(loadBugs)
-//
-//     console.log('State on server', store.getState())
-//
-//     return {
-//       props: {
-//         // id,
-//       },
-//     }
-//   }
-// )
-
 export default withUrqlClient(createUrqlClient, { ssr: false })(Index)
-// export default Index
