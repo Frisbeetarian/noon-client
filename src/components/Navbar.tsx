@@ -10,16 +10,20 @@ import {
   MenuList,
 } from '@chakra-ui/react'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import NextLink from 'next/link'
 import { useLogoutMutation, useMeQuery } from '../generated/graphql'
 import { isServer } from '../utils/isServer'
 import { useRouter } from 'next/router'
 import { ChevronDownIcon } from '@chakra-ui/icons'
+import { setLoggedInUser } from '../store/users'
+import { useDispatch } from 'react-redux'
 
 interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
+  const dispatch = useDispatch()
+
   const router = useRouter()
 
   const [{ data, fetching }] = useMeQuery({
@@ -27,6 +31,11 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
   })
 
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
+
+  useEffect(() => {
+    dispatch(setLoggedInUser({ user: data }))
+  }, [data])
+
   let body = null
 
   if (fetching) {
@@ -34,6 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
   } else if (!data?.me) {
     body = (
       <>
+        {/*<Flex>*/}
         <NextLink href="/login">
           <Link mr={2}>
             <span className="text-info">Login</span>
@@ -45,6 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
             <span className="text-info">Register</span>
           </Link>
         </NextLink>
+        {/*</Flex>*/}
       </>
     )
   } else {

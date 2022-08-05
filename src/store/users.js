@@ -21,6 +21,7 @@ const slice = createSlice({
       users[index].bugsAssigned.push(bugId)
     },
     setLoggedInUser: (users, action) => {
+      console.log('retrieved user: ', action.payload)
       if (action.payload.user?.me) {
         users.user = action.payload.user.me
       }

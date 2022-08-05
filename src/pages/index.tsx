@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Heading, Link, Stack, Text } from '@chakra-ui/react'
 import { withUrqlClient } from 'next-urql'
 import NextLink from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { EditDeletePostButtons } from '../components/EditDeletePostButtons'
 import { Layout } from '../components/Layout'
 
