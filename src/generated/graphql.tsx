@@ -212,19 +212,20 @@ export type Profile = {
   username: Scalars['String'];
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
+  user: User;
 };
 
 export type Query = {
   __typename?: 'Query';
-  hello: Scalars['String'];
   post?: Maybe<Post>;
   posts: PaginatedPosts;
   me?: Maybe<User>;
   event?: Maybe<Event>;
   events: PaginatedEvents;
-  profile?: Maybe<Event>;
+  profile?: Maybe<Profile>;
   getProfileByUserId: Profile;
-  getProfiles: Array<EventToProfile>;
+  getProfiles: Array<Profile>;
+  getProfileByUsername: Profile;
   community?: Maybe<Community>;
   communities: Array<Community>;
   getCommunityParticipants: Array<CommunityParticipant>;
@@ -264,8 +265,8 @@ export type QueryGetProfileByUserIdArgs = {
 };
 
 
-export type QueryGetProfilesArgs = {
-  id: Scalars['Int'];
+export type QueryGetProfileByUsernameArgs = {
+  username: Scalars['Int'];
 };
 
 
@@ -423,6 +424,11 @@ export type PostSnippetFragment = (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username'>
   ) }
+);
+
+export type ProfileSnippetFragment = (
+  { __typename?: 'Profile' }
+  & Pick<Profile, 'id' | 'username'>
 );
 
 export type RegularErrorFragment = (
@@ -602,16 +608,14 @@ export type GetProfileByUserIdQuery = (
   ) }
 );
 
-export type GetProfilesQueryVariables = Exact<{
-  id: Scalars['Int'];
-}>;
+export type GetProfilesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetProfilesQuery = (
   { __typename?: 'Query' }
   & { getProfiles: Array<(
-    { __typename?: 'EventToProfile' }
-    & Pick<EventToProfile, 'id' | 'participantUsername'>
+    { __typename?: 'Profile' }
+    & ProfileSnippetFragment
   )> }
 );
 
@@ -738,6 +742,12 @@ export const PostSnippetFragmentDoc = gql`
     id
     username
   }
+}
+    `;
+export const ProfileSnippetFragmentDoc = gql`
+    fragment ProfileSnippet on Profile {
+  id
+  username
 }
     `;
 export const RegularProfileFragmentDoc = gql`
@@ -1024,13 +1034,12 @@ export function useGetProfileByUserIdQuery(options: Omit<Urql.UseQueryArgs<GetPr
   return Urql.useQuery<GetProfileByUserIdQuery>({ query: GetProfileByUserIdDocument, ...options });
 };
 export const GetProfilesDocument = gql`
-    query GetProfiles($id: Int!) {
-  getProfiles(id: $id) {
-    id
-    participantUsername
+    query GetProfiles {
+  getProfiles {
+    ...ProfileSnippet
   }
 }
-    `;
+    ${ProfileSnippetFragmentDoc}`;
 
 export function useGetProfilesQuery(options: Omit<Urql.UseQueryArgs<GetProfilesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetProfilesQuery>({ query: GetProfilesDocument, ...options });

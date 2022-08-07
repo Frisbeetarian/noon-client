@@ -1,0 +1,4 @@
+fragment ProfileSnippet on Profile {
+    id
+    username
+}

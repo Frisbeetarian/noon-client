@@ -59,6 +59,7 @@ const CreateCommunity: React.FC<{}> = ({}) => {
             <label>Community title</label>
             <Input
               name="title"
+              type="text"
               label="Community title"
               onChange={formik.handleChange}
               value={formik.values.title}

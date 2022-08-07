@@ -1,6 +1,5 @@
-query GetProfiles($id: Int!) {
-    getProfiles(id: $id) {
-        id
-        participantUsername
+query GetProfiles {
+    getProfiles {
+        ...ProfileSnippet
     }
 }
