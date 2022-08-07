@@ -14,14 +14,17 @@ import { Layout } from '../../components/Layout'
 import { useDispatch, useSelector } from 'react-redux'
 import { withUrqlClient } from 'next-urql'
 import { createUrqlClient } from '../../utils/createUrqlClient'
-import { useGetProfilesQuery } from '../../generated/graphql'
+import {
+  useGetProfilesQuery,
+  useSendFriendRequestMutation,
+} from '../../generated/graphql'
 import CreateCommunity from '../communities/create-community'
 import NextLink from 'next/link'
 
 const Profiles = ({}) => {
   const dispatch = useDispatch()
   const [{ data, error, fetching }] = useGetProfilesQuery()
-
+  const [, sendFriendRequest] = useSendFriendRequestMutation()
   console.log('profiles: ', data?.getProfiles)
 
   useEffect(() => {
@@ -59,6 +62,8 @@ const Profiles = ({}) => {
     )
   }
 
+  // function sendFriendRequest()
+
   return (
     <Layout>
       <header>Profiles Page</header>
@@ -88,7 +93,15 @@ const Profiles = ({}) => {
                 </Box>
 
                 <Box>
-                  <Button>Send friend request</Button>
+                  <Button
+                    onClick={async () => {
+                      await sendFriendRequest({
+                        profileUuid: profile.id,
+                      })
+                    }}
+                  >
+                    Send friend request
+                  </Button>
                 </Box>
               </Flex>
             )

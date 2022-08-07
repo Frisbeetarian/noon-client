@@ -106,6 +106,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   createEvent: Event;
   joinEvent: Event;
+  sendFriendRequest: Scalars['Boolean'];
   createCommunity: Community;
   joinCommunity: Scalars['Boolean'];
 };
@@ -166,6 +167,11 @@ export type MutationJoinEventArgs = {
 };
 
 
+export type MutationSendFriendRequestArgs = {
+  profileUuid: Scalars['String'];
+};
+
+
 export type MutationCreateCommunityArgs = {
   input: CommunityInput;
 };
@@ -208,7 +214,7 @@ export type PostInput = {
 
 export type Profile = {
   __typename?: 'Profile';
-  id: Scalars['Int'];
+  id: Scalars['String'];
   username: Scalars['String'];
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
@@ -286,7 +292,7 @@ export type QueryGetCommunitiesParticipantsArgs = {
 
 export type User = {
   __typename?: 'User';
-  id: Scalars['Int'];
+  id: Scalars['String'];
   username: Scalars['String'];
   email: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -297,7 +303,7 @@ export type User = {
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
-  user?: Maybe<User>;
+  user: User;
 };
 
 export type UsernamePasswordInput = {
@@ -455,10 +461,10 @@ export type RegularUserResponseFragment = (
   & { errors?: Maybe<Array<(
     { __typename?: 'FieldError' }
     & RegularErrorFragment
-  )>>, user?: Maybe<(
+  )>>, user: (
     { __typename?: 'User' }
     & RegularUserFragment
-  )> }
+  ) }
 );
 
 export type JoinCommunityMutationVariables = Exact<{
@@ -676,6 +682,16 @@ export type RegisterMutation = (
     { __typename?: 'UserResponse' }
     & RegularUserResponseFragment
   ) }
+);
+
+export type SendFriendRequestMutationVariables = Exact<{
+  profileUuid: Scalars['String'];
+}>;
+
+
+export type SendFriendRequestMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'sendFriendRequest'>
 );
 
 export type VoteMutationVariables = Exact<{
@@ -1100,6 +1116,15 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const SendFriendRequestDocument = gql`
+    mutation SendFriendRequest($profileUuid: String!) {
+  sendFriendRequest(profileUuid: $profileUuid)
+}
+    `;
+
+export function useSendFriendRequestMutation() {
+  return Urql.useMutation<SendFriendRequestMutation, SendFriendRequestMutationVariables>(SendFriendRequestDocument);
 };
 export const VoteDocument = gql`
     mutation Vote($value: Int!, $postId: Int!) {
