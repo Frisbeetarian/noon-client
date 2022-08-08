@@ -11,15 +11,22 @@ import {
 
 import React, { useEffect, useState } from 'react'
 import { Layout } from '../../components/Layout'
+
 import { useDispatch, useSelector } from 'react-redux'
+
 import { withUrqlClient } from 'next-urql'
 import { createUrqlClient } from '../../utils/createUrqlClient'
+
 import {
   useGetProfilesQuery,
   useSendFriendRequestMutation,
 } from '../../generated/graphql'
 import CreateCommunity from '../communities/create-community'
 import NextLink from 'next/link'
+import io from 'socket.io-client'
+import { getLoggedInUser } from '../../store/users'
+const ENDPOINT = 'http://localhost:4020'
+const socket = io(ENDPOINT, { autoConnect: false })
 
 const Profiles = ({}) => {
   const dispatch = useDispatch()
@@ -27,8 +34,90 @@ const Profiles = ({}) => {
   const [, sendFriendRequest] = useSendFriendRequestMutation()
   console.log('profiles: ', data?.getProfiles)
 
+  const [isConnected, setIsConnected] = useState(socket.connected)
+  const loggedInUser = useSelector(getLoggedInUser)
+
+  // useEffect(() => {
+  //   socket.connect()
+  //
+  //   socket.on('connect', () => {
+  //     console.log('connected')
+  //     setIsConnected(true)
+  //   })
+  //   socket.on('disconnect', () => {
+  //     setIsConnected(false)
+  //   })
+  //   // socket.on('message', (data) => {
+  //   //   setLastMessage(data)
+  //   // })
+  //   return () => {
+  //     socket.off('connect')
+  //     socket.off('disconnect')
+  //     socket.off('message')
+  //   }
+  // }, [])
+
+  useEffect(() => {
+    // socket.connect()
+    console.log('logged in user:', loggedInUser.user.profile)
+    const sessionID = localStorage.getItem('sessionID')
+
+    if (sessionID && loggedInUser.user.profile) {
+      socket.auth = {
+        sessionID,
+        username: loggedInUser?.user?.profile?.username,
+      }
+
+      socket.connect()
+    }
+
+    socket.on('session', ({ sessionID, userID }) => {
+      // attach the session ID to the next reconnection attempts
+      socket.auth = { sessionID }
+
+      // store it in the localStorage
+      localStorage.setItem('sessionID', sessionID)
+
+      // save the ID of the user
+      socket.userID = userID
+    })
+
+    socket.on('connect_error', (err) => {
+      if (err.message === 'invalid username') {
+        // this.usernameAlreadySelected = false
+        setIsConnected(false)
+      }
+    })
+
+    socket.on('connect', () => {
+      setIsConnected(true)
+    })
+
+    socket.onAny((event, ...args) => {
+      console.log(event, args)
+    })
+    return () => socket.off('connect_error')
+  }, [loggedInUser])
+
   useEffect(() => {
     // dispatch(loadBugs())
+    socket.on('private message', ({ content, from, to }) => {
+      console.log('received private message')
+      // for (let i = 0; i < this.users.length; i++) {
+      //   const user = this.users[i]
+      //   const fromSelf = socket.userID === from
+      //   if (user.userID === (fromSelf ? to : from)) {
+      //     user.messages.push({
+      //       content,
+      //       fromSelf,
+      //     })
+      //     if (user !== this.selectedUser) {
+      //       user.hasNewMessages = true
+      //     }
+      //     break
+      //   }
+      // }
+    })
   }, [])
 
   // console.log('BUGS: ', bugs)
@@ -97,6 +186,13 @@ const Profiles = ({}) => {
                     onClick={async () => {
                       await sendFriendRequest({
                         profileUuid: profile.id,
+                      })
+
+                      socket.emit('private message', {
+                        content: 'fewfewfwef',
+                        from: loggedInUser.profile?.id,
+                        to: profile.id,
+                        toUsername: profile.username,
                       })
                     }}
                   >

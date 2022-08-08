@@ -16,8 +16,9 @@ import { useLogoutMutation, useMeQuery } from '../generated/graphql'
 import { isServer } from '../utils/isServer'
 import { useRouter } from 'next/router'
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import { setLoggedInUser } from '../store/users'
+import { getLoggedInUser, setLoggedInUser } from '../store/users'
 import { useDispatch } from 'react-redux'
+import SocketConnector from './SocketIo/SocketConnector'
 
 interface NavbarProps {}
 
@@ -117,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
           </MenuList>
         </Menu>
 
-        <Box mr={4}>{data.me.username}</Box>
+        {/*<Box mr={4}>{data.me.username}</Box>*/}
 
         <Button
           onClick={async () => {
@@ -130,6 +131,11 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
         >
           logout
         </Button>
+
+        <Flex className="ml-4 items-center">
+          <p>{data.me.profile.username}</p>
+          <SocketConnector />
+        </Flex>
       </Flex>
     )
   }
