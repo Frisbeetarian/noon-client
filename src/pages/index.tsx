@@ -37,7 +37,7 @@ const Index = () => {
         <div>loading...</div>
       ) : (
         <Stack spacing={8}>
-          <ClientComponent />
+          {/*<ClientComponent />*/}
 
           {data!.posts.posts.map((p) =>
             !p ? null : (

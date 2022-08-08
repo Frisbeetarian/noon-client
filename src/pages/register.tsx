@@ -17,9 +17,9 @@ import { withUrqlClient } from 'next-urql'
 import { createUrqlClient } from '../utils/createUrqlClient'
 import { Layout } from '../components/Layout'
 import { useRouter } from 'next/router'
-import io from 'socket.io-client'
-const ENDPOINT = 'http://localhost:4020'
-const socket = io(ENDPOINT, { autoConnect: false })
+// import io from 'socket.io-client'
+// const ENDPOINT = 'http://localhost:4020'
+// const socket = io(ENDPOINT, { autoConnect: false })
 
 interface registerProps {}
 
@@ -28,48 +28,48 @@ const Register: React.FC<registerProps> = ({}) => {
   const [, register] = useRegisterMutation()
   const [socketError, setSocketError] = useState(false)
 
-  function establishSocketConnection(username) {
-    try {
-      const sessionID = localStorage.getItem('sessionID')
-      console.log('sessionID:', sessionID)
+  // function establishSocketConnection(username) {
+  //   try {
+  //     const sessionID = localStorage.getItem('sessionID')
+  //     console.log('sessionID:', sessionID)
+  //
+  //     console.log('username or email:', username)
+  //     if (sessionID) {
+  //       socket.auth = { sessionID, username: username }
+  //       socket.connect()
+  //     } else {
+  //       // alert('DW')
+  //       socket.auth = { username: username }
+  //       socket.connect()
+  //     }
+  //   } catch (e) {
+  //     setSocketError(true)
+  //   }
+  // }
 
-      console.log('username or email:', username)
-      if (sessionID) {
-        socket.auth = { sessionID, username: username }
-        socket.connect()
-      } else {
-        // alert('DW')
-        socket.auth = { username: username }
-        socket.connect()
-      }
-    } catch (e) {
-      setSocketError(true)
-    }
-  }
-
-  useEffect(() => {
-    socket.on('session', ({ sessionID, userID }) => {
-      console.log('session received:', sessionID)
-      socket.auth = { sessionID }
-      localStorage.setItem('sessionID', sessionID)
-      socket.userID = userID
-    })
-
-    socket.on('connect_error', (err) => {
-      if (err.message === 'invalid username') {
-        // setIsConnected(false)
-      }
-    })
-
-    socket.on('connect', () => {
-      // setIsConnected(true)
-    })
-
-    socket.onAny((event, ...args) => {
-      console.log(event, args)
-    })
-    return () => socket.off('connect_error')
-  }, [])
+  // useEffect(() => {
+  //   socket.on('session', ({ sessionID, userID }) => {
+  //     console.log('session received:', sessionID)
+  //     socket.auth = { sessionID }
+  //     localStorage.setItem('sessionID', sessionID)
+  //     socket.userID = userID
+  //   })
+  //
+  //   socket.on('connect_error', (err) => {
+  //     if (err.message === 'invalid username') {
+  //       // setIsConnected(false)
+  //     }
+  //   })
+  //
+  //   socket.on('connect', () => {
+  //     // setIsConnected(true)
+  //   })
+  //
+  //   socket.onAny((event, ...args) => {
+  //     console.log(event, args)
+  //   })
+  //   return () => socket.off('connect_error')
+  // }, [])
 
   return (
     <Layout variant="small">
@@ -83,10 +83,10 @@ const Register: React.FC<registerProps> = ({}) => {
           if (response.data?.register.errors) {
             setErrors(toErrorMap(response.data.register.errors))
           } else if (response.data?.register.user) {
-            await establishSocketConnection(values.username)
-
+            // await establishSocketConnection(values.username)
             // worked
             router.push('/')
+            // router.
           }
         }}
       >

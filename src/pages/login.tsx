@@ -19,56 +19,56 @@ import { withUrqlClient } from 'next-urql'
 import { createUrqlClient } from '../utils/createUrqlClient'
 import NextLink from 'next/link'
 import io from 'socket.io-client'
-const ENDPOINT = 'http://localhost:4020'
-const socket = io(ENDPOINT, { autoConnect: false })
+// const ENDPOINT = 'http://localhost:4020'
+// const socket = io(ENDPOINT, { autoConnect: false })
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter()
   const [, login] = useLoginMutation()
-  const [socketError, setSocketError] = useState(false)
+  // const [socketError, setSocketError] = useState(false)
 
-  function establishSocketConnection(usernameOrEmail) {
-    try {
-      const sessionID = localStorage.getItem('sessionID')
-      console.log('sessionID:', sessionID)
-
-      console.log('username or email:', usernameOrEmail)
-      if (sessionID) {
-        socket.auth = { sessionID, username: usernameOrEmail }
-        socket.connect()
-      } else {
-        // alert('DW')
-        socket.auth = { username: usernameOrEmail }
-        socket.connect()
-      }
-    } catch (e) {
-      setSocketError(true)
-    }
-  }
-
-  useEffect(() => {
-    socket.on('session', ({ sessionID, userID }) => {
-      console.log('session received:', sessionID)
-      socket.auth = { sessionID }
-      localStorage.setItem('sessionID', sessionID)
-      socket.userID = userID
-    })
-
-    socket.on('connect_error', (err) => {
-      if (err.message === 'invalid username') {
-        // setIsConnected(false)
-      }
-    })
-
-    socket.on('connect', () => {
-      // setIsConnected(true)
-    })
-
-    socket.onAny((event, ...args) => {
-      console.log(event, args)
-    })
-    return () => socket.off('connect_error')
-  }, [])
+  // function establishSocketConnection(usernameOrEmail) {
+  //   try {
+  //     const sessionID = localStorage.getItem('sessionID')
+  //     console.log('sessionID:', sessionID)
+  //
+  //     console.log('username or email:', usernameOrEmail)
+  //     if (sessionID) {
+  //       socket.auth = { sessionID, username: usernameOrEmail }
+  //       socket.connect()
+  //     } else {
+  //       // alert('DW')
+  //       socket.auth = { username: usernameOrEmail }
+  //       socket.connect()
+  //     }
+  //   } catch (e) {
+  //     setSocketError(true)
+  //   }
+  // }
+  //
+  // useEffect(() => {
+  //   socket.on('session', ({ sessionID, userID }) => {
+  //     console.log('session received:', sessionID)
+  //     socket.auth = { sessionID }
+  //     localStorage.setItem('sessionID', sessionID)
+  //     socket.userID = userID
+  //   })
+  //
+  //   socket.on('connect_error', (err) => {
+  //     if (err.message === 'invalid username') {
+  //       // setIsConnected(false)
+  //     }
+  //   })
+  //
+  //   socket.on('connect', () => {
+  //     // setIsConnected(true)
+  //   })
+  //
+  //   socket.onAny((event, ...args) => {
+  //     console.log(event, args)
+  //   })
+  //   return () => socket.off('connect_error')
+  // }, [])
 
   return (
     <Wrapper variant="small">
@@ -83,7 +83,7 @@ const Login: React.FC<{}> = ({}) => {
             if (typeof router.query.next === 'string') {
               router.push(router.query.next)
             } else {
-              await establishSocketConnection(values.usernameOrEmail)
+              // await establishSocketConnection(values.usernameOrEmail)
 
               // worked
               router.push('/')
@@ -127,13 +127,13 @@ const Login: React.FC<{}> = ({}) => {
           </Form>
         )}
       </Formik>
-      <Alert status="error" hidden={!socketError}>
-        <AlertIcon />
-        <AlertTitle>Error while trying to connect to socket.</AlertTitle>
-        {/*<AlertDescription>*/}
-        {/*  Your Chakra experience may be degraded.*/}
-        {/*</AlertDescription>*/}
-      </Alert>
+      {/*<Alert status="error" hidden={!socketError}>*/}
+      {/*  <AlertIcon />*/}
+      {/*  <AlertTitle>Error while trying to connect to socket.</AlertTitle>*/}
+      {/*  /!*<AlertDescription>*!/*/}
+      {/*  /!*  Your Chakra experience may be degraded.*!/*/}
+      {/*  /!*</AlertDescription>*!/*/}
+      {/*</Alert>*/}
     </Wrapper>
   )
 }

@@ -7,6 +7,14 @@ import api from './middleware/api'
 
 // import { Action } from 'redux'
 import { createWrapper, HYDRATE } from 'next-redux-wrapper'
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from 'redux-persist'
 
 const masterReducer = (state, action) => {
   if (action.type === HYDRATE) {
@@ -26,6 +34,11 @@ const makeStore = () =>
     reducer,
     // middleware: [...getDefaultMiddleware(), logger],
     middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+    // getDefaultMiddleware({
+    //   serializableCheck: {
+    //     ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+    //   },
+    // }),
     devTools: true,
   })
 
