@@ -11,6 +11,7 @@ import {
   AlertTitle,
   Box,
 } from '@chakra-ui/react'
+
 import { getSocket, setSocket } from '../../store/sockets'
 const ENDPOINT = 'http://localhost:4020'
 const socket = io(ENDPOINT, { autoConnect: false })
@@ -28,19 +29,33 @@ export default function SocketConnector() {
     const sessionID = localStorage.getItem('sessionID')
 
     try {
-      console.log('session id on socket connection:', sessionID)
-
       // if (!socket.connected) {
-      if (sessionID && loggedInUser.user.profile) {
+      // TODO check why adding condition for logged in user generates new session id item in storage
+      // if (sessionID && loggedInUser.user.profile) {
+
+      if (sessionID) {
         // this.usernameAlreadySelected = true
+
+        console.log(
+          'session id on socket connection:',
+          loggedInUser.user.profile?.id
+        )
+
         socket.auth = {
           sessionID,
           username: loggedInUser?.user?.profile?.username,
+          userSocketUuid: loggedInUser.user?.profile?.id,
+          userID: loggedInUser.user?.profile?.id,
         }
+
         socket.connect()
         dispatch(setSocket({ socket }))
       } else {
-        socket.auth = { username: loggedInUser?.user?.profile?.username }
+        socket.auth = {
+          username: loggedInUser?.user?.profile?.username,
+          userSocketUuid: loggedInUser.user?.profile?.id,
+          userID: loggedInUser.user?.profile?.id,
+        }
         socket.connect()
         dispatch(setSocket({ socket }))
       }

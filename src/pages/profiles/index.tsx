@@ -1,4 +1,8 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
   Flex,
@@ -32,12 +36,14 @@ import { getSocket } from '../../store/sockets'
 const Profiles = ({}) => {
   const dispatch = useDispatch()
   const [{ data, error, fetching }] = useGetProfilesQuery()
+
   const [, sendFriendRequest] = useSendFriendRequestMutation()
   console.log('profiles: ', data?.getProfiles)
 
   // const [isConnected, setIsConnected] = useState(socket.connected)
   const loggedInUser = useSelector(getLoggedInUser)
   const socket = useSelector(getSocket)
+  const [privateMessage, setprivateMessage] = useState(true)
 
   // useEffect(() => {
   //   socket.connect()
@@ -104,8 +110,9 @@ const Profiles = ({}) => {
   useEffect(() => {
     // dispatch(loadBugs())
     if (socket) {
-      socket.on('privatemessage', ({ content, from, to }) => {
+      socket.on('private message', ({ content, from, to }) => {
         console.log('received private message')
+        setprivateMessage(true)
         // for (let i = 0; i < this.users.length; i++) {
         //   const user = this.users[i]
         //   const fromSelf = socket.userID === from
@@ -124,7 +131,7 @@ const Profiles = ({}) => {
 
       return () => {
         // if (socket)
-        socket.off('privatemessage')
+        socket.off('private message')
       }
     }
   }, [socket])
@@ -165,6 +172,13 @@ const Profiles = ({}) => {
   return (
     <Layout>
       <header>Profiles Page</header>
+      <Alert status="success" hidden={!privateMessage}>
+        <AlertIcon />
+        <AlertTitle>Error while trying to connect to socket.</AlertTitle>
+        <AlertDescription>
+          Your Chakra experience may be degraded.
+        </AlertDescription>
+      </Alert>
 
       {fetching && !data?.getProfiles ? (
         <div>...loading</div>
@@ -197,12 +211,12 @@ const Profiles = ({}) => {
                         profileUuid: profile.id,
                       })
 
-                      socket.emit('privatemessage', {
+                      socket.emit('private message', {
                         content:
-                          loggedInUser.profile?.username +
+                          loggedInUser.user?.profile?.username +
                           ' wants to be your friend.',
-                        from: loggedInUser.profile?.id,
-                        to: socket.userID,
+                        from: loggedInUser.user?.profile?.id,
+                        to: profile.id,
                         toUsername: profile.username,
                       })
                     }}
