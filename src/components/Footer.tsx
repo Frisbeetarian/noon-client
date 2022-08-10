@@ -18,6 +18,7 @@ import { useSendFriendRequestMutation } from '../generated/graphql'
 import { useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
 import { getSocket } from '../store/sockets'
+import { useAcceptFriendRequestMutation } from '../generated/graphql'
 
 const Logo = (props: any) => {
   return (
@@ -73,6 +74,7 @@ const SocialButton = ({
 
 export default function Footer() {
   const [, sendFriendRequest] = useSendFriendRequestMutation()
+  const [, acceptFriendRequest] = useAcceptFriendRequestMutation()
   const loggedInUser = useSelector(getLoggedInUser)
   const socket = useSelector(getSocket)
   const [privateMessage, setprivateMessage] = useState(true)
@@ -82,6 +84,34 @@ export default function Footer() {
 
   useEffect(() => {
     if (socket) {
+      socket.on(
+        'friendship-request-accepted',
+        ({ content, from, fromUsername, to }) => {
+          toast({
+            id: from,
+            title: `${fromUsername} sent you a friend request.`,
+            position: 'bottom-right',
+            isClosable: true,
+            status: 'success',
+            duration: 5000,
+            render: () => (
+              <Flex direction="column" color="white" p={3} bg="green.500">
+                <Flex>
+                  <p>{fromUsername} accepted your friend request.</p>
+                  <CloseButton
+                    className="sticky top ml-4"
+                    size="sm"
+                    onClick={() => {
+                      toast.close(from)
+                    }}
+                  />
+                </Flex>
+              </Flex>
+            ),
+          })
+        }
+      )
+
       socket.on('private message', ({ content, from, fromUsername, to }) => {
         console.log('received private message content:', content)
         console.log('received private message from:', from)
@@ -112,7 +142,30 @@ export default function Footer() {
               </Flex>
 
               <Flex className="justify-end mt-3">
-                <Button className="mr-3">Accept</Button>
+                <Button
+                  className="mr-3"
+                  onClick={async () => {
+                    const acceptFriendshipResponse = await acceptFriendRequest({
+                      profileUuid: from,
+                    })
+
+                    if (acceptFriendshipResponse) {
+                      socket.emit('friendship-request-accepted', {
+                        content:
+                          loggedInUser.user?.profile?.username +
+                          ' wants to be your friend.',
+                        from: loggedInUser.user?.profile?.id,
+                        fromUsername: loggedInUser.user?.profile?.username,
+                        to: from,
+                        toUsername: fromUsername,
+                      })
+                    }
+
+                    toast.close(from)
+                  }}
+                >
+                  Accept
+                </Button>
                 <Button>Reject</Button>
               </Flex>
             </Flex>

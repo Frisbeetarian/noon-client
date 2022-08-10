@@ -30,6 +30,7 @@ import {
 import NextLink from 'next/link'
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
+import { showFriendshipRequestToast } from '../../store/ui'
 
 const Profiles = ({}) => {
   const dispatch = useDispatch()
@@ -45,6 +46,7 @@ const Profiles = ({}) => {
   // const toast = useToast()
 
   useEffect(() => {
+    dispatch(showFriendshipRequestToast(socket))
     // if (socket) {
     //   socket.on('private message', ({ content, from, fromUsername, to }) => {
     //     console.log('received private message content:', content)

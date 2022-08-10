@@ -107,6 +107,7 @@ export type Mutation = {
   createEvent: Event;
   joinEvent: Event;
   sendFriendRequest: Scalars['Boolean'];
+  acceptFriendRequest: Scalars['Boolean'];
   createCommunity: Community;
   joinCommunity: Scalars['Boolean'];
 };
@@ -168,6 +169,11 @@ export type MutationJoinEventArgs = {
 
 
 export type MutationSendFriendRequestArgs = {
+  profileUuid: Scalars['String'];
+};
+
+
+export type MutationAcceptFriendRequestArgs = {
   profileUuid: Scalars['String'];
 };
 
@@ -325,6 +331,16 @@ export type UpdatePostMutation = (
     { __typename?: 'Post' }
     & Pick<Post, 'id' | 'title' | 'text' | 'textSnippet'>
   )> }
+);
+
+export type AcceptFriendRequestMutationVariables = Exact<{
+  profileUuid: Scalars['String'];
+}>;
+
+
+export type AcceptFriendRequestMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'acceptFriendRequest'>
 );
 
 export type ChangePasswordMutationVariables = Exact<{
@@ -812,6 +828,15 @@ export const UpdatePostDocument = gql`
 
 export function useUpdatePostMutation() {
   return Urql.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument);
+};
+export const AcceptFriendRequestDocument = gql`
+    mutation AcceptFriendRequest($profileUuid: String!) {
+  acceptFriendRequest(profileUuid: $profileUuid)
+}
+    `;
+
+export function useAcceptFriendRequestMutation() {
+  return Urql.useMutation<AcceptFriendRequestMutation, AcceptFriendRequestMutationVariables>(AcceptFriendRequestDocument);
 };
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($token: String!, $newPassword: String!) {
