@@ -1,15 +1,23 @@
 import {
   Box,
+  Button,
   chakra,
+  CloseButton,
   Container,
+  Flex,
   Link,
   Stack,
   Text,
   useColorModeValue,
+  useToast,
   VisuallyHidden,
 } from '@chakra-ui/react'
 import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa'
-import { ReactNode } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
+import { useSendFriendRequestMutation } from '../generated/graphql'
+import { useSelector } from 'react-redux'
+import { getLoggedInUser } from '../store/users'
+import { getSocket } from '../store/sockets'
 
 const Logo = (props: any) => {
   return (
@@ -64,6 +72,60 @@ const SocialButton = ({
 }
 
 export default function Footer() {
+  const [, sendFriendRequest] = useSendFriendRequestMutation()
+  const loggedInUser = useSelector(getLoggedInUser)
+  const socket = useSelector(getSocket)
+  const [privateMessage, setprivateMessage] = useState(true)
+  const [fromFriendshipRequest, setFromFriendshipRequest] =
+    useState('undefined')
+  const toast = useToast()
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('private message', ({ content, from, fromUsername, to }) => {
+        console.log('received private message content:', content)
+        console.log('received private message from:', from)
+
+        console.log('received private message from:', fromUsername)
+        console.log('received private message content:', to)
+        setFromFriendshipRequest(fromUsername)
+        setprivateMessage(true)
+
+        toast({
+          id: from,
+          title: `${fromUsername} sent you a friend request.`,
+          position: 'bottom-right',
+          isClosable: true,
+          status: 'success',
+          duration: null,
+          render: () => (
+            <Flex direction="column" color="white" p={3} bg="green.500">
+              <Flex>
+                <p>{fromUsername} sent you a friend request.</p>
+                <CloseButton
+                  className="sticky top ml-4"
+                  size="sm"
+                  onClick={() => {
+                    toast.close(from)
+                  }}
+                />
+              </Flex>
+
+              <Flex className="justify-end mt-3">
+                <Button className="mr-3">Accept</Button>
+                <Button>Reject</Button>
+              </Flex>
+            </Flex>
+          ),
+        })
+      })
+
+      return () => {
+        socket.off('private message')
+      }
+    }
+  }, [socket])
+
   return (
     <Box
       bg={useColorModeValue('gray.50', 'gray.900')}

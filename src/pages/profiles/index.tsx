@@ -11,6 +11,8 @@ import {
   Link,
   Stack,
   Text,
+  useToast,
+  CloseButton,
 } from '@chakra-ui/react'
 
 import React, { useEffect, useState } from 'react'
@@ -25,13 +27,9 @@ import {
   useGetProfilesQuery,
   useSendFriendRequestMutation,
 } from '../../generated/graphql'
-import CreateCommunity from '../communities/create-community'
 import NextLink from 'next/link'
-import io from 'socket.io-client'
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
-// const ENDPOINT = 'http://localhost:4020'
-// const socket = io(ENDPOINT, { autoConnect: false })
 
 const Profiles = ({}) => {
   const dispatch = useDispatch()
@@ -39,104 +37,58 @@ const Profiles = ({}) => {
 
   const [, sendFriendRequest] = useSendFriendRequestMutation()
   console.log('profiles: ', data?.getProfiles)
-
-  // const [isConnected, setIsConnected] = useState(socket.connected)
   const loggedInUser = useSelector(getLoggedInUser)
   const socket = useSelector(getSocket)
-  const [privateMessage, setprivateMessage] = useState(true)
-
-  // useEffect(() => {
-  //   socket.connect()
-  //
-  //   socket.on('connect', () => {
-  //     console.log('connected')
-  //     setIsConnected(true)
-  //   })
-  //   socket.on('disconnect', () => {
-  //     setIsConnected(false)
-  //   })
-  //   // socket.on('message', (data) => {
-  //   //   setLastMessage(data)
-  //   // })
-  //   return () => {
-  //     socket.off('connect')
-  //     socket.off('disconnect')
-  //     socket.off('message')
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   // socket.connect()
-  //   console.log('logged in user:', loggedInUser.user.profile)
-  //   const sessionID = localStorage.getItem('sessionID')
-  //
-  //   if (sessionID && loggedInUser.user.profile) {
-  //     socket.auth = {
-  //       sessionID,
-  //       username: loggedInUser?.user?.profile?.username,
-  //     }
-  //
-  //     socket.connect()
-  //   }
-  //
-  //   socket.on('session', ({ sessionID, userID }) => {
-  //     // attach the session ID to the next reconnection attempts
-  //     socket.auth = { sessionID }
-  //
-  //     // store it in the localStorage
-  //     localStorage.setItem('sessionID', sessionID)
-  //
-  //     // save the ID of the user
-  //     socket.userID = userID
-  //   })
-  //
-  //   socket.on('connect_error', (err) => {
-  //     if (err.message === 'invalid username') {
-  //       // this.usernameAlreadySelected = false
-  //       setIsConnected(false)
-  //     }
-  //   })
-  //
-  //   socket.on('connect', () => {
-  //     setIsConnected(true)
-  //   })
-  //
-  //   socket.onAny((event, ...args) => {
-  //     console.log(event, args)
-  //   })
-  //   return () => socket.off('connect_error')
-  // }, [loggedInUser])
+  // const [privateMessage, setprivateMessage] = useState(true)
+  // const [fromFriendshipRequest, setFromFriendshipRequest] =
+  //   useState('undefined')
+  // const toast = useToast()
 
   useEffect(() => {
-    // dispatch(loadBugs())
-    if (socket) {
-      socket.on('private message', ({ content, from, to }) => {
-        console.log('received private message')
-        setprivateMessage(true)
-        // for (let i = 0; i < this.users.length; i++) {
-        //   const user = this.users[i]
-        //   const fromSelf = socket.userID === from
-        //   if (user.userID === (fromSelf ? to : from)) {
-        //     user.messages.push({
-        //       content,
-        //       fromSelf,
-        //     })
-        //     if (user !== this.selectedUser) {
-        //       user.hasNewMessages = true
-        //     }
-        //     break
-        //   }
-        // }
-      })
-
-      return () => {
-        // if (socket)
-        socket.off('private message')
-      }
-    }
-  }, [socket])
-
-  // console.log('BUGS: ', bugs)
+    // if (socket) {
+    //   socket.on('private message', ({ content, from, fromUsername, to }) => {
+    //     console.log('received private message content:', content)
+    //     console.log('received private message from:', from)
+    //
+    //     console.log('received private message from:', fromUsername)
+    //     console.log('received private message content:', to)
+    //     setFromFriendshipRequest(fromUsername)
+    //     setprivateMessage(true)
+    //
+    //     toast({
+    //       id: from,
+    //       title: `${fromUsername} sent you a friend request.`,
+    //       position: 'bottom-right',
+    //       isClosable: true,
+    //       status: 'success',
+    //       duration: null,
+    //       render: () => (
+    //         <Flex direction="column" color="white" p={3} bg="green.500">
+    //           <Flex>
+    //             <p>{fromUsername} sent you a friend request.</p>
+    //             <CloseButton
+    //               className="sticky top ml-4"
+    //               size="sm"
+    //               onClick={() => {
+    //                 toast.close(from)
+    //               }}
+    //             />
+    //           </Flex>
+    //
+    //           <Flex className="justify-end mt-3">
+    //             <Button className="mr-3">Accept</Button>
+    //             <Button>Reject</Button>
+    //           </Flex>
+    //         </Flex>
+    //       ),
+    //     })
+    //   })
+    //
+    //   return () => {
+    //     socket.off('private message')
+    //   }
+    // }
+  }, [])
 
   if (!fetching && !data) {
     return (
@@ -172,13 +124,13 @@ const Profiles = ({}) => {
   return (
     <Layout>
       <header>Profiles Page</header>
-      <Alert status="success" hidden={!privateMessage}>
-        <AlertIcon />
-        <AlertTitle>Error while trying to connect to socket.</AlertTitle>
-        <AlertDescription>
-          Your Chakra experience may be degraded.
-        </AlertDescription>
-      </Alert>
+      {/*<Alert status="success" variant="left-accent" hidden={!privateMessage}>*/}
+      {/*  <AlertIcon />*/}
+      {/*  <AlertTitle>*/}
+      {/*    {fromFriendshipRequest} has sent you a friend request.*/}
+      {/*  </AlertTitle>*/}
+      {/*  <AlertDescription></AlertDescription>*/}
+      {/*</Alert>*/}
 
       {fetching && !data?.getProfiles ? (
         <div>...loading</div>
@@ -216,6 +168,7 @@ const Profiles = ({}) => {
                           loggedInUser.user?.profile?.username +
                           ' wants to be your friend.',
                         from: loggedInUser.user?.profile?.id,
+                        fromUsername: loggedInUser.user?.profile?.username,
                         to: profile.id,
                         toUsername: profile.username,
                       })
