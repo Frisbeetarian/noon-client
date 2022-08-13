@@ -14,6 +14,17 @@ const slice = createSlice({
           profile.uuid != action.payload.loggedInUser.user.profile.uuid
       )
 
+      action.payload.profiles.forEach((profile) => {
+        const friendsCheck = action.payload.loggedInUser.user.friends.find(
+          (element) => element.uuid == profile.uuid
+        )
+        if (friendsCheck) {
+          profile.isAFriend = true
+        } else {
+          profile.isAFriend = false
+        }
+      })
+
       profiles.list = action.payload.profiles
     },
     addProfile: (profiles, action) => {

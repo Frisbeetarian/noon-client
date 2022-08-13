@@ -102,8 +102,8 @@ const Profiles = ({}) => {
                 <Flex className="justify-between w-full">
                   <Box className="w-full" flex={1}>
                     <NextLink
-                      href="/profiles/[id]"
-                      as={`/profiles/${profile.id}`}
+                      href="/profiles/[uuid]"
+                      as={`/profiles/${profile.uuid}`}
                     >
                       <Link className="prose">
                         <Heading fontSize="xl">{profile.username}</Heading>
@@ -111,27 +111,29 @@ const Profiles = ({}) => {
                     </NextLink>
                   </Box>
 
-                  <Box>
-                    <Button
-                      onClick={async () => {
-                        await sendFriendRequest({
-                          profileUuid: profile.uuid,
-                        })
+                  {profile.isAFriend ? null : (
+                    <Box>
+                      <Button
+                        onClick={async () => {
+                          await sendFriendRequest({
+                            profileUuid: profile.uuid,
+                          })
 
-                        socket.emit('private message', {
-                          content:
-                            loggedInUser.user?.profile?.username +
-                            ' wants to be your friend.',
-                          from: loggedInUser.user?.profile?.uuid,
-                          fromUsername: loggedInUser.user?.profile?.username,
-                          to: profile.uuid,
-                          toUsername: profile.username,
-                        })
-                      }}
-                    >
-                      Send friend request
-                    </Button>
-                  </Box>
+                          socket.emit('private message', {
+                            content:
+                              loggedInUser.user?.profile?.username +
+                              ' wants to be your friend.',
+                            from: loggedInUser.user?.profile?.uuid,
+                            fromUsername: loggedInUser.user?.profile?.username,
+                            to: profile.uuid,
+                            toUsername: profile.username,
+                          })
+                        }}
+                      >
+                        Send friend request
+                      </Button>
+                    </Box>
+                  )}
                 </Flex>
 
                 <AvatarGroup max={10}>

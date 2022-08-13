@@ -61,7 +61,7 @@ const Index = () => {
                     <Box ml="auto">
                       <EditDeletePostButtons
                         id={p.id}
-                        creatorId={p.creator.id}
+                        creatorId={p.creator.uuid}
                       />
                     </Box>
                   </Flex>

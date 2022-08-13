@@ -4,5 +4,6 @@ fragment RegularUser on User {
   profile {
     uuid
     username
+
   }
 }
