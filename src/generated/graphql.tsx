@@ -311,6 +311,7 @@ export type User = {
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
   profile: Profile;
+  friends: Array<Friend>;
 };
 
 export type UserResponse = {
@@ -667,6 +668,10 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
+    & { friends: Array<(
+      { __typename?: 'Friend' }
+      & FriendSnippetFragment
+    )> }
     & RegularUserFragment
   )> }
 );
@@ -1121,9 +1126,13 @@ export const MeDocument = gql`
     query Me {
   me {
     ...RegularUser
+    friends {
+      ...FriendSnippet
+    }
   }
 }
-    ${RegularUserFragmentDoc}`;
+    ${RegularUserFragmentDoc}
+${FriendSnippetFragmentDoc}`;
 
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });

@@ -8,16 +8,20 @@ const slice = createSlice({
     list: {},
   },
   reducers: {
-    addProfiles: (profiles, action) => {
-      console.log('communities: ', action.payload)
-      profiles.list = action.payload
+    addProfiles: (profiles, action, loggedInUser) => {
+      action.payload.profiles = action.payload.profiles.filter(
+        (profile) =>
+          profile.uuid != action.payload.loggedInUser.user.profile.uuid
+      )
+
+      profiles.list = action.payload.profiles
     },
     addProfile: (profiles, action) => {
-      const { community } = action.payload
+      const { profile } = action.payload
 
       profiles.list = {
         ...profiles.list,
-        [community.id]: community,
+        [profile.uuid]: profile,
       }
     },
   },

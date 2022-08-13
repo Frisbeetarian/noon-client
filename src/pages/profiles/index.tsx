@@ -1,18 +1,14 @@
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Box,
   Button,
   Flex,
   Heading,
-  IconButton,
   Link,
   Stack,
-  Text,
-  useToast,
-  CloseButton,
+  Avatar,
+  AvatarBadge,
+  AvatarGroup,
+  Tooltip,
 } from '@chakra-ui/react'
 
 import React, { useEffect, useState } from 'react'
@@ -52,7 +48,7 @@ const Profiles = ({}) => {
     console.log('profiles: ', data?.getProfiles)
 
     if (data?.getProfiles) {
-      dispatch(addProfiles(data?.getProfiles))
+      dispatch(addProfiles({ profiles: data?.getProfiles, loggedInUser }))
     }
   }, [data?.getProfiles])
 
@@ -97,43 +93,62 @@ const Profiles = ({}) => {
             !profile ? null : (
               <Flex
                 className="w-full text-white border-error"
+                direction="column"
                 key={i}
                 p={5}
                 shadow="md"
                 borderWidth="1px"
               >
-                <Box className="w-full" flex={1}>
-                  <NextLink
-                    href="/profiles/[id]"
-                    as={`/profiles/${profile.id}`}
-                  >
-                    <Link className="prose">
-                      <Heading fontSize="xl">{profile.username}</Heading>
-                    </Link>
-                  </NextLink>
-                </Box>
+                <Flex className="justify-between w-full">
+                  <Box className="w-full" flex={1}>
+                    <NextLink
+                      href="/profiles/[id]"
+                      as={`/profiles/${profile.id}`}
+                    >
+                      <Link className="prose">
+                        <Heading fontSize="xl">{profile.username}</Heading>
+                      </Link>
+                    </NextLink>
+                  </Box>
 
-                <Box>
-                  <Button
-                    onClick={async () => {
-                      await sendFriendRequest({
-                        profileUuid: profile.uuid,
-                      })
+                  <Box>
+                    <Button
+                      onClick={async () => {
+                        await sendFriendRequest({
+                          profileUuid: profile.uuid,
+                        })
 
-                      socket.emit('private message', {
-                        content:
-                          loggedInUser.user?.profile?.username +
-                          ' wants to be your friend.',
-                        from: loggedInUser.user?.profile?.uuid,
-                        fromUsername: loggedInUser.user?.profile?.username,
-                        to: profile.uuid,
-                        toUsername: profile.username,
-                      })
-                    }}
-                  >
-                    Send friend request
-                  </Button>
-                </Box>
+                        socket.emit('private message', {
+                          content:
+                            loggedInUser.user?.profile?.username +
+                            ' wants to be your friend.',
+                          from: loggedInUser.user?.profile?.uuid,
+                          fromUsername: loggedInUser.user?.profile?.username,
+                          to: profile.uuid,
+                          toUsername: profile.username,
+                        })
+                      }}
+                    >
+                      Send friend request
+                    </Button>
+                  </Box>
+                </Flex>
+
+                <AvatarGroup max={10}>
+                  {profile.friends.map((friend, i) =>
+                    !friend ? null : (
+                      <Tooltip
+                        label={friend.username}
+                        aria-label={friend.username}
+                        placement="bottom"
+                      >
+                        <Avatar key={i} name={friend.username} size="sm">
+                          <AvatarBadge boxSize="1.25em" bg="green.500" />
+                        </Avatar>
+                      </Tooltip>
+                    )
+                  )}
+                </AvatarGroup>
               </Flex>
             )
           )}
