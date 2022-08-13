@@ -134,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
         </Button>
 
         <Flex className="ml-4 items-center">
-          {/*<p>{data.me.profile.username}</p>*/}
+          <p>{data.me.profile.username}</p>
           <SocketConnector />
         </Flex>
       </Flex>

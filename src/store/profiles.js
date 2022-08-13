@@ -23,5 +23,10 @@ const slice = createSlice({
   },
 })
 
+export const getProfiles = createSelector(
+  (state) => state.entities.profiles,
+  (profiles) => profiles.list
+)
+
 export const { addProfile, addProfiles } = slice.actions
 export default slice.reducer

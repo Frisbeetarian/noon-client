@@ -33,7 +33,7 @@ import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
 
 import { showFriendshipRequestToast } from '../../store/ui'
-import { addProfiles } from '../../store/profiles'
+import { addProfiles, getProfiles } from '../../store/profiles'
 
 const Profiles = ({}) => {
   const dispatch = useDispatch()
@@ -41,6 +41,7 @@ const Profiles = ({}) => {
 
   const [, sendFriendRequest] = useSendFriendRequestMutation()
   const loggedInUser = useSelector(getLoggedInUser)
+  const profiles = useSelector(getProfiles)
   const socket = useSelector(getSocket)
 
   useEffect(() => {
@@ -55,7 +56,7 @@ const Profiles = ({}) => {
     }
   }, [data?.getProfiles])
 
-  if (!fetching && !data) {
+  if (!fetching && !profiles) {
     return (
       <div>
         <div>query failed for some reason</div>
@@ -76,7 +77,7 @@ const Profiles = ({}) => {
     return <div>{error.message}</div>
   }
 
-  if (!data?.getProfiles) {
+  if (!profiles) {
     return (
       <Layout>
         <Box>could not find post</Box>
@@ -88,11 +89,11 @@ const Profiles = ({}) => {
     <Layout>
       <header>Profiles Page</header>
 
-      {fetching && !data?.getProfiles ? (
+      {fetching && !profiles ? (
         <div>...loading</div>
       ) : (
         <Stack className="mt-8" spacing={8}>
-          {[...Object.values(data?.getProfiles)].map((profile, i) =>
+          {[...Object.values(profiles)].map((profile, i) =>
             !profile ? null : (
               <Flex
                 className="w-full text-white border-error"
