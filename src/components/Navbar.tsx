@@ -13,9 +13,11 @@ import {
 import React, { useEffect } from 'react'
 import NextLink from 'next/link'
 import { useLogoutMutation, useMeQuery } from '../generated/graphql'
+
 import { isServer } from '../utils/isServer'
 import { useRouter } from 'next/router'
 import { ChevronDownIcon } from '@chakra-ui/icons'
+
 import { getLoggedInUser, setLoggedInUser } from '../store/users'
 import { useDispatch } from 'react-redux'
 import SocketConnector from './SocketIo/SocketConnector'
@@ -24,7 +26,6 @@ interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
   const dispatch = useDispatch()
-
   const router = useRouter()
 
   const [{ data, fetching }] = useMeQuery({
@@ -44,19 +45,19 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
   } else if (!data?.me) {
     body = (
       <>
-        <Flex>
-          <NextLink href="/login">
-            <Link mr={2}>
-              <span className="text-info">Login</span>
-            </Link>
-          </NextLink>
+        {/*<Flex>*/}
+        {/*  <NextLink href="/login">*/}
+        {/*    <Link mr={2}>*/}
+        {/*      <span className="text-info">Login</span>*/}
+        {/*    </Link>*/}
+        {/*  </NextLink>*/}
 
-          <NextLink href="/register">
-            <Link>
-              <span className="text-info">Register</span>
-            </Link>
-          </NextLink>
-        </Flex>
+        {/*  <NextLink href="/register">*/}
+        {/*    <Link>*/}
+        {/*      <span className="text-info">Register</span>*/}
+        {/*    </Link>*/}
+        {/*  </NextLink>*/}
+        {/*</Flex>*/}
       </>
     )
   } else {
@@ -75,9 +76,9 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
         {/*</NextLink>*/}
 
         {/*<NextLink href="/create-post">*/}
-        {/*  <Button as={Link} mr={4}>*/}
-        {/*    create post*/}
-        {/*  </Button>*/}
+        {/*<Button as={Link} mr={4}>*/}
+        {/*create post*/}
+        {/*</Button>*/}
         {/*</NextLink>*/}
 
         <Menu>
@@ -133,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
         </Button>
 
         <Flex className="ml-4 items-center">
-          <p>{data.me.profile.username}</p>
+          {/*<p>{data.me.profile.username}</p>*/}
           <SocketConnector />
         </Flex>
       </Flex>

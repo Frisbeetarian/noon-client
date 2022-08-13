@@ -11,7 +11,7 @@ query Community($id: Int!) {
         createdAt
         updatedAt
         creator {
-            id
+            uuid
             username
         }
     }

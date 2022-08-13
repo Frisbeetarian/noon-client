@@ -28,69 +28,32 @@ import {
   useSendFriendRequestMutation,
 } from '../../generated/graphql'
 import NextLink from 'next/link'
+
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
+
 import { showFriendshipRequestToast } from '../../store/ui'
+import { addProfiles } from '../../store/profiles'
 
 const Profiles = ({}) => {
   const dispatch = useDispatch()
   const [{ data, error, fetching }] = useGetProfilesQuery()
 
   const [, sendFriendRequest] = useSendFriendRequestMutation()
-  console.log('profiles: ', data?.getProfiles)
   const loggedInUser = useSelector(getLoggedInUser)
   const socket = useSelector(getSocket)
-  // const [privateMessage, setprivateMessage] = useState(true)
-  // const [fromFriendshipRequest, setFromFriendshipRequest] =
-  //   useState('undefined')
-  // const toast = useToast()
 
   useEffect(() => {
     dispatch(showFriendshipRequestToast(socket))
-    // if (socket) {
-    //   socket.on('private message', ({ content, from, fromUsername, to }) => {
-    //     console.log('received private message content:', content)
-    //     console.log('received private message from:', from)
-    //
-    //     console.log('received private message from:', fromUsername)
-    //     console.log('received private message content:', to)
-    //     setFromFriendshipRequest(fromUsername)
-    //     setprivateMessage(true)
-    //
-    //     toast({
-    //       id: from,
-    //       title: `${fromUsername} sent you a friend request.`,
-    //       position: 'bottom-right',
-    //       isClosable: true,
-    //       status: 'success',
-    //       duration: null,
-    //       render: () => (
-    //         <Flex direction="column" color="white" p={3} bg="green.500">
-    //           <Flex>
-    //             <p>{fromUsername} sent you a friend request.</p>
-    //             <CloseButton
-    //               className="sticky top ml-4"
-    //               size="sm"
-    //               onClick={() => {
-    //                 toast.close(from)
-    //               }}
-    //             />
-    //           </Flex>
-    //
-    //           <Flex className="justify-end mt-3">
-    //             <Button className="mr-3">Accept</Button>
-    //             <Button>Reject</Button>
-    //           </Flex>
-    //         </Flex>
-    //       ),
-    //     })
-    //   })
-    //
-    //   return () => {
-    //     socket.off('private message')
-    //   }
-    // }
   }, [])
+
+  useEffect(() => {
+    console.log('profiles: ', data?.getProfiles)
+
+    if (data?.getProfiles) {
+      dispatch(addProfiles(data?.getProfiles))
+    }
+  }, [data?.getProfiles])
 
   if (!fetching && !data) {
     return (
@@ -121,24 +84,15 @@ const Profiles = ({}) => {
     )
   }
 
-  // function sendFriendRequest()
-
   return (
     <Layout>
       <header>Profiles Page</header>
-      {/*<Alert status="success" variant="left-accent" hidden={!privateMessage}>*/}
-      {/*  <AlertIcon />*/}
-      {/*  <AlertTitle>*/}
-      {/*    {fromFriendshipRequest} has sent you a friend request.*/}
-      {/*  </AlertTitle>*/}
-      {/*  <AlertDescription></AlertDescription>*/}
-      {/*</Alert>*/}
 
       {fetching && !data?.getProfiles ? (
         <div>...loading</div>
       ) : (
         <Stack className="mt-8" spacing={8}>
-          {data?.getProfiles.map((profile, i) =>
+          {[...Object.values(data?.getProfiles)].map((profile, i) =>
             !profile ? null : (
               <Flex
                 className="w-full text-white border-error"
@@ -162,16 +116,16 @@ const Profiles = ({}) => {
                   <Button
                     onClick={async () => {
                       await sendFriendRequest({
-                        profileUuid: profile.id,
+                        profileUuid: profile.uuid,
                       })
 
                       socket.emit('private message', {
                         content:
                           loggedInUser.user?.profile?.username +
                           ' wants to be your friend.',
-                        from: loggedInUser.user?.profile?.id,
+                        from: loggedInUser.user?.profile?.uuid,
                         fromUsername: loggedInUser.user?.profile?.username,
-                        to: profile.id,
+                        to: profile.uuid,
                         toUsername: profile.username,
                       })
                     }}
@@ -188,5 +142,4 @@ const Profiles = ({}) => {
   )
 }
 
-// export default Profiles
 export default withUrqlClient(createUrqlClient, { ssr: false })(Profiles)

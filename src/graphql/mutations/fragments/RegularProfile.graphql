@@ -1,4 +1,4 @@
 fragment RegularProfile on Profile {
-    id
+    uuid
     username
 }

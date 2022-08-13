@@ -8,7 +8,7 @@ fragment PostSnippet on Post {
   textSnippet
   voteStatus
   creator {
-    id
+    uuid
     username
   }
 }

@@ -1,4 +1,11 @@
 fragment ProfileSnippet on Profile {
-    id
+    uuid
     username
+    user {
+        uuid
+        username
+    }
+    friends {
+        ...FriendSnippet
+    }
 }

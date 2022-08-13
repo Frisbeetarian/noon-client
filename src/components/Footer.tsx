@@ -154,7 +154,7 @@ export default function Footer() {
                         content:
                           loggedInUser.user?.profile?.username +
                           ' wants to be your friend.',
-                        from: loggedInUser.user?.profile?.id,
+                        from: loggedInUser.user?.profile?.uuid,
                         fromUsername: loggedInUser.user?.profile?.username,
                         to: from,
                         toUsername: fromUsername,

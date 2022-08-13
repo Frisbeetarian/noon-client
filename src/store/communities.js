@@ -31,11 +31,6 @@ const slice = createSlice({
       const index = users.findIndex((user) => user.id === userId)
       users[index].bugsAssigned.push(bugId)
     },
-    setLoggedInUser: (users, action) => {
-      if (action.payload.user?.me) {
-        users.user = action.payload.user.me
-      }
-    },
   },
 })
 

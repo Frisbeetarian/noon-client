@@ -65,8 +65,6 @@ const Communities = ({}) => {
 
   useEffect(() => {
     if (data && communitiesParticipants) {
-      // console.log('communities in set effect: ', data?.communities)
-
       data?.communities.map(async (community) => {
         const participants =
           communitiesParticipants?.getCommunitiesParticipants.filter(
@@ -74,11 +72,10 @@ const Communities = ({}) => {
               communityParticipant.communityId === community.id
           )
 
+        console.log('FERWFGERGERGREGER')
         community = { ...community, participants: participants }
 
         dispatch(addCommunity({ community: community }))
-        // console.log('cmomoef fonf: ', communities?.list?)
-        // setCommunities.push(community)
       })
     }
   }, [data, communitiesParticipants])

@@ -68,6 +68,7 @@ const eventsCursorPagination = (mergeMode = 'after'): Resolver => {
       if (!_hasMore) {
         hasMore = _hasMore as boolean
       }
+
       results.push(...data)
     })
 
@@ -216,6 +217,7 @@ const CommunitiesResolver = (mergeMode = 'after'): Resolver => {
     const allFields = cache.inspectFields(entityKey)
     const fieldInfos = allFields.filter((info) => info.fieldName === fieldName)
     const size = fieldInfos.length
+
     if (size === 0) {
       return undefined
     }
@@ -263,6 +265,7 @@ const transformToDate = (parent, _args, _cache, info) =>
 
 export const createUrqlClient = (ssrExchange: any, ctx: any) => {
   let cookie = ''
+
   if (isServer()) {
     cookie = ctx?.req?.headers?.cookie
   }
@@ -283,7 +286,10 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
         keys: {
           PaginatedPosts: () => null,
           PaginatedEvents: () => null,
-          FilteredProfiles: () => null,
+          FilteredProfiles: (data) => data.uuid,
+          User: (data) => data.uuid,
+          Profile: (data) => data.uuid,
+          Friend: (data) => data.uuid,
         },
         resolvers: {
           Query: {

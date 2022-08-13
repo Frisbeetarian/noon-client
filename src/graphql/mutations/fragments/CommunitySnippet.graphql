@@ -9,7 +9,7 @@ fragment CommunitySnippet on Community {
     createdAt
     updatedAt
     creator {
-        id
+        uuid
         username
     }
 }

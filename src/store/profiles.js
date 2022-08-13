@@ -5,10 +5,23 @@ let lastId = 0
 const slice = createSlice({
   name: 'profiles',
   initialState: {
-    socket: null,
+    list: {},
   },
-  reducers: {},
+  reducers: {
+    addProfiles: (profiles, action) => {
+      console.log('communities: ', action.payload)
+      profiles.list = action.payload
+    },
+    addProfile: (profiles, action) => {
+      const { community } = action.payload
+
+      profiles.list = {
+        ...profiles.list,
+        [community.id]: community,
+      }
+    },
+  },
 })
 
-export const { setSocket } = slice.actions
+export const { addProfile, addProfiles } = slice.actions
 export default slice.reducer

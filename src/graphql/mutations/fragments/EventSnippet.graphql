@@ -9,7 +9,7 @@ fragment EventSnippet on Event {
     createdAt
     updatedAt
     creator {
-        id
+        uuid
         username
     }
 }

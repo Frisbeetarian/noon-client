@@ -38,14 +38,14 @@ export default function SocketConnector() {
 
         console.log(
           'session id on socket connection:',
-          loggedInUser.user.profile?.id
+          loggedInUser.user.profile?.uuid
         )
 
         socket.auth = {
           sessionID,
           username: loggedInUser?.user?.profile?.username,
-          userSocketUuid: loggedInUser.user?.profile?.id,
-          userID: loggedInUser.user?.profile?.id,
+          userSocketUuid: loggedInUser.user?.profile?.uuid,
+          userID: loggedInUser.user?.profile?.uuid,
         }
 
         socket.connect()
@@ -53,8 +53,8 @@ export default function SocketConnector() {
       } else {
         socket.auth = {
           username: loggedInUser?.user?.profile?.username,
-          userSocketUuid: loggedInUser.user?.profile?.id,
-          userID: loggedInUser.user?.profile?.id,
+          userSocketUuid: loggedInUser.user?.profile?.uuid,
+          userID: loggedInUser.user?.profile?.uuid,
         }
         socket.connect()
         dispatch(setSocket({ socket }))

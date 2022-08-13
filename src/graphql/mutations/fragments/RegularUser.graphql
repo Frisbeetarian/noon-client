@@ -1,8 +1,8 @@
 fragment RegularUser on User {
-  id
+  uuid
   username
   profile {
-    id
+    uuid
     username
   }
 }

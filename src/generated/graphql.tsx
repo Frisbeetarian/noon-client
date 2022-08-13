@@ -26,7 +26,7 @@ export type Community = {
   startDate?: Maybe<Scalars['DateTime']>;
   endDate?: Maybe<Scalars['DateTime']>;
   timezone: Scalars['String'];
-  creatorId: Scalars['Float'];
+  creatorId: Scalars['String'];
   creator: User;
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
@@ -61,7 +61,7 @@ export type Event = {
   startDate?: Maybe<Scalars['DateTime']>;
   endDate?: Maybe<Scalars['DateTime']>;
   timezone: Scalars['String'];
-  creatorId: Scalars['Float'];
+  creatorId: Scalars['String'];
   creator: User;
   eventToProfiles: EventToProfile;
   updatedAt: Scalars['String'];
@@ -91,6 +91,12 @@ export type FieldError = {
   __typename?: 'FieldError';
   field: Scalars['String'];
   message: Scalars['String'];
+};
+
+export type Friend = {
+  __typename?: 'Friend';
+  uuid: Scalars['String'];
+  username: Scalars['String'];
 };
 
 export type Mutation = {
@@ -206,7 +212,7 @@ export type Post = {
   text: Scalars['String'];
   points: Scalars['Float'];
   voteStatus?: Maybe<Scalars['Int']>;
-  creatorId: Scalars['Float'];
+  creatorId: Scalars['String'];
   creator: User;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -220,11 +226,12 @@ export type PostInput = {
 
 export type Profile = {
   __typename?: 'Profile';
-  id: Scalars['String'];
+  uuid: Scalars['String'];
   username: Scalars['String'];
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
   user: User;
+  friends: Array<Friend>;
 };
 
 export type Query = {
@@ -268,7 +275,7 @@ export type QueryEventsArgs = {
 
 
 export type QueryProfileArgs = {
-  id: Scalars['Int'];
+  uuid: Scalars['Int'];
 };
 
 
@@ -298,7 +305,7 @@ export type QueryGetCommunitiesParticipantsArgs = {
 
 export type User = {
   __typename?: 'User';
-  id: Scalars['String'];
+  uuid: Scalars['String'];
   username: Scalars['String'];
   email: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -421,7 +428,7 @@ export type CommunitySnippetFragment = (
   & Pick<Community, 'id' | 'title' | 'description' | 'privacy' | 'timezone' | 'startDate' | 'endDate' | 'createdAt' | 'updatedAt'>
   & { creator: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username'>
+    & Pick<User, 'uuid' | 'username'>
   ) }
 );
 
@@ -430,7 +437,7 @@ export type EventSnippetFragment = (
   & Pick<Event, 'id' | 'title' | 'description' | 'privacy' | 'timezone' | 'startDate' | 'endDate' | 'createdAt' | 'updatedAt'>
   & { creator: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username'>
+    & Pick<User, 'uuid' | 'username'>
   ) }
 );
 
@@ -439,18 +446,30 @@ export type EventToProfileSnippetFragment = (
   & Pick<EventToProfile, 'id'>
 );
 
+export type FriendSnippetFragment = (
+  { __typename?: 'Friend' }
+  & Pick<Friend, 'uuid' | 'username'>
+);
+
 export type PostSnippetFragment = (
   { __typename?: 'Post' }
   & Pick<Post, 'id' | 'title' | 'text' | 'points' | 'createdAt' | 'updatedAt' | 'textSnippet' | 'voteStatus'>
   & { creator: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username'>
+    & Pick<User, 'uuid' | 'username'>
   ) }
 );
 
 export type ProfileSnippetFragment = (
   { __typename?: 'Profile' }
-  & Pick<Profile, 'id' | 'username'>
+  & Pick<Profile, 'uuid' | 'username'>
+  & { user: (
+    { __typename?: 'User' }
+    & Pick<User, 'uuid' | 'username'>
+  ), friends: Array<(
+    { __typename?: 'Friend' }
+    & FriendSnippetFragment
+  )> }
 );
 
 export type RegularErrorFragment = (
@@ -460,15 +479,15 @@ export type RegularErrorFragment = (
 
 export type RegularProfileFragment = (
   { __typename?: 'Profile' }
-  & Pick<Profile, 'id' | 'username'>
+  & Pick<Profile, 'uuid' | 'username'>
 );
 
 export type RegularUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'username'>
+  & Pick<User, 'uuid' | 'username'>
   & { profile: (
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'username'>
+    & Pick<Profile, 'uuid' | 'username'>
   ) }
 );
 
@@ -551,7 +570,7 @@ export type CommunityQuery = (
     & Pick<Community, 'id' | 'username' | 'title' | 'description' | 'privacy' | 'timezone' | 'startDate' | 'endDate' | 'createdAt' | 'updatedAt'>
     & { creator: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'username'>
+      & Pick<User, 'uuid' | 'username'>
     ) }
   )> }
 );
@@ -568,7 +587,7 @@ export type EventQuery = (
     & Pick<Event, 'id' | 'username' | 'title' | 'description' | 'privacy' | 'timezone' | 'startDate' | 'endDate' | 'createdAt' | 'updatedAt'>
     & { creator: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'username'>
+      & Pick<User, 'uuid' | 'username'>
     ) }
   )> }
 );
@@ -626,7 +645,7 @@ export type GetProfileByUserIdQuery = (
   { __typename?: 'Query' }
   & { getProfileByUserId: (
     { __typename?: 'Profile' }
-    & Pick<Profile, 'id' | 'username'>
+    & Pick<Profile, 'uuid' | 'username'>
   ) }
 );
 
@@ -664,7 +683,7 @@ export type PostQuery = (
     & Pick<Post, 'id' | 'title' | 'text' | 'points' | 'voteStatus' | 'createdAt' | 'updatedAt'>
     & { creator: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'username'>
+      & Pick<User, 'uuid' | 'username'>
     ) }
   )> }
 );
@@ -733,7 +752,7 @@ export const CommunitySnippetFragmentDoc = gql`
   createdAt
   updatedAt
   creator {
-    id
+    uuid
     username
   }
 }
@@ -750,7 +769,7 @@ export const EventSnippetFragmentDoc = gql`
   createdAt
   updatedAt
   creator {
-    id
+    uuid
     username
   }
 }
@@ -771,20 +790,33 @@ export const PostSnippetFragmentDoc = gql`
   textSnippet
   voteStatus
   creator {
-    id
+    uuid
     username
   }
 }
     `;
-export const ProfileSnippetFragmentDoc = gql`
-    fragment ProfileSnippet on Profile {
-  id
+export const FriendSnippetFragmentDoc = gql`
+    fragment FriendSnippet on Friend {
+  uuid
   username
 }
     `;
+export const ProfileSnippetFragmentDoc = gql`
+    fragment ProfileSnippet on Profile {
+  uuid
+  username
+  user {
+    uuid
+    username
+  }
+  friends {
+    ...FriendSnippet
+  }
+}
+    ${FriendSnippetFragmentDoc}`;
 export const RegularProfileFragmentDoc = gql`
     fragment RegularProfile on Profile {
-  id
+  uuid
   username
 }
     `;
@@ -796,10 +828,10 @@ export const RegularErrorFragmentDoc = gql`
     `;
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
-  id
+  uuid
   username
   profile {
-    id
+    uuid
     username
   }
 }
@@ -987,7 +1019,7 @@ export const CommunityDocument = gql`
     createdAt
     updatedAt
     creator {
-      id
+      uuid
       username
     }
   }
@@ -1011,7 +1043,7 @@ export const EventDocument = gql`
     createdAt
     updatedAt
     creator {
-      id
+      uuid
       username
     }
   }
@@ -1065,7 +1097,7 @@ export function useGetCommunityParticipantsQuery(options: Omit<Urql.UseQueryArgs
 export const GetProfileByUserIdDocument = gql`
     query GetProfileByUserId($userId: Int!) {
   getProfileByUserId(userId: $userId) {
-    id
+    uuid
     username
   }
 }
@@ -1107,7 +1139,7 @@ export const PostDocument = gql`
     createdAt
     updatedAt
     creator {
-      id
+      uuid
       username
     }
   }
