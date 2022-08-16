@@ -99,6 +99,12 @@ export type Friend = {
   username: Scalars['String'];
 };
 
+export type FriendshipRequest = {
+  __typename?: 'FriendshipRequest';
+  uuid: Scalars['String'];
+  username: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   vote: Scalars['Boolean'];
@@ -232,6 +238,7 @@ export type Profile = {
   createdAt: Scalars['String'];
   user: User;
   friends: Array<Friend>;
+  friendshipRequests: Array<FriendshipRequest>;
 };
 
 export type Query = {
@@ -312,6 +319,7 @@ export type User = {
   createdAt: Scalars['String'];
   profile: Profile;
   friends: Array<Friend>;
+  friendshipRequests: Array<FriendshipRequest>;
 };
 
 export type UserResponse = {
@@ -450,6 +458,11 @@ export type EventToProfileSnippetFragment = (
 export type FriendSnippetFragment = (
   { __typename?: 'Friend' }
   & Pick<Friend, 'uuid' | 'username'>
+);
+
+export type FriendshipRequestSnippetFragment = (
+  { __typename?: 'FriendshipRequest' }
+  & Pick<FriendshipRequest, 'uuid' | 'username'>
 );
 
 export type PostSnippetFragment = (
@@ -671,6 +684,9 @@ export type MeQuery = (
     & { friends: Array<(
       { __typename?: 'Friend' }
       & FriendSnippetFragment
+    )>, friendshipRequests: Array<(
+      { __typename?: 'FriendshipRequest' }
+      & FriendshipRequestSnippetFragment
     )> }
     & RegularUserFragment
   )> }
@@ -782,6 +798,12 @@ export const EventSnippetFragmentDoc = gql`
 export const EventToProfileSnippetFragmentDoc = gql`
     fragment EventToProfileSnippet on EventToProfile {
   id
+}
+    `;
+export const FriendshipRequestSnippetFragmentDoc = gql`
+    fragment FriendshipRequestSnippet on FriendshipRequest {
+  uuid
+  username
 }
     `;
 export const PostSnippetFragmentDoc = gql`
@@ -1129,10 +1151,14 @@ export const MeDocument = gql`
     friends {
       ...FriendSnippet
     }
+    friendshipRequests {
+      ...FriendshipRequestSnippet
+    }
   }
 }
     ${RegularUserFragmentDoc}
-${FriendSnippetFragmentDoc}`;
+${FriendSnippetFragmentDoc}
+${FriendshipRequestSnippetFragmentDoc}`;
 
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });

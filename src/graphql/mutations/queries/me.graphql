@@ -4,5 +4,8 @@ query Me {
     friends {
       ...FriendSnippet
     }
+    friendshipRequests{
+      ...FriendshipRequestSnippet
+    }
   }
 }

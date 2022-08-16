@@ -45,19 +45,19 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
   } else if (!data?.me) {
     body = (
       <>
-        {/*<Flex>*/}
-        {/*  <NextLink href="/login">*/}
-        {/*    <Link mr={2}>*/}
-        {/*      <span className="text-info">Login</span>*/}
-        {/*    </Link>*/}
-        {/*  </NextLink>*/}
+        <Flex>
+          <NextLink href="/login">
+            <Link mr={2}>
+              <span className="text-info">Login</span>
+            </Link>
+          </NextLink>
 
-        {/*  <NextLink href="/register">*/}
-        {/*    <Link>*/}
-        {/*      <span className="text-info">Register</span>*/}
-        {/*    </Link>*/}
-        {/*  </NextLink>*/}
-        {/*</Flex>*/}
+          <NextLink href="/register">
+            <Link>
+              <span className="text-info">Register</span>
+            </Link>
+          </NextLink>
+        </Flex>
       </>
     )
   } else {

@@ -18,6 +18,7 @@ const slice = createSlice({
         const friendsCheck = action.payload.loggedInUser.user.friends.find(
           (element) => element.uuid == profile.uuid
         )
+
         if (friendsCheck) {
           profile.isAFriend = true
         } else {

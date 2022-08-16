@@ -23,6 +23,7 @@ import {
   useGetProfilesQuery,
   useSendFriendRequestMutation,
 } from '../../generated/graphql'
+
 import NextLink from 'next/link'
 
 import { getLoggedInUser } from '../../store/users'
