@@ -30,7 +30,11 @@ import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
 
 import { showFriendshipRequestToast } from '../../store/ui'
-import { addProfiles, getProfiles } from '../../store/profiles'
+import {
+  addProfiles,
+  setFriendshipRequestSentOnProfile,
+  getProfiles,
+} from '../../store/profiles'
 
 const Profiles = ({}) => {
   const dispatch = useDispatch()
@@ -46,12 +50,12 @@ const Profiles = ({}) => {
   }, [])
 
   useEffect(() => {
-    console.log('profiles: ', data?.getProfiles)
-
-    if (data?.getProfiles) {
+    if (data?.getProfiles && loggedInUser.user.profile) {
       dispatch(addProfiles({ profiles: data?.getProfiles, loggedInUser }))
     }
-  }, [data?.getProfiles])
+  }, [data?.getProfiles, loggedInUser])
+
+  useEffect(() => {}, [profiles])
 
   if (!fetching && !profiles) {
     return (
@@ -112,10 +116,20 @@ const Profiles = ({}) => {
                     </NextLink>
                   </Box>
 
-                  {profile.isAFriend ? null : (
+                  {profile.hasFriendshipRequestFromLoggedInProfile ? (
+                    <Button disabled={true} className="text-green-500">
+                      Friendship request sent
+                    </Button>
+                  ) : (
                     <Box>
                       <Button
                         onClick={async () => {
+                          dispatch(
+                            setFriendshipRequestSentOnProfile({
+                              profileUuid: profile.uuid,
+                            })
+                          )
+
                           await sendFriendRequest({
                             profileUuid: profile.uuid,
                           })

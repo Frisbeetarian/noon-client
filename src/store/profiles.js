@@ -19,14 +19,25 @@ const slice = createSlice({
           (element) => element.uuid == profile.uuid
         )
 
-        if (friendsCheck) {
-          profile.isAFriend = true
-        } else {
-          profile.isAFriend = false
-        }
+        const friendshipCheck =
+          action.payload.loggedInUser.user.friendshipRequests.find(
+            (element) => element.uuid == profile.uuid
+          )
+
+        profile.isAFriend = !!friendsCheck
+        profile.hasFriendshipRequestFromLoggedInProfile = !!friendshipCheck
       })
 
       profiles.list = action.payload.profiles
+    },
+    setFriendshipRequestSentOnProfile: (profiles, action) => {
+      console.log('KKKKKKKKK')
+      console.log('action payload:', action.payload)
+      let profile = profiles.list.find(
+        (profile) => profile.uuid == action.payload.profileUuid
+      )
+      console.log('profile:', profile.uuid)
+      profile.hasFriendshipRequestFromLoggedInProfile = true
     },
     addProfile: (profiles, action) => {
       const { profile } = action.payload
@@ -44,5 +55,6 @@ export const getProfiles = createSelector(
   (profiles) => profiles.list
 )
 
-export const { addProfile, addProfiles } = slice.actions
+export const { addProfile, addProfiles, setFriendshipRequestSentOnProfile } =
+  slice.actions
 export default slice.reducer
