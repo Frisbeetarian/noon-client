@@ -8,4 +8,7 @@ fragment ProfileSnippet on Profile {
     friends {
         ...FriendSnippet
     }
+    friendshipRequests {
+        ...FriendshipRequestSnippet
+    }
 }

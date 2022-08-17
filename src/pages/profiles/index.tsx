@@ -20,6 +20,7 @@ import { withUrqlClient } from 'next-urql'
 import { createUrqlClient } from '../../utils/createUrqlClient'
 
 import {
+  useAcceptFriendRequestMutation,
   useGetProfilesQuery,
   useSendFriendRequestMutation,
 } from '../../generated/graphql'
@@ -40,10 +41,13 @@ const Profiles = ({}) => {
   const dispatch = useDispatch()
   const [{ data, error, fetching }] = useGetProfilesQuery()
 
-  const [, sendFriendRequest] = useSendFriendRequestMutation()
+  const [{ fetching: friendRequestFetching }, sendFriendRequest] =
+    useSendFriendRequestMutation()
   const loggedInUser = useSelector(getLoggedInUser)
   const profiles = useSelector(getProfiles)
   const socket = useSelector(getSocket)
+
+  const [, acceptFriendRequest] = useAcceptFriendRequestMutation()
 
   useEffect(() => {
     dispatch(showFriendshipRequestToast(socket))
@@ -116,10 +120,41 @@ const Profiles = ({}) => {
                     </NextLink>
                   </Box>
 
-                  {profile.hasFriendshipRequestFromLoggedInProfile ? (
+                  {profile.hasSentFriendshipToProfile ? (
                     <Button disabled={true} className="text-green-500">
                       Friendship request sent
                     </Button>
+                  ) : profile.hasFriendshipRequestFromLoggedInProfile ? (
+                    <Flex className="justify-end mt-3">
+                      <Button
+                        className="mr-3 bg-green-500"
+                        variant="ghost"
+                        onClick={async () => {
+                          const acceptFriendshipResponse =
+                            await acceptFriendRequest({
+                              profileUuid: profile.uuid,
+                            })
+
+                          if (acceptFriendshipResponse) {
+                            socket.emit('friendship-request-accepted', {
+                              content:
+                                loggedInUser.user?.profile?.username +
+                                ' accepted your friend request.',
+                              from: loggedInUser.user?.profile?.uuid,
+                              fromUsername:
+                                loggedInUser.user?.profile?.username,
+                              to: profile.uuid,
+                              toUsername: profile.username,
+                            })
+                          }
+                        }}
+                      >
+                        Accept
+                      </Button>
+                      <Button className="bg-red-500" variant="tomato">
+                        Reject
+                      </Button>
+                    </Flex>
                   ) : (
                     <Box>
                       <Button

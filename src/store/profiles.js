@@ -19,25 +19,29 @@ const slice = createSlice({
           (element) => element.uuid == profile.uuid
         )
 
-        const friendshipCheck =
+        const friendshipRequestCheck =
           action.payload.loggedInUser.user.friendshipRequests.find(
             (element) => element.uuid == profile.uuid
           )
 
+        // const reverseFriendshipCheck = profile.friendshipRequests.find()
         profile.isAFriend = !!friendsCheck
-        profile.hasFriendshipRequestFromLoggedInProfile = !!friendshipCheck
+
+        if (friendshipRequestCheck?.reverse) {
+          profile.hasFriendshipRequestFromLoggedInProfile = true
+        } else if (friendshipRequestCheck) {
+          profile.hasSentFriendshipToProfile = true
+        }
       })
 
       profiles.list = action.payload.profiles
     },
     setFriendshipRequestSentOnProfile: (profiles, action) => {
-      console.log('KKKKKKKKK')
-      console.log('action payload:', action.payload)
       let profile = profiles.list.find(
         (profile) => profile.uuid == action.payload.profileUuid
       )
       console.log('profile:', profile.uuid)
-      profile.hasFriendshipRequestFromLoggedInProfile = true
+      profile.hasSentFriendshipToProfile = true
     },
     addProfile: (profiles, action) => {
       const { profile } = action.payload

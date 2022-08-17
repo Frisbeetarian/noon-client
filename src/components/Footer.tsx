@@ -153,7 +153,7 @@ export default function Footer() {
                       socket.emit('friendship-request-accepted', {
                         content:
                           loggedInUser.user?.profile?.username +
-                          ' wants to be your friend.',
+                          ' accepted your friend request.',
                         from: loggedInUser.user?.profile?.uuid,
                         fromUsername: loggedInUser.user?.profile?.username,
                         to: from,

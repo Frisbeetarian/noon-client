@@ -103,6 +103,7 @@ export type FriendshipRequest = {
   __typename?: 'FriendshipRequest';
   uuid: Scalars['String'];
   username: Scalars['String'];
+  reverse?: Maybe<Scalars['Boolean']>;
 };
 
 export type Mutation = {
@@ -462,7 +463,7 @@ export type FriendSnippetFragment = (
 
 export type FriendshipRequestSnippetFragment = (
   { __typename?: 'FriendshipRequest' }
-  & Pick<FriendshipRequest, 'uuid' | 'username'>
+  & Pick<FriendshipRequest, 'uuid' | 'username' | 'reverse'>
 );
 
 export type PostSnippetFragment = (
@@ -483,6 +484,9 @@ export type ProfileSnippetFragment = (
   ), friends: Array<(
     { __typename?: 'Friend' }
     & FriendSnippetFragment
+  )>, friendshipRequests: Array<(
+    { __typename?: 'FriendshipRequest' }
+    & FriendshipRequestSnippetFragment
   )> }
 );
 
@@ -800,12 +804,6 @@ export const EventToProfileSnippetFragmentDoc = gql`
   id
 }
     `;
-export const FriendshipRequestSnippetFragmentDoc = gql`
-    fragment FriendshipRequestSnippet on FriendshipRequest {
-  uuid
-  username
-}
-    `;
 export const PostSnippetFragmentDoc = gql`
     fragment PostSnippet on Post {
   id
@@ -828,6 +826,13 @@ export const FriendSnippetFragmentDoc = gql`
   username
 }
     `;
+export const FriendshipRequestSnippetFragmentDoc = gql`
+    fragment FriendshipRequestSnippet on FriendshipRequest {
+  uuid
+  username
+  reverse
+}
+    `;
 export const ProfileSnippetFragmentDoc = gql`
     fragment ProfileSnippet on Profile {
   uuid
@@ -839,8 +844,12 @@ export const ProfileSnippetFragmentDoc = gql`
   friends {
     ...FriendSnippet
   }
+  friendshipRequests {
+    ...FriendshipRequestSnippet
+  }
 }
-    ${FriendSnippetFragmentDoc}`;
+    ${FriendSnippetFragmentDoc}
+${FriendshipRequestSnippetFragmentDoc}`;
 export const RegularProfileFragmentDoc = gql`
     fragment RegularProfile on Profile {
   uuid
