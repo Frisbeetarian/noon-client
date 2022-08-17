@@ -15,24 +15,17 @@ import { EditDeletePostButtons } from '../../components/EditDeletePostButtons'
 
 import { Layout } from '../../components/Layout'
 import { createUrqlClient } from '../../utils/createUrqlClient'
-import CreateEvent from './create-community'
 
 import {
-  Community,
   useCommunitiesQuery,
-  useEventsQuery,
   useGetCommunitiesParticipantsQuery,
-  useGetProfileByUserIdQuery,
-  useGetProfilesQuery,
   useJoinCommunityMutation,
-  useJoinEventMutation,
 } from '../../generated/graphql'
 
 import NextLink from 'next/link'
 import CreateCommunity from './create-community'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { getLoggedInUser, setLoggedInUser } from '../../store/users'
 import {
   addCommunities,
   addCommunity,
@@ -42,7 +35,6 @@ import SimpleSidebar from '../../components/Sidebar'
 
 const Communities = ({}) => {
   const dispatch = useDispatch()
-  const loggedInUser = useSelector(getLoggedInUser)
 
   const [{ data, error, fetching }] = useCommunitiesQuery()
 
@@ -60,7 +52,6 @@ const Communities = ({}) => {
   ] = useGetCommunitiesParticipantsQuery({
     variables: { communitiesIds: communitiesIds },
   })
-  const setCommunities = []
   const communities = useSelector(getCommunities)
 
   useEffect(() => {
@@ -72,27 +63,13 @@ const Communities = ({}) => {
               communityParticipant.communityId === community.id
           )
 
-        console.log('FERWFGERGERGREGER')
         community = { ...community, participants: participants }
-
         dispatch(addCommunity({ community: community }))
       })
     }
   }, [data, communitiesParticipants])
 
   useEffect(() => {}, [communities])
-  console.log('communities: ', communities)
-
-  // const [{ data, error, fetching }] = useEventsQuery({
-  //   variables,
-  // })
-
-  // const [{ data: profileData, fetching: profileFetching }] =
-  //   useGetProfileByUserIdQuery({
-  //     variables: {
-  //       userId: loggedInUser?.me?.id,
-  //     },
-  //   })
 
   const [, joinCommunity] = useJoinCommunityMutation()
 
@@ -150,11 +127,13 @@ const Communities = ({}) => {
       {/*  creatorId={data.post.creator.id}*/}
       {/*/>*/}
 
-      {fetching && !communities && Object.keys(communities).length === 0 ? (
+      {fetching &&
+      !communities &&
+      [...Object.values(communities)].length === 0 ? (
         <div>...loading</div>
       ) : (
         <Stack className="mt-8" spacing={8}>
-          {Object.entries(communities).map((community, i) =>
+          {[...Object.values(communities)].map((community, i) =>
             !community ? null : (
               <Flex
                 className="w-full text-white border-error"
@@ -168,24 +147,24 @@ const Communities = ({}) => {
                 <Box className="w-full" flex={1}>
                   <NextLink
                     href="/communities/[id]"
-                    as={`/communities/${community[1].id}`}
+                    as={`/communities/${community.id}`}
                   >
                     <Link className="prose">
-                      <Heading fontSize="xl">{community[1].title}</Heading>
+                      <Heading fontSize="xl">{community.title}</Heading>
                     </Link>
                   </NextLink>
 
                   <Text className="prose">
-                    Created by: {community[1].creator.username}
+                    Created by: {community.creator.username}
                   </Text>
 
                   <Flex align="center">
                     <Text flex={1} mt={4} className="prose">
-                      {community[1].description}
+                      {community.description}
                     </Text>
 
                     <Stack className="" spacing={8}>
-                      {community[1].participants?.map((p) =>
+                      {community.participants?.map((p) =>
                         !p ? null : (
                           <Flex
                             className="w-full text-white border-error"
@@ -223,11 +202,11 @@ const Communities = ({}) => {
                         icon={<ChevronDownIcon />}
                       />
 
-                      {community[1].joined ? null : (
+                      {community.joined ? null : (
                         <Button
                           onClick={() => {
                             joinCommunityFunction({
-                              communityId: community[1].id,
+                              communityId: community.id,
                             })
                           }}
                         >

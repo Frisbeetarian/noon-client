@@ -1,12 +1,12 @@
 import { Box, Button, Flex, Heading, Link, Stack, Text } from '@chakra-ui/react'
 import { withUrqlClient } from 'next-urql'
 import NextLink from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { EditDeletePostButtons } from '../components/EditDeletePostButtons'
 import { Layout } from '../components/Layout'
 
 import { UpdootSection } from '../components/UpdootSection'
-import { usePostsQuery } from '../generated/graphql'
+import { usePostsQuery, useTestQueryQuery } from '../generated/graphql'
 import { createUrqlClient } from '../utils/createUrqlClient'
 
 // import { isServer } from '../utils/isServer'
@@ -22,6 +22,8 @@ const Index = () => {
     variables,
   })
 
+  const [{ data: searchResults }] = useTestQueryQuery()
+
   if (!fetching && !data) {
     return (
       <div>
@@ -30,6 +32,9 @@ const Index = () => {
       </div>
     )
   }
+  useTestQueryQuery()
+
+  useEffect(() => {}, [])
 
   return (
     <Layout>

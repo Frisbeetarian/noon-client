@@ -257,6 +257,7 @@ export type Query = {
   communities: Array<Community>;
   getCommunityParticipants: Array<CommunityParticipant>;
   getCommunitiesParticipants: Array<CommunityParticipant>;
+  testQuery?: Maybe<Search>;
 };
 
 
@@ -309,6 +310,12 @@ export type QueryGetCommunityParticipantsArgs = {
 
 export type QueryGetCommunitiesParticipantsArgs = {
   communitiesIds: Array<Scalars['Int']>;
+};
+
+export type Search = {
+  __typename?: 'Search';
+  uuid: Scalars['String'];
+  username: Scalars['String'];
 };
 
 export type User = {
@@ -729,6 +736,17 @@ export type PostsQuery = (
       & PostSnippetFragment
     )> }
   ) }
+);
+
+export type TestQueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TestQueryQuery = (
+  { __typename?: 'Query' }
+  & { testQuery?: Maybe<(
+    { __typename?: 'Search' }
+    & Pick<Search, 'uuid'>
+  )> }
 );
 
 export type RegisterMutationVariables = Exact<{
@@ -1206,6 +1224,17 @@ export const PostsDocument = gql`
 
 export function usePostsQuery(options: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<PostsQuery>({ query: PostsDocument, ...options });
+};
+export const TestQueryDocument = gql`
+    query TestQuery {
+  testQuery {
+    uuid
+  }
+}
+    `;
+
+export function useTestQueryQuery(options: Omit<Urql.UseQueryArgs<TestQueryQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<TestQueryQuery>({ query: TestQueryDocument, ...options });
 };
 export const RegisterDocument = gql`
     mutation Register($options: UsernamePasswordInput!) {

@@ -157,36 +157,39 @@ const Profiles = ({}) => {
                     </Flex>
                   ) : (
                     <Box>
-                      <Button
-                        onClick={async () => {
-                          dispatch(
-                            setFriendshipRequestSentOnProfile({
+                      {profile.isAFriend ? null : (
+                        <Button
+                          onClick={async () => {
+                            dispatch(
+                              setFriendshipRequestSentOnProfile({
+                                profileUuid: profile.uuid,
+                              })
+                            )
+
+                            await sendFriendRequest({
                               profileUuid: profile.uuid,
                             })
-                          )
 
-                          await sendFriendRequest({
-                            profileUuid: profile.uuid,
-                          })
-
-                          socket.emit('private message', {
-                            content:
-                              loggedInUser.user?.profile?.username +
-                              ' wants to be your friend.',
-                            from: loggedInUser.user?.profile?.uuid,
-                            fromUsername: loggedInUser.user?.profile?.username,
-                            to: profile.uuid,
-                            toUsername: profile.username,
-                          })
-                        }}
-                      >
-                        Send friend request
-                      </Button>
+                            socket.emit('private message', {
+                              content:
+                                loggedInUser.user?.profile?.username +
+                                ' wants to be your friend.',
+                              from: loggedInUser.user?.profile?.uuid,
+                              fromUsername:
+                                loggedInUser.user?.profile?.username,
+                              to: profile.uuid,
+                              toUsername: profile.username,
+                            })
+                          }}
+                        >
+                          Send friend request
+                        </Button>
+                      )}
                     </Box>
                   )}
                 </Flex>
 
-                <AvatarGroup max={10}>
+                <AvatarGroup className="" max={10}>
                   {profile.friends.map((friend, i) =>
                     !friend ? null : (
                       <Tooltip
