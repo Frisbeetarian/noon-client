@@ -23,7 +23,7 @@ const Index = () => {
   })
 
   const [{ data: searchResults }] = useTestQueryQuery()
-
+  //
   if (!fetching && !data) {
     return (
       <div>
@@ -33,8 +33,8 @@ const Index = () => {
     )
   }
   useTestQueryQuery()
-
-  useEffect(() => {}, [])
+  //
+  // useEffect(() => {}, [])
 
   return (
     <Layout>
