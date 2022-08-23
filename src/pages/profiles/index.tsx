@@ -29,13 +29,14 @@ import NextLink from 'next/link'
 
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
-
+import { setActiveConversee } from '../../store/chat'
 import { showFriendshipRequestToast } from '../../store/ui'
 import {
   addProfiles,
   setFriendshipRequestSentOnProfile,
   getProfiles,
 } from '../../store/profiles'
+import { ChatIcon } from '@chakra-ui/icons'
 
 const Profiles = ({}) => {
   const dispatch = useDispatch()
@@ -62,6 +63,9 @@ const Profiles = ({}) => {
     }
   }, [data?.getProfiles, loggedInUser])
 
+  function setActiveConverseeFunction(profile) {
+    dispatch(setActiveConversee(profile))
+  }
   useEffect(() => {}, [profiles])
 
   if (!fetching && !profiles) {
@@ -162,7 +166,16 @@ const Profiles = ({}) => {
                       </Flex>
                     ) : (
                       <Box>
-                        {profile.isAFriend ? null : (
+                        {profile.isAFriend ? (
+                          <Flex className="bg-red-500 w-full z-40 h-full cursor-pointer">
+                            <ChatIcon
+                              className="mr-3 mt-1"
+                              onClick={() => {
+                                setActiveConverseeFunction(profile)
+                              }}
+                            />
+                          </Flex>
+                        ) : (
                           <Button
                             onClick={async () => {
                               dispatch(

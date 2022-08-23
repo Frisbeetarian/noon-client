@@ -6,6 +6,7 @@ import communitiesReducer from './communities'
 import socketsReducer from './sockets'
 import uiReducer from './ui'
 import profilesReducer from './profiles'
+import chatReducer from './chat'
 
 export default combineReducers({
   // bugs: bugsReducer,
@@ -15,4 +16,5 @@ export default combineReducers({
   communities: communitiesReducer,
   sockets: socketsReducer,
   ui: uiReducer,
+  chat: chatReducer,
 })
