@@ -6,11 +6,16 @@ import { EditDeletePostButtons } from '../components/EditDeletePostButtons'
 import { Layout } from '../components/Layout'
 
 import { UpdootSection } from '../components/UpdootSection'
-import { usePostsQuery, useTestQueryQuery } from '../generated/graphql'
+import {
+  usePostsQuery,
+  useSearchForProfileByUuidQuery,
+} from '../generated/graphql'
 import { createUrqlClient } from '../utils/createUrqlClient'
 
 // import { isServer } from '../utils/isServer'
 import ClientComponent from '../components/SocketIo/Client'
+import { useSelector } from 'react-redux'
+import { getLoggedInUser } from '../store/users'
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -21,9 +26,14 @@ const Index = () => {
   const [{ data, error, fetching }] = usePostsQuery({
     variables,
   })
+  const loggedInUser = useSelector(getLoggedInUser)
 
-  const [{ data: searchResults }] = useTestQueryQuery()
-  //
+  const [{ data: searchResults }] = useSearchForProfileByUuidQuery({
+    variables: {
+      profileUuid: loggedInUser.user?.profile?.uuid,
+    },
+  })
+
   if (!fetching && !data) {
     return (
       <div>
@@ -32,8 +42,9 @@ const Index = () => {
       </div>
     )
   }
-  useTestQueryQuery()
-  //
+
+  // useTestQueryQuery()
+
   // useEffect(() => {}, [])
 
   return (

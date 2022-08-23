@@ -1,0 +1,10 @@
+query SearchForProfileByUuid($profileUuid: String!) {
+    searchForProfileByUuid(profileUuid: $profileUuid){
+        uuid
+        username
+        name
+        userId
+        updatedAt
+        createdAt
+    }
+}

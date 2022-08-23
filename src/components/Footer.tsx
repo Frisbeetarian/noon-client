@@ -118,6 +118,7 @@ export default function Footer() {
 
         console.log('received private message from:', fromUsername)
         console.log('received private message content:', to)
+
         setFromFriendshipRequest(fromUsername)
         setprivateMessage(true)
 

@@ -257,7 +257,7 @@ export type Query = {
   communities: Array<Community>;
   getCommunityParticipants: Array<CommunityParticipant>;
   getCommunitiesParticipants: Array<CommunityParticipant>;
-  testQuery?: Maybe<Search>;
+  searchForProfileByUuid?: Maybe<Search>;
 };
 
 
@@ -284,7 +284,7 @@ export type QueryEventsArgs = {
 
 
 export type QueryProfileArgs = {
-  uuid: Scalars['Int'];
+  uuid: Scalars['String'];
 };
 
 
@@ -312,10 +312,19 @@ export type QueryGetCommunitiesParticipantsArgs = {
   communitiesIds: Array<Scalars['Int']>;
 };
 
+
+export type QuerySearchForProfileByUuidArgs = {
+  profileUuid: Scalars['String'];
+};
+
 export type Search = {
   __typename?: 'Search';
   uuid: Scalars['String'];
   username: Scalars['String'];
+  name: Scalars['String'];
+  userId: Scalars['String'];
+  updatedAt: Scalars['String'];
+  createdAt: Scalars['String'];
 };
 
 export type User = {
@@ -738,14 +747,16 @@ export type PostsQuery = (
   ) }
 );
 
-export type TestQueryQueryVariables = Exact<{ [key: string]: never; }>;
+export type SearchForProfileByUuidQueryVariables = Exact<{
+  profileUuid: Scalars['String'];
+}>;
 
 
-export type TestQueryQuery = (
+export type SearchForProfileByUuidQuery = (
   { __typename?: 'Query' }
-  & { testQuery?: Maybe<(
+  & { searchForProfileByUuid?: Maybe<(
     { __typename?: 'Search' }
-    & Pick<Search, 'uuid'>
+    & Pick<Search, 'uuid' | 'username' | 'name' | 'userId' | 'updatedAt' | 'createdAt'>
   )> }
 );
 
@@ -1225,16 +1236,21 @@ export const PostsDocument = gql`
 export function usePostsQuery(options: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<PostsQuery>({ query: PostsDocument, ...options });
 };
-export const TestQueryDocument = gql`
-    query TestQuery {
-  testQuery {
+export const SearchForProfileByUuidDocument = gql`
+    query SearchForProfileByUuid($profileUuid: String!) {
+  searchForProfileByUuid(profileUuid: $profileUuid) {
     uuid
+    username
+    name
+    userId
+    updatedAt
+    createdAt
   }
 }
     `;
 
-export function useTestQueryQuery(options: Omit<Urql.UseQueryArgs<TestQueryQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<TestQueryQuery>({ query: TestQueryDocument, ...options });
+export function useSearchForProfileByUuidQuery(options: Omit<Urql.UseQueryArgs<SearchForProfileByUuidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<SearchForProfileByUuidQuery>({ query: SearchForProfileByUuidDocument, ...options });
 };
 export const RegisterDocument = gql`
     mutation Register($options: UsernamePasswordInput!) {

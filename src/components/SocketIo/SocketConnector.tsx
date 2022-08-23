@@ -56,6 +56,7 @@ export default function SocketConnector() {
           userSocketUuid: loggedInUser.user?.profile?.uuid,
           userID: loggedInUser.user?.profile?.uuid,
         }
+
         socket.connect()
         dispatch(setSocket({ socket }))
       }
