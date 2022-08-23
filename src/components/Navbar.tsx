@@ -16,7 +16,7 @@ import { useLogoutMutation, useMeQuery } from '../generated/graphql'
 
 import { isServer } from '../utils/isServer'
 import { useRouter } from 'next/router'
-import { ChevronDownIcon } from '@chakra-ui/icons'
+import { ChevronDownIcon, ChatIcon } from '@chakra-ui/icons'
 
 import { getLoggedInUser, setLoggedInUser } from '../store/users'
 import { useDispatch } from 'react-redux'
@@ -62,81 +62,52 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
     )
   } else {
     body = (
-      <Flex align="center">
-        {/*<NextLink href="/events">*/}
-        {/*  <Link className="mr-5">*/}
-        {/*    <p className="text-info">Events</p>*/}
-        {/*  </Link>*/}
-        {/*</NextLink>*/}
-
-        {/*<NextLink href="/profiles">*/}
-        {/*  <Link className="mr-5">*/}
-        {/*    <p className="text-info">Profiles</p>*/}
-        {/*  </Link>*/}
-        {/*</NextLink>*/}
-
-        {/*<NextLink href="/create-post">*/}
-        {/*<Button as={Link} mr={4}>*/}
-        {/*create post*/}
-        {/*</Button>*/}
-        {/*</NextLink>*/}
-
+      <Flex align="center" className="">
         <Menu>
           <MenuButton
             className="mr-5"
             as={Button}
             rightIcon={<ChevronDownIcon />}
           >
-            Actions
+            <Flex className="justify-center items-center">
+              <p>{data.me.profile.username}</p>
+              <Box className="">
+                <SocketConnector />
+              </Box>
+            </Flex>
           </MenuButton>
 
           <MenuList>
-            <MenuItem>
-              <NextLink href="/create-post">
-                <Link>
-                  {/*<Button as={Link} mr={4}>*/}
-                  <p className="text-info">Create post</p>
-                </Link>
-                {/*</Button>*/}
-              </NextLink>
-            </MenuItem>
-
-            <MenuItem>
+            <MenuItem className="text-info w-full py-2">
               <NextLink href="/profiles">
                 <Link>
-                  <p className="text-info">Profiles</p>
+                  <p className="text-info">Profile</p>
                 </Link>
               </NextLink>
             </MenuItem>
 
-            <MenuItem>
-              <NextLink href="/events">
-                <Link className="mr-5">
-                  <p className="text-info">Events</p>
-                </Link>
-              </NextLink>
+            <MenuItem className="text-info w-full py-2">
+              <Flex className="w-full justify-between items-center">
+                <p className="text-info">Chat</p>
+                <ChatIcon className="mr-3 mt-1" />
+              </Flex>
+            </MenuItem>
+
+            <MenuItem className="text-info w-full py-2">
+              <p
+                onClick={async () => {
+                  await logout()
+                  router.reload()
+                  // router.reload()
+                }}
+                isLoading={fetching}
+                variant="link"
+              >
+                Logout
+              </p>
             </MenuItem>
           </MenuList>
         </Menu>
-
-        {/*<Box mr={4}>{data.me.username}</Box>*/}
-
-        <Button
-          onClick={async () => {
-            await logout()
-            router.reload()
-            // router.reload()
-          }}
-          isLoading={fetching}
-          variant="link"
-        >
-          logout
-        </Button>
-
-        <Flex className="ml-4 items-center">
-          <p>{data.me.profile.username}</p>
-          <SocketConnector />
-        </Flex>
       </Flex>
     )
   }

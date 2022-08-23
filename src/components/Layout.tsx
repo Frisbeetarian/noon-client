@@ -5,6 +5,7 @@ import SimpleSidebar from './Sidebar'
 import { Box, Container } from '@chakra-ui/react'
 import Footer from './Footer'
 import Toast from './Toast'
+import Chat from './chat/Chat'
 
 interface LayoutProps {
   variant?: WrapperVariant
@@ -20,6 +21,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, variant }) => {
         <Wrapper variant={variant}>{children}</Wrapper>
         {/*</Box>*/}
       </div>
+
+      <Chat />
 
       <Box className="sticky top-[100vh] bg-neutral pt-20">
         <Footer />
