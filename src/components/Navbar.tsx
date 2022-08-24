@@ -21,6 +21,7 @@ import { ChevronDownIcon, ChatIcon } from '@chakra-ui/icons'
 import { getLoggedInUser, setLoggedInUser } from '../store/users'
 import { useDispatch } from 'react-redux'
 import SocketConnector from './SocketIo/SocketConnector'
+import ChatSidebar from './ChatSidebar'
 
 interface NavbarProps {}
 
@@ -88,8 +89,10 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
 
             <MenuItem className="text-info w-full py-2">
               <Flex className="w-full justify-between items-center">
-                <p className="text-info">Chat</p>
-                <ChatIcon className="mr-3 mt-1" />
+                {/*<p className="text-info">Chat</p>*/}
+                {/*<ChatIcon className="mr-3 mt-1" />*/}
+
+                <ChatSidebar></ChatSidebar>
               </Flex>
             </MenuItem>
 

@@ -13,7 +13,6 @@ import {
 
 import React, { useEffect, useState } from 'react'
 import { Layout } from '../../components/Layout'
-
 import { useDispatch, useSelector } from 'react-redux'
 
 import { withUrqlClient } from 'next-urql'
@@ -66,7 +65,10 @@ const Profiles = ({}) => {
   function setActiveConverseeFunction(profile) {
     dispatch(setActiveConversee(profile))
   }
-  useEffect(() => {}, [profiles])
+
+  useEffect(() => {
+    console.log('logged in user:', loggedInUser)
+  }, [loggedInUser])
 
   if (!fetching && !profiles) {
     return (
@@ -127,85 +129,82 @@ const Profiles = ({}) => {
                     </NextLink>
                   </Box>
 
-                  {
-                    //   profile.hasSentFriendshipToProfile ? (
-                    //   <Button disabled={true} className="text-green-500">
-                    //     Friendship request sent
-                    //   </Button>
-                    // ) :
-                    profile.hasFriendshipRequestFromLoggedInProfile ? (
-                      <Flex className="justify-end mt-3">
+                  {profile.hasSentFriendshipToProfile ? (
+                    <Button disabled={true} className="text-green-500">
+                      Friendship request sent
+                    </Button>
+                  ) : profile.hasFriendshipRequestFromLoggedInProfile ? (
+                    <Flex className="justify-end mt-3">
+                      <Button
+                        className="mr-3 bg-green-500"
+                        variant="ghost"
+                        onClick={async () => {
+                          const acceptFriendshipResponse =
+                            await acceptFriendRequest({
+                              profileUuid: profile.uuid,
+                            })
+
+                          if (acceptFriendshipResponse) {
+                            socket.emit('friendship-request-accepted', {
+                              content:
+                                loggedInUser.user?.profile?.username +
+                                ' accepted your friend request.',
+                              from: loggedInUser.user?.profile?.uuid,
+                              fromUsername:
+                                loggedInUser.user?.profile?.username,
+                              to: profile.uuid,
+                              toUsername: profile.username,
+                            })
+                          }
+                        }}
+                      >
+                        Accept
+                      </Button>
+                      <Button className="bg-red-500" variant="tomato">
+                        Reject
+                      </Button>
+                    </Flex>
+                  ) : (
+                    <Box>
+                      {profile.isAFriend ? (
+                        <Flex className="bg-red-500 w-full z-40 h-full cursor-pointer">
+                          <ChatIcon
+                            className="mr-3 mt-1"
+                            onClick={() => {
+                              setActiveConverseeFunction(profile)
+                            }}
+                          />
+                        </Flex>
+                      ) : (
                         <Button
-                          className="mr-3 bg-green-500"
-                          variant="ghost"
                           onClick={async () => {
-                            const acceptFriendshipResponse =
-                              await acceptFriendRequest({
+                            dispatch(
+                              setFriendshipRequestSentOnProfile({
                                 profileUuid: profile.uuid,
                               })
+                            )
 
-                            if (acceptFriendshipResponse) {
-                              socket.emit('friendship-request-accepted', {
-                                content:
-                                  loggedInUser.user?.profile?.username +
-                                  ' accepted your friend request.',
-                                from: loggedInUser.user?.profile?.uuid,
-                                fromUsername:
-                                  loggedInUser.user?.profile?.username,
-                                to: profile.uuid,
-                                toUsername: profile.username,
-                              })
-                            }
+                            await sendFriendRequest({
+                              profileUuid: profile.uuid,
+                            })
+
+                            socket.emit('private message', {
+                              content:
+                                loggedInUser.user?.profile?.username +
+                                ' wants to be your friend.',
+                              from: loggedInUser.user?.profile?.uuid,
+                              fromUsername:
+                                loggedInUser.user?.profile?.username,
+                              to: profile.uuid,
+                              toUsername: profile.username,
+                            })
                           }}
                         >
-                          Accept
+                          Send friend request
                         </Button>
-                        <Button className="bg-red-500" variant="tomato">
-                          Reject
-                        </Button>
-                      </Flex>
-                    ) : (
-                      <Box>
-                        {profile.isAFriend ? (
-                          <Flex className="bg-red-500 w-full z-40 h-full cursor-pointer">
-                            <ChatIcon
-                              className="mr-3 mt-1"
-                              onClick={() => {
-                                setActiveConverseeFunction(profile)
-                              }}
-                            />
-                          </Flex>
-                        ) : (
-                          <Button
-                            onClick={async () => {
-                              dispatch(
-                                setFriendshipRequestSentOnProfile({
-                                  profileUuid: profile.uuid,
-                                })
-                              )
-
-                              await sendFriendRequest({
-                                profileUuid: profile.uuid,
-                              })
-
-                              socket.emit('private message', {
-                                content:
-                                  loggedInUser.user?.profile?.username +
-                                  ' wants to be your friend.',
-                                from: loggedInUser.user?.profile?.uuid,
-                                fromUsername:
-                                  loggedInUser.user?.profile?.username,
-                                to: profile.uuid,
-                                toUsername: profile.username,
-                              })
-                            }}
-                          >
-                            Send friend request
-                          </Button>
-                        )}
-                      </Box>
-                    )
-                  }
+                      )}
+                    </Box>
+                  )}
                 </Flex>
 
                 <AvatarGroup className="" max={10}>
