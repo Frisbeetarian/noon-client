@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { Avatar, Flex, Text } from '@chakra-ui/react'
 import { useGetConversationsByProfileUuidQuery } from '../../generated/graphql'
 
-import { setActiveConversation } from '../../store/chat'
+import { setActiveConversation, setActiveConversee } from '../../store/chat'
 import { useDispatch } from 'react-redux'
 
 const Messages = ({ messages, profile }) => {
@@ -25,9 +25,11 @@ const Messages = ({ messages, profile }) => {
     if (data?.getConversationsByProfileUuid) {
       dispatch(setActiveConversation(data.getConversationsByProfileUuid))
     }
-    // return () => {
-    //   effect;
-    // };
+
+    return () => {
+      dispatch(setActiveConversee(null))
+      dispatch(setActiveConversation(null))
+    }
   }, [data])
 
   console.log('CONVERSATIONS:', data)

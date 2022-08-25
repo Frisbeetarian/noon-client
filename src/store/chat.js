@@ -10,7 +10,6 @@ const slice = createSlice({
     activeConversation: null,
   },
   reducers: {
-    setSocket: (chat, action) => {},
     setActiveConversee: (chat, action) => {
       console.log('set active conversee uuid:', action.payload)
       chat.activeConversee = action.payload

@@ -31,9 +31,17 @@ import Messages from './chat/Messages'
 import Footer from './chat/Footer'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSocket } from '../store/sockets'
-import { getActiveConversee, setActiveConversee } from '../store/chat'
+import {
+  getActiveConversation,
+  getActiveConversee,
+  setActiveConversation,
+  setActiveConversee,
+} from '../store/chat'
 import { getLoggedInUser } from '../store/users'
-import { useGetConversationsByProfileUuidQuery } from '../generated/graphql'
+import {
+  useGetConversationsByProfileUuidQuery,
+  useSaveMessageMutation,
+} from '../generated/graphql'
 
 export default function ChatSidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -42,6 +50,7 @@ export default function ChatSidebar() {
   const [startDate, setStartDate] = useState(new Date())
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
+  const activeConversation = useSelector(getActiveConversation)
 
   const [profile, setProfile] = useState()
 
@@ -51,8 +60,9 @@ export default function ChatSidebar() {
   const [messages, setMessages] = useState([])
 
   const [inputMessage, setInputMessage] = useState('')
+  const [, saveMessage] = useSaveMessageMutation()
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputMessage.trim().length) {
       return
     }
@@ -69,6 +79,12 @@ export default function ChatSidebar() {
       to: activeConversee.uuid,
       toUsername: activeConversee.username,
       message: data,
+      conversationUuid: activeConversation.uuid,
+    })
+
+    await saveMessage({
+      message: data,
+      conversationUuid: activeConversation.uuid,
     })
 
     // setTimeout(() => {
@@ -104,6 +120,25 @@ export default function ChatSidebar() {
       }
     }
   }, [socket])
+
+  useEffect(() => {
+    if (activeConversation) {
+      let messages = []
+
+      activeConversation.messages.forEach((message) => {
+        messages.push({
+          from:
+            message.sender.uuid === loggedInUser.user.profile.uuid
+              ? 'me'
+              : 'computer',
+          text: message.content,
+          uuid: messages.uuid,
+        })
+      })
+
+      setMessages(messages)
+    }
+  }, [activeConversation])
 
   function setActiveConverseeFunction(profile) {
     dispatch(setActiveConversee(profile))

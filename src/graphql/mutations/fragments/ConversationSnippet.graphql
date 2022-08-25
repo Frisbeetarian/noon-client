@@ -3,4 +3,7 @@ fragment ConversationSnippet on Conversation {
     profiles{
         ...ConversationProfileSnippet
     }
+    messages{
+        ...MessageSnippet
+    }
 }

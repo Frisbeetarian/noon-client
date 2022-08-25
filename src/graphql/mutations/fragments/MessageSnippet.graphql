@@ -1,0 +1,10 @@
+fragment MessageSnippet on Message {
+    uuid
+    content
+    updatedAt
+    createdAt
+    sender {
+        uuid
+        username
+    }
+}

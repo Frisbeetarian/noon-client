@@ -57,6 +57,7 @@ export type Conversation = {
   createdAt: Scalars['String'];
   profiles: Array<Profile>;
   conversations: Array<ConversationToProfile>;
+  messages: Array<Message>;
 };
 
 export type ConversationToProfile = {
@@ -122,6 +123,15 @@ export type FriendshipRequest = {
   reverse?: Maybe<Scalars['Boolean']>;
 };
 
+export type Message = {
+  __typename?: 'Message';
+  uuid: Scalars['String'];
+  sender: Profile;
+  content: Scalars['String'];
+  updatedAt: Scalars['String'];
+  createdAt: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   vote: Scalars['Boolean'];
@@ -139,6 +149,7 @@ export type Mutation = {
   acceptFriendRequest: Scalars['Boolean'];
   createCommunity: Community;
   joinCommunity: Scalars['Boolean'];
+  saveMessage: Message;
 };
 
 
@@ -214,6 +225,12 @@ export type MutationCreateCommunityArgs = {
 
 export type MutationJoinCommunityArgs = {
   communityId: Scalars['Int'];
+};
+
+
+export type MutationSaveMessageArgs = {
+  conversationUuid: Scalars['String'];
+  message: Scalars['String'];
 };
 
 export type PaginatedEvents = {
@@ -491,6 +508,9 @@ export type ConversationSnippetFragment = (
   & { profiles: Array<(
     { __typename?: 'Profile' }
     & ConversationProfileSnippetFragment
+  )>, messages: Array<(
+    { __typename?: 'Message' }
+    & MessageSnippetFragment
   )> }
 );
 
@@ -516,6 +536,15 @@ export type FriendSnippetFragment = (
 export type FriendshipRequestSnippetFragment = (
   { __typename?: 'FriendshipRequest' }
   & Pick<FriendshipRequest, 'uuid' | 'username' | 'reverse'>
+);
+
+export type MessageSnippetFragment = (
+  { __typename?: 'Message' }
+  & Pick<Message, 'uuid' | 'content' | 'updatedAt' | 'createdAt'>
+  & { sender: (
+    { __typename?: 'Profile' }
+    & Pick<Profile, 'uuid' | 'username'>
+  ) }
 );
 
 export type PostSnippetFragment = (
@@ -822,6 +851,20 @@ export type RegisterMutation = (
   ) }
 );
 
+export type SaveMessageMutationVariables = Exact<{
+  message: Scalars['String'];
+  conversationUuid: Scalars['String'];
+}>;
+
+
+export type SaveMessageMutation = (
+  { __typename?: 'Mutation' }
+  & { saveMessage: (
+    { __typename?: 'Message' }
+    & Pick<Message, 'uuid'>
+  ) }
+);
+
 export type SendFriendRequestMutationVariables = Exact<{
   profileUuid: Scalars['String'];
 }>;
@@ -866,14 +909,30 @@ export const ConversationProfileSnippetFragmentDoc = gql`
   username
 }
     `;
+export const MessageSnippetFragmentDoc = gql`
+    fragment MessageSnippet on Message {
+  uuid
+  content
+  updatedAt
+  createdAt
+  sender {
+    uuid
+    username
+  }
+}
+    `;
 export const ConversationSnippetFragmentDoc = gql`
     fragment ConversationSnippet on Conversation {
   uuid
   profiles {
     ...ConversationProfileSnippet
   }
+  messages {
+    ...MessageSnippet
+  }
 }
-    ${ConversationProfileSnippetFragmentDoc}`;
+    ${ConversationProfileSnippetFragmentDoc}
+${MessageSnippetFragmentDoc}`;
 export const EventSnippetFragmentDoc = gql`
     fragment EventSnippet on Event {
   id
@@ -1336,6 +1395,17 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const SaveMessageDocument = gql`
+    mutation SaveMessage($message: String!, $conversationUuid: String!) {
+  saveMessage(message: $message, conversationUuid: $conversationUuid) {
+    uuid
+  }
+}
+    `;
+
+export function useSaveMessageMutation() {
+  return Urql.useMutation<SaveMessageMutation, SaveMessageMutationVariables>(SaveMessageDocument);
 };
 export const SendFriendRequestDocument = gql`
     mutation SendFriendRequest($profileUuid: String!) {
