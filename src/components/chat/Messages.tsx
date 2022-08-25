@@ -1,13 +1,36 @@
 import React, { useEffect, useRef } from 'react'
 import { Avatar, Flex, Text } from '@chakra-ui/react'
+import { useGetConversationsByProfileUuidQuery } from '../../generated/graphql'
 
-const Messages = ({ messages }) => {
+import { setActiveConversation } from '../../store/chat'
+import { useDispatch } from 'react-redux'
+
+const Messages = ({ messages, profile }) => {
+  const dispatch = useDispatch()
+
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef()
     useEffect(() => elementRef.current.scrollIntoView())
     return <div ref={elementRef} />
   }
 
+  const [{ data, error: conversationsError, fetching: conversationFetching }] =
+    useGetConversationsByProfileUuidQuery({
+      variables: {
+        profileUuid: profile.uuid,
+      },
+    })
+
+  useEffect(() => {
+    if (data?.getConversationsByProfileUuid) {
+      dispatch(setActiveConversation(data.getConversationsByProfileUuid))
+    }
+    // return () => {
+    //   effect;
+    // };
+  }, [data])
+
+  console.log('CONVERSATIONS:', data)
   return (
     <Flex
       // w="100%"

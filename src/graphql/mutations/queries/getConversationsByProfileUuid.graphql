@@ -1,0 +1,5 @@
+query GetConversationsByProfileUuid($profileUuid: String!) {
+    getConversationsByProfileUuid(profileUuid: $profileUuid) {
+        ...ConversationSnippet
+    }
+}

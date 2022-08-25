@@ -1,5 +1,5 @@
 import { useDisclosure } from '@chakra-ui/hooks'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { AddIcon, ChatIcon } from '@chakra-ui/icons'
 import {
   Avatar,
@@ -33,6 +33,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getSocket } from '../store/sockets'
 import { getActiveConversee, setActiveConversee } from '../store/chat'
 import { getLoggedInUser } from '../store/users'
+import { useGetConversationsByProfileUuidQuery } from '../generated/graphql'
 
 export default function ChatSidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -41,6 +42,8 @@ export default function ChatSidebar() {
   const [startDate, setStartDate] = useState(new Date())
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
+
+  const [profile, setProfile] = useState()
 
   const socket = useSelector(getSocket)
   const activeConversee = useSelector(getActiveConversee)
@@ -171,6 +174,7 @@ export default function ChatSidebar() {
                           className="items-center bg-green-500 mb-2 p-3 border-b border-b-base-300 border-b-amber-100 cursor-pointer"
                           onClick={() => {
                             setActiveConverseeFunction(friend)
+                            setProfile(friend)
                           }}
                         >
                           <Avatar
@@ -188,8 +192,12 @@ export default function ChatSidebar() {
                     )
                   : null}
               </Flex>
-              <Flex w="85%" h="80vh" className="bg-green-500">
-                <Messages messages={messages} />
+
+              <Flex w="85%" h="70vh" className="bg-green-500">
+                {/*{profile ? <Conversation profile={profile} /> : null}*/}
+                {profile ? (
+                  <Messages messages={messages} profile={profile} />
+                ) : null}
               </Flex>
             </Flex>
             {/*</Flex>*/}

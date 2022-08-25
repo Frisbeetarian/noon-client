@@ -292,6 +292,8 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
           Friend: (data) => data.uuid,
           FriendshipRequest: (data) => data.uuid,
           Search: (data) => data.uuid,
+          Conversation: (data) => data.uuid,
+          Message: (data) => data.uuid,
         },
         resolvers: {
           Query: {

@@ -7,12 +7,16 @@ const slice = createSlice({
   name: 'chat',
   initialState: {
     activeConversee: null,
+    activeConversation: null,
   },
   reducers: {
     setSocket: (chat, action) => {},
     setActiveConversee: (chat, action) => {
       console.log('set active conversee uuid:', action.payload)
       chat.activeConversee = action.payload
+    },
+    setActiveConversation: (chat, action) => {
+      chat.activeConversation = action.payload
     },
   },
 })
@@ -22,5 +26,10 @@ export const getActiveConversee = createSelector(
   (chat) => chat.activeConversee
 )
 
-export const { setActiveConversee } = slice.actions
+export const getActiveConversation = createSelector(
+  (state) => state.entities.chat,
+  (chat) => chat.activeConversation
+)
+
+export const { setActiveConversee, setActiveConversation } = slice.actions
 export default slice.reducer

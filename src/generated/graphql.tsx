@@ -50,6 +50,22 @@ export type CommunityParticipant = {
   participantUsername: Scalars['String'];
 };
 
+export type Conversation = {
+  __typename?: 'Conversation';
+  uuid: Scalars['String'];
+  updatedAt: Scalars['String'];
+  createdAt: Scalars['String'];
+  profiles: Array<Profile>;
+  conversations: Array<ConversationToProfile>;
+};
+
+export type ConversationToProfile = {
+  __typename?: 'ConversationToProfile';
+  uuid: Scalars['String'];
+  conversationUuid: Scalars['String'];
+  profileUuid: Scalars['String'];
+};
+
 
 export type Event = {
   __typename?: 'Event';
@@ -258,6 +274,7 @@ export type Query = {
   getCommunityParticipants: Array<CommunityParticipant>;
   getCommunitiesParticipants: Array<CommunityParticipant>;
   searchForProfileByUuid?: Maybe<Search>;
+  getConversationsByProfileUuid?: Maybe<Conversation>;
 };
 
 
@@ -314,6 +331,11 @@ export type QueryGetCommunitiesParticipantsArgs = {
 
 
 export type QuerySearchForProfileByUuidArgs = {
+  profileUuid: Scalars['String'];
+};
+
+
+export type QueryGetConversationsByProfileUuidArgs = {
   profileUuid: Scalars['String'];
 };
 
@@ -456,6 +478,20 @@ export type CommunitySnippetFragment = (
     { __typename?: 'User' }
     & Pick<User, 'uuid' | 'username'>
   ) }
+);
+
+export type ConversationProfileSnippetFragment = (
+  { __typename?: 'Profile' }
+  & Pick<Profile, 'uuid' | 'username'>
+);
+
+export type ConversationSnippetFragment = (
+  { __typename?: 'Conversation' }
+  & Pick<Conversation, 'uuid'>
+  & { profiles: Array<(
+    { __typename?: 'Profile' }
+    & ConversationProfileSnippetFragment
+  )> }
 );
 
 export type EventSnippetFragment = (
@@ -670,6 +706,19 @@ export type GetCommunityParticipantsQuery = (
   )> }
 );
 
+export type GetConversationsByProfileUuidQueryVariables = Exact<{
+  profileUuid: Scalars['String'];
+}>;
+
+
+export type GetConversationsByProfileUuidQuery = (
+  { __typename?: 'Query' }
+  & { getConversationsByProfileUuid?: Maybe<(
+    { __typename?: 'Conversation' }
+    & ConversationSnippetFragment
+  )> }
+);
+
 export type GetProfileByUserIdQueryVariables = Exact<{
   userId: Scalars['Int'];
 }>;
@@ -811,6 +860,20 @@ export const CommunitySnippetFragmentDoc = gql`
   }
 }
     `;
+export const ConversationProfileSnippetFragmentDoc = gql`
+    fragment ConversationProfileSnippet on Profile {
+  uuid
+  username
+}
+    `;
+export const ConversationSnippetFragmentDoc = gql`
+    fragment ConversationSnippet on Conversation {
+  uuid
+  profiles {
+    ...ConversationProfileSnippet
+  }
+}
+    ${ConversationProfileSnippetFragmentDoc}`;
 export const EventSnippetFragmentDoc = gql`
     fragment EventSnippet on Event {
   id
@@ -1158,6 +1221,17 @@ export const GetCommunityParticipantsDocument = gql`
 
 export function useGetCommunityParticipantsQuery(options: Omit<Urql.UseQueryArgs<GetCommunityParticipantsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetCommunityParticipantsQuery>({ query: GetCommunityParticipantsDocument, ...options });
+};
+export const GetConversationsByProfileUuidDocument = gql`
+    query GetConversationsByProfileUuid($profileUuid: String!) {
+  getConversationsByProfileUuid(profileUuid: $profileUuid) {
+    ...ConversationSnippet
+  }
+}
+    ${ConversationSnippetFragmentDoc}`;
+
+export function useGetConversationsByProfileUuidQuery(options: Omit<Urql.UseQueryArgs<GetConversationsByProfileUuidQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetConversationsByProfileUuidQuery>({ query: GetConversationsByProfileUuidDocument, ...options });
 };
 export const GetProfileByUserIdDocument = gql`
     query GetProfileByUserId($userId: Int!) {
