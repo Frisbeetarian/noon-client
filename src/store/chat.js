@@ -13,9 +13,6 @@ const slice = createSlice({
   },
   reducers: {
     setConversations: (chat, action) => {
-      // const conversee = action.payload.conversations.profiles.find(
-      //   (element) => element.uuid != action.payload.loggedInProfileUuid
-      // )
       const conversationsObject = []
 
       Promise.all(
@@ -51,6 +48,11 @@ const slice = createSlice({
       chat.activeConversee = action.payload
     },
     setActiveConversation: (chat, action) => {
+      if (action.payload === null) {
+        chat.activeConversation = null
+        return
+      }
+
       let conversationObject = { ...action.payload.conversation }
       let messagesArray = []
 
