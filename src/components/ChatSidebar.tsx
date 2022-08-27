@@ -82,7 +82,13 @@ export default function ChatSidebar() {
       conversationUuid: activeConversation.uuid,
     })
 
-    dispatch(addMessageToActiveConversation({ message: data, loggedInUser }))
+    dispatch(
+      addMessageToActiveConversation({
+        message: data,
+        loggedInUser,
+        from: 'me',
+      })
+    )
     await saveMessage({
       message: data,
       conversationUuid: activeConversation.uuid,
@@ -97,9 +103,17 @@ export default function ChatSidebar() {
           if (!message.trim().length) {
             return
           }
-
+          console.log('RECEIVED MESSAGES:', message)
           const data = message
-          setMessages((old) => [...old, { from: 'computer', text: data }])
+          dispatch(
+            addMessageToActiveConversation({
+              message: data,
+              loggedInUser,
+              from: 'computer',
+            })
+          )
+
+          // setMessages((old) => [...old, { from: 'computer', text: data }])
           setInputMessage('')
         }
       )

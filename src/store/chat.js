@@ -39,11 +39,7 @@ const slice = createSlice({
         content: action.payload.message,
         updatedAt: new Date(),
         createdAt: new Date(),
-        from:
-          messageObject.sender.uuid ==
-          action.payload.loggedInUser.user.profile.uuid
-            ? 'me'
-            : 'computer',
+        from: action.payload.from,
         sender: {
           uuid: action.payload.loggedInUser.user.profile.uuid,
           username: action.payload.loggedInUser.user.profile.username,
@@ -68,8 +64,11 @@ const slice = createSlice({
 
         messagesArray.push(messageObject)
       })
+      let sortedMessage = messagesArray.sort(
+        (a, b) => a.createdAt - b.createdAt
+      )
 
-      conversationObject.messages = [...messagesArray]
+      conversationObject.messages = [...sortedMessage]
 
       chat.activeConversation = conversationObject
     },
