@@ -66,6 +66,7 @@ const slice = createSlice({
 
         messagesArray.push(messageObject)
       })
+
       let sortedMessage = messagesArray.sort(
         (a, b) => a.createdAt - b.createdAt
       )

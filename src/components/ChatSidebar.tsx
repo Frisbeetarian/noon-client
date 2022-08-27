@@ -30,12 +30,8 @@ import {
 import { getLoggedInUser } from '../store/users'
 import {
   useGetConversationForLoggedInUserQuery,
-  useGetConversationProfileForLoggedInUserQuery,
-  useGetConversationsByProfileUuidQuery,
-  useGetProfilesQuery,
   useSaveMessageMutation,
 } from '../generated/graphql'
-import { addProfiles } from '../store/profiles'
 
 export default function ChatSidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -113,7 +109,6 @@ export default function ChatSidebar() {
             })
           )
 
-          // setMessages((old) => [...old, { from: 'computer', text: data }])
           setInputMessage('')
         }
       )
@@ -134,22 +129,6 @@ export default function ChatSidebar() {
         })
       )
     }
-    // if (activeConversation) {
-    //   let messages = []
-    //
-    //   activeConversation.messages.forEach((message) => {
-    //     messages.push({
-    //       from:
-    //         message.sender.uuid === loggedInUser.user.profile.uuid
-    //           ? 'me'
-    //           : 'computer',
-    //       text: message.content,
-    //       uuid: message.uuid,
-    //     })
-    //   })
-    //
-    //   setMessages(messages)
-    // }
   }, [fetchedConversations])
 
   function setActiveConverseeFunction(profile, conversation) {

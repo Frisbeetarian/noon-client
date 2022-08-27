@@ -174,8 +174,12 @@ export default function Footer() {
         })
       })
 
+      socket.on('friend-disconnected', ({}) => {})
+
       return () => {
         socket.off('private message')
+        socket.off('friendship-request-accepted')
+        socket.off('friend-disconnected')
       }
     }
   }, [socket])
