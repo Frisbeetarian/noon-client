@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from '@chakra-ui/react'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Layout } from '../../components/Layout'
 import { useDispatch, useSelector } from 'react-redux'
 

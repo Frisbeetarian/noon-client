@@ -1,0 +1,6 @@
+fragment ConversationToProfileSnippet on ConversationToProfile {
+    uuid
+    profile{
+        ...ConversationProfileSnippet
+    }
+}

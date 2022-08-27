@@ -65,6 +65,8 @@ export type ConversationToProfile = {
   uuid: Scalars['String'];
   conversationUuid: Scalars['String'];
   profileUuid: Scalars['String'];
+  conversation: Conversation;
+  profile: Array<Profile>;
 };
 
 
@@ -291,7 +293,9 @@ export type Query = {
   getCommunityParticipants: Array<CommunityParticipant>;
   getCommunitiesParticipants: Array<CommunityParticipant>;
   searchForProfileByUuid?: Maybe<Search>;
+  getConversationForLoggedInUser?: Maybe<Array<Conversation>>;
   getConversationsByProfileUuid?: Maybe<Conversation>;
+  getConversationProfileForLoggedInUser?: Maybe<ConversationToProfile>;
 };
 
 
@@ -511,6 +515,15 @@ export type ConversationSnippetFragment = (
   )>, messages: Array<(
     { __typename?: 'Message' }
     & MessageSnippetFragment
+  )> }
+);
+
+export type ConversationToProfileSnippetFragment = (
+  { __typename?: 'ConversationToProfile' }
+  & Pick<ConversationToProfile, 'uuid'>
+  & { profile: Array<(
+    { __typename?: 'Profile' }
+    & ConversationProfileSnippetFragment
   )> }
 );
 
@@ -735,6 +748,28 @@ export type GetCommunityParticipantsQuery = (
   )> }
 );
 
+export type GetConversationForLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetConversationForLoggedInUserQuery = (
+  { __typename?: 'Query' }
+  & { getConversationForLoggedInUser?: Maybe<Array<(
+    { __typename?: 'Conversation' }
+    & ConversationSnippetFragment
+  )>> }
+);
+
+export type GetConversationProfileForLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetConversationProfileForLoggedInUserQuery = (
+  { __typename?: 'Query' }
+  & { getConversationProfileForLoggedInUser?: Maybe<(
+    { __typename?: 'ConversationToProfile' }
+    & ConversationToProfileSnippetFragment
+  )> }
+);
+
 export type GetConversationsByProfileUuidQueryVariables = Exact<{
   profileUuid: Scalars['String'];
 }>;
@@ -933,6 +968,14 @@ export const ConversationSnippetFragmentDoc = gql`
 }
     ${ConversationProfileSnippetFragmentDoc}
 ${MessageSnippetFragmentDoc}`;
+export const ConversationToProfileSnippetFragmentDoc = gql`
+    fragment ConversationToProfileSnippet on ConversationToProfile {
+  uuid
+  profile {
+    ...ConversationProfileSnippet
+  }
+}
+    ${ConversationProfileSnippetFragmentDoc}`;
 export const EventSnippetFragmentDoc = gql`
     fragment EventSnippet on Event {
   id
@@ -1280,6 +1323,28 @@ export const GetCommunityParticipantsDocument = gql`
 
 export function useGetCommunityParticipantsQuery(options: Omit<Urql.UseQueryArgs<GetCommunityParticipantsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetCommunityParticipantsQuery>({ query: GetCommunityParticipantsDocument, ...options });
+};
+export const GetConversationForLoggedInUserDocument = gql`
+    query GetConversationForLoggedInUser {
+  getConversationForLoggedInUser {
+    ...ConversationSnippet
+  }
+}
+    ${ConversationSnippetFragmentDoc}`;
+
+export function useGetConversationForLoggedInUserQuery(options: Omit<Urql.UseQueryArgs<GetConversationForLoggedInUserQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetConversationForLoggedInUserQuery>({ query: GetConversationForLoggedInUserDocument, ...options });
+};
+export const GetConversationProfileForLoggedInUserDocument = gql`
+    query GetConversationProfileForLoggedInUser {
+  getConversationProfileForLoggedInUser {
+    ...ConversationToProfileSnippet
+  }
+}
+    ${ConversationToProfileSnippetFragmentDoc}`;
+
+export function useGetConversationProfileForLoggedInUserQuery(options: Omit<Urql.UseQueryArgs<GetConversationProfileForLoggedInUserQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetConversationProfileForLoggedInUserQuery>({ query: GetConversationProfileForLoggedInUserDocument, ...options });
 };
 export const GetConversationsByProfileUuidDocument = gql`
     query GetConversationsByProfileUuid($profileUuid: String!) {

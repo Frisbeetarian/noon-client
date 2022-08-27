@@ -2,11 +2,16 @@ import React, { useEffect, useRef } from 'react'
 import { Avatar, Flex, Text } from '@chakra-ui/react'
 import { useGetConversationsByProfileUuidQuery } from '../../generated/graphql'
 
-import { setActiveConversation, setActiveConversee } from '../../store/chat'
-import { useDispatch } from 'react-redux'
+import {
+  getActiveConversation,
+  setActiveConversation,
+  setActiveConversee,
+} from '../../store/chat'
+import { useDispatch, useSelector } from 'react-redux'
 
-const Messages = ({ messages, profile }) => {
+const Messages = () => {
   const dispatch = useDispatch()
+  const activeConversation = useSelector(getActiveConversation)
 
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef()
@@ -14,25 +19,13 @@ const Messages = ({ messages, profile }) => {
     return <div ref={elementRef} />
   }
 
-  const [{ data, error: conversationsError, fetching: conversationFetching }] =
-    useGetConversationsByProfileUuidQuery({
-      variables: {
-        profileUuid: profile.uuid,
-      },
-    })
-
   useEffect(() => {
-    if (data?.getConversationsByProfileUuid) {
-      dispatch(setActiveConversation(data.getConversationsByProfileUuid))
-    }
-
     return () => {
       dispatch(setActiveConversee(null))
       dispatch(setActiveConversation(null))
     }
-  }, [data])
+  }, [])
 
-  console.log('CONVERSATIONS:', data)
   return (
     <Flex
       // w="100%"
@@ -41,7 +34,7 @@ const Messages = ({ messages, profile }) => {
       // p="3"
       className=" w-full top-0"
     >
-      {messages.map((item, index) => {
+      {activeConversation.messages.map((item, index) => {
         if (item.from === 'me') {
           return (
             <Flex key={index} w="100%" justify="flex-end">
@@ -53,7 +46,7 @@ const Messages = ({ messages, profile }) => {
                 my="1"
                 p="3"
               >
-                <Text>{item.text}</Text>
+                <Text>{item.content}</Text>
               </Flex>
             </Flex>
           )
@@ -65,6 +58,7 @@ const Messages = ({ messages, profile }) => {
                 src="https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
                 bg="blue.300"
               ></Avatar>
+
               <Flex
                 bg="gray.100"
                 color="black"
@@ -73,7 +67,7 @@ const Messages = ({ messages, profile }) => {
                 my="1"
                 p="3"
               >
-                <Text>{item.text}</Text>
+                <Text>{item.content}</Text>
               </Flex>
             </Flex>
           )

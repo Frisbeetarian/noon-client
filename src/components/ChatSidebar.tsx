@@ -4,8 +4,6 @@ import { AddIcon, ChatIcon } from '@chakra-ui/icons'
 import {
   Avatar,
   AvatarBadge,
-  Box,
-  Button,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -14,53 +12,56 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  InputRightAddon,
-  Radio,
-  RadioGroup,
-  Select,
-  Stack,
-  Textarea,
-  Tooltip,
 } from '@chakra-ui/react'
-import DatePicker from 'react-datepicker'
+
 import Messages from './chat/Messages'
 import Footer from './chat/Footer'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSocket } from '../store/sockets'
 import {
+  addMessageToActiveConversation,
   getActiveConversation,
   getActiveConversee,
+  getConversations,
   setActiveConversation,
   setActiveConversee,
+  setConversations,
 } from '../store/chat'
 import { getLoggedInUser } from '../store/users'
 import {
+  useGetConversationForLoggedInUserQuery,
+  useGetConversationProfileForLoggedInUserQuery,
   useGetConversationsByProfileUuidQuery,
+  useGetProfilesQuery,
   useSaveMessageMutation,
 } from '../generated/graphql'
+import { addProfiles } from '../store/profiles'
 
 export default function ChatSidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const firstField = React.useRef()
-
   const [startDate, setStartDate] = useState(new Date())
+
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
 
   const [profile, setProfile] = useState()
-
   const socket = useSelector(getSocket)
   const activeConversee = useSelector(getActiveConversee)
+  const getConversationsFromStore = useSelector(getConversations)
 
   const [messages, setMessages] = useState([])
-
   const [inputMessage, setInputMessage] = useState('')
   const [, saveMessage] = useSaveMessageMutation()
+
+  const [
+    {
+      data: fetchedConversations,
+      error: conversationsError,
+      fetching: conversationsFetching,
+    },
+  ] = useGetConversationForLoggedInUserQuery()
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim().length) {
@@ -68,7 +69,6 @@ export default function ChatSidebar() {
     }
 
     const data = inputMessage
-
     setMessages((old) => [...old, { from: 'me', text: data }])
     setInputMessage('')
 
@@ -82,14 +82,11 @@ export default function ChatSidebar() {
       conversationUuid: activeConversation.uuid,
     })
 
+    dispatch(addMessageToActiveConversation({ message: data, loggedInUser }))
     await saveMessage({
       message: data,
       conversationUuid: activeConversation.uuid,
     })
-
-    // setTimeout(() => {
-    //   setMessages((old) => [...old, { from: 'computer', text: data }])
-    // }, 1000)
   }
 
   useEffect(() => {
@@ -97,19 +94,11 @@ export default function ChatSidebar() {
       socket.on(
         'private-chat-message',
         ({ content, from, fromUsername, to, message }) => {
-          console.log('received private message content:', content)
-          console.log('received private message from:', from)
-
-          console.log('received private message from:', fromUsername)
-          console.log('received private message content:', to)
-          console.log('received private message message:', message)
-
           if (!message.trim().length) {
             return
           }
 
           const data = message
-
           setMessages((old) => [...old, { from: 'computer', text: data }])
           setInputMessage('')
         }
@@ -122,30 +111,42 @@ export default function ChatSidebar() {
   }, [socket])
 
   useEffect(() => {
-    if (activeConversation) {
-      let messages = []
-
-      activeConversation.messages.forEach((message) => {
-        messages.push({
-          from:
-            message.sender.uuid === loggedInUser.user.profile.uuid
-              ? 'me'
-              : 'computer',
-          text: message.content,
-          uuid: messages.uuid,
+    if (fetchedConversations?.getConversationForLoggedInUser) {
+      dispatch(
+        setConversations({
+          conversationsToSend:
+            fetchedConversations?.getConversationForLoggedInUser,
+          loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
         })
-      })
-
-      setMessages(messages)
+      )
     }
-  }, [activeConversation])
+    // if (activeConversation) {
+    //   let messages = []
+    //
+    //   activeConversation.messages.forEach((message) => {
+    //     messages.push({
+    //       from:
+    //         message.sender.uuid === loggedInUser.user.profile.uuid
+    //           ? 'me'
+    //           : 'computer',
+    //       text: message.content,
+    //       uuid: message.uuid,
+    //     })
+    //   })
+    //
+    //   setMessages(messages)
+    // }
+  }, [fetchedConversations])
 
-  function setActiveConverseeFunction(profile) {
+  function setActiveConverseeFunction(profile, conversation) {
     dispatch(setActiveConversee(profile))
+    dispatch(
+      setActiveConversation({
+        conversation: conversation,
+        loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+      })
+    )
   }
-  // useEffect(() => {
-  //   console.log('logged in user:', loggedInUser.user)
-  // }, [])
 
   if (!loggedInUser) {
     return (
@@ -157,14 +158,6 @@ export default function ChatSidebar() {
 
   return (
     <>
-      {/*<Button*/}
-      {/*  className="mb-4"*/}
-      {/*  leftIcon={<AddIcon />}*/}
-      {/*  colorScheme="red"*/}
-      {/*  onClick={onOpen}*/}
-      {/*>*/}
-      {/*  Chat*/}
-      {/*</Button>*/}
       <Flex className="justify-between w-full" onClick={onOpen}>
         <p className="text-info">Chat</p>
         <ChatIcon className="mr-3 mt-1" />
@@ -189,7 +182,7 @@ export default function ChatSidebar() {
             Chat
           </DrawerHeader>
 
-          <DrawerBody className="text-white bg-neutral justify-between ">
+          <DrawerBody className="text-white bg-neutral justify-between">
             {/*<Flex className="border border-black absolute bottom-16 z-40 md:w-2/4 xs:w-1/4">*/}
             {/*<Flex w="100%" h="90vh" flexDir="column">*/}
             <Flex className="h-100% bg-blue-500 w-100%">
@@ -197,53 +190,54 @@ export default function ChatSidebar() {
                 w="15%"
                 className="border-r-info border-r-base-100 bg-red-500 flex-col"
               >
-                {loggedInUser?.user?.friends
-                  ? loggedInUser.user.friends.map((friend, i) =>
-                      !friend ? null : (
-                        // <Tooltip
-                        //   label={friend.username}
-                        //   aria-label={friend.username}
-                        //   placement="bottom"
-                        // >
-                        <Flex
-                          className="items-center bg-green-500 mb-2 p-3 border-b border-b-base-300 border-b-amber-100 cursor-pointer"
-                          onClick={() => {
-                            setActiveConverseeFunction(friend)
-                            setProfile(friend)
-                          }}
-                        >
-                          <Avatar
-                            key={i}
-                            name={friend.username}
-                            size="sm"
-                            className="mr-2"
+                {getConversationsFromStore
+                  ? [...Object.values(getConversationsFromStore)].map(
+                      (conversation, i) =>
+                        !conversation ? null : (
+                          // <Tooltip
+                          //   label={conversation.username}
+                          //   aria-label={conversation.username}
+                          //   placement="bottom"
+                          // >
+                          <Flex
+                            className="items-center bg-green-500 mb-2 p-3 border-b border-b-base-300 border-b-amber-100 cursor-pointer"
+                            onClick={() => {
+                              setActiveConverseeFunction(
+                                conversation.conversee,
+                                conversation
+                              )
+                              setProfile(conversation.conversee)
+                            }}
                           >
-                            <AvatarBadge boxSize="1.25em" bg="green.500" />
-                          </Avatar>
-                          <p>{friend.username}</p>
-                        </Flex>
-                        // </Tooltip>
-                      )
+                            <Avatar
+                              key={i}
+                              name={conversation.conversee.username}
+                              size="sm"
+                              className="mr-2"
+                            >
+                              <AvatarBadge boxSize="1.25em" bg="green.500" />
+                            </Avatar>
+
+                            <p>{conversation.conversee.username}</p>
+                          </Flex>
+                          // </Tooltip>
+                        )
                     )
                   : null}
               </Flex>
 
               <Flex w="85%" h="70vh" className="bg-green-500">
-                {/*{profile ? <Conversation profile={profile} /> : null}*/}
-                {profile ? (
-                  <Messages messages={messages} profile={profile} />
+                {profile && activeConversation ? (
+                  <Messages
+                  // conversation={activeConversation}
+                  />
                 ) : null}
               </Flex>
             </Flex>
-            {/*</Flex>*/}
-            {/*</Flex>*/}
           </DrawerBody>
 
           <DrawerFooter className="bg-neutral" borderTopWidth="1px">
             <Flex w="100%" flexDir="column" className="">
-              {/*<Header />*/}
-              {/*<Divider />*/}
-              {/*<Divider />*/}
               <Footer
                 inputMessage={inputMessage}
                 setInputMessage={setInputMessage}
