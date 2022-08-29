@@ -4,6 +4,7 @@ import { useGetConversationsByProfileUuidQuery } from '../../generated/graphql'
 
 import {
   getActiveConversation,
+  getActiveConversee,
   setActiveConversation,
   setActiveConversee,
 } from '../../store/chat'
@@ -12,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 const Messages = () => {
   const dispatch = useDispatch()
   const activeConversation = useSelector(getActiveConversation)
+  const activeConversee = useSelector(getActiveConversee)
 
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef()
@@ -53,11 +55,11 @@ const Messages = () => {
               )
             } else {
               return (
-                <Flex key={index} w="100%">
+                <Flex className="items-center" key={index} w="100%">
                   <Avatar
-                    name="Computer"
-                    src="https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
-                    bg="blue.300"
+                    size="sm"
+                    name={activeConversee.username}
+                    className="mr-2"
                   ></Avatar>
 
                   <Flex

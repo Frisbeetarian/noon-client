@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, current } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
 import { useSelector } from 'react-redux'
 import { getSocket } from './sockets'
@@ -38,8 +38,41 @@ const slice = createSlice({
         createdAt: new Date(),
         from: action.payload.from,
         sender: {
-          uuid: action.payload.loggedInUser.user.profile.uuid,
-          username: action.payload.loggedInUser.user.profile.username,
+          uuid: action.payload.loggedInUser.uuid,
+          username: action.payload.loggedInUser.username,
+        },
+      })
+
+      // chat.conversations.find((conversation) => {
+      //
+      // })
+    },
+    addMessageToConversationByConversationUuid: (chat, action) => {
+      let conversationUuid = action.payload.conversationUuid
+      let message = action.payload.message
+
+      const conversationn = chat.conversations.find(
+        (conversation) => conversation.uuid === conversationUuid
+      )
+      console.log('conversationUuid:', conversationUuid)
+
+      // let item = chat.conversations.map((conversation) => {
+      //   if (conversation.uuid === conversationUuid) return conversation
+      // })
+
+      // const target_copy = Object.assign({}, item)
+      console.log('conversation in store:', current(conversationn))
+      // const conversationObject = { ...conversation }
+      // current(conversationn.messages.push(message))
+      conversationn.messages.push({
+        uuid: uuid(),
+        content: action.payload.message,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+        from: action.payload.from,
+        sender: {
+          uuid: action.payload.loggedInUser.uuid,
+          username: action.payload.loggedInUser.username,
         },
       })
     },
@@ -98,5 +131,6 @@ export const {
   setActiveConversee,
   setActiveConversation,
   addMessageToActiveConversation,
+  addMessageToConversationByConversationUuid,
 } = slice.actions
 export default slice.reducer

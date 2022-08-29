@@ -25,7 +25,6 @@ export default function SocketConnector() {
   const [isConnected, setIsConnected] = useState(socket.connected)
 
   useEffect(() => {
-    console.log('logged in user:', loggedInUser.user.profile)
     const sessionID = localStorage.getItem('sessionID')
 
     try {
@@ -35,12 +34,6 @@ export default function SocketConnector() {
 
       if (sessionID) {
         // this.usernameAlreadySelected = true
-
-        console.log(
-          'session id on socket connection:',
-          loggedInUser.user.profile?.uuid
-        )
-
         socket.auth = {
           sessionID,
           username: loggedInUser?.user?.profile?.username,

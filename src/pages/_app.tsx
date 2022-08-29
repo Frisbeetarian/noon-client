@@ -1,3 +1,4 @@
+import React from 'react'
 import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
 import theme from '../theme'
 import './index.css'
@@ -8,15 +9,17 @@ import Chat from '../components/chat/Chat'
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ChakraProvider resetCSS theme={theme}>
-      <ColorModeProvider
-        options={{
-          useSystemColorMode: true,
-        }}
-      >
-        <Component {...pageProps} />
-      </ColorModeProvider>
-    </ChakraProvider>
+    <React.StrictMode>
+      <ChakraProvider resetCSS theme={theme}>
+        <ColorModeProvider
+          options={{
+            useSystemColorMode: true,
+          }}
+        >
+          <Component {...pageProps} />
+        </ColorModeProvider>
+      </ChakraProvider>
+    </React.StrictMode>
   )
 }
 

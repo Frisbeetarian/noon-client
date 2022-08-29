@@ -174,7 +174,27 @@ export default function Footer() {
         })
       })
 
-      socket.on('friend-disconnected', ({}) => {})
+      // socket.on('friend-connected', ({ username, uuid }) => {
+      //   toast({
+      //     id: uuid,
+      //     title: `${username} went offline.`,
+      //     position: 'bottom-right',
+      //     isClosable: true,
+      //     status: 'warning',
+      //     duration: 5000,
+      //   })
+      // })
+
+      socket.on('friend-disconnected', ({ username, uuid }) => {
+        toast({
+          id: uuid,
+          title: `${username} went offline.`,
+          position: 'bottom-right',
+          isClosable: true,
+          status: 'warning',
+          duration: 5000,
+        })
+      })
 
       return () => {
         socket.off('private message')
