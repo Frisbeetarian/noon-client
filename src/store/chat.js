@@ -31,21 +31,46 @@ const slice = createSlice({
       chat.conversations = conversationsObject
     },
     addMessageToActiveConversation: (chat, action) => {
-      chat.activeConversation.messages.push({
-        uuid: uuid(),
-        content: action.payload.message,
-        updatedAt: new Date(),
-        createdAt: new Date(),
-        from: action.payload.from,
-        sender: {
-          uuid: action.payload.loggedInUser.uuid,
-          username: action.payload.loggedInUser.username,
-        },
-      })
+      let conversationUuid = action.payload.conversationUuid
 
-      // chat.conversations.find((conversation) => {
-      //
-      // })
+      if (chat.activeConversation) {
+        chat.activeConversation.messages.push({
+          uuid: uuid(),
+          content: action.payload.message,
+          updatedAt: new Date(),
+          createdAt: new Date(),
+          from: action.payload.from,
+          sender: {
+            uuid: action.payload.loggedInUser.uuid,
+            username: action.payload.loggedInUser.username,
+          },
+        })
+      } else {
+        const conversationn = chat.conversations.find(
+          (conversation) => conversation.uuid === conversationUuid
+        )
+        console.log('conversationUuid:', conversationUuid)
+
+        // let item = chat.conversations.map((conversation) => {
+        //   if (conversation.uuid === conversationUuid) return conversation
+        // })
+
+        // const target_copy = Object.assign({}, item)
+        console.log('conversation in store:', current(conversationn))
+        // const conversationObject = { ...conversation }
+        // current(conversationn.messages.push(message))
+        conversationn.messages.push({
+          uuid: uuid(),
+          content: action.payload.message,
+          updatedAt: new Date(),
+          createdAt: new Date(),
+          from: action.payload.from,
+          sender: {
+            uuid: action.payload.loggedInUser.uuid,
+            username: action.payload.loggedInUser.username,
+          },
+        })
+      }
     },
     addMessageToConversationByConversationUuid: (chat, action) => {
       let conversationUuid = action.payload.conversationUuid

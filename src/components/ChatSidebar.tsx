@@ -113,24 +113,25 @@ export default function ChatSidebar() {
           console.log('activeConversation:', activeConversation)
           const data = message
 
-          if (activeConversation) {
-            dispatch(
-              addMessageToActiveConversation({
-                message: data,
-                loggedInUser: { uuid: from, username: fromUsername },
-                from: 'computer',
-              })
-            )
-          } else {
-            dispatch(
-              addMessageToConversationByConversationUuid({
-                message: data,
-                loggedInUser: { uuid: from, username: fromUsername },
-                from: 'computer',
-                conversationUuid,
-              })
-            )
-          }
+          // if (activeConversation) {
+          dispatch(
+            addMessageToActiveConversation({
+              message: data,
+              loggedInUser: { uuid: from, username: fromUsername },
+              from: 'computer',
+              conversationUuid,
+            })
+          )
+          // } else {
+          //   dispatch(
+          //     addMessageToConversationByConversationUuid({
+          //       message: data,
+          //       loggedInUser: { uuid: from, username: fromUsername },
+          //       from: 'computer',
+          //       conversationUuid,
+          //     })
+          //   )
+          // }
         }
       )
 

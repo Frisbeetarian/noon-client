@@ -18,6 +18,7 @@ const slice = createSlice({
 
       action.payload.profiles.forEach((profile) => {
         let profileObject = { ...profile }
+
         const friendsCheck = action.payload.loggedInUser.user.friends.find(
           (element) => element.uuid == profileObject.uuid
         )
