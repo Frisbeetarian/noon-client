@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react'
 import { Avatar, Flex, Text } from '@chakra-ui/react'
-import { useGetConversationsByProfileUuidQuery } from '../../generated/graphql'
+import {
+  useClearUnreadMessagesForConversationMutation,
+  useGetConversationsByProfileUuidQuery,
+} from '../../generated/graphql'
 
 import {
   getActiveConversation,
@@ -9,12 +12,17 @@ import {
   setActiveConversee,
 } from '../../store/chat'
 import { useDispatch, useSelector } from 'react-redux'
+import { getLoggedInUser } from '../../store/users'
 
 const Messages = () => {
   const dispatch = useDispatch()
+  const loggedInUser = useSelector(getLoggedInUser)
+
   const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
 
+  const [, clearUnreadMessagesForConversation] =
+    useClearUnreadMessagesForConversationMutation()
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef()
     useEffect(() => elementRef.current.scrollIntoView())
@@ -22,6 +30,18 @@ const Messages = () => {
   }
 
   useEffect(() => {
+    if (
+      activeConversation.unreadMessages &&
+      activeConversation.unreadMessages !== 0 &&
+      activeConversation.profileThatHasUnreadMessages ===
+        loggedInUser.user.profile.uuid
+    ) {
+      clearUnreadMessagesForConversation({
+        conversationUuid: activeConversation.uuid,
+        profileUuid: 'fejfnewjnfewjf',
+      })
+    }
+
     return () => {
       dispatch(setActiveConversee(null))
       dispatch(setActiveConversation(null))
@@ -33,7 +53,6 @@ const Messages = () => {
       // w="100%"
       overflowY="scroll"
       flexDirection="column"
-      // p="3"
       className=" w-full top-0"
     >
       {activeConversation

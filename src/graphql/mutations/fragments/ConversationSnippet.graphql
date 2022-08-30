@@ -1,5 +1,7 @@
 fragment ConversationSnippet on Conversation {
     uuid
+    unreadMessages
+    profileThatHasUnreadMessages
     profiles{
         ...ConversationProfileSnippet
     }

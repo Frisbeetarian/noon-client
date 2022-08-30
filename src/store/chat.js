@@ -50,15 +50,11 @@ const slice = createSlice({
           (conversation) => conversation.uuid === conversationUuid
         )
         console.log('conversationUuid:', conversationUuid)
+        conversationn.unreadMessages = conversationn.unreadMessages + 1
+        conversationn.profileThatHasUnreadMessages =
+          action.payload.loggedInProfile.uuid
+        console.log('conversationn:', conversationn)
 
-        // let item = chat.conversations.map((conversation) => {
-        //   if (conversation.uuid === conversationUuid) return conversation
-        // })
-
-        // const target_copy = Object.assign({}, item)
-        console.log('conversation in store:', current(conversationn))
-        // const conversationObject = { ...conversation }
-        // current(conversationn.messages.push(message))
         conversationn.messages.push({
           uuid: uuid(),
           content: action.payload.message,

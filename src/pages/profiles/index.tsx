@@ -52,6 +52,7 @@ const Profiles = ({}) => {
   useEffect(() => {
     dispatch(showFriendshipRequestToast(socket))
   }, [])
+
   let sessionID
 
   useEffect(() => {

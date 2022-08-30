@@ -32,6 +32,7 @@ import { getLoggedInUser } from '../store/users'
 import {
   useGetConversationForLoggedInUserQuery,
   useSaveMessageMutation,
+  useUpdateUnreadMessagesForConversationMutation,
 } from '../generated/graphql'
 import Header from './chat/Header'
 
@@ -53,6 +54,9 @@ export default function ChatSidebar() {
   const [inputMessage, setInputMessage] = useState('')
   const [, saveMessage] = useSaveMessageMutation()
 
+  const [, updateUnreadMessagesForConversation] =
+    useUpdateUnreadMessagesForConversationMutation()
+
   const [
     {
       data: fetchedConversations,
@@ -60,6 +64,7 @@ export default function ChatSidebar() {
       fetching: conversationsFetching,
     },
   ] = useGetConversationForLoggedInUserQuery()
+  console.log('fetched conversations:', fetchedConversations)
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim().length) {
@@ -87,11 +92,14 @@ export default function ChatSidebar() {
         from: 'me',
       })
     )
+
     await saveMessage({
       message: data,
       conversationUuid: activeConversation.uuid,
+      to: activeConversee.uuid,
     })
   }
+
   const [height, setHeight] = useState(0)
   const ref = useRef(null)
 
@@ -113,6 +121,16 @@ export default function ChatSidebar() {
           console.log('activeConversation:', activeConversation)
           const data = message
 
+          if (
+            !activeConversation ||
+            conversationUuid !== activeConversation.uuid
+          ) {
+            console.log('entering update')
+            updateUnreadMessagesForConversation({
+              conversationUuid: conversationUuid,
+              profileUuid: loggedInUser?.user?.profile?.uuid,
+            })
+          }
           // if (activeConversation) {
           dispatch(
             addMessageToActiveConversation({
@@ -120,6 +138,7 @@ export default function ChatSidebar() {
               loggedInUser: { uuid: from, username: fromUsername },
               from: 'computer',
               conversationUuid,
+              loggedInProfile: loggedInUser.user?.profile,
             })
           )
           // } else {
@@ -240,10 +259,20 @@ export default function ChatSidebar() {
                               size="sm"
                               className="mr-2"
                             >
-                              {/*<AvatarBadge boxSize="1.25em" bg="green.500" />*/}
+                              {conversation.unreadMessages &&
+                              conversation.unreadMessages !== 0 &&
+                              conversation.profileThatHasUnreadMessages ===
+                                loggedInUser.user.profile.uuid ? (
+                                <AvatarBadge boxSize="1.25em" bg="red.500">
+                                  <p className="text-xs">
+                                    {conversation.unreadMessages}
+                                  </p>
+                                </AvatarBadge>
+                              ) : null}
                             </Avatar>
 
                             <p>{conversation.conversee.username}</p>
+                            {/*<p></p>*/}
                           </Flex>
                           // </Tooltip>
                         )

@@ -53,6 +53,8 @@ export type CommunityParticipant = {
 export type Conversation = {
   __typename?: 'Conversation';
   uuid: Scalars['String'];
+  unreadMessages: Scalars['Float'];
+  profileThatHasUnreadMessages: Scalars['String'];
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
   profiles: Array<Profile>;
@@ -65,6 +67,8 @@ export type ConversationToProfile = {
   uuid: Scalars['String'];
   conversationUuid: Scalars['String'];
   profileUuid: Scalars['String'];
+  unreadMessages: Scalars['Float'];
+  profileThatHasUnreadMessages: Scalars['String'];
   conversation: Conversation;
   profile: Array<Profile>;
 };
@@ -151,6 +155,8 @@ export type Mutation = {
   acceptFriendRequest: Scalars['Boolean'];
   createCommunity: Community;
   joinCommunity: Scalars['Boolean'];
+  clearUnreadMessagesForConversation: Scalars['Boolean'];
+  updateUnreadMessagesForConversation: Scalars['Boolean'];
   saveMessage: Message;
 };
 
@@ -230,8 +236,21 @@ export type MutationJoinCommunityArgs = {
 };
 
 
+export type MutationClearUnreadMessagesForConversationArgs = {
+  conversationUuid: Scalars['String'];
+  profileUuid: Scalars['String'];
+};
+
+
+export type MutationUpdateUnreadMessagesForConversationArgs = {
+  conversationUuid: Scalars['String'];
+  profileUuid: Scalars['String'];
+};
+
+
 export type MutationSaveMessageArgs = {
   conversationUuid: Scalars['String'];
+  to: Scalars['String'];
   message: Scalars['String'];
 };
 
@@ -433,6 +452,17 @@ export type ChangePasswordMutation = (
   ) }
 );
 
+export type ClearUnreadMessagesForConversationMutationVariables = Exact<{
+  conversationUuid: Scalars['String'];
+  profileUuid: Scalars['String'];
+}>;
+
+
+export type ClearUnreadMessagesForConversationMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'clearUnreadMessagesForConversation'>
+);
+
 export type CreateCommunityMutationVariables = Exact<{
   input: CommunityInput;
 }>;
@@ -508,7 +538,7 @@ export type ConversationProfileSnippetFragment = (
 
 export type ConversationSnippetFragment = (
   { __typename?: 'Conversation' }
-  & Pick<Conversation, 'uuid'>
+  & Pick<Conversation, 'uuid' | 'unreadMessages' | 'profileThatHasUnreadMessages'>
   & { profiles: Array<(
     { __typename?: 'Profile' }
     & ConversationProfileSnippetFragment
@@ -520,7 +550,7 @@ export type ConversationSnippetFragment = (
 
 export type ConversationToProfileSnippetFragment = (
   { __typename?: 'ConversationToProfile' }
-  & Pick<ConversationToProfile, 'uuid'>
+  & Pick<ConversationToProfile, 'uuid' | 'unreadMessages' | 'profileThatHasUnreadMessages'>
   & { profile: Array<(
     { __typename?: 'Profile' }
     & ConversationProfileSnippetFragment
@@ -889,6 +919,7 @@ export type RegisterMutation = (
 export type SaveMessageMutationVariables = Exact<{
   message: Scalars['String'];
   conversationUuid: Scalars['String'];
+  to: Scalars['String'];
 }>;
 
 
@@ -908,6 +939,17 @@ export type SendFriendRequestMutationVariables = Exact<{
 export type SendFriendRequestMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'sendFriendRequest'>
+);
+
+export type UpdateUnreadMessagesForConversationMutationVariables = Exact<{
+  conversationUuid: Scalars['String'];
+  profileUuid: Scalars['String'];
+}>;
+
+
+export type UpdateUnreadMessagesForConversationMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'updateUnreadMessagesForConversation'>
 );
 
 export type VoteMutationVariables = Exact<{
@@ -959,6 +1001,8 @@ export const MessageSnippetFragmentDoc = gql`
 export const ConversationSnippetFragmentDoc = gql`
     fragment ConversationSnippet on Conversation {
   uuid
+  unreadMessages
+  profileThatHasUnreadMessages
   profiles {
     ...ConversationProfileSnippet
   }
@@ -971,6 +1015,8 @@ ${MessageSnippetFragmentDoc}`;
 export const ConversationToProfileSnippetFragmentDoc = gql`
     fragment ConversationToProfileSnippet on ConversationToProfile {
   uuid
+  unreadMessages
+  profileThatHasUnreadMessages
   profile {
     ...ConversationProfileSnippet
   }
@@ -1110,6 +1156,18 @@ export const ChangePasswordDocument = gql`
 
 export function useChangePasswordMutation() {
   return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
+};
+export const ClearUnreadMessagesForConversationDocument = gql`
+    mutation ClearUnreadMessagesForConversation($conversationUuid: String!, $profileUuid: String!) {
+  clearUnreadMessagesForConversation(
+    conversationUuid: $conversationUuid
+    profileUuid: $profileUuid
+  )
+}
+    `;
+
+export function useClearUnreadMessagesForConversationMutation() {
+  return Urql.useMutation<ClearUnreadMessagesForConversationMutation, ClearUnreadMessagesForConversationMutationVariables>(ClearUnreadMessagesForConversationDocument);
 };
 export const CreateCommunityDocument = gql`
     mutation CreateCommunity($input: CommunityInput!) {
@@ -1462,8 +1520,8 @@ export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
 export const SaveMessageDocument = gql`
-    mutation SaveMessage($message: String!, $conversationUuid: String!) {
-  saveMessage(message: $message, conversationUuid: $conversationUuid) {
+    mutation SaveMessage($message: String!, $conversationUuid: String!, $to: String!) {
+  saveMessage(message: $message, conversationUuid: $conversationUuid, to: $to) {
     uuid
   }
 }
@@ -1480,6 +1538,18 @@ export const SendFriendRequestDocument = gql`
 
 export function useSendFriendRequestMutation() {
   return Urql.useMutation<SendFriendRequestMutation, SendFriendRequestMutationVariables>(SendFriendRequestDocument);
+};
+export const UpdateUnreadMessagesForConversationDocument = gql`
+    mutation UpdateUnreadMessagesForConversation($conversationUuid: String!, $profileUuid: String!) {
+  updateUnreadMessagesForConversation(
+    conversationUuid: $conversationUuid
+    profileUuid: $profileUuid
+  )
+}
+    `;
+
+export function useUpdateUnreadMessagesForConversationMutation() {
+  return Urql.useMutation<UpdateUnreadMessagesForConversationMutation, UpdateUnreadMessagesForConversationMutationVariables>(UpdateUnreadMessagesForConversationDocument);
 };
 export const VoteDocument = gql`
     mutation Vote($value: Int!, $postId: Int!) {
