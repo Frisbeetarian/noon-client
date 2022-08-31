@@ -35,6 +35,7 @@ import {
   useUpdateUnreadMessagesForConversationMutation,
 } from '../generated/graphql'
 import Header from './chat/Header'
+import { setChatComponentState } from '../store/ui'
 
 export default function ChatSidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -104,10 +105,15 @@ export default function ChatSidebar() {
   const ref = useRef(null)
 
   useEffect(() => {
+    if (isOpen) {
+      dispatch(setChatComponentState('open'))
+    } else {
+      dispatch(setChatComponentState('closed'))
+    }
     setTimeout(() => {
       if (ref.current) setHeight(ref.current.clientHeight)
     }, 100)
-  })
+  }, [isOpen])
 
   useEffect(() => {
     if (socket) {

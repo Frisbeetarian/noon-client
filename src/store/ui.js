@@ -8,12 +8,18 @@ let lastId = 0
 
 const slice = createSlice({
   name: 'ui',
-  initialState: {},
+  initialState: {
+    chatComponent: 'closed',
+  },
   reducers: {
     setSocket: (sockets, action) => {
       sockets.socket = action.payload.socket
     },
     showFriendshipRequestToast: (ui, action) => {},
+
+    setChatComponentState: (ui, action) => {
+      ui.chatComponent = action.payload
+    },
   },
 })
 //
@@ -25,5 +31,11 @@ const slice = createSlice({
 //   }
 // )
 
-export const { showFriendshipRequestToast } = slice.actions
+export const getChatComponentState = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.chatComponent
+)
+
+export const { showFriendshipRequestToast, setChatComponentState } =
+  slice.actions
 export default slice.reducer

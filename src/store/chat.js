@@ -10,6 +10,7 @@ const slice = createSlice({
     conversations: {},
     activeConversee: null,
     activeConversation: null,
+    conversationsThatHaveUnreadMessagesForProfile: [],
   },
   reducers: {
     setConversations: (chat, action) => {
@@ -22,6 +23,16 @@ const slice = createSlice({
           let converseeObject = conversationObject.profiles.find(
             (element) => element.uuid != action.payload.loggedInProfileUuid
           )
+
+          if (
+            conversation.unreadMessages !== 0 &&
+            conversation.profileThatHasUnreadMessages ===
+              action.payload.loggedInProfileUuid
+          ) {
+            chat.conversationsThatHaveUnreadMessagesForProfile.push(
+              conversation.uuid
+            )
+          }
 
           conversationObject.conversee = converseeObject
           conversationsObject.push(conversationObject)
@@ -53,6 +64,16 @@ const slice = createSlice({
         conversationn.unreadMessages = conversationn.unreadMessages + 1
         conversationn.profileThatHasUnreadMessages =
           action.payload.loggedInProfile.uuid
+
+        if (
+          chat.conversationsThatHaveUnreadMessagesForProfile[
+            conversationUuid
+          ] == undefined
+        ) {
+          chat.conversationsThatHaveUnreadMessagesForProfile.push(
+            conversationUuid
+          )
+        }
         console.log('conversationn:', conversationn)
 
         conversationn.messages.push({
@@ -101,13 +122,42 @@ const slice = createSlice({
       console.log('set active conversee uuid:', action.payload)
       chat.activeConversee = action.payload
     },
+    clearUnreadMessagesForConversationInStore: (chat, action) => {
+      const conversation = chat.activeConversation
+
+      conversation.unreadMessages = 0
+      conversation.profileThatHasUnreadMessages = []
+    },
     setActiveConversation: (chat, action) => {
       if (action.payload === null) {
         chat.activeConversation = null
         return
       }
 
+      let index = chat.conversationsThatHaveUnreadMessagesForProfile.indexOf(
+        action.payload.conversation.uuid
+      )
+      if (index > -1) {
+        chat.conversationsThatHaveUnreadMessagesForProfile.splice(index, 1)
+      }
+
+      // chat.conversationsThatHaveUnreadMessagesForProfile =
+      //   chat.conversationsThatHaveUnreadMessagesForProfile.filter(
+      //     (conversationUuid) =>
+      //       conversationUuid === action.payload.conversation.uuid
+      //   )
+
       let conversationObject = { ...action.payload.conversation }
+      // conversationObject.unreadMessages = 0
+      // conversationObject.profileThatHasUnreadMessages = []
+
+      const conversationFromStack = chat.conversations.find(
+        (conversation) => conversation.uuid === conversationObject.uuid
+      )
+
+      conversationFromStack.unreadMessages = 0
+      conversationFromStack.profileThatHasUnreadMessages = []
+
       let messagesArray = []
 
       action.payload.conversation.messages.map((message) => {
@@ -147,11 +197,17 @@ export const getActiveConversation = createSelector(
   (chat) => chat.activeConversation
 )
 
+export const getConversationsThatHaveUnreadMessagesForProfile = createSelector(
+  (state) => state.entities.chat,
+  (chat) => chat.conversationsThatHaveUnreadMessagesForProfile
+)
+
 export const {
   setConversations,
   setActiveConversee,
   setActiveConversation,
   addMessageToActiveConversation,
   addMessageToConversationByConversationUuid,
+  clearUnreadMessagesForConversationInStore,
 } = slice.actions
 export default slice.reducer

@@ -6,6 +6,7 @@ import {
 } from '../../generated/graphql'
 
 import {
+  clearUnreadMessagesForConversationInStore,
   getActiveConversation,
   getActiveConversee,
   setActiveConversation,
@@ -40,6 +41,8 @@ const Messages = () => {
         conversationUuid: activeConversation.uuid,
         profileUuid: 'fejfnewjnfewjf',
       })
+
+      dispatch(clearUnreadMessagesForConversationInStore)
     }
 
     return () => {

@@ -1,4 +1,6 @@
 import {
+  Avatar,
+  AvatarBadge,
   Box,
   Button,
   Flex,
@@ -19,9 +21,11 @@ import { useRouter } from 'next/router'
 import { ChevronDownIcon, ChatIcon } from '@chakra-ui/icons'
 
 import { getLoggedInUser, setLoggedInUser } from '../store/users'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import SocketConnector from './SocketIo/SocketConnector'
 import ChatSidebar from './ChatSidebar'
+import { getChatComponentState } from '../store/ui'
+import { getConversationsThatHaveUnreadMessagesForProfile } from '../store/chat'
 
 interface NavbarProps {}
 
@@ -35,9 +39,16 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
 
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
 
+  const chatComponentState = useSelector(getChatComponentState)
+  const loggedInUser = useSelector(getLoggedInUser)
+  const conversationsThatHaveUnreadMessages = useSelector(
+    getConversationsThatHaveUnreadMessagesForProfile
+  )
   useEffect(() => {
     dispatch(setLoggedInUser({ user: data }))
   }, [data])
+
+  useEffect(() => {}, [loggedInUser])
 
   let body = null
 
@@ -71,6 +82,18 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
             rightIcon={<ChevronDownIcon />}
           >
             <Flex className="justify-center items-center">
+              <Avatar
+                key={loggedInUser?.user?.profile?.uuid}
+                name={loggedInUser?.user?.profile?.username}
+                size="sm"
+                className="mr-2"
+              >
+                {chatComponentState !== 'open' &&
+                conversationsThatHaveUnreadMessages.length !== 0 ? (
+                  <AvatarBadge boxSize="1.25em" bg="red.500"></AvatarBadge>
+                ) : null}
+              </Avatar>
+
               <p>{data.me.profile.username}</p>
               <Box className="">
                 <SocketConnector />
