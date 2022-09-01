@@ -22,9 +22,11 @@ import {
   addMessageToActiveConversation,
   addMessageToConversationByConversationUuid,
   getActiveConversation,
+  getActiveConversationSet,
   getActiveConversee,
   getConversations,
   setActiveConversation,
+  setActiveConversationSet,
   setActiveConversee,
   setConversations,
 } from '../store/chat'
@@ -44,13 +46,13 @@ export default function ChatSidebar() {
 
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
-  const activeConversation = useSelector(getActiveConversation)
 
   const [profile, setProfile] = useState()
   const socket = useSelector(getSocket)
+  let activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
   const getConversationsFromStore = useSelector(getConversations)
-
+  const activeConversationSet = useSelector(getActiveConversationSet)
   const [messages, setMessages] = useState([])
   const [inputMessage, setInputMessage] = useState('')
   const [, saveMessage] = useSaveMessageMutation()
@@ -66,6 +68,19 @@ export default function ChatSidebar() {
     },
   ] = useGetConversationForLoggedInUserQuery()
   console.log('fetched conversations:', fetchedConversations)
+
+  // useEffect(() => {
+  // activeConversation = activeConversation
+  // dispatch(setActiveConversation(activeConversation))
+
+  // if (activeConversation === null) {
+  //   dispatch(setActiveConversation(null))
+  // }
+
+  // return () => {
+  //   dispatch(setActiveConversation(null))
+  // }
+  // }, [activeConversation])
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim().length) {
@@ -124,11 +139,11 @@ export default function ChatSidebar() {
             return
           }
           console.log('RECEIVED MESSAGES:', message)
-          console.log('activeConversation:', activeConversation)
+          console.log('activeConversation:', activeConversationSet)
           const data = message
 
           if (
-            !activeConversation ||
+            activeConversationSet === false ||
             conversationUuid !== activeConversation.uuid
           ) {
             console.log('entering update')
@@ -164,7 +179,7 @@ export default function ChatSidebar() {
         socket.off('private-chat-message')
       }
     }
-  }, [socket])
+  }, [socket, activeConversationSet])
 
   useEffect(() => {
     if (fetchedConversations?.getConversationForLoggedInUser) {
@@ -179,6 +194,7 @@ export default function ChatSidebar() {
   }, [fetchedConversations])
 
   function setActiveConverseeFunction(profile, conversation) {
+    dispatch(setActiveConversationSet(true))
     dispatch(setActiveConversee(profile))
     dispatch(
       setActiveConversation({

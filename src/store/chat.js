@@ -11,8 +11,12 @@ const slice = createSlice({
     activeConversee: null,
     activeConversation: null,
     conversationsThatHaveUnreadMessagesForProfile: [],
+    activeConversationSet: false,
   },
   reducers: {
+    setActiveConversationSet: (chat, action) => {
+      chat.activeConversationSet = action.payload
+    },
     setConversations: (chat, action) => {
       const conversationsObject = []
 
@@ -60,6 +64,7 @@ const slice = createSlice({
         const conversationn = chat.conversations.find(
           (conversation) => conversation.uuid === conversationUuid
         )
+
         console.log('conversationUuid:', conversationUuid)
         conversationn.unreadMessages = conversationn.unreadMessages + 1
         conversationn.profileThatHasUnreadMessages =
@@ -134,12 +139,15 @@ const slice = createSlice({
         return
       }
 
+      // if (action.payload) {
       let index = chat.conversationsThatHaveUnreadMessagesForProfile.indexOf(
         action.payload.conversation.uuid
       )
+
       if (index > -1) {
         chat.conversationsThatHaveUnreadMessagesForProfile.splice(index, 1)
       }
+      // }
 
       // chat.conversationsThatHaveUnreadMessagesForProfile =
       //   chat.conversationsThatHaveUnreadMessagesForProfile.filter(
@@ -157,7 +165,6 @@ const slice = createSlice({
 
       conversationFromStack.unreadMessages = 0
       conversationFromStack.profileThatHasUnreadMessages = []
-
       let messagesArray = []
 
       action.payload.conversation.messages.map((message) => {
@@ -176,6 +183,9 @@ const slice = createSlice({
       )
 
       conversationObject.messages = [...sortedMessage]
+      if (!chat['activeConversation']) {
+        chat['activeConversation'] = null
+      }
 
       chat.activeConversation = conversationObject
     },
@@ -197,6 +207,11 @@ export const getActiveConversation = createSelector(
   (chat) => chat.activeConversation
 )
 
+export const getActiveConversationSet = createSelector(
+  (state) => state.entities.chat,
+  (chat) => chat.activeConversationSet
+)
+
 export const getConversationsThatHaveUnreadMessagesForProfile = createSelector(
   (state) => state.entities.chat,
   (chat) => chat.conversationsThatHaveUnreadMessagesForProfile
@@ -209,5 +224,6 @@ export const {
   addMessageToActiveConversation,
   addMessageToConversationByConversationUuid,
   clearUnreadMessagesForConversationInStore,
+  setActiveConversationSet,
 } = slice.actions
 export default slice.reducer

@@ -24,11 +24,19 @@ const Messages = () => {
 
   const [, clearUnreadMessagesForConversation] =
     useClearUnreadMessagesForConversationMutation()
+
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef()
     useEffect(() => elementRef.current.scrollIntoView())
     return <div ref={elementRef} />
   }
+
+  // useEffect(() => {
+  //   if (activeConversation === null) {
+  //     dispatch(setActiveConversation(activeConversation))
+  //   }
+  // }, [])
+  //
 
   useEffect(() => {
     if (

@@ -9,14 +9,15 @@ const slice = createSlice({
   },
   reducers: {
     addProfiles: (profiles, action, loggedInUser) => {
-      let profilesArray = [...action.payload.profiles]
+      // let profilesArray = [...action.payload.profiles]
+      let profilesArray = []
 
-      profilesArray = profilesArray.filter(
+      action.payload.profiles = action.payload.profiles.filter(
         (profile) =>
           profile.uuid != action.payload.loggedInUser.user.profile.uuid
       )
 
-      action.payload.profiles.forEach((profile) => {
+      action.payload.profiles.map((profile) => {
         let profileObject = { ...profile }
 
         const friendsCheck = action.payload.loggedInUser.user.friends.find(
@@ -36,6 +37,9 @@ const slice = createSlice({
         } else if (friendshipRequestCheck) {
           profileObject.hasSentFriendshipToProfile = true
         }
+
+        console.log('PROFILE OBJECT:', profileObject)
+        profilesArray.push(profileObject)
       })
 
       profiles.list = profilesArray
@@ -44,6 +48,7 @@ const slice = createSlice({
       let profile = profiles.list.find(
         (profile) => profile.uuid == action.payload.profileUuid
       )
+
       console.log('profile:', profile.uuid)
       profile.hasSentFriendshipToProfile = true
     },

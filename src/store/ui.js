@@ -22,7 +22,7 @@ const slice = createSlice({
     },
   },
 })
-//
+
 // export const socket = createAsyncThunk(
 //   'sockets/socket',
 //   async (_, thunkAPI) => {

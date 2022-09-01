@@ -67,10 +67,6 @@ const Profiles = ({}) => {
     dispatch(setActiveConversee(profile))
   }
 
-  useEffect(() => {
-    console.log('logged in user:', loggedInUser)
-  }, [loggedInUser])
-
   if (!fetching && !profiles) {
     return (
       <div>
