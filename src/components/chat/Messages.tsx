@@ -10,6 +10,7 @@ import {
   getActiveConversation,
   getActiveConversee,
   setActiveConversation,
+  setActiveConversationSet,
   setActiveConversee,
 } from '../../store/chat'
 import { useDispatch, useSelector } from 'react-redux'
@@ -54,6 +55,7 @@ const Messages = () => {
     }
 
     return () => {
+      dispatch(setActiveConversationSet(false))
       dispatch(setActiveConversee(null))
       dispatch(setActiveConversation(null))
     }
@@ -64,7 +66,7 @@ const Messages = () => {
       // w="100%"
       overflowY="scroll"
       flexDirection="column"
-      className=" w-full top-0"
+      className="w-full top-0"
     >
       {activeConversation
         ? activeConversation.messages.map((item, index) => {

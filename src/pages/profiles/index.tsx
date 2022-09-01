@@ -164,7 +164,7 @@ const Profiles = ({}) => {
                   ) : (
                     <Box>
                       {profile.isAFriend ? (
-                        <Flex className="bg-red-500 w-full z-40 h-full cursor-pointer">
+                        <Flex className="w-full z-40 h-full cursor-pointer">
                           <ChatIcon
                             className="mr-3 mt-1"
                             onClick={() => {
