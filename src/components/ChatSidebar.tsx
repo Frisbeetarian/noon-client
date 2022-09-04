@@ -267,6 +267,7 @@ export default function ChatSidebar() {
                           //   placement="bottom"
                           // >
                           <Flex
+                            key={conversation.uuid}
                             className="items-center mb-2 p-3 border-b border-b-base-300 border-b-amber-100 cursor-pointer"
                             onClick={() => {
                               setActiveConverseeFunction(
