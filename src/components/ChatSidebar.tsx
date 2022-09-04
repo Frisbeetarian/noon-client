@@ -25,6 +25,7 @@ import {
   getActiveConversationSet,
   getActiveConversee,
   getConversations,
+  getSortedConversations,
   setActiveConversation,
   setActiveConversationSet,
   setActiveConversee,
@@ -51,7 +52,7 @@ export default function ChatSidebar() {
   const socket = useSelector(getSocket)
   let activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
-  const getConversationsFromStore = useSelector(getConversations)
+  const getConversationsFromStore = useSelector(getSortedConversations)
   const activeConversationSet = useSelector(getActiveConversationSet)
   const [messages, setMessages] = useState([])
   const [inputMessage, setInputMessage] = useState('')

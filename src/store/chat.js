@@ -7,7 +7,7 @@ import { uuid } from 'uuidv4'
 const slice = createSlice({
   name: 'chat',
   initialState: {
-    conversations: {},
+    conversations: null,
     activeConversee: null,
     activeConversation: null,
     conversationsThatHaveUnreadMessagesForProfile: [],
@@ -18,7 +18,7 @@ const slice = createSlice({
       chat.activeConversationSet = action.payload
     },
     setConversations: (chat, action) => {
-      const conversationsObject = []
+      const conversationsArray = []
 
       Promise.all(
         action.payload.conversationsToSend.map((conversation) => {
@@ -39,11 +39,11 @@ const slice = createSlice({
           }
 
           conversationObject.conversee = converseeObject
-          conversationsObject.push(conversationObject)
+          conversationsArray.push(conversationObject)
         })
       )
 
-      chat.conversations = conversationsObject
+      chat.conversations = conversationsArray
     },
     addMessageToActiveConversation: (chat, action) => {
       let conversationUuid = action.payload.conversationUuid
@@ -101,6 +101,7 @@ const slice = createSlice({
       const conversationn = chat.conversations.find(
         (conversation) => conversation.uuid === conversationUuid
       )
+
       console.log('conversationUuid:', conversationUuid)
 
       // let item = chat.conversations.map((conversation) => {
@@ -193,6 +194,11 @@ const slice = createSlice({
 })
 
 export const getConversations = createSelector(
+  (state) => state.entities.chat,
+  (chat) => chat.conversations
+)
+
+export const getSortedConversations = createSelector(
   (state) => state.entities.chat,
   (chat) => chat.conversations
 )

@@ -71,6 +71,8 @@ export type ConversationToProfile = {
   profileThatHasUnreadMessages: Scalars['String'];
   conversation: Conversation;
   profile: Array<Profile>;
+  updatedAt: Scalars['String'];
+  createdAt: Scalars['String'];
 };
 
 
@@ -538,7 +540,7 @@ export type ConversationProfileSnippetFragment = (
 
 export type ConversationSnippetFragment = (
   { __typename?: 'Conversation' }
-  & Pick<Conversation, 'uuid' | 'unreadMessages' | 'profileThatHasUnreadMessages'>
+  & Pick<Conversation, 'uuid' | 'unreadMessages' | 'profileThatHasUnreadMessages' | 'updatedAt' | 'createdAt'>
   & { profiles: Array<(
     { __typename?: 'Profile' }
     & ConversationProfileSnippetFragment
@@ -1003,6 +1005,8 @@ export const ConversationSnippetFragmentDoc = gql`
   uuid
   unreadMessages
   profileThatHasUnreadMessages
+  updatedAt
+  createdAt
   profiles {
     ...ConversationProfileSnippet
   }
