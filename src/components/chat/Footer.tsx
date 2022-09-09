@@ -1,19 +1,44 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Flex, Input, Button } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
 import {
   getActiveConversation,
+  getActiveConversee,
   setActiveConversation,
   setOngoingCall,
 } from '../../store/chat'
 import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
+import { getSocket } from '../../store/sockets'
 
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const dispatch = useDispatch()
+  const socket = useSelector(getSocket)
 
   const activeConversation = useSelector(getActiveConversation)
   const loggedInUser = useSelector(getLoggedInUser)
+  const activeConversee = useSelector(getActiveConversee)
+
+  useEffect(() => {
+    socket.on(
+      'set-ongoing-call-for-conversation',
+      ({ from, fromUsername, to, toUsername, conversationUuid }) => {
+        dispatch(
+          setOngoingCall({
+            uuid: activeConversation.uuid,
+            initiator: {
+              uuid: from,
+              username: fromUsername,
+            },
+          })
+        )
+      }
+    )
+
+    return () => {
+      socket.off('set-ongoing-call-for-conversation')
+    }
+  }, [activeConversee])
 
   return (
     <Flex
@@ -49,6 +74,14 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
               initiator: loggedInUser?.user?.profile,
             })
           )
+
+          socket.emit('set-ongoing-call-for-conversation', {
+            from: loggedInUser.user?.profile?.uuid,
+            fromUsername: loggedInUser.user?.profile?.username,
+            to: activeConversee.uuid,
+            toUsername: activeConversee.username,
+            conversationUuid: activeConversation.uuid,
+          })
         }}
       >
         <PhoneIcon className="" color="white" />
