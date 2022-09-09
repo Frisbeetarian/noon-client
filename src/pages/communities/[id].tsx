@@ -8,6 +8,7 @@ import { useGetCommunityParticipantsQuery } from '../../generated/graphql'
 import { createUrqlClient } from '../../utils/createUrqlClient'
 
 import { useGetCommunityFromUrl } from '../../utils/useGetCommunityFromUrl'
+import { useGetIntId } from '../../utils/useGetIntId'
 
 const Community = ({}) => {
   const [{ data, error, fetching }] = useGetCommunityFromUrl()

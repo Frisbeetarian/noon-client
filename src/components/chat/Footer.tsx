@@ -1,5 +1,6 @@
 import React from 'react'
 import { Flex, Input, Button } from '@chakra-ui/react'
+import { PhoneIcon } from '@chakra-ui/icons'
 
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   return (
@@ -20,10 +21,24 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
         value={inputMessage}
         onChange={(e) => setInputMessage(e.target.value)}
       />
+
+      <Button
+        className="mr-2"
+        bg="green.500"
+        _hover={{
+          bg: 'black',
+          color: 'black',
+          border: '1px solid black',
+        }}
+      >
+        <PhoneIcon className="" color="white" />
+      </Button>
+
       <Button
         bg="black"
         color="white"
-        borderRadius="none"
+        // borderRadius="none"
+        className="mr-3"
         _hover={{
           bg: 'white',
           color: 'black',

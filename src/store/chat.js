@@ -38,6 +38,8 @@ const slice = createSlice({
             )
           }
 
+          conversationObject.ongoingCall = false
+
           conversationObject.conversee = converseeObject
           conversationsArray.push(conversationObject)
         })
@@ -166,6 +168,8 @@ const slice = createSlice({
 
       conversationFromStack.unreadMessages = 0
       conversationFromStack.profileThatHasUnreadMessages = []
+      conversationFromStack.ongoingCall = false
+
       let messagesArray = []
 
       action.payload.conversation.messages.map((message) => {
@@ -189,6 +193,11 @@ const slice = createSlice({
       }
 
       chat.activeConversation = conversationObject
+    },
+    setOngoingCall: (chat, action) => {
+      let activeConversationObject = { ...chat.activeConversation }
+
+      activeConversationObject.ongoingCall = action.payload
     },
   },
 })
@@ -231,5 +240,6 @@ export const {
   addMessageToConversationByConversationUuid,
   clearUnreadMessagesForConversationInStore,
   setActiveConversationSet,
+  setOngoingCall,
 } = slice.actions
 export default slice.reducer

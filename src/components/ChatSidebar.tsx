@@ -31,7 +31,9 @@ import {
   setActiveConversee,
   setConversations,
 } from '../store/chat'
+
 import { getLoggedInUser } from '../store/users'
+
 import {
   useGetConversationForLoggedInUserQuery,
   useSaveMessageMutation,
@@ -68,6 +70,7 @@ export default function ChatSidebar() {
       fetching: conversationsFetching,
     },
   ] = useGetConversationForLoggedInUserQuery()
+
   console.log('fetched conversations:', fetchedConversations)
 
   // useEffect(() => {
@@ -126,6 +129,7 @@ export default function ChatSidebar() {
     } else {
       dispatch(setChatComponentState('closed'))
     }
+
     setTimeout(() => {
       if (ref.current) setHeight(ref.current.clientHeight)
     }, 100)
@@ -139,8 +143,10 @@ export default function ChatSidebar() {
           if (!message.trim().length) {
             return
           }
+
           console.log('RECEIVED MESSAGES:', message)
           console.log('activeConversation:', activeConversationSet)
+
           const data = message
 
           if (
@@ -237,6 +243,7 @@ export default function ChatSidebar() {
               dispatch(setActiveConversation(null))
             }}
           />
+
           <DrawerHeader
             className="text-white bg-neutral"
             borderBottomWidth="1px"
