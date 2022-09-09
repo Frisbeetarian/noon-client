@@ -1,8 +1,20 @@
 import React from 'react'
 import { Flex, Input, Button } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
+import {
+  getActiveConversation,
+  setActiveConversation,
+  setOngoingCall,
+} from '../../store/chat'
+import { useSelector, useDispatch } from 'react-redux'
+import { getLoggedInUser } from '../../store/users'
 
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
+  const dispatch = useDispatch()
+
+  const activeConversation = useSelector(getActiveConversation)
+  const loggedInUser = useSelector(getLoggedInUser)
+
   return (
     <Flex
       // mt="5"
@@ -29,6 +41,14 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
           bg: 'black',
           color: 'black',
           border: '1px solid black',
+        }}
+        onClick={() => {
+          dispatch(
+            setOngoingCall({
+              uuid: activeConversation.uuid,
+              initiator: loggedInUser?.user?.profile,
+            })
+          )
         }}
       >
         <PhoneIcon className="" color="white" />

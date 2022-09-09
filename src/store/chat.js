@@ -198,6 +198,8 @@ const slice = createSlice({
       let activeConversationObject = { ...chat.activeConversation }
 
       activeConversationObject.ongoingCall = action.payload
+      console.log('action payload:', action.payload)
+      chat.activeConversation = { ...activeConversationObject }
     },
   },
 })

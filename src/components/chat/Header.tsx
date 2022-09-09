@@ -26,7 +26,7 @@ const Header = () => {
   const socket = useSelector(getSocket)
   const [online, setOnline] = useState('loading')
   // const [state, setState] = useState(initState)
-  let activeConversation = useSelector(getActiveConversation)
+  const activeConversation = useSelector(getActiveConversation)
 
   useEffect(() => {
     socket.emit('check-friend-connection', {
@@ -87,21 +87,26 @@ const Header = () => {
         </Flex>
       </Flex>
 
-      <Flex className=" h-full py-4 flex-col justify-end items-end w-1/2">
-        <Flex className="flex justify-end px-4 py-2 items-center" bg="blue.500">
-          <Text className="mb-2 mr-3 mt-1 font-black"> Call ongoing</Text>
-          <NextLink
-            href="/conferences/[id]"
-            as={`/conferences/${activeConversation.uuid}`}
+      {activeConversation.ongoingCall ? (
+        <Flex className=" h-full py-4 flex-col justify-end items-end w-1/2">
+          <Flex
+            className="flex justify-end px-4 py-2 items-center"
+            bg="blue.500"
           >
-            <Link>
-              <Button bg="green.500">
-                <Heading fontSize="md">Join</Heading>
-              </Button>
-            </Link>
-          </NextLink>
+            <Text className="mb-2 mr-3 mt-1 font-black">Call ongoing</Text>
+            <NextLink
+              href="/conferences/[id]"
+              as={`/conferences/${activeConversation.uuid}`}
+            >
+              <Link>
+                <Button bg="green.500">
+                  <Heading fontSize="md">Join</Heading>
+                </Button>
+              </Link>
+            </NextLink>
+          </Flex>
         </Flex>
-      </Flex>
+      ) : null}
     </Flex>
   )
 }
