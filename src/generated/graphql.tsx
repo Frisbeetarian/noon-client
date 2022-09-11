@@ -161,6 +161,7 @@ export type Mutation = {
   createCommunity: Community;
   joinCommunity: Scalars['Boolean'];
   setPendingCallForConversation: Scalars['Boolean'];
+  cancelPendingCallForConversation: Scalars['Boolean'];
   clearUnreadMessagesForConversation: Scalars['Boolean'];
   updateUnreadMessagesForConversation: Scalars['Boolean'];
   saveMessage: Message;
@@ -244,6 +245,11 @@ export type MutationJoinCommunityArgs = {
 
 export type MutationSetPendingCallForConversationArgs = {
   pendingCallInitiatorUuid: Scalars['String'];
+  conversationUuid: Scalars['String'];
+};
+
+
+export type MutationCancelPendingCallForConversationArgs = {
   conversationUuid: Scalars['String'];
 };
 
@@ -448,6 +454,16 @@ export type AcceptFriendRequestMutationVariables = Exact<{
 export type AcceptFriendRequestMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'acceptFriendRequest'>
+);
+
+export type CancelPendingCallForConversationMutationVariables = Exact<{
+  conversationUuid: Scalars['String'];
+}>;
+
+
+export type CancelPendingCallForConversationMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'cancelPendingCallForConversation'>
 );
 
 export type ChangePasswordMutationVariables = Exact<{
@@ -1178,6 +1194,15 @@ export const AcceptFriendRequestDocument = gql`
 
 export function useAcceptFriendRequestMutation() {
   return Urql.useMutation<AcceptFriendRequestMutation, AcceptFriendRequestMutationVariables>(AcceptFriendRequestDocument);
+};
+export const CancelPendingCallForConversationDocument = gql`
+    mutation CancelPendingCallForConversation($conversationUuid: String!) {
+  cancelPendingCallForConversation(conversationUuid: $conversationUuid)
+}
+    `;
+
+export function useCancelPendingCallForConversationMutation() {
+  return Urql.useMutation<CancelPendingCallForConversationMutation, CancelPendingCallForConversationMutationVariables>(CancelPendingCallForConversationDocument);
 };
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($token: String!, $newPassword: String!) {

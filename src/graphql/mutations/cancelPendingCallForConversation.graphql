@@ -1,0 +1,3 @@
+mutation CancelPendingCallForConversation($conversationUuid: String!) {
+    cancelPendingCallForConversation(conversationUuid: $conversationUuid)
+}

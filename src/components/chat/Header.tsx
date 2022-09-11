@@ -12,6 +12,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import {
   addMessageToActiveConversation,
+  cancelPendingCall,
   getActiveConversation,
   getActiveConversee,
 } from '../../store/chat'
@@ -19,6 +20,7 @@ import {
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
 import NextLink from 'next/link'
+import { useCancelPendingCallForConversationMutation } from '../../generated/graphql'
 
 const Header = () => {
   const activeConversee = useSelector(getActiveConversee)
@@ -28,6 +30,9 @@ const Header = () => {
   const [online, setOnline] = useState('loading')
   // const [state, setState] = useState(initState)
   const activeConversation = useSelector(getActiveConversation)
+
+  const [, cancelPendingCallForConversation] =
+    useCancelPendingCallForConversationMutation()
 
   useEffect(() => {
     socket.emit('check-friend-connection', {
@@ -96,12 +101,25 @@ const Header = () => {
             bg="blue.500"
           >
             <Text className="mb-2 mr-3 mt-1 font-black">Call ongoing</Text>
+
             {activeConversation.pendingCallProfile.uuid ===
             loggedInUser?.user?.profile?.uuid ? (
               <Button bg="red.500" className="mr-2">
-                <Heading fontSize="md">Cancel</Heading>
+                <Heading
+                  fontSize="md"
+                  onClick={async () => {
+                    dispatch(cancelPendingCall())
+
+                    await cancelPendingCallForConversation({
+                      conversationUuid: activeConversation.uuid,
+                    })
+                  }}
+                >
+                  Cancel
+                </Heading>
               </Button>
             ) : null}
+
             <NextLink
               href="/conferences/[id]"
               as={`/conferences/${activeConversation.uuid}`}

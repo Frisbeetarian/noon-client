@@ -202,6 +202,13 @@ const slice = createSlice({
     setPendingCall: (chat, action) => {
       let activeConversationObject = { ...chat.activeConversation }
       activeConversationObject.pendingCall = action.payload
+      // activeConversationObject.pendingCallProfile = null
+      chat.activeConversation = { ...activeConversationObject }
+    },
+    cancelPendingCall: (chat, action) => {
+      let activeConversationObject = { ...chat.activeConversation }
+      activeConversationObject.pendingCall = false
+      activeConversationObject.pendingCallProfile = null
       chat.activeConversation = { ...activeConversationObject }
     },
   },
@@ -247,5 +254,6 @@ export const {
   setActiveConversationSet,
   setOngoingCall,
   setPendingCall,
+  cancelPendingCall,
 } = slice.actions
 export default slice.reducer
