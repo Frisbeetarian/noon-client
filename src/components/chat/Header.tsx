@@ -15,6 +15,7 @@ import {
   getActiveConversation,
   getActiveConversee,
 } from '../../store/chat'
+
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
 import NextLink from 'next/link'
@@ -62,6 +63,7 @@ const Header = () => {
       socket.off('friend-disconnected')
     }
   }, [activeConversee])
+
   return (
     <Flex w="100%" className="items-center justify-between">
       <Flex className="items-center">
@@ -87,13 +89,19 @@ const Header = () => {
         </Flex>
       </Flex>
 
-      {activeConversation.ongoingCall ? (
+      {activeConversation.pendingCall ? (
         <Flex className=" h-full py-4 flex-col justify-end items-end w-1/2">
           <Flex
             className="flex justify-end px-4 py-2 items-center"
             bg="blue.500"
           >
             <Text className="mb-2 mr-3 mt-1 font-black">Call ongoing</Text>
+            {activeConversation.pendingCallProfile.uuid ===
+            loggedInUser?.user?.profile?.uuid ? (
+              <Button bg="red.500" className="mr-2">
+                <Heading fontSize="md">Cancel</Heading>
+              </Button>
+            ) : null}
             <NextLink
               href="/conferences/[id]"
               as={`/conferences/${activeConversation.uuid}`}

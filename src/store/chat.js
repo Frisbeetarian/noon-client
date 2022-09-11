@@ -38,7 +38,7 @@ const slice = createSlice({
             )
           }
 
-          conversationObject.ongoingCall = false
+          // conversationObject.ongoingCall = false
 
           conversationObject.conversee = converseeObject
           conversationsArray.push(conversationObject)
@@ -196,9 +196,12 @@ const slice = createSlice({
     },
     setOngoingCall: (chat, action) => {
       let activeConversationObject = { ...chat.activeConversation }
-
       activeConversationObject.ongoingCall = action.payload
-      console.log('action payload:', action.payload)
+      chat.activeConversation = { ...activeConversationObject }
+    },
+    setPendingCall: (chat, action) => {
+      let activeConversationObject = { ...chat.activeConversation }
+      activeConversationObject.pendingCall = action.payload
       chat.activeConversation = { ...activeConversationObject }
     },
   },
@@ -243,5 +246,6 @@ export const {
   clearUnreadMessagesForConversationInStore,
   setActiveConversationSet,
   setOngoingCall,
+  setPendingCall,
 } = slice.actions
 export default slice.reducer

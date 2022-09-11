@@ -47,6 +47,14 @@ export default function ChatSidebar() {
   const firstField = React.useRef()
   const [startDate, setStartDate] = useState(new Date())
 
+  const [
+    {
+      data: fetchedConversations,
+      error: conversationsError,
+      fetching: conversationsFetching,
+    },
+  ] = useGetConversationForLoggedInUserQuery()
+
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
 
@@ -62,14 +70,6 @@ export default function ChatSidebar() {
 
   const [, updateUnreadMessagesForConversation] =
     useUpdateUnreadMessagesForConversationMutation()
-
-  const [
-    {
-      data: fetchedConversations,
-      error: conversationsError,
-      fetching: conversationsFetching,
-    },
-  ] = useGetConversationForLoggedInUserQuery()
 
   console.log('fetched conversations:', fetchedConversations)
 
@@ -160,6 +160,7 @@ export default function ChatSidebar() {
             })
           }
           // if (activeConversation) {
+
           dispatch(
             addMessageToActiveConversation({
               message: data,

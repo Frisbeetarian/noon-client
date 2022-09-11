@@ -55,11 +55,14 @@ export type Conversation = {
   uuid: Scalars['String'];
   unreadMessages: Scalars['Float'];
   profileThatHasUnreadMessages: Scalars['String'];
+  ongoingCall: Scalars['Boolean'];
+  pendingCall: Scalars['Boolean'];
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
   profiles: Array<Profile>;
   conversations: Array<ConversationToProfile>;
   messages: Array<Message>;
+  pendingCallProfile: Profile;
 };
 
 export type ConversationToProfile = {
@@ -157,6 +160,7 @@ export type Mutation = {
   acceptFriendRequest: Scalars['Boolean'];
   createCommunity: Community;
   joinCommunity: Scalars['Boolean'];
+  setPendingCallForConversation: Scalars['Boolean'];
   clearUnreadMessagesForConversation: Scalars['Boolean'];
   updateUnreadMessagesForConversation: Scalars['Boolean'];
   saveMessage: Message;
@@ -235,6 +239,12 @@ export type MutationCreateCommunityArgs = {
 
 export type MutationJoinCommunityArgs = {
   communityId: Scalars['Int'];
+};
+
+
+export type MutationSetPendingCallForConversationArgs = {
+  pendingCallInitiatorUuid: Scalars['String'];
+  conversationUuid: Scalars['String'];
 };
 
 
@@ -540,14 +550,17 @@ export type ConversationProfileSnippetFragment = (
 
 export type ConversationSnippetFragment = (
   { __typename?: 'Conversation' }
-  & Pick<Conversation, 'uuid' | 'unreadMessages' | 'profileThatHasUnreadMessages' | 'updatedAt' | 'createdAt'>
+  & Pick<Conversation, 'uuid' | 'unreadMessages' | 'profileThatHasUnreadMessages' | 'updatedAt' | 'createdAt' | 'ongoingCall' | 'pendingCall'>
   & { profiles: Array<(
     { __typename?: 'Profile' }
     & ConversationProfileSnippetFragment
   )>, messages: Array<(
     { __typename?: 'Message' }
     & MessageSnippetFragment
-  )> }
+  )>, pendingCallProfile: (
+    { __typename?: 'Profile' }
+    & ConversationProfileSnippetFragment
+  ) }
 );
 
 export type ConversationToProfileSnippetFragment = (
@@ -943,6 +956,17 @@ export type SendFriendRequestMutation = (
   & Pick<Mutation, 'sendFriendRequest'>
 );
 
+export type SetPendingCallForConversationMutationVariables = Exact<{
+  conversationUuid: Scalars['String'];
+  pendingCallInitiatorUuid: Scalars['String'];
+}>;
+
+
+export type SetPendingCallForConversationMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'setPendingCallForConversation'>
+);
+
 export type UpdateUnreadMessagesForConversationMutationVariables = Exact<{
   conversationUuid: Scalars['String'];
   profileUuid: Scalars['String'];
@@ -1012,6 +1036,11 @@ export const ConversationSnippetFragmentDoc = gql`
   }
   messages {
     ...MessageSnippet
+  }
+  ongoingCall
+  pendingCall
+  pendingCallProfile {
+    ...ConversationProfileSnippet
   }
 }
     ${ConversationProfileSnippetFragmentDoc}
@@ -1542,6 +1571,18 @@ export const SendFriendRequestDocument = gql`
 
 export function useSendFriendRequestMutation() {
   return Urql.useMutation<SendFriendRequestMutation, SendFriendRequestMutationVariables>(SendFriendRequestDocument);
+};
+export const SetPendingCallForConversationDocument = gql`
+    mutation SetPendingCallForConversation($conversationUuid: String!, $pendingCallInitiatorUuid: String!) {
+  setPendingCallForConversation(
+    conversationUuid: $conversationUuid
+    pendingCallInitiatorUuid: $pendingCallInitiatorUuid
+  )
+}
+    `;
+
+export function useSetPendingCallForConversationMutation() {
+  return Urql.useMutation<SetPendingCallForConversationMutation, SetPendingCallForConversationMutationVariables>(SetPendingCallForConversationDocument);
 };
 export const UpdateUnreadMessagesForConversationDocument = gql`
     mutation UpdateUnreadMessagesForConversation($conversationUuid: String!, $profileUuid: String!) {

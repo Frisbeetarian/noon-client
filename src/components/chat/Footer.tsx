@@ -6,10 +6,12 @@ import {
   getActiveConversee,
   setActiveConversation,
   setOngoingCall,
+  setPendingCall,
 } from '../../store/chat'
 import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
+import { useSetPendingCallForConversationMutation } from '../../generated/graphql'
 
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const dispatch = useDispatch()
@@ -18,6 +20,9 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const activeConversation = useSelector(getActiveConversation)
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversee = useSelector(getActiveConversee)
+
+  const [, setPendingCallForConversation] =
+    useSetPendingCallForConversationMutation()
 
   useEffect(() => {
     socket.on(
@@ -35,8 +40,24 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
       }
     )
 
+    socket.on(
+      'set-pending-call-for-conversation',
+      ({ from, fromUsername, to, toUsername, conversationUuid }) => {
+        dispatch(
+          setPendingCall({
+            uuid: activeConversation.uuid,
+            initiator: {
+              uuid: from,
+              username: fromUsername,
+            },
+          })
+        )
+      }
+    )
+
     return () => {
       socket.off('set-ongoing-call-for-conversation')
+      socket.off('set-pending-call-for-conversation')
     }
   }, [activeConversee])
 
@@ -67,20 +88,25 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
           color: 'black',
           border: '1px solid black',
         }}
-        onClick={() => {
+        onClick={async () => {
           dispatch(
-            setOngoingCall({
+            setPendingCall({
               uuid: activeConversation.uuid,
               initiator: loggedInUser?.user?.profile,
             })
           )
 
-          socket.emit('set-ongoing-call-for-conversation', {
+          socket.emit('set-pending-call-for-conversation', {
             from: loggedInUser.user?.profile?.uuid,
             fromUsername: loggedInUser.user?.profile?.username,
             to: activeConversee.uuid,
             toUsername: activeConversee.username,
             conversationUuid: activeConversation.uuid,
+          })
+
+          await setPendingCallForConversation({
+            conversationUuid: activeConversation.uuid,
+            pendingCallInitiatorUuid: loggedInUser.user?.profile?.uuid,
           })
         }}
       >

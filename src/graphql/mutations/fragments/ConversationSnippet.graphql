@@ -10,4 +10,9 @@ fragment ConversationSnippet on Conversation {
     messages{
         ...MessageSnippet
     }
+    ongoingCall
+    pendingCall
+    pendingCallProfile {
+        ...ConversationProfileSnippet
+    }
 }
