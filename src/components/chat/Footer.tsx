@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Flex, Input, Button } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
 import {
+  cancelPendingCall,
   getActiveConversation,
   getActiveConversee,
   setActiveConversation,
@@ -55,9 +56,14 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
       }
     )
 
+    socket.on('cancel-pending-call-for-conversation', () => {
+      dispatch(cancelPendingCall())
+    })
+
     return () => {
       socket.off('set-ongoing-call-for-conversation')
       socket.off('set-pending-call-for-conversation')
+      socket.off('cancel-pending-call-for-conversation')
     }
   }, [activeConversee])
 

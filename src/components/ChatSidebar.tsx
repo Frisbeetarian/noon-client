@@ -110,6 +110,7 @@ export default function ChatSidebar() {
         message: data,
         loggedInUser,
         from: 'me',
+        conversationUuid: activeConversation.uuid,
       })
     )
 

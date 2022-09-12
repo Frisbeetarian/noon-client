@@ -50,7 +50,10 @@ const slice = createSlice({
     addMessageToActiveConversation: (chat, action) => {
       let conversationUuid = action.payload.conversationUuid
 
-      if (chat.activeConversation) {
+      if (
+        chat.activeConversation &&
+        chat.activeConversation.uuid === conversationUuid
+      ) {
         chat.activeConversation.messages.push({
           uuid: uuid(),
           content: action.payload.message,
@@ -60,6 +63,22 @@ const slice = createSlice({
           sender: {
             uuid: action.payload.loggedInUser.uuid,
             username: action.payload.loggedInUser.username,
+          },
+        })
+
+        const conversationn = chat.conversations.find(
+          (conversation) => conversation.uuid === conversationUuid
+        )
+
+        conversationn.messages.push({
+          uuid: uuid(),
+          content: action.payload.message,
+          updatedAt: new Date(),
+          createdAt: new Date(),
+          from: action.payload.from,
+          sender: {
+            uuid: action.payload.loggedInUser?.user?.profile?.uuid,
+            username: action.payload.loggedInUser?.user?.profile?.username,
           },
         })
       } else {
@@ -205,7 +224,7 @@ const slice = createSlice({
       // activeConversationObject.pendingCallProfile = null
       chat.activeConversation = { ...activeConversationObject }
     },
-    cancelPendingCall: (chat, action) => {
+    cancelPendingCall: (chat) => {
       let activeConversationObject = { ...chat.activeConversation }
       activeConversationObject.pendingCall = false
       activeConversationObject.pendingCallProfile = null

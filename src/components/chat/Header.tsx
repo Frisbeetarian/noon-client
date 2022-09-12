@@ -9,6 +9,7 @@ import {
   Link,
   Heading,
 } from '@chakra-ui/react'
+
 import { useDispatch, useSelector } from 'react-redux'
 import {
   addMessageToActiveConversation,
@@ -43,7 +44,6 @@ const Header = () => {
     })
 
     socket.on('check-friend-connection', ({ session }) => {
-      console.log('session data:', session)
       if (session.connected === true) {
         setOnline('true')
       }
@@ -102,7 +102,7 @@ const Header = () => {
           >
             <Text className="mb-2 mr-3 mt-1 font-black">Call ongoing</Text>
 
-            {activeConversation.pendingCallProfile.uuid ===
+            {activeConversation?.pendingCallProfile?.uuid ===
             loggedInUser?.user?.profile?.uuid ? (
               <Button bg="red.500" className="mr-2">
                 <Heading
@@ -111,6 +111,14 @@ const Header = () => {
                     dispatch(cancelPendingCall())
 
                     await cancelPendingCallForConversation({
+                      conversationUuid: activeConversation.uuid,
+                    })
+
+                    socket.emit('cancel-pending-call-for-conversation', {
+                      from: loggedInUser.user?.profile?.uuid,
+                      fromUsername: loggedInUser.user?.profile?.username,
+                      to: activeConversee.uuid,
+                      toUsername: activeConversee.username,
                       conversationUuid: activeConversation.uuid,
                     })
                   }}
