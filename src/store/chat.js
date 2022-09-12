@@ -220,8 +220,13 @@ const slice = createSlice({
     },
     setPendingCall: (chat, action) => {
       let activeConversationObject = { ...chat.activeConversation }
-      activeConversationObject.pendingCall = action.payload
-      // activeConversationObject.pendingCallProfile = null
+      activeConversationObject.pendingCall = true
+      activeConversationObject.pendingCallProfile = {
+        uuid: action.payload?.initiator?.uuid,
+        username: action.payload?.initiator?.username,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      }
       chat.activeConversation = { ...activeConversationObject }
     },
     cancelPendingCall: (chat) => {
