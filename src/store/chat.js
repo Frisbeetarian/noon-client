@@ -123,16 +123,6 @@ const slice = createSlice({
         (conversation) => conversation.uuid === conversationUuid
       )
 
-      console.log('conversationUuid:', conversationUuid)
-
-      // let item = chat.conversations.map((conversation) => {
-      //   if (conversation.uuid === conversationUuid) return conversation
-      // })
-
-      // const target_copy = Object.assign({}, item)
-      console.log('conversation in store:', current(conversationn))
-      // const conversationObject = { ...conversation }
-      // current(conversationn.messages.push(message))
       conversationn.messages.push({
         uuid: uuid(),
         content: action.payload.message,
@@ -228,12 +218,31 @@ const slice = createSlice({
         createdAt: new Date(),
       }
       chat.activeConversation = { ...activeConversationObject }
+
+      const conversationInList = chat.conversations.find(
+        (conversation) => conversation.uuid === action.payload?.uuid
+      )
+
+      conversationInList.pendingCall = true
+      conversationInList.pendingCallProfile = {
+        uuid: action.payload?.initiator?.uuid,
+        username: action.payload?.initiator?.username,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      }
     },
     cancelPendingCall: (chat) => {
       let activeConversationObject = { ...chat.activeConversation }
       activeConversationObject.pendingCall = false
       activeConversationObject.pendingCallProfile = null
       chat.activeConversation = { ...activeConversationObject }
+
+      const conversationInList = chat.conversations.find(
+        (conversation) => conversation.uuid === activeConversationObject.uuid
+      )
+
+      conversationInList.pendingCall = false
+      conversationInList.pendingCallProfile = null
     },
   },
 })
