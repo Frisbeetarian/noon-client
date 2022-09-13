@@ -209,7 +209,10 @@ const slice = createSlice({
       chat.activeConversation = { ...activeConversationObject }
     },
     setPendingCall: (chat, action) => {
-      if (chat.activeConversation) {
+      if (
+        chat.activeConversation &&
+        chat.activeConversation.uuid === action.payload?.uuid
+      ) {
         let activeConversationObject = { ...chat.activeConversation }
         activeConversationObject.pendingCall = true
 
