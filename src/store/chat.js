@@ -209,15 +209,19 @@ const slice = createSlice({
       chat.activeConversation = { ...activeConversationObject }
     },
     setPendingCall: (chat, action) => {
-      let activeConversationObject = { ...chat.activeConversation }
-      activeConversationObject.pendingCall = true
-      activeConversationObject.pendingCallProfile = {
-        uuid: action.payload?.initiator?.uuid,
-        username: action.payload?.initiator?.username,
-        updatedAt: new Date(),
-        createdAt: new Date(),
+      if (chat.activeConversation) {
+        let activeConversationObject = { ...chat.activeConversation }
+        activeConversationObject.pendingCall = true
+
+        activeConversationObject.pendingCallProfile = {
+          uuid: action.payload?.initiator?.uuid,
+          username: action.payload?.initiator?.username,
+          updatedAt: new Date(),
+          createdAt: new Date(),
+        }
+
+        chat.activeConversation = { ...activeConversationObject }
       }
-      chat.activeConversation = { ...activeConversationObject }
 
       const conversationInList = chat.conversations.find(
         (conversation) => conversation.uuid === action.payload?.uuid
@@ -231,14 +235,16 @@ const slice = createSlice({
         createdAt: new Date(),
       }
     },
-    cancelPendingCall: (chat) => {
-      let activeConversationObject = { ...chat.activeConversation }
-      activeConversationObject.pendingCall = false
-      activeConversationObject.pendingCallProfile = null
-      chat.activeConversation = { ...activeConversationObject }
+    cancelPendingCall: (chat, action) => {
+      if (chat.activeConversation) {
+        let activeConversationObject = { ...chat.activeConversation }
+        activeConversationObject.pendingCall = false
+        activeConversationObject.pendingCallProfile = null
+        chat.activeConversation = { ...activeConversationObject }
+      }
 
       const conversationInList = chat.conversations.find(
-        (conversation) => conversation.uuid === activeConversationObject.uuid
+        (conversation) => conversation.uuid === action.payload.conversationUuid
       )
 
       conversationInList.pendingCall = false

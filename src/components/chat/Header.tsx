@@ -108,7 +108,11 @@ const Header = () => {
                 <Heading
                   fontSize="md"
                   onClick={async () => {
-                    dispatch(cancelPendingCall())
+                    dispatch(
+                      cancelPendingCall({
+                        conversationUuid: activeConversation.uuid,
+                      })
+                    )
 
                     await cancelPendingCallForConversation({
                       conversationUuid: activeConversation.uuid,

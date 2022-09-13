@@ -171,16 +171,6 @@ export default function ChatSidebar() {
               loggedInProfile: loggedInUser.user?.profile,
             })
           )
-          // } else {
-          //   dispatch(
-          //     addMessageToConversationByConversationUuid({
-          //       message: data,
-          //       loggedInUser: { uuid: from, username: fromUsername },
-          //       from: 'computer',
-          //       conversationUuid,
-          //     })
-          //   )
-          // }
         }
       )
 

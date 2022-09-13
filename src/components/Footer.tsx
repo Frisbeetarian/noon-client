@@ -12,13 +12,15 @@ import {
   useToast,
   VisuallyHidden,
 } from '@chakra-ui/react'
+
 import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa'
 import React, { ReactNode, useEffect, useState } from 'react'
 import { useSendFriendRequestMutation } from '../generated/graphql'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
 import { getSocket } from '../store/sockets'
 import { useAcceptFriendRequestMutation } from '../generated/graphql'
+import { cancelPendingCall, setPendingCall } from '../store/chat'
 
 const Logo = (props: any) => {
   return (
@@ -73,6 +75,8 @@ const SocialButton = ({
 }
 
 export default function Footer() {
+  const dispatch = useDispatch()
+
   const [, sendFriendRequest] = useSendFriendRequestMutation()
   const [, acceptFriendRequest] = useAcceptFriendRequestMutation()
   const loggedInUser = useSelector(getLoggedInUser)
@@ -196,10 +200,39 @@ export default function Footer() {
         })
       })
 
+      socket.on(
+        'set-pending-call-for-conversation',
+        ({ from, fromUsername, to, toUsername, conversationUuid }) => {
+          dispatch(
+            setPendingCall({
+              uuid: conversationUuid,
+              initiator: {
+                uuid: from,
+                username: fromUsername,
+              },
+            })
+          )
+        }
+      )
+
+      socket.on(
+        'cancel-pending-call-for-conversation',
+        ({ conversationUuid }) => {
+          dispatch(
+            cancelPendingCall({
+              conversationUuid,
+            })
+          )
+        }
+      )
+
       return () => {
         socket.off('private message')
         socket.off('friendship-request-accepted')
         socket.off('friend-disconnected')
+        socket.off('set-ongoing-call-for-conversation')
+        socket.off('set-pending-call-for-conversation')
+        socket.off('cancel-pending-call-for-conversation')
       }
     }
   }, [socket])

@@ -41,29 +41,30 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
       }
     )
 
-    socket.on(
-      'set-pending-call-for-conversation',
-      ({ from, fromUsername, to, toUsername, conversationUuid }) => {
-        dispatch(
-          setPendingCall({
-            uuid: activeConversation.uuid,
-            initiator: {
-              uuid: from,
-              username: fromUsername,
-            },
-          })
-        )
-      }
-    )
-
-    socket.on('cancel-pending-call-for-conversation', () => {
-      dispatch(cancelPendingCall())
-    })
+    // socket.on(
+    //   'set-pending-call-for-conversation',
+    //   ({ from, fromUsername, to, toUsername, conversationUuid }) => {
+    //     dispatch(
+    //       setPendingCall({
+    //         uuid: activeConversation.uuid,
+    //         initiator: {
+    //           uuid: from,
+    //           username: fromUsername,
+    //         },
+    //       })
+    //     )
+    //   }
+    // )
+    //
+    // socket.on('cancel-pending-call-for-conversation', () => {
+    //   alert('FEWFWEFWEFW')
+    //   dispatch(cancelPendingCall())
+    // })
 
     return () => {
-      socket.off('set-ongoing-call-for-conversation')
-      socket.off('set-pending-call-for-conversation')
-      socket.off('cancel-pending-call-for-conversation')
+      // socket.off('set-ongoing-call-for-conversation')
+      // socket.off('set-pending-call-for-conversation')
+      // socket.off('cancel-pending-call-for-conversation')
     }
   }, [activeConversee])
 
