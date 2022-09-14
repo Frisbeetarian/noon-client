@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import SidebarChannel from './SidebarChannel'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import {
   SmallAddIcon,
@@ -16,20 +16,38 @@ import {
 } from '@chakra-ui/icons'
 import { Avatar, AvatarBadge, Flex, Heading, Icon } from '@chakra-ui/react'
 import { ImMic, ImHeadphones } from 'react-icons/all'
-import { getSortedConversations } from '../../store/chat'
+import {
+  getSortedConversations,
+  setActiveConversation,
+  setActiveConversationSet,
+  setActiveConversee,
+} from '../../store/chat'
+import SocketConnector from '../../components/SocketIo/SocketConnector'
 
 function Sidebar() {
-  // const loggedInUser = useSelector(selectUser)
+  const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
   const getConversationsFromStore = useSelector(getSortedConversations)
+  const [profile, setProfile] = useState()
+
+  function setActiveConverseeFunction(profile, conversation) {
+    dispatch(setActiveConversationSet(true))
+    dispatch(setActiveConversee(profile))
+    dispatch(
+      setActiveConversation({
+        conversation: conversation,
+        loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+      })
+    )
+  }
 
   return (
     <div
-      className="flex flex-col bg-neutral text-white  box-content"
+      className="flex flex-col bg-neutral text-white box-content"
       style={{ flex: '0.25', height: '100vh' }}
     >
       {/*<div className="w-full h-full text-white px-4 py-2">*/}
-      <Flex className="items-center border-b" style={{ flex: '0.05' }}>
+      <Flex className="items-center border-b pb-0.5" style={{ flex: '0.05' }}>
         {/*<p className="text-xl"></p>*/}
         <Heading className=" w-full px-4">Noon</Heading>
         {/*<ArrowDownIcon />*/}
@@ -48,11 +66,11 @@ function Sidebar() {
                     key={conversation.uuid}
                     className="items-center p-3 pl-5 border-b border-b-base-300 border-b-amber-100 cursor-pointer"
                     onClick={() => {
-                      // setActiveConverseeFunction(
-                      //   conversation.conversee,
-                      //   conversation
-                      // )
-                      // setProfile(conversation.conversee)
+                      setActiveConverseeFunction(
+                        conversation.conversee,
+                        conversation
+                      )
+                      setProfile(conversation.conversee)
                     }}
                   >
                     <Avatar
@@ -87,6 +105,7 @@ function Sidebar() {
         <Flex className="items-center px-2 py-4">
           <Avatar />
           <p className="ml-2 text-md">{loggedInUser.user?.profile?.username}</p>
+          <SocketConnector />
         </Flex>
 
         <Flex className="px-3 justify-between ">

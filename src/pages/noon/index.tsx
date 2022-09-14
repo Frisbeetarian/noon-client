@@ -15,6 +15,7 @@ import {
   getConversationsThatHaveUnreadMessagesForProfile,
   setConversations,
 } from '../../store/chat'
+import Chat from './Chat'
 
 function Noon() {
   const dispatch = useDispatch()
@@ -53,8 +54,9 @@ function Noon() {
   }, [fetchedConversations])
 
   return (
-    <div className="flex bg-red-500">
+    <div className="flex">
       <Sidebar />
+      <Chat />
     </div>
   )
 }
