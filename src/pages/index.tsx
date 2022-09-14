@@ -105,7 +105,7 @@ const Index = () => {
                   if (response.data?.login.errors) {
                     setErrors(toErrorMap(response.data.login.errors))
                   } else if (response.data?.login.user) {
-                    router.push('/')
+                    router.push('/noon')
                   }
                 }}
               >
@@ -119,10 +119,16 @@ const Index = () => {
                           label="Username or Email"
                         />
                       </FormControl>
+
                       <FormControl id="password">
                         {/*<FormLabel>Password</FormLabel>*/}
-                        <InputField name="password" label="Password" />
+                        <InputField
+                          name="password"
+                          label="Password"
+                          type="password"
+                        />
                       </FormControl>
+
                       <Stack spacing={10}>
                         <Stack
                           direction={{ base: 'column', sm: 'row' }}
