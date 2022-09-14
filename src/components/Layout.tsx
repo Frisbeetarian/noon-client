@@ -24,7 +24,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, variant }) => {
 
       {/*<Chat />*/}
 
-      <Box className="sticky top-[100vh] bg-neutral pt-20">
+      <Box className="sticky top-[100vh] bg-neutral flex w-full items-center justify-center">
         <Footer />
       </Box>
 

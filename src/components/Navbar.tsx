@@ -44,34 +44,33 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
   const conversationsThatHaveUnreadMessages = useSelector(
     getConversationsThatHaveUnreadMessagesForProfile
   )
+
   useEffect(() => {
     dispatch(setLoggedInUser({ user: data }))
   }, [data])
 
-  useEffect(() => {}, [loggedInUser])
+  // useEffect(() => {}, [loggedInUser])
 
   let body = null
 
   if (fetching) {
     // user not logged in
   } else if (!data?.me) {
-    body = (
-      <>
-        <Flex>
-          <NextLink href="/login">
-            <Link mr={2}>
-              <span className="text-info">Login</span>
-            </Link>
-          </NextLink>
-
-          <NextLink href="/register">
-            <Link>
-              <span className="text-info">Register</span>
-            </Link>
-          </NextLink>
-        </Flex>
-      </>
-    )
+    // body = (
+    //   <Flex>
+    //     <NextLink href="/login">
+    //       <Link mr={2}>
+    //         <span className="text-info">Login</span>
+    //       </Link>
+    //     </NextLink>
+    //
+    //     <NextLink href="/register">
+    //       <Link>
+    //         <span className="text-info">Register</span>
+    //       </Link>
+    //     </NextLink>
+    //   </Flex>
+    // )
   } else {
     body = (
       <Flex align="center" className="">
@@ -146,6 +145,7 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
       position="sticky"
       top={0}
       p={4}
+      style={{ height: '10vh' }}
     >
       <Flex className="bg-neutral" flex={1} m="auto" maxW={800} align="center">
         <NextLink href="/">
@@ -154,34 +154,34 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
           </Link>
         </NextLink>
 
-        <Flex
-          className="bg-red- w-2/4 justify-start px-6 justify-evenly"
-          align="center"
-        >
-          <NextLink href="/communities">
-            <Link>
-              <span className="text-info">Communities</span>
-            </Link>
-          </NextLink>
+        {/*<Flex*/}
+        {/*  className="bg-red- w-2/4 justify-start px-6 justify-evenly"*/}
+        {/*  align="center"*/}
+        {/*>*/}
+        {/*  <NextLink href="/communities">*/}
+        {/*    <Link>*/}
+        {/*      <span className="text-info">Communities</span>*/}
+        {/*    </Link>*/}
+        {/*  </NextLink>*/}
 
-          <NextLink href="/events">
-            <Link>
-              <span className="text-info">Events</span>
-            </Link>
-          </NextLink>
+        {/*  <NextLink href="/events">*/}
+        {/*    <Link>*/}
+        {/*      <span className="text-info">Events</span>*/}
+        {/*    </Link>*/}
+        {/*  </NextLink>*/}
 
-          <NextLink href="/profiles">
-            <Link>
-              <span className="text-info">Profiles</span>
-            </Link>
-          </NextLink>
+        {/*  <NextLink href="/profiles">*/}
+        {/*    <Link>*/}
+        {/*      <span className="text-info">Profiles</span>*/}
+        {/*    </Link>*/}
+        {/*  </NextLink>*/}
 
-          <NextLink href="/search">
-            <Link>
-              <span className="text-info">Search</span>
-            </Link>
-          </NextLink>
-        </Flex>
+        {/*  <NextLink href="/search">*/}
+        {/*    <Link>*/}
+        {/*      <span className="text-info">Search</span>*/}
+        {/*    </Link>*/}
+        {/*  </NextLink>*/}
+        {/*</Flex>*/}
 
         <Box ml={'auto'}>{body}</Box>
       </Flex>
