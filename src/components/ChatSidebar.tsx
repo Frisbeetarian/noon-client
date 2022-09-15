@@ -60,7 +60,7 @@ export default function ChatSidebar() {
 
   const [profile, setProfile] = useState()
   const socket = useSelector(getSocket)
-  let activeConversation = useSelector(getActiveConversation)
+  const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
   const getConversationsFromStore = useSelector(getSortedConversations)
   const activeConversationSet = useSelector(getActiveConversationSet)
