@@ -295,7 +295,6 @@ export default function ChatSidebar() {
                             </Avatar>
 
                             <p>{conversation.conversee.username}</p>
-                            {/*<p></p>*/}
                           </Flex>
                           // </Tooltip>
                         )

@@ -14,6 +14,7 @@ import Header from './Header'
 import Messages from './Messages'
 import { getLoggedInUser } from '../../store/users'
 import { useSaveMessageMutation } from '../../generated/graphql'
+import ChatControlsAndSearch from './ChatControlsAndSearch'
 
 function Chat() {
   const dispatch = useDispatch()
@@ -21,7 +22,7 @@ function Chat() {
 
   const [inputMessage, setInputMessage] = useState('')
   const socket = useSelector(getSocket)
-  // const [profile, setProfile] = useState()
+
   const activeConversation = useSelector(getActiveConversation)
   const profile = useSelector(getActiveConversee)
   const [, saveMessage] = useSaveMessageMutation()
@@ -66,21 +67,7 @@ function Chat() {
       className="flex-col bg-gray-700 text-white box-content"
       style={{ flex: '0.75', height: '100vh' }}
     >
-      <Flex
-        className="items-center justify-between border-b px-3"
-        style={{ flex: '0.05' }}
-      >
-        <p className="m-0 p-0">{profile?.username}</p>
-
-        <Flex className="items-center">
-          <input
-            type="text"
-            className="m-0 p-1 bg-transparent outline-0 bg-gray-800"
-          />
-
-          <SearchIcon className="absolute right-6" />
-        </Flex>
-      </Flex>
+      <ChatControlsAndSearch />
 
       {/*<Flex w="100%" className="flex-col " style={{ flex: '0.9' }}>*/}
       {profile && activeConversation ? (
@@ -98,14 +85,15 @@ function Chat() {
       {/*  fewfewf*/}
       {/*</Flex>*/}
       {/*</Flex>*/}
-
-      <Flex w="100%" flexDir="column" className="" style={{ flex: '0.05' }}>
-        <Footer
-          inputMessage={inputMessage}
-          setInputMessage={setInputMessage}
-          handleSendMessage={handleSendMessage}
-        />
-      </Flex>
+      {activeConversation ? (
+        <Flex w="100%" flexDir="column" className="" style={{ flex: '0.05' }}>
+          <Footer
+            inputMessage={inputMessage}
+            setInputMessage={setInputMessage}
+            handleSendMessage={handleSendMessage}
+          />
+        </Flex>
+      ) : null}
     </Flex>
   )
 }

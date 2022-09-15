@@ -63,7 +63,7 @@ export type Conversation = {
   profileThatHasUnreadMessages: Scalars['String']
   ongoingCall: Scalars['Boolean']
   pendingCall: Scalars['Boolean']
-  pendingCallProfile: Profile
+  pendingCallProfile?: Maybe<Profile>
   updatedAt: Scalars['String']
   createdAt: Scalars['String']
   profiles: Array<Profile>
@@ -315,6 +315,7 @@ export type Query = {
   communities: Array<Community>
   getCommunityParticipants: Array<CommunityParticipant>
   getCommunitiesParticipants: Array<CommunityParticipant>
+  searchForProfileByUsername?: Maybe<Search>
   searchForProfileByUuid?: Maybe<Search>
   getConversationForLoggedInUser?: Maybe<Array<Conversation>>
   getConversationsByProfileUuid?: Maybe<Conversation>
@@ -361,6 +362,10 @@ export type QueryGetCommunityParticipantsArgs = {
 
 export type QueryGetCommunitiesParticipantsArgs = {
   communitiesIds: Array<Scalars['Int']>
+}
+
+export type QuerySearchForProfileByUsernameArgs = {
+  username: Scalars['String']
 }
 
 export type QuerySearchForProfileByUuidArgs = {
@@ -555,9 +560,9 @@ export type ConversationSnippetFragment = {
       { __typename?: 'Profile' } & ConversationProfileSnippetFragment
     >
     messages: Array<{ __typename?: 'Message' } & MessageSnippetFragment>
-    pendingCallProfile: {
-      __typename?: 'Profile'
-    } & ConversationProfileSnippetFragment
+    pendingCallProfile?: Maybe<
+      { __typename?: 'Profile' } & ConversationProfileSnippetFragment
+    >
   }
 
 export type ConversationToProfileSnippetFragment = {
@@ -858,6 +863,19 @@ export type PostsQuery = { __typename?: 'Query' } & {
   posts: { __typename?: 'PaginatedPosts' } & Pick<PaginatedPosts, 'hasMore'> & {
       posts: Array<{ __typename?: 'Post' } & PostSnippetFragment>
     }
+}
+
+export type SearchForProfileByUsernameQueryVariables = Exact<{
+  username: Scalars['String']
+}>
+
+export type SearchForProfileByUsernameQuery = { __typename?: 'Query' } & {
+  searchForProfileByUsername?: Maybe<
+    { __typename?: 'Search' } & Pick<
+      Search,
+      'uuid' | 'username' | 'name' | 'userId' | 'updatedAt' | 'createdAt'
+    >
+  >
 }
 
 export type SearchForProfileByUuidQueryVariables = Exact<{
@@ -1589,6 +1607,30 @@ export function usePostsQuery(
   options: Omit<Urql.UseQueryArgs<PostsQueryVariables>, 'query'> = {}
 ) {
   return Urql.useQuery<PostsQuery>({ query: PostsDocument, ...options })
+}
+export const SearchForProfileByUsernameDocument = gql`
+  query SearchForProfileByUsername($username: String!) {
+    searchForProfileByUsername(username: $username) {
+      uuid
+      username
+      name
+      userId
+      updatedAt
+      createdAt
+    }
+  }
+`
+
+export function useSearchForProfileByUsernameQuery(
+  options: Omit<
+    Urql.UseQueryArgs<SearchForProfileByUsernameQueryVariables>,
+    'query'
+  > = {}
+) {
+  return Urql.useQuery<SearchForProfileByUsernameQuery>({
+    query: SearchForProfileByUsernameDocument,
+    ...options,
+  })
 }
 export const SearchForProfileByUuidDocument = gql`
   query SearchForProfileByUuid($profileUuid: String!) {

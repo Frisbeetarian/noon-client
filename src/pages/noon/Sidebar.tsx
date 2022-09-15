@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import SidebarChannel from './SidebarChannel'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLogoutMutation, useMeQuery } from '../../generated/graphql'
+
 import { getLoggedInUser } from '../../store/users'
 import {
   SmallAddIcon,
@@ -13,8 +15,20 @@ import {
   ArrowDownIcon,
   InfoIcon,
   PhoneIcon,
+  ChevronDownIcon,
 } from '@chakra-ui/icons'
-import { Avatar, AvatarBadge, Flex, Heading, Icon } from '@chakra-ui/react'
+import {
+  Avatar,
+  AvatarBadge,
+  Button,
+  Flex,
+  Heading,
+  Icon,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from '@chakra-ui/react'
 import { ImMic, ImHeadphones } from 'react-icons/all'
 import {
   getSortedConversations,
@@ -23,9 +37,14 @@ import {
   setActiveConversee,
 } from '../../store/chat'
 import SocketConnector from '../../components/SocketIo/SocketConnector'
+import { useRouter } from 'next/router'
 
 function Sidebar() {
+  const router = useRouter()
   const dispatch = useDispatch()
+
+  const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
+
   const loggedInUser = useSelector(getLoggedInUser)
   const getConversationsFromStore = useSelector(getSortedConversations)
   const [profile, setProfile] = useState()
@@ -111,7 +130,25 @@ function Sidebar() {
         <Flex className="px-3 justify-between ">
           {/*<Icon as={ImMic} />*/}
           {/*<Icon as={ImHeadphones} />*/}
-          <SettingsIcon />
+
+          <Menu>
+            <MenuButton>
+              <SettingsIcon />
+            </MenuButton>
+
+            <MenuList>
+              <MenuItem
+                onClick={async () => {
+                  await logout()
+                  router.push('/')
+                  // router.reload()
+                }}
+                // isLoading={fetching}
+              >
+                Logout
+              </MenuItem>
+            </MenuList>
+          </Menu>
         </Flex>
       </Flex>
       {/*</div>*/}

@@ -28,7 +28,7 @@ import { useDisclosure } from '@chakra-ui/hooks'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { toErrorMap } from '../utils/toErrorMap'
 import { Form, Formik } from 'formik'
-import { useLoginMutation } from '../generated/graphql'
+import { useLoginMutation, useRegisterMutation } from '../generated/graphql'
 import { useRouter } from 'next/router'
 import { InputField } from '../components/InputField'
 
@@ -39,6 +39,7 @@ import { InputField } from '../components/InputField'
 const Index = () => {
   const router = useRouter()
   const [, login] = useLoginMutation()
+  const [, register] = useRegisterMutation()
 
   const [variables, setVariables] = useState({
     limit: 15,
@@ -105,7 +106,11 @@ const Index = () => {
                   if (response.data?.login.errors) {
                     setErrors(toErrorMap(response.data.login.errors))
                   } else if (response.data?.login.user) {
-                    router.push('/noon')
+                    if (typeof router.query.next === 'string') {
+                      router.push(router.query.next)
+                    } else {
+                      router.push('/noon')
+                    }
                   }
                 }}
               >
@@ -199,61 +204,111 @@ const Index = () => {
               p={8}
               className="border bg-black"
             >
-              <Stack spacing={4}>
-                <HStack>
-                  <Box>
-                    <FormControl id="firstName" isRequired>
-                      <FormLabel>First Name</FormLabel>
-                      <Input type="text" />
-                    </FormControl>
-                  </Box>
-                  <Box>
-                    <FormControl id="lastName">
-                      <FormLabel>Last Name</FormLabel>
-                      <Input type="text" />
-                    </FormControl>
-                  </Box>
-                </HStack>
-                <FormControl id="email" isRequired>
-                  <FormLabel>Email address</FormLabel>
-                  <Input type="email" />
-                </FormControl>
-                <FormControl id="password" isRequired>
-                  <FormLabel>Password</FormLabel>
-                  <InputGroup>
-                    <Input type={showPassword ? 'text' : 'password'} />
-                    <InputRightElement h={'full'}>
-                      <Button
-                        variant={'ghost'}
-                        onClick={() =>
-                          setShowPassword((showPassword) => !showPassword)
-                        }
-                      >
-                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                      </Button>
-                    </InputRightElement>
-                  </InputGroup>
-                </FormControl>
-                <Stack spacing={10} pt={2}>
-                  <Button
-                    loadingText="Submitting"
-                    size="lg"
-                    bg={'green.400'}
-                    color={'white'}
-                    _hover={{
-                      bg: 'green.900',
-                    }}
-                  >
-                    Register
-                  </Button>
-                </Stack>
-                {/*<Stack pt={6}>*/}
-                {/*  <Text align={'center'}>*/}
-                {/*    Already a user? <Link color={'blue.400'}>Login</Link>*/}
-                {/*  </Text>*/}
-                {/*</Stack>*/}
-              </Stack>
+              <Formik
+                initialValues={{ email: '', username: '', password: '' }}
+                onSubmit={async (values, { setErrors }) => {
+                  // values.usernameOrEmail = values.firstname + '-'
+
+                  console.log(values)
+                  const response = await register({ options: values })
+
+                  console.log('register response: ', response.data)
+                  if (response.data?.register.errors) {
+                    setErrors(toErrorMap(response.data.register.errors))
+                  } else if (response.data?.register.user) {
+                    // await establishSocketConnection(values.username)
+                    // worked
+                    router.push('/noon')
+                    // router.
+                  }
+                }}
+              >
+                {({ isSubmitting }) => (
+                  <Form>
+                    <Stack spacing={4}>
+                      <HStack>
+                        <Box>
+                          <FormControl id="username" isRequired>
+                            {/*<FormLabel>First Name</FormLabel>*/}
+                            {/*/!*<Input type="text" />*!/*/}
+                            {/*<InputField*/}
+                            {/*  name="firstname"*/}
+                            {/*  placeholder=""*/}
+                            {/*  label=""*/}
+                            {/*/>*/}
+
+                            <InputField
+                              name="username"
+                              placeholder="username"
+                              label="Username"
+                            />
+                          </FormControl>
+                        </Box>
+                        {/*<Box>*/}
+                        {/*  <FormControl id="lastName" isRequired>*/}
+                        {/*    <FormLabel>Last Name</FormLabel>*/}
+                        {/*    /!*<Input type="text" />*!/*/}
+                        {/*    <InputField*/}
+                        {/*      name="lastname"*/}
+                        {/*      placeholder=""*/}
+                        {/*      label=""*/}
+                        {/*    />*/}
+                        {/*  </FormControl>*/}
+                        {/*</Box>*/}
+                      </HStack>
+                      <FormControl id="email" isRequired>
+                        <FormLabel>Email address</FormLabel>
+                        <InputField name="email" placeholder="" label="" />
+                      </FormControl>
+                      <FormControl id="password" isRequired>
+                        <FormLabel>Password</FormLabel>
+                        <InputGroup>
+                          {/*<InputField*/}
+                          {/*type={showPassword ? 'text' : 'password'}*/}
+                          {/*/>*/}
+                          <InputField
+                            name="password"
+                            type={showPassword ? 'text' : 'password'}
+                            placeholder=""
+                            label=""
+                          />
+                          <InputRightElement h={'full'} className="mt-1">
+                            <Button
+                              variant={'ghost'}
+                              onClick={() =>
+                                setShowPassword((showPassword) => !showPassword)
+                              }
+                            >
+                              {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                            </Button>
+                          </InputRightElement>
+                        </InputGroup>
+                      </FormControl>
+                      <Stack spacing={10} pt={2}>
+                        <Button
+                          type="submit"
+                          loadingText="Submitting"
+                          size="lg"
+                          bg={'green.400'}
+                          color={'white'}
+                          _hover={{
+                            bg: 'green.900',
+                          }}
+                        >
+                          Register
+                        </Button>
+                      </Stack>
+                      {/*<Stack pt={6}>*/}
+                      {/*  <Text align={'center'}>*/}
+                      {/*    Already a user? <Link color={'blue.400'}>Login</Link>*/}
+                      {/*  </Text>*/}
+                      {/*</Stack>*/}
+                    </Stack>
+                  </Form>
+                )}
+              </Formik>
             </Box>
+
             <Text
               className="text-lg text-green-100 cursor-pointer"
               onClick={() => {

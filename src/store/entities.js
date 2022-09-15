@@ -7,6 +7,7 @@ import socketsReducer from './sockets'
 import uiReducer from './ui'
 import profilesReducer from './profiles'
 import chatReducer from './chat'
+import searchReducer from './search'
 
 export default combineReducers({
   // bugs: bugsReducer,
@@ -17,4 +18,5 @@ export default combineReducers({
   sockets: socketsReducer,
   ui: uiReducer,
   chat: chatReducer,
+  search: searchReducer,
 })
