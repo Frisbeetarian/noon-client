@@ -85,6 +85,8 @@ function ChatControlsAndSearch() {
             className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer"
             onClick={() => {
               setSearchActive(false)
+              dispatch(setSearchQuery(null))
+              setSearchInput(null)
               setContainerDisplay('relative')
               setContainerHeight('0.05')
               setInputPadding('5px')

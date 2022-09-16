@@ -13,7 +13,39 @@ const slice = createSlice({
       search.query = action.payload
     },
     setProfiles: (search, action) => {
-      // ui.chatComponent = action.payload
+      let profilesArray = []
+
+      // action.payload.profiles = action.payload.profiles.filter(
+      //   (profile) =>
+      //     profile.uuid != action.payload.loggedInUser.user.profile.uuid
+      // )
+
+      action.payload.profiles.map((profile) => {
+        let profileObject = { ...profile }
+
+        const friendsCheck = action.payload.loggedInUser.user.friends.find(
+          (element) => element.uuid == profileObject.uuid
+        )
+
+        const friendshipRequestCheck =
+          action.payload.loggedInUser.user.friendshipRequests.find(
+            (element) => element.uuid == profileObject.uuid
+          )
+
+        // const reverseFriendshipCheck = profile.friendshipRequests.find()
+        profileObject.isAFriend = !!friendsCheck
+
+        if (friendshipRequestCheck?.reverse) {
+          profileObject.hasSentFriendshipRequestToProfile = true
+        } else if (friendshipRequestCheck) {
+          profileObject.hasFriendshipRequestFromLoggedInProfile = true
+        }
+
+        console.log('PROFILE OBJECT:', profileObject)
+        profilesArray.push(profileObject)
+      })
+
+      search.profiles = profilesArray
     },
   },
 })

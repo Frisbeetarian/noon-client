@@ -1,20 +1,36 @@
-import { useSelector } from 'react-redux'
-import { getSearchQuery } from '../../store/search'
+import { useDispatch, useSelector } from 'react-redux'
+import { getProfiles, getSearchQuery } from '../../store/search'
 import {
   useSearchForProfileByUsernameQuery,
   useSearchForProfileByUuidQuery,
 } from '../../generated/graphql'
-import { Flex } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { Avatar, AvatarBadge, Flex } from '@chakra-ui/react'
+import React, { useEffect, useState } from 'react'
+import Profile from './Profile'
+import { getLoggedInUser } from '../../store/users'
+import { setProfiles } from '../../store/search'
 
 export default function SearchController() {
+  const dispatch = useDispatch()
+  const loggedInUser = useSelector(getLoggedInUser)
   const searchQuery = useSelector(getSearchQuery)
-  // let searchResults = null
-  let [searchResults, setSearchResults] = useState(null)
+  const profilesFromStore = useSelector(getProfiles)
+
+  // let [searchResults, setSearchResults] = useState(null)
   const [{ data }] = useSearchForProfileByUsernameQuery({
     variables: { username: searchQuery },
   })
 
+  useEffect(() => {
+    if (data?.searchForProfileByUsername && loggedInUser.user) {
+      dispatch(
+        setProfiles({
+          profiles: data?.searchForProfileByUsername,
+          loggedInUser,
+        })
+      )
+    }
+  }, [data?.searchForProfileByUsername, loggedInUser])
   // const [{ data: searchResults }] = useSearchForProfileByUuidQuery({
   //   variables: {
   //     profileUuid: loggedInUser.user?.profile?.uuid,
@@ -28,5 +44,37 @@ export default function SearchController() {
   // }, [data])
   console.log('search results:', data?.searchForProfileByUsername)
 
-  return <Flex></Flex>
+  // data?.searchForProfileByUsername?.forEach((profile) => {
+  //   // let profileObject = { ...profile }
+  //
+  //   const friendsCheck = loggedInUser.user.friends.find(
+  //     (element) => element.uuid == profile.uuid
+  //   )
+  //
+  //   const friendshipRequestCheck = loggedInUser.user.friendshipRequests.find(
+  //     (element) => element.uuid == profile.uuid
+  //   )
+  //
+  //   // const reverseFriendshipCheck = profile.friendshipRequests.find()
+  //   profile.isAFriend = !!friendsCheck
+  //
+  //   if (friendshipRequestCheck?.reverse) {
+  //     profile.hasFriendshipRequestFromLoggedInProfile = true
+  //   } else if (friendshipRequestCheck) {
+  //     profile.hasSentFriendshipToProfile = true
+  //   }
+  //
+  //   console.log('PROFILE OBJECT:', profile)
+  //   // profilesArray.push(profileObject)
+  // })
+
+  return (
+    <Flex className="w-full">
+      {profilesFromStore
+        ? [...Object.values(profilesFromStore)].map((profile, i) =>
+            !profile ? null : <Profile profile={profile} />
+          )
+        : null}
+    </Flex>
+  )
 }
