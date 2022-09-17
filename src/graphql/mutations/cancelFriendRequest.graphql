@@ -1,0 +1,3 @@
+mutation CancelFriendRequest($profileUuid: String!) {
+    cancelFriendRequest(profileUuid: $profileUuid)
+}

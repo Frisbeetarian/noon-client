@@ -2,11 +2,16 @@ import React from 'react'
 import { Avatar, Box, Button, Flex } from '@chakra-ui/react'
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { ChatIcon } from '@chakra-ui/icons'
-import { setFriendshipRequestSentOnProfile } from '../../store/profiles'
+import {
+  cancelFriendshipRequestSentOnProfile,
+  setFriendshipRequestSentOnProfile,
+} from '../../store/profiles'
 import {
   useAcceptFriendRequestMutation,
+  useCancelFriendRequestMutation,
+  useRefuseFriendRequestMutation,
   useSendFriendRequestMutation,
 } from '../../generated/graphql'
 
@@ -21,9 +26,15 @@ interface ProfileProps {
 
 export default function Profile({ profile }) {
   const dispatch = useDispatch()
+  const loggedInUser = useSelector(getLoggedInUser)
+
   const [, acceptFriendRequest] = useAcceptFriendRequestMutation()
+  const [, refuseFriendRequest] = useRefuseFriendRequestMutation()
+  const [, cancelFriendRequest] = useCancelFriendRequestMutation()
+
   const [{ fetching: friendRequestFetching }, sendFriendRequest] =
     useSendFriendRequestMutation()
+  const socket = useSelector(getSocket)
 
   return (
     <Flex
@@ -39,11 +50,48 @@ export default function Profile({ profile }) {
         <p className="">{profile.username}</p>
       </Flex>
 
-      {profile.hasFriendshipRequestFromLoggedInProfile ? (
-        <Button disabled={true} className="text-green-500">
-          Friendship request sent
-        </Button>
-      ) : profile.hasSentFriendshipRequestToProfile ? (
+      {profile.hasSentFriendshipRequestToProfile ? (
+        <Flex className="relative">
+          <Button
+            disabled={true}
+            className="relative text-green-500 p-0"
+            style={{ borderRadius: '5px 0px 0px 5px' }}
+          >
+            Friendship request sent
+          </Button>
+
+          <Button
+            disabled={false}
+            className="absolute bg-red-500 text-white"
+            bg="red"
+            style={{ borderRadius: '0px 5px 5px 0px' }}
+            onClick={async () => {
+              const cancelFriendRequestResponse = await cancelFriendRequest({
+                profileUuid: profile.uuid,
+              })
+              dispatch(
+                cancelFriendshipRequestSentOnProfile({
+                  profileUuid: profile.uuid,
+                })
+              )
+
+              if (cancelFriendRequestResponse) {
+                socket.emit('cancel-friend-request', {
+                  content:
+                    loggedInUser.user?.profile?.username +
+                    ' cancelled the friend request.',
+                  from: loggedInUser.user?.profile?.uuid,
+                  fromUsername: loggedInUser.user?.profile?.username,
+                  to: profile.uuid,
+                  toUsername: profile.username,
+                })
+              }
+            }}
+          >
+            Cancel
+          </Button>
+        </Flex>
+      ) : profile.hasFriendshipRequestFromLoggedInProfile ? (
         <Flex className="justify-end mt-3">
           <Button
             className="mr-3 bg-green-500"
@@ -96,15 +144,15 @@ export default function Profile({ profile }) {
                   profileUuid: profile.uuid,
                 })
 
-                // socket.emit('private message', {
-                //   content:
-                //     loggedInUser.user?.profile?.username +
-                //     ' wants to be your friend.',
-                //   from: loggedInUser.user?.profile?.uuid,
-                //   fromUsername: loggedInUser.user?.profile?.username,
-                //   to: profile.uuid,
-                //   toUsername: profile.username,
-                // })
+                socket.emit('private message', {
+                  content:
+                    loggedInUser.user?.profile?.username +
+                    ' wants to be your friend.',
+                  from: loggedInUser.user?.profile?.uuid,
+                  fromUsername: loggedInUser.user?.profile?.username,
+                  to: profile.uuid,
+                  toUsername: profile.username,
+                })
               }}
             >
               Send friend request

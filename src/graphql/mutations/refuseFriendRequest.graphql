@@ -1,0 +1,3 @@
+mutation RefuseFriendRequest($profileUuid: String!) {
+    refuseFriendRequest(profileUuid: $profileUuid)
+}

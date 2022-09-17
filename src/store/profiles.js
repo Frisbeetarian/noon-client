@@ -11,38 +11,47 @@ const slice = createSlice({
     addProfiles: (profiles, action, loggedInUser) => {
       // let profilesArray = [...action.payload.profiles]
       let profilesArray = []
-
-      action.payload.profiles = action.payload.profiles.filter(
-        (profile) =>
-          profile.uuid != action.payload.loggedInUser.user.profile.uuid
-      )
-
-      action.payload.profiles.map((profile) => {
-        let profileObject = { ...profile }
-
-        const friendsCheck = action.payload.loggedInUser.user.friends.find(
-          (element) => element.uuid == profileObject.uuid
+      if (action.payload.profiles == null) {
+        profiles.list = null
+      } else {
+        action.payload.profiles = action.payload.profiles.filter(
+          (profile) =>
+            profile.uuid != action.payload.loggedInUser.user.profile.uuid
         )
 
-        const friendshipRequestCheck =
-          action.payload.loggedInUser.user.friendshipRequests.find(
+        action.payload.profiles.map((profile) => {
+          let profileObject = { ...profile }
+
+          const friendsCheck = action.payload.loggedInUser.user.friends.find(
             (element) => element.uuid == profileObject.uuid
           )
 
-        // const reverseFriendshipCheck = profile.friendshipRequests.find()
-        profileObject.isAFriend = !!friendsCheck
+          const friendshipRequestCheck =
+            action.payload.loggedInUser.user.friendshipRequests.find(
+              (element) => element.uuid == profileObject.uuid
+            )
 
-        if (friendshipRequestCheck?.reverse) {
-          profileObject.hasFriendshipRequestFromLoggedInProfile = true
-        } else if (friendshipRequestCheck) {
-          profileObject.hasSentFriendshipToProfile = true
-        }
+          // const reverseFriendshipCheck = profile.friendshipRequests.find()
+          profileObject.isAFriend = !!friendsCheck
 
-        console.log('PROFILE OBJECT:', profileObject)
-        profilesArray.push(profileObject)
-      })
+          if (friendshipRequestCheck?.reverse) {
+            profileObject.hasFriendshipRequestFromLoggedInProfile = true
+          } else if (friendshipRequestCheck) {
+            profileObject.hasSentFriendshipRequestToProfile = true
+          }
 
-      profiles.list = profilesArray
+          // if (friendshipRequestCheck?.reverse) {
+          //   profileObject.hasSentFriendshipRequestToProfile = true
+          // } else if (friendshipRequestCheck) {
+          //   profileObject.hasFriendshipRequestFromLoggedInProfile = true
+          // }
+
+          console.log('PROFILE OBJECT:', profileObject)
+          profilesArray.push(profileObject)
+        })
+
+        profiles.list = profilesArray
+      }
     },
     setFriendshipRequestSentOnProfile: (profiles, action) => {
       let profile = profiles.list.find(
@@ -50,7 +59,15 @@ const slice = createSlice({
       )
 
       console.log('profile:', profile.uuid)
-      profile.hasSentFriendshipToProfile = true
+      profile.hasSentFriendshipRequestToProfile = true
+    },
+    cancelFriendshipRequestSentOnProfile: (profiles, action) => {
+      let profile = profiles.list.find(
+        (profile) => profile.uuid == action.payload.profileUuid
+      )
+
+      console.log('profile:', profile.uuid)
+      profile.hasSentFriendshipRequestToProfile = false
     },
     addProfile: (profiles, action) => {
       const { profile } = action.payload
@@ -68,6 +85,10 @@ export const getProfiles = createSelector(
   (profiles) => profiles.list
 )
 
-export const { addProfile, addProfiles, setFriendshipRequestSentOnProfile } =
-  slice.actions
+export const {
+  addProfile,
+  addProfiles,
+  setFriendshipRequestSentOnProfile,
+  cancelFriendshipRequestSentOnProfile,
+} = slice.actions
 export default slice.reducer

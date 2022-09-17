@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { getProfiles, getSearchQuery } from '../../store/search'
+import { getSearchQuery } from '../../store/search'
 import {
   useSearchForProfileByUsernameQuery,
   useSearchForProfileByUuidQuery,
@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react'
 import Profile from './Profile'
 import { getLoggedInUser } from '../../store/users'
 import { setProfiles } from '../../store/search'
+import { addProfiles, getProfiles } from '../../store/profiles'
 
 export default function SearchController() {
   const dispatch = useDispatch()
@@ -23,9 +24,31 @@ export default function SearchController() {
 
   useEffect(() => {
     if (data?.searchForProfileByUsername && loggedInUser.user) {
+      // dispatch(
+      //   setProfiles({
+      //     profiles: data?.searchForProfileByUsername,
+      //     loggedInUser,
+      //   })
+      // )
+
       dispatch(
-        setProfiles({
+        addProfiles({
           profiles: data?.searchForProfileByUsername,
+          loggedInUser,
+        })
+      )
+    }
+
+    return () => {
+      // dispatch(
+      //   setProfiles({
+      //     profiles: null,
+      //   })
+      // )
+
+      dispatch(
+        addProfiles({
+          profiles: null,
           loggedInUser,
         })
       )

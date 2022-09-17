@@ -6,11 +6,12 @@ import { getActiveConversee } from '../../store/chat'
 import { useSearchForProfileByUsernameQuery } from '../../generated/graphql'
 import { useQuery } from 'urql'
 import SearchController from './SearchController'
-import { setProfiles, setSearchQuery } from '../../store/search'
+import { getSearchQuery, setProfiles, setSearchQuery } from '../../store/search'
 
 function ChatControlsAndSearch() {
   const dispatch = useDispatch()
   const profile = useSelector(getActiveConversee)
+  const searchQuery = useSelector(getSearchQuery)
   // let containerHeight = '0.05'
 
   let [searchActive, setSearchActive] = useState(false)
@@ -68,11 +69,14 @@ function ChatControlsAndSearch() {
           onKeyPress={(e) => {
             if (e.key === 'Enter') {
               // alert(e.target.value)
-              dispatch(setSearchQuery(null))
-              setSearchInput(null)
+              if (e.target.value !== searchQuery) {
+                dispatch(setSearchQuery(null))
+                setSearchInput(null)
 
-              dispatch(setSearchQuery(e.target.value))
-              setSearchInput(e.target.value)
+                dispatch(setSearchQuery(e.target.value))
+                setSearchInput(e.target.value)
+              }
+
               // executeQuery({ variables: { username: 'fatima' } })
             }
           }}

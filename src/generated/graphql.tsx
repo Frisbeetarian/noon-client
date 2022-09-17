@@ -158,6 +158,8 @@ export type Mutation = {
   joinEvent: Event;
   sendFriendRequest: Scalars['Boolean'];
   acceptFriendRequest: Scalars['Boolean'];
+  cancelFriendRequest: Scalars['Boolean'];
+  refuseFriendRequest: Scalars['Boolean'];
   createCommunity: Community;
   joinCommunity: Scalars['Boolean'];
   setPendingCallForConversation: Scalars['Boolean'];
@@ -229,6 +231,16 @@ export type MutationSendFriendRequestArgs = {
 
 
 export type MutationAcceptFriendRequestArgs = {
+  profileUuid: Scalars['String'];
+};
+
+
+export type MutationCancelFriendRequestArgs = {
+  profileUuid: Scalars['String'];
+};
+
+
+export type MutationRefuseFriendRequestArgs = {
   profileUuid: Scalars['String'];
 };
 
@@ -460,6 +472,16 @@ export type AcceptFriendRequestMutationVariables = Exact<{
 export type AcceptFriendRequestMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'acceptFriendRequest'>
+);
+
+export type CancelFriendRequestMutationVariables = Exact<{
+  profileUuid: Scalars['String'];
+}>;
+
+
+export type CancelFriendRequestMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'cancelFriendRequest'>
 );
 
 export type CancelPendingCallForConversationMutationVariables = Exact<{
@@ -953,6 +975,16 @@ export type SearchForProfileByUuidQuery = (
   )> }
 );
 
+export type RefuseFriendRequestMutationVariables = Exact<{
+  profileUuid: Scalars['String'];
+}>;
+
+
+export type RefuseFriendRequestMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'refuseFriendRequest'>
+);
+
 export type RegisterMutationVariables = Exact<{
   options: UsernamePasswordInput;
 }>;
@@ -1213,6 +1245,15 @@ export const AcceptFriendRequestDocument = gql`
 
 export function useAcceptFriendRequestMutation() {
   return Urql.useMutation<AcceptFriendRequestMutation, AcceptFriendRequestMutationVariables>(AcceptFriendRequestDocument);
+};
+export const CancelFriendRequestDocument = gql`
+    mutation CancelFriendRequest($profileUuid: String!) {
+  cancelFriendRequest(profileUuid: $profileUuid)
+}
+    `;
+
+export function useCancelFriendRequestMutation() {
+  return Urql.useMutation<CancelFriendRequestMutation, CancelFriendRequestMutationVariables>(CancelFriendRequestDocument);
 };
 export const CancelPendingCallForConversationDocument = gql`
     mutation CancelPendingCallForConversation($conversationUuid: String!) {
@@ -1600,6 +1641,15 @@ export const SearchForProfileByUuidDocument = gql`
 
 export function useSearchForProfileByUuidQuery(options: Omit<Urql.UseQueryArgs<SearchForProfileByUuidQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<SearchForProfileByUuidQuery>({ query: SearchForProfileByUuidDocument, ...options });
+};
+export const RefuseFriendRequestDocument = gql`
+    mutation RefuseFriendRequest($profileUuid: String!) {
+  refuseFriendRequest(profileUuid: $profileUuid)
+}
+    `;
+
+export function useRefuseFriendRequestMutation() {
+  return Urql.useMutation<RefuseFriendRequestMutation, RefuseFriendRequestMutationVariables>(RefuseFriendRequestDocument);
 };
 export const RegisterDocument = gql`
     mutation Register($options: UsernamePasswordInput!) {
