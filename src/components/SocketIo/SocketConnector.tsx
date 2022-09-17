@@ -3,7 +3,7 @@ import io from 'socket.io-client'
 import Messages from './Messages'
 import MessageInput from './MessageInput'
 import { useDispatch, useSelector } from 'react-redux'
-import { getLoggedInUser } from '../../store/users'
+import { addFriendEntry, getLoggedInUser } from '../../store/users'
 import {
   Alert,
   AlertDescription,
@@ -17,11 +17,16 @@ import {
 } from '@chakra-ui/react'
 
 import { getSocket, setSocket } from '../../store/sockets'
-import { cancelPendingCall, setPendingCall } from '../../store/chat'
+import {
+  addConversation,
+  cancelPendingCall,
+  setPendingCall,
+} from '../../store/chat'
 import {
   useAcceptFriendRequestMutation,
   useSendFriendRequestMutation,
 } from '../../generated/graphql'
+import { setFriendFlagOnProfile } from '../../store/profiles'
 const ENDPOINT = 'http://localhost:4020'
 const socket = io(ENDPOINT, { autoConnect: false })
 
@@ -112,7 +117,14 @@ export default function SocketConnector() {
     if (socket) {
       socket.on(
         'friendship-request-accepted',
-        ({ content, from, fromUsername, to }) => {
+        ({ content, from, fromUsername, to, conversation }) => {
+          dispatch(
+            addConversation({
+              conversation,
+              loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+            })
+          )
+
           toast({
             id: from,
             title: `${fromUsername} sent you a friend request.`,
@@ -176,6 +188,29 @@ export default function SocketConnector() {
                       profileUuid: from,
                     })
 
+                    dispatch(
+                      setFriendFlagOnProfile({
+                        profileUuid: from,
+                      })
+                    )
+
+                    dispatch(
+                      addFriendEntry({
+                        friend: {
+                          uuid: from,
+                          username: fromUsername,
+                        },
+                      })
+                    )
+
+                    dispatch(
+                      addConversation({
+                        conversation:
+                          acceptFriendshipResponse.data?.acceptFriendRequest,
+                        loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+                      })
+                    )
+
                     if (acceptFriendshipResponse) {
                       socket.emit('friendship-request-accepted', {
                         content:
@@ -185,6 +220,8 @@ export default function SocketConnector() {
                         fromUsername: loggedInUser.user?.profile?.username,
                         to: from,
                         toUsername: fromUsername,
+                        conversation:
+                          acceptFriendshipResponse.data?.acceptFriendRequest,
                       })
                     }
 

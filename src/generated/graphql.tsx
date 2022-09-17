@@ -160,6 +160,7 @@ export type Mutation = {
   acceptFriendRequest: Conversation;
   cancelFriendRequest: Scalars['Boolean'];
   refuseFriendRequest: Scalars['Boolean'];
+  unfriend: Scalars['Boolean'];
   createCommunity: Community;
   joinCommunity: Scalars['Boolean'];
   setPendingCallForConversation: Scalars['Boolean'];
@@ -241,6 +242,12 @@ export type MutationCancelFriendRequestArgs = {
 
 
 export type MutationRefuseFriendRequestArgs = {
+  profileUuid: Scalars['String'];
+};
+
+
+export type MutationUnfriendArgs = {
+  conversationUuid: Scalars['String'];
   profileUuid: Scalars['String'];
 };
 
@@ -1037,6 +1044,17 @@ export type SetPendingCallForConversationMutation = (
   & Pick<Mutation, 'setPendingCallForConversation'>
 );
 
+export type UnfriendMutationVariables = Exact<{
+  profileUuid: Scalars['String'];
+  conversationUuid: Scalars['String'];
+}>;
+
+
+export type UnfriendMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'unfriend'>
+);
+
 export type UpdateUnreadMessagesForConversationMutationVariables = Exact<{
   conversationUuid: Scalars['String'];
   profileUuid: Scalars['String'];
@@ -1698,6 +1716,15 @@ export const SetPendingCallForConversationDocument = gql`
 
 export function useSetPendingCallForConversationMutation() {
   return Urql.useMutation<SetPendingCallForConversationMutation, SetPendingCallForConversationMutationVariables>(SetPendingCallForConversationDocument);
+};
+export const UnfriendDocument = gql`
+    mutation Unfriend($profileUuid: String!, $conversationUuid: String!) {
+  unfriend(profileUuid: $profileUuid, conversationUuid: $conversationUuid)
+}
+    `;
+
+export function useUnfriendMutation() {
+  return Urql.useMutation<UnfriendMutation, UnfriendMutationVariables>(UnfriendDocument);
 };
 export const UpdateUnreadMessagesForConversationDocument = gql`
     mutation UpdateUnreadMessagesForConversation($conversationUuid: String!, $profileUuid: String!) {

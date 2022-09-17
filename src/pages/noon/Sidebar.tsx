@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import SidebarChannel from './SidebarChannel'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLogoutMutation, useMeQuery } from '../../generated/graphql'
+import {
+  useLogoutMutation,
+  useMeQuery,
+  useUnfriendMutation,
+} from '../../generated/graphql'
 
 import { getLoggedInUser } from '../../store/users'
 import {
@@ -16,6 +20,10 @@ import {
   InfoIcon,
   PhoneIcon,
   ChevronDownIcon,
+  HamburgerIcon,
+  ExternalLinkIcon,
+  RepeatIcon,
+  EditIcon,
 } from '@chakra-ui/icons'
 import {
   Avatar,
@@ -24,6 +32,7 @@ import {
   Flex,
   Heading,
   Icon,
+  IconButton,
   Menu,
   MenuButton,
   MenuItem,
@@ -44,7 +53,7 @@ function Sidebar() {
   const dispatch = useDispatch()
 
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
-
+  const [, unfriend] = useUnfriendMutation()
   const loggedInUser = useSelector(getLoggedInUser)
   const getConversationsFromStore = useSelector(getSortedConversations)
   const [profile, setProfile] = useState()
@@ -83,34 +92,75 @@ function Sidebar() {
                 !conversation ? null : (
                   <Flex
                     key={conversation.uuid}
-                    className="items-center p-3 pl-5 border-b border-b-base-300 border-b-amber-100 cursor-pointer"
-                    onClick={() => {
-                      setActiveConverseeFunction(
-                        conversation.conversee,
-                        conversation
-                      )
-                      setProfile(conversation.conversee)
-                    }}
+                    className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-amber-100 "
                   >
-                    <Avatar
-                      key={i}
-                      name={conversation.conversee.username}
-                      size="sm"
-                      className="mr-2"
+                    <Flex
+                      className="items-center cursor-pointer flex-1"
+                      onClick={() => {
+                        setActiveConverseeFunction(
+                          conversation.conversee,
+                          conversation
+                        )
+                        setProfile(conversation.conversee)
+                      }}
                     >
-                      {conversation.unreadMessages &&
-                      conversation.unreadMessages !== 0 &&
-                      conversation.profileThatHasUnreadMessages ===
-                        loggedInUser.user.profile.uuid ? (
-                        <AvatarBadge boxSize="1.25em" bg="red.500">
-                          <p className="text-xs">
-                            {conversation.unreadMessages}
-                          </p>
-                        </AvatarBadge>
-                      ) : null}
-                    </Avatar>
+                      <Avatar
+                        key={i}
+                        name={conversation.conversee.username}
+                        size="sm"
+                        className="mr-2"
+                      >
+                        {conversation.unreadMessages &&
+                        conversation.unreadMessages !== 0 &&
+                        conversation.profileThatHasUnreadMessages ===
+                          loggedInUser.user.profile.uuid ? (
+                          <AvatarBadge boxSize="1.25em" bg="red.500">
+                            <p className="text-xs">
+                              {conversation.unreadMessages}
+                            </p>
+                          </AvatarBadge>
+                        ) : null}
+                      </Avatar>
 
-                    <p>{conversation.conversee.username}</p>
+                      <p>{conversation.conversee.username}</p>
+                    </Flex>
+
+                    <Menu>
+                      <MenuButton
+                        as={IconButton}
+                        aria-label="Options"
+                        icon={<HamburgerIcon />}
+                        variant="outline"
+                      />
+                      <MenuList>
+                        <MenuItem
+                          icon={<EditIcon />}
+                          onClick={async () => {
+                            await unfriend({
+                              profileUuid: conversation.conversee.uuid,
+                              conversationUuid: conversation.uuid,
+                            })
+                          }}
+                        >
+                          Unfriend
+                        </MenuItem>
+
+                        <MenuItem icon={<EditIcon />}>Block</MenuItem>
+                        {/*  */}
+                        {/*  <MenuItem icon={<AddIcon />} command="⌘T">*/}
+                        {/*    New Tab*/}
+                        {/*  </MenuItem>*/}
+                        {/*  <MenuItem icon={<ExternalLinkIcon />} command="⌘N">*/}
+                        {/*    New Window*/}
+                        {/*  </MenuItem>*/}
+                        {/*  <MenuItem icon={<RepeatIcon />} command="⌘⇧N">*/}
+                        {/*    Open Closed Tab*/}
+                        {/*  </MenuItem>*/}
+                        {/*  <MenuItem icon={<EditIcon />} command="⌘O">*/}
+                        {/*    Open File...*/}
+                        {/*  </MenuItem>*/}
+                      </MenuList>
+                    </Menu>
                   </Flex>
                 )
             )

@@ -157,6 +157,8 @@ export default function Profile({ profile }) {
                   fromUsername: loggedInUser.user?.profile?.username,
                   to: profile.uuid,
                   toUsername: profile.username,
+                  conversation:
+                    acceptFriendshipResponse.data?.acceptFriendRequest,
                 })
               }
             }}

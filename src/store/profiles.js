@@ -5,7 +5,7 @@ let lastId = 0
 const slice = createSlice({
   name: 'profiles',
   initialState: {
-    list: {},
+    list: [],
   },
   reducers: {
     addProfiles: (profiles, action, loggedInUser) => {
@@ -68,11 +68,13 @@ const slice = createSlice({
       profile.hasSentFriendshipRequestToProfile = false
     },
     setFriendFlagOnProfile: (profiles, action) => {
-      let profile = profiles.list.find(
-        (profile) => profile.uuid == action.payload.profileUuid
-      )
+      if (profiles.list.length !== 0) {
+        let profile = profiles.list.find(
+          (profile) => profile.uuid == action.payload.profileUuid
+        )
 
-      profile.isAFriend = true
+        profile.isAFriend = true
+      }
     },
     unsetFriendFlagOnProfile: (profiles, action) => {
       let profile = profiles.list.find(
