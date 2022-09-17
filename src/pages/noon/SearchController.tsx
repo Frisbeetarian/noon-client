@@ -95,7 +95,7 @@ export default function SearchController() {
     <Flex className="w-full">
       {profilesFromStore
         ? [...Object.values(profilesFromStore)].map((profile, i) =>
-            !profile ? null : <Profile profile={profile} />
+            !profile ? null : <Profile key={i} profile={profile} />
           )
         : null}
     </Flex>

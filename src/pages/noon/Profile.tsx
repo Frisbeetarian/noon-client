@@ -1,13 +1,18 @@
 import React from 'react'
 import { Avatar, Box, Button, Flex } from '@chakra-ui/react'
-import { getLoggedInUser } from '../../store/users'
-import { getSocket } from '../../store/sockets'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { ChatIcon } from '@chakra-ui/icons'
 import {
   cancelFriendshipRequestSentOnProfile,
   setFriendshipRequestSentOnProfile,
 } from '../../store/profiles'
+import {
+  getLoggedInUser,
+  addFriendRequestEntry,
+  removeFriendRequestEntry,
+} from '../../store/users'
+import { getSocket } from '../../store/sockets'
 import {
   useAcceptFriendRequestMutation,
   useCancelFriendRequestMutation,
@@ -75,6 +80,13 @@ export default function Profile({ profile }) {
                 })
               )
 
+              dispatch(
+                removeFriendRequestEntry({
+                  profileUuid: profile.uuid,
+                  friendRequests: loggedInUser.user?.friendshipRequests,
+                })
+              )
+
               if (cancelFriendRequestResponse) {
                 socket.emit('cancel-friend-request', {
                   content:
@@ -137,6 +149,16 @@ export default function Profile({ profile }) {
                 dispatch(
                   setFriendshipRequestSentOnProfile({
                     profileUuid: profile.uuid,
+                  })
+                )
+
+                dispatch(
+                  addFriendRequestEntry({
+                    friendRequest: {
+                      uuid: profile.uuid,
+                      username: profile.username,
+                      reverse: false,
+                    },
                   })
                 )
 

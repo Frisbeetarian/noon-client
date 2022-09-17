@@ -26,6 +26,36 @@ const slice = createSlice({
         users.user = action.payload.user.me
       }
     },
+    addFriendRequestEntry: (users, action) => {
+      let userObject = { ...users.user }
+
+      userObject.friendshipRequests.push(action.payload.friendRequest)
+    },
+    removeFriendRequestEntry: (users, action) => {
+      let friendRequests
+      console.log('FRIEND REQUESTS:', action.payload.friendRequests)
+
+      friendRequests = action.payload.friendRequests.filter(
+        (FREntry) => FREntry.uuid != action.payload.profileUuid
+      )
+
+      console.log('FRIEND REQUESTS:', friendRequests)
+      users.user.friendshipRequests = friendRequests
+
+      // Promise.all(
+      //   friendRequestEntries.map((entry) => {
+      //     console.log('entry:', entry)
+      //     users.user.friendshipRequests = { ...friendRequestEntries }
+      //   })
+      //
+      // )
+
+      // let friendRequestEntries = users.user.friendshipRequests.filter(
+      //   (FREntry) => FREntry.uuid != action.payload.profileUuid
+      // )
+      // console.log('friend request entires:', friendRequestEntries)
+      //
+    },
   },
 })
 
@@ -67,5 +97,11 @@ export const getBugsAssignedToUser = (state, action) => {
   return bugsForUser
 }
 
-export const { userAdded, assignBugToUser, setLoggedInUser } = slice.actions
+export const {
+  userAdded,
+  assignBugToUser,
+  setLoggedInUser,
+  addFriendRequestEntry,
+  removeFriendRequestEntry,
+} = slice.actions
 export default slice.reducer
