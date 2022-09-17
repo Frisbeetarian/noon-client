@@ -33,28 +33,26 @@ const slice = createSlice({
     },
     removeFriendRequestEntry: (users, action) => {
       let friendRequests
-      console.log('FRIEND REQUESTS:', action.payload.friendRequests)
 
       friendRequests = action.payload.friendRequests.filter(
         (FREntry) => FREntry.uuid != action.payload.profileUuid
       )
 
-      console.log('FRIEND REQUESTS:', friendRequests)
       users.user.friendshipRequests = friendRequests
+    },
+    addFriendEntry: (users, action) => {
+      let userObject = { ...users.user }
 
-      // Promise.all(
-      //   friendRequestEntries.map((entry) => {
-      //     console.log('entry:', entry)
-      //     users.user.friendshipRequests = { ...friendRequestEntries }
-      //   })
-      //
-      // )
+      userObject.friendshipRequests.push(action.payload.friend)
+    },
+    removeFriendEntry: (users, action) => {
+      let friends
 
-      // let friendRequestEntries = users.user.friendshipRequests.filter(
-      //   (FREntry) => FREntry.uuid != action.payload.profileUuid
-      // )
-      // console.log('friend request entires:', friendRequestEntries)
-      //
+      friends = action.payload.friends.filter(
+        (FREntry) => FREntry.uuid != action.payload.profileUuid
+      )
+
+      users.user.friends = friends
     },
   },
 })
@@ -103,5 +101,7 @@ export const {
   setLoggedInUser,
   addFriendRequestEntry,
   removeFriendRequestEntry,
+  addFriendEntry,
+  removeFriendEntry,
 } = slice.actions
 export default slice.reducer

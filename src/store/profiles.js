@@ -58,7 +58,6 @@ const slice = createSlice({
         (profile) => profile.uuid == action.payload.profileUuid
       )
 
-      console.log('profile:', profile.uuid)
       profile.hasSentFriendshipRequestToProfile = true
     },
     cancelFriendshipRequestSentOnProfile: (profiles, action) => {
@@ -66,8 +65,21 @@ const slice = createSlice({
         (profile) => profile.uuid == action.payload.profileUuid
       )
 
-      console.log('profile:', profile.uuid)
       profile.hasSentFriendshipRequestToProfile = false
+    },
+    setFriendFlagOnProfile: (profiles, action) => {
+      let profile = profiles.list.find(
+        (profile) => profile.uuid == action.payload.profileUuid
+      )
+
+      profile.isAFriend = true
+    },
+    unsetFriendFlagOnProfile: (profiles, action) => {
+      let profile = profiles.list.find(
+        (profile) => profile.uuid == action.payload.profileUuid
+      )
+
+      profile.isAFriend = true
     },
     addProfile: (profiles, action) => {
       const { profile } = action.payload
@@ -90,5 +102,6 @@ export const {
   addProfiles,
   setFriendshipRequestSentOnProfile,
   cancelFriendshipRequestSentOnProfile,
+  setFriendFlagOnProfile,
 } = slice.actions
 export default slice.reducer

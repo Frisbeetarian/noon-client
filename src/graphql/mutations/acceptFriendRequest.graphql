@@ -1,3 +1,6 @@
 mutation AcceptFriendRequest($profileUuid: String!) {
-    acceptFriendRequest(profileUuid: $profileUuid)
+    acceptFriendRequest(profileUuid: $profileUuid){
+        ...ConversationSnippet
+
+    }
 }

@@ -157,7 +157,7 @@ export type Mutation = {
   createEvent: Event;
   joinEvent: Event;
   sendFriendRequest: Scalars['Boolean'];
-  acceptFriendRequest: Scalars['Boolean'];
+  acceptFriendRequest: Conversation;
   cancelFriendRequest: Scalars['Boolean'];
   refuseFriendRequest: Scalars['Boolean'];
   createCommunity: Community;
@@ -471,7 +471,10 @@ export type AcceptFriendRequestMutationVariables = Exact<{
 
 export type AcceptFriendRequestMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'acceptFriendRequest'>
+  & { acceptFriendRequest: (
+    { __typename?: 'Conversation' }
+    & ConversationSnippetFragment
+  ) }
 );
 
 export type CancelFriendRequestMutationVariables = Exact<{
@@ -1239,9 +1242,11 @@ export function useUpdatePostMutation() {
 };
 export const AcceptFriendRequestDocument = gql`
     mutation AcceptFriendRequest($profileUuid: String!) {
-  acceptFriendRequest(profileUuid: $profileUuid)
+  acceptFriendRequest(profileUuid: $profileUuid) {
+    ...ConversationSnippet
+  }
 }
-    `;
+    ${ConversationSnippetFragmentDoc}`;
 
 export function useAcceptFriendRequestMutation() {
   return Urql.useMutation<AcceptFriendRequestMutation, AcceptFriendRequestMutationVariables>(AcceptFriendRequestDocument);

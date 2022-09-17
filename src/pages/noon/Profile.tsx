@@ -5,13 +5,18 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ChatIcon } from '@chakra-ui/icons'
 import {
   cancelFriendshipRequestSentOnProfile,
+  setFriendFlagOnProfile,
   setFriendshipRequestSentOnProfile,
 } from '../../store/profiles'
+
 import {
   getLoggedInUser,
   addFriendRequestEntry,
   removeFriendRequestEntry,
+  addFriendEntry,
+  removeFriendEntry,
 } from '../../store/users'
+
 import { getSocket } from '../../store/sockets'
 import {
   useAcceptFriendRequestMutation,
@@ -19,6 +24,7 @@ import {
   useRefuseFriendRequestMutation,
   useSendFriendRequestMutation,
 } from '../../generated/graphql'
+import { addConversation } from '../../store/chat'
 
 interface ProfileProps {
   uuid: string
@@ -33,7 +39,8 @@ export default function Profile({ profile }) {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
 
-  const [, acceptFriendRequest] = useAcceptFriendRequestMutation()
+  const [{ data: acceptFriendRequestResponse }, acceptFriendRequest] =
+    useAcceptFriendRequestMutation()
   const [, refuseFriendRequest] = useRefuseFriendRequestMutation()
   const [, cancelFriendRequest] = useCancelFriendRequestMutation()
 
@@ -113,16 +120,44 @@ export default function Profile({ profile }) {
                 profileUuid: profile.uuid,
               })
 
+              console.log(
+                'accept friend ship response:',
+                acceptFriendshipResponse
+              )
+
+              dispatch(
+                setFriendFlagOnProfile({
+                  profileUuid: profile.uuid,
+                })
+              )
+
+              dispatch(
+                addFriendEntry({
+                  friend: {
+                    uuid: profile.uuid,
+                    username: profile.username,
+                  },
+                })
+              )
+
+              dispatch(
+                addConversation({
+                  conversation:
+                    acceptFriendshipResponse.data?.acceptFriendRequest,
+                  loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+                })
+              )
+
               if (acceptFriendshipResponse) {
-                // socket.emit('friendship-request-accepted', {
-                //   content:
-                //     loggedInUser.user?.profile?.username +
-                //     ' accepted your friend request.',
-                //   from: loggedInUser.user?.profile?.uuid,
-                //   fromUsername: loggedInUser.user?.profile?.username,
-                //   to: profile.uuid,
-                //   toUsername: profile.username,
-                // })
+                socket.emit('friendship-request-accepted', {
+                  content:
+                    loggedInUser.user?.profile?.username +
+                    ' accepted your friend request.',
+                  from: loggedInUser.user?.profile?.uuid,
+                  fromUsername: loggedInUser.user?.profile?.username,
+                  to: profile.uuid,
+                  toUsername: profile.username,
+                })
               }
             }}
           >

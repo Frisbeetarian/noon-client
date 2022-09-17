@@ -17,6 +17,27 @@ const slice = createSlice({
     setActiveConversationSet: (chat, action) => {
       chat.activeConversationSet = action.payload
     },
+    addConversation: (chat, action) => {
+      let conversationObject = { ...action.payload.conversation }
+
+      conversationObject.conversee = conversationObject.profiles.find(
+        (element) => element.uuid != action.payload.loggedInProfileUuid
+      )
+
+      // if (
+      //   conversation.unreadMessages !== 0 &&
+      //   conversation.profileThatHasUnreadMessages ===
+      //     action.payload.loggedInProfileUuid
+      // ) {
+      //   chat.conversationsThatHaveUnreadMessagesForProfile.push(
+      //     conversation.uuid
+      //   )
+      // }
+
+      // conversationObject.ongoingCall = false
+
+      chat.conversations.push(conversationObject)
+    },
     setConversations: (chat, action) => {
       const conversationsArray = []
 
@@ -287,6 +308,7 @@ export const getConversationsThatHaveUnreadMessagesForProfile = createSelector(
 )
 
 export const {
+  addConversation,
   setConversations,
   setActiveConversee,
   setActiveConversation,
