@@ -49,13 +49,13 @@ const Header = () => {
       }
     })
 
-    socket.on('friend-connected', ({ username, uuid }) => {
+    socket.on('friend-connected', ({ uuid }) => {
       if (uuid === activeConversee.uuid) {
         setOnline('true')
       }
     })
 
-    socket.on('friend-disconnected', ({ username, uuid }) => {
+    socket.on('friend-disconnected', ({ uuid }) => {
       if (uuid === activeConversee.uuid) {
         setOnline('false')
       }
