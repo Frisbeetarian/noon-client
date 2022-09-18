@@ -67,6 +67,20 @@ const slice = createSlice({
 
       profile.hasSentFriendshipRequestToProfile = false
     },
+    setHasFriendshipRequestFromLoggedInProfile: (profiles, action) => {
+      let profile = profiles.list.find(
+        (profile) => profile.uuid == action.payload.profileUuid
+      )
+
+      profile.hasFriendshipRequestFromLoggedInProfile = true
+    },
+    unsetHasFriendshipRequestFromLoggedInProfile: (profiles, action) => {
+      let profile = profiles.list.find(
+        (profile) => profile.uuid == action.payload.profileUuid
+      )
+
+      profile.hasFriendshipRequestFromLoggedInProfile = false
+    },
     setFriendFlagOnProfile: (profiles, action) => {
       if (profiles.list.length !== 0) {
         let profile = profiles.list.find(
@@ -74,6 +88,8 @@ const slice = createSlice({
         )
 
         profile.isAFriend = true
+        profile.hasFriendshipRequestFromLoggedInProfile = false
+        profile.hasSentFriendshipRequestToProfile = false
       }
     },
     unsetFriendFlagOnProfile: (profiles, action) => {
@@ -105,5 +121,7 @@ export const {
   setFriendshipRequestSentOnProfile,
   cancelFriendshipRequestSentOnProfile,
   setFriendFlagOnProfile,
+  setHasFriendshipRequestFromLoggedInProfile,
+  unsetHasFriendshipRequestFromLoggedInProfile,
 } = slice.actions
 export default slice.reducer

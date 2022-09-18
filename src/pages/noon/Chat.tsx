@@ -12,7 +12,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getSocket } from '../../store/sockets'
 import Header from './Header'
 import Messages from './Messages'
-import { addFriendEntry, getLoggedInUser } from '../../store/users'
+import {
+  addFriendEntry,
+  addFriendRequestEntry,
+  getLoggedInUser,
+  removeFriendRequestEntry,
+} from '../../store/users'
 import {
   useAcceptFriendRequestMutation,
   useCancelPendingCallForConversationMutation,
@@ -43,7 +48,36 @@ function Chat() {
     if (socket) {
       socket.on(
         'friendship-request-accepted',
-        ({ content, from, fromUsername, to }) => {
+        ({ content, from, fromUsername, to, conversation }) => {
+          // dispatch(
+          //   setFriendFlagOnProfile({
+          //     profileUuid: from,
+          //   })
+          // )
+
+          dispatch(
+            removeFriendRequestEntry({
+              profileUuid: from,
+              friendRequests: loggedInUser.user?.friendshipRequests,
+            })
+          )
+
+          dispatch(
+            addFriendEntry({
+              friend: {
+                uuid: from,
+                username: fromUsername,
+              },
+            })
+          )
+
+          dispatch(
+            addConversation({
+              conversation: conversation,
+              loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+            })
+          )
+
           toast({
             id: from,
             title: `${fromUsername} accepted your friend request.`,
@@ -70,8 +104,41 @@ function Chat() {
       )
 
       socket.on(
+        'cancel-friend-request',
+        ({ content, from, fromUsername, to }) => {
+          dispatch(
+            dispatch(
+              removeFriendRequestEntry({
+                profileUuid: from,
+                friendRequests: loggedInUser.user?.friendshipRequests,
+              })
+            )
+          )
+          toast.closeAll()
+          toast({
+            id: from,
+            title: `${fromUsername} has cancelled the friend request.`,
+            position: 'bottom-right',
+            isClosable: true,
+            status: 'error',
+            duration: 5000,
+          })
+        }
+      )
+
+      socket.on(
         'send-friend-request',
         ({ content, from, fromUsername, to }) => {
+          dispatch(
+            addFriendRequestEntry({
+              friendRequest: {
+                uuid: from,
+                username: fromUsername,
+                reverse: true,
+              },
+            })
+          )
+
           toast({
             id: from,
             title: `${fromUsername} sent you a friend request.`,
@@ -154,6 +221,7 @@ function Chat() {
       return () => {
         // setOnline('loading')
         socket.off('send-friend-request')
+        socket.off('cancel-friend-request')
         socket.off('friendship-request-accepted')
       }
     }

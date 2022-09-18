@@ -38,12 +38,14 @@ const slice = createSlice({
         (FREntry) => FREntry.uuid != action.payload.profileUuid
       )
 
+      console.log('friend request entries:', friendRequests)
+
       users.user.friendshipRequests = friendRequests
     },
     addFriendEntry: (users, action) => {
       let userObject = { ...users.user }
 
-      userObject.friendshipRequests.push(action.payload.friend)
+      userObject.friends.push(action.payload.friend)
     },
     removeFriendEntry: (users, action) => {
       let friends

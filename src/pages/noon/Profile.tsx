@@ -7,6 +7,8 @@ import {
   cancelFriendshipRequestSentOnProfile,
   setFriendFlagOnProfile,
   setFriendshipRequestSentOnProfile,
+  setHasFriendshipRequestFromLoggedInProfile,
+  unsetHasFriendshipRequestFromLoggedInProfile,
 } from '../../store/profiles'
 
 import {
@@ -126,8 +128,9 @@ export default function Profile({ profile }) {
               )
 
               dispatch(
-                setFriendFlagOnProfile({
+                removeFriendRequestEntry({
                   profileUuid: profile.uuid,
+                  friendRequests: loggedInUser.user?.friendshipRequests,
                 })
               )
 
@@ -140,6 +143,12 @@ export default function Profile({ profile }) {
                 })
               )
 
+              // dispatch(
+              //   setFriendFlagOnProfile({
+              //     profileUuid: profile.uuid,
+              //   })
+              // )
+
               dispatch(
                 addConversation({
                   conversation:
@@ -147,7 +156,7 @@ export default function Profile({ profile }) {
                   loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
                 })
               )
-
+              //
               if (acceptFriendshipResponse) {
                 socket.emit('friendship-request-accepted', {
                   content:
