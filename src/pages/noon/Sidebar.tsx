@@ -7,7 +7,7 @@ import {
   useUnfriendMutation,
 } from '../../generated/graphql'
 
-import { getLoggedInUser } from '../../store/users'
+import { getLoggedInUser, removeFriendEntry } from '../../store/users'
 import {
   SmallAddIcon,
   AddIcon,
@@ -41,16 +41,19 @@ import {
 import { ImMic, ImHeadphones } from 'react-icons/all'
 import {
   getSortedConversations,
+  removeConversation,
   setActiveConversation,
   setActiveConversationSet,
   setActiveConversee,
 } from '../../store/chat'
 import SocketConnector from '../../components/SocketIo/SocketConnector'
 import { useRouter } from 'next/router'
+import { getSocket } from '../../store/sockets'
 
 function Sidebar() {
   const router = useRouter()
   const dispatch = useDispatch()
+  const socket = useSelector(getSocket)
 
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
   const [, unfriend] = useUnfriendMutation()
@@ -137,10 +140,36 @@ function Sidebar() {
                         <MenuItem
                           icon={<EditIcon />}
                           onClick={async () => {
-                            await unfriend({
+                            const unfriendResponse = await unfriend({
                               profileUuid: conversation.conversee.uuid,
                               conversationUuid: conversation.uuid,
                             })
+
+                            dispatch(
+                              removeFriendEntry({
+                                profileUuid: conversation.conversee.uuid,
+                                friends: loggedInUser.user?.friends,
+                              })
+                            )
+                            dispatch(
+                              removeConversation({
+                                conversationUuid: conversation.uuid,
+                              })
+                            )
+
+                            if (unfriendResponse) {
+                              socket.emit('unfriend', {
+                                content:
+                                  loggedInUser.user?.profile?.username +
+                                  ' unfriended you.',
+                                from: loggedInUser.user?.profile?.uuid,
+                                fromUsername:
+                                  loggedInUser.user?.profile?.username,
+                                to: conversation.conversee.uuid,
+                                toUsername: conversation.conversee.username,
+                                conversationUuid: conversation.uuid,
+                              })
+                            }
                           }}
                         >
                           Unfriend

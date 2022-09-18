@@ -38,6 +38,11 @@ const slice = createSlice({
 
       chat.conversations.push(conversationObject)
     },
+    removeConversation: (chat, action) => {
+      chat.conversations = chat.conversations.filter(
+        (conversation) => conversation.uuid != action.payload.conversationUuid
+      )
+    },
     setConversations: (chat, action) => {
       const conversationsArray = []
 
@@ -309,6 +314,7 @@ export const getConversationsThatHaveUnreadMessagesForProfile = createSelector(
 
 export const {
   addConversation,
+  removeConversation,
   setConversations,
   setActiveConversee,
   setActiveConversation,

@@ -7,6 +7,7 @@ import {
   addMessageToActiveConversation,
   getActiveConversation,
   getActiveConversee,
+  removeConversation,
 } from '../../store/chat'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSocket } from '../../store/sockets'
@@ -16,6 +17,7 @@ import {
   addFriendEntry,
   addFriendRequestEntry,
   getLoggedInUser,
+  removeFriendEntry,
   removeFriendRequestEntry,
 } from '../../store/users'
 import {
@@ -218,11 +220,25 @@ function Chat() {
         }
       )
 
+      socket.on(
+        'unfriend',
+        ({ content, from, fromUsername, to, conversationUuid }) => {
+          dispatch(
+            removeFriendEntry({
+              profileUuid: from,
+              friends: loggedInUser.user?.friends,
+            })
+          )
+          dispatch(removeConversation({ conversationUuid }))
+        }
+      )
+
       return () => {
         // setOnline('loading')
         socket.off('send-friend-request')
         socket.off('cancel-friend-request')
         socket.off('friendship-request-accepted')
+        socket.off('unfriend')
       }
     }
   }, [socket])
