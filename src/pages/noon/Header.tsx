@@ -37,7 +37,7 @@ const Header = () => {
 
   return (
     <Flex w="100%" className="items-center justify-between">
-      <Flex className="items-center">
+      <Flex className="items-center px-3">
         <Avatar size="md" name={activeConversee.username}>
           <AvatarBadge
             boxSize="1.25em"

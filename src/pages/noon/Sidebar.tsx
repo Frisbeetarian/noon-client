@@ -78,14 +78,14 @@ function Sidebar() {
       style={{ flex: '0.25', height: '100vh' }}
     >
       {/*<div className="w-full h-full text-white px-4 py-2">*/}
-      <Flex className="items-center border-b pb-0.5" style={{ flex: '0.05' }}>
+      <Flex className="items-center border-b" style={{ flex: '0.05' }}>
         {/*<p className="text-xl"></p>*/}
         <Heading className=" w-full px-4">Noon</Heading>
         {/*<ArrowDownIcon />*/}
         {/*<ExpandMoreIcon />*/}
       </Flex>
 
-      <Flex className="flex-col pt-3" style={{ flex: '0.9' }}>
+      <Flex className="flex-col pt-3" style={{ flex: '0.875' }}>
         {/*<ExpandMoreIcon />*/}
         {/*<h4>Channels</h4>*/}
 
@@ -198,11 +198,11 @@ function Sidebar() {
       </Flex>
 
       <Flex
-        className="flex justify-between items-center border-t "
-        style={{ flex: '0.05' }}
+        className="flex justify-between items-center border-t box-content"
+        style={{ flex: '0.075' }}
       >
-        <Flex className="items-center px-2 py-4">
-          <Avatar />
+        <Flex className="items-center px-2 ">
+          <Avatar size="md" />
           <p className="ml-2 text-md">{loggedInUser.user?.profile?.username}</p>
           <SocketConnector />
         </Flex>

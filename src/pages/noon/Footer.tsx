@@ -73,10 +73,10 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   return (
     <Flex
       // mt="5"
-      className="bg-white text-red-500 items-center py-1 border-t"
+      className="bg-white text-red-500 items-center box-content h-full"
     >
       <Input
-        className="py-9 h-52 border border-black"
+        className="py-2 box-content"
         placeholder="Type Something..."
         border="none"
         borderRadius="none"

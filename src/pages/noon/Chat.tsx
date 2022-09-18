@@ -290,9 +290,9 @@ function Chat() {
       {/*<Flex w="100%" className="flex-col " style={{ flex: '0.9' }}>*/}
       {profile && activeConversation ? (
         <Flex
-          className="flex-col p-0"
+          className="flex-col p-0 box-content"
           overflowY="scroll"
-          style={{ flex: '0.9' }}
+          style={{ flex: '0.875' }}
         >
           <Header></Header>
           <Messages />
@@ -304,7 +304,12 @@ function Chat() {
       {/*</Flex>*/}
       {/*</Flex>*/}
       {activeConversation ? (
-        <Flex w="100%" flexDir="column" className="" style={{ flex: '0.05' }}>
+        <Flex
+          w="100%"
+          flexDir="column"
+          className="justify-center"
+          style={{ flex: '0.075' }}
+        >
           <Footer
             inputMessage={inputMessage}
             setInputMessage={setInputMessage}

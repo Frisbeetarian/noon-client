@@ -32,11 +32,12 @@ function ChatControlsAndSearch() {
 
   return (
     <Flex
-      className="border-b px-3"
+      className="border-b px-3 "
       style={{
         position: containerDisplay,
         flex: containerHeight,
         transition: 'all .5s ',
+        marginTop: '-0.5px',
       }}
     >
       {/*<p className="m-0 p-0">{profile?.username}</p>*/}
