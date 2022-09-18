@@ -35,6 +35,40 @@ const Header = () => {
   const [, cancelPendingCallForConversation] =
     useCancelPendingCallForConversationMutation()
 
+  useEffect(() => {
+    socket.emit('check-friend-connection', {
+      from: loggedInUser.user?.profile?.uuid,
+      fromUsername: loggedInUser.user?.profile?.username,
+      to: activeConversee.uuid,
+      toUsername: activeConversee.username,
+    })
+
+    socket.on('check-friend-connection', ({ session }) => {
+      if (session.connected === true) {
+        setOnline('true')
+      }
+    })
+
+    socket.on('friend-connected', ({ username, uuid }) => {
+      if (uuid === activeConversee.uuid) {
+        setOnline('true')
+      }
+    })
+
+    socket.on('friend-disconnected', ({ username, uuid }) => {
+      if (uuid === activeConversee.uuid) {
+        setOnline('false')
+      }
+    })
+
+    return () => {
+      setOnline('loading')
+      socket.off('check-friend-connection')
+      socket.off('friend-connected')
+      socket.off('friend-disconnected')
+    }
+  }, [activeConversee])
+
   return (
     <Flex w="100%" className="items-center justify-between">
       <Flex className="items-center px-3">
