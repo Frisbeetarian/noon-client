@@ -101,6 +101,7 @@ function Sidebar() {
                           conversation.conversee,
                           conversation
                         )
+
                         setProfile(conversation.conversee)
                       }}
                     >

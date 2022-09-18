@@ -4,21 +4,22 @@ import {
   Avatar,
   AvatarBadge,
   Text,
-  Box,
   Button,
   Link,
   Heading,
+  CloseButton,
+  useToast,
 } from '@chakra-ui/react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  addMessageToActiveConversation,
+  addConversation,
   cancelPendingCall,
   getActiveConversation,
   getActiveConversee,
 } from '../../store/chat'
 
-import { getLoggedInUser } from '../../store/users'
+import { addFriendEntry, getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
 import NextLink from 'next/link'
 import { useCancelPendingCallForConversationMutation } from '../../generated/graphql'
@@ -29,45 +30,10 @@ const Header = () => {
   const loggedInUser = useSelector(getLoggedInUser)
   const socket = useSelector(getSocket)
   const [online, setOnline] = useState('loading')
-  // const [state, setState] = useState(initState)
   const activeConversation = useSelector(getActiveConversation)
 
   const [, cancelPendingCallForConversation] =
     useCancelPendingCallForConversationMutation()
-
-  useEffect(() => {
-    socket.emit('check-friend-connection', {
-      from: loggedInUser.user?.profile?.uuid,
-      fromUsername: loggedInUser.user?.profile?.username,
-      to: activeConversee.uuid,
-      toUsername: activeConversee.username,
-    })
-
-    socket.on('check-friend-connection', ({ session }) => {
-      if (session.connected === true) {
-        setOnline('true')
-      }
-    })
-
-    socket.on('friend-connected', ({ username, uuid }) => {
-      if (uuid === activeConversee.uuid) {
-        setOnline('true')
-      }
-    })
-
-    socket.on('friend-disconnected', ({ username, uuid }) => {
-      if (uuid === activeConversee.uuid) {
-        setOnline('false')
-      }
-    })
-
-    return () => {
-      setOnline('loading')
-      socket.off('check-friend-connection')
-      socket.off('friend-connected')
-      socket.off('friend-disconnected')
-    }
-  }, [activeConversee])
 
   return (
     <Flex w="100%" className="items-center justify-between">

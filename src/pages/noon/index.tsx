@@ -55,8 +55,12 @@ function Noon() {
 
   return (
     <div className="flex">
-      <Sidebar />
-      <Chat />
+      {loggedInUser.user?.profile ? (
+        <>
+          <Sidebar />
+          <Chat />
+        </>
+      ) : null}
     </div>
   )
 }
