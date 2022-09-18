@@ -53,14 +53,6 @@ function Chat() {
 
   useEffect(() => {
     if (socket) {
-      return () => {
-        socket.off('private-chat-message')
-      }
-    }
-  }, [socket])
-
-  useEffect(() => {
-    if (socket) {
       socket.on(
         'private-chat-message',
         ({ content, from, fromUsername, to, message, conversationUuid }) => {
@@ -96,8 +88,9 @@ function Chat() {
           )
         }
       )
-
-      return () => {
+    }
+    return () => {
+      if (socket) {
         socket.off('private-chat-message')
       }
     }
@@ -292,8 +285,10 @@ function Chat() {
           dispatch(removeConversation({ conversationUuid }))
         }
       )
+    }
 
-      return () => {
+    return () => {
+      if (socket) {
         // setOnline('loading')
         socket.off('send-friend-request')
         socket.off('cancel-friend-request')

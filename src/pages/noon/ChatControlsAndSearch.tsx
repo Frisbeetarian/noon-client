@@ -56,6 +56,7 @@ function ChatControlsAndSearch() {
           type="text"
           className="m-0 focus:bg-base-100 bg-transparent outline-0 bg-gray-800"
           // disabled={searchActive}
+          placeholder="Search"
           onClick={() => {
             setSearchActive(true)
             setContainerDisplay('sticky')
@@ -83,7 +84,7 @@ function ChatControlsAndSearch() {
           }}
         />
 
-        <SearchIcon className="absolute right-6" />
+        <SearchIcon className="absolute right-4" />
 
         {containerDisplay === 'sticky' ? (
           <ArrowUpIcon

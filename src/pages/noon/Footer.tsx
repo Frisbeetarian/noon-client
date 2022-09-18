@@ -77,7 +77,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
     >
       <Input
         className="py-2 box-content"
-        placeholder="Type Something..."
+        placeholder="Type message..."
         border="none"
         borderRadius="none"
         onKeyPress={(e) => {

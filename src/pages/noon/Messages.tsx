@@ -66,7 +66,7 @@ const Messages = () => {
       // w="100%"
       overflowY="scroll"
       flexDirection="column"
-      className="w-full top-0 p-3"
+      className="w-full top-0 py-3 px-5"
     >
       {activeConversation
         ? activeConversation.messages.map((item, index) => {
