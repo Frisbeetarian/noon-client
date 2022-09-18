@@ -6,6 +6,7 @@ import {
   addConversation,
   addMessageToActiveConversation,
   getActiveConversation,
+  getActiveConversationSet,
   getActiveConversee,
   removeConversation,
 } from '../../store/chat'
@@ -25,6 +26,7 @@ import {
   useCancelPendingCallForConversationMutation,
   useSaveMessageMutation,
   useSendFriendRequestMutation,
+  useUpdateUnreadMessagesForConversationMutation,
 } from '../../generated/graphql'
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 import { setFriendFlagOnProfile } from '../../store/profiles'
@@ -37,14 +39,69 @@ function Chat() {
   const socket = useSelector(getSocket)
 
   const activeConversation = useSelector(getActiveConversation)
+  const activeConversationSet = useSelector(getActiveConversationSet)
+
   const profile = useSelector(getActiveConversee)
   const [, saveMessage] = useSaveMessageMutation()
 
   const [, sendFriendRequest] = useSendFriendRequestMutation()
   const [, acceptFriendRequest] = useAcceptFriendRequestMutation()
   const [socketError, setSocketError] = useState(false)
-
+  const [, updateUnreadMessagesForConversation] =
+    useUpdateUnreadMessagesForConversationMutation()
   const toast = useToast()
+
+  useEffect(() => {
+    if (socket) {
+      return () => {
+        socket.off('private-chat-message')
+      }
+    }
+  }, [socket])
+
+  useEffect(() => {
+    if (socket) {
+      socket.on(
+        'private-chat-message',
+        ({ content, from, fromUsername, to, message, conversationUuid }) => {
+          if (!message.trim().length) {
+            return
+          }
+
+          console.log('RECEIVED MESSAGES:', message)
+          console.log('activeConversation:', activeConversationSet)
+
+          const data = message
+
+          if (
+            activeConversationSet === false ||
+            conversationUuid !== activeConversation.uuid
+          ) {
+            console.log('entering update')
+            updateUnreadMessagesForConversation({
+              conversationUuid: conversationUuid,
+              profileUuid: loggedInUser?.user?.profile?.uuid,
+            })
+          }
+          // if (activeConversation) {
+
+          dispatch(
+            addMessageToActiveConversation({
+              message: data,
+              loggedInUser: { uuid: from, username: fromUsername },
+              from: 'computer',
+              conversationUuid,
+              loggedInProfile: loggedInUser.user?.profile,
+            })
+          )
+        }
+      )
+
+      return () => {
+        socket.off('private-chat-message')
+      }
+    }
+  }, [socket, activeConversationSet])
 
   useEffect(() => {
     if (socket) {
