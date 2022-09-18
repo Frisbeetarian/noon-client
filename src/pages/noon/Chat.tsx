@@ -116,7 +116,10 @@ function Chat() {
               })
             )
           )
-          toast.closeAll()
+          // toast.closeAll()
+
+          toast.close(from)
+
           toast({
             id: from,
             title: `${fromUsername} has cancelled the friend request.`,

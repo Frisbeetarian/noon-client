@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, Box, Button, Flex } from '@chakra-ui/react'
+import { Avatar, Box, Button, Flex, useToast } from '@chakra-ui/react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { ChatIcon } from '@chakra-ui/icons'
@@ -49,6 +49,8 @@ export default function Profile({ profile }) {
   const [{ fetching: friendRequestFetching }, sendFriendRequest] =
     useSendFriendRequestMutation()
   const socket = useSelector(getSocket)
+  const toast = useToast()
+  const toastIdRef = React.useRef()
 
   return (
     <Flex
@@ -122,11 +124,6 @@ export default function Profile({ profile }) {
                 profileUuid: profile.uuid,
               })
 
-              console.log(
-                'accept friend ship response:',
-                acceptFriendshipResponse
-              )
-
               dispatch(
                 removeFriendRequestEntry({
                   profileUuid: profile.uuid,
@@ -170,6 +167,9 @@ export default function Profile({ profile }) {
                     acceptFriendshipResponse.data?.acceptFriendRequest,
                 })
               }
+              // if (toastIdRef.current) {
+              toast.close(profile.uuid)
+              // }
             }}
           >
             Accept
