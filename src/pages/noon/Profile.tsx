@@ -203,7 +203,7 @@ export default function Profile({ profile }) {
                   profileUuid: profile.uuid,
                 })
 
-                socket.emit('private message', {
+                socket.emit('send-friend-request', {
                   content:
                     loggedInUser.user?.profile?.username +
                     ' wants to be your friend.',
