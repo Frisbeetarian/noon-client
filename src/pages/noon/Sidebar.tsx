@@ -1,44 +1,20 @@
 import React, { useState } from 'react'
-import SidebarChannel from './SidebarChannel'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  useLogoutMutation,
-  useMeQuery,
-  useUnfriendMutation,
-} from '../../generated/graphql'
-
+import { useLogoutMutation, useUnfriendMutation } from '../../generated/graphql'
 import { getLoggedInUser, removeFriendEntry } from '../../store/users'
-import {
-  SmallAddIcon,
-  AddIcon,
-  SettingsIcon,
-  BellIcon,
-  CheckIcon,
-  ChatIcon,
-  CloseIcon,
-  ArrowDownIcon,
-  InfoIcon,
-  PhoneIcon,
-  ChevronDownIcon,
-  HamburgerIcon,
-  ExternalLinkIcon,
-  RepeatIcon,
-  EditIcon,
-} from '@chakra-ui/icons'
+import { SettingsIcon, HamburgerIcon, EditIcon } from '@chakra-ui/icons'
 import {
   Avatar,
   AvatarBadge,
-  Button,
   Flex,
   Heading,
-  Icon,
   IconButton,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
 } from '@chakra-ui/react'
-import { ImMic, ImHeadphones } from 'react-icons/all'
+
 import {
   getSortedConversations,
   removeConversation,
@@ -46,6 +22,7 @@ import {
   setActiveConversationSet,
   setActiveConversee,
 } from '../../store/chat'
+
 import SocketConnector from '../../components/SocketIo/SocketConnector'
 import { useRouter } from 'next/router'
 import { getSocket } from '../../store/sockets'
@@ -77,18 +54,11 @@ function Sidebar() {
       className="flex flex-col bg-neutral text-white box-content"
       style={{ flex: '0.25', height: '100vh' }}
     >
-      {/*<div className="w-full h-full text-white px-4 py-2">*/}
       <Flex className="items-center border-b" style={{ flex: '0.05' }}>
-        {/*<p className="text-xl"></p>*/}
-        <Heading className=" w-full px-4">Noon</Heading>
-        {/*<ArrowDownIcon />*/}
-        {/*<ExpandMoreIcon />*/}
+        <Heading className="w-full px-4">Noon</Heading>
       </Flex>
 
       <Flex className="flex-col pt-3" style={{ flex: '0.875' }}>
-        {/*<ExpandMoreIcon />*/}
-        {/*<h4>Channels</h4>*/}
-
         {getConversationsFromStore
           ? [...Object.values(getConversationsFromStore)].map(
               (conversation, i) =>
@@ -96,7 +66,7 @@ function Sidebar() {
                   <Flex
                     key={conversation.uuid}
                     tabindex="0"
-                    className=" items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-amber-100 hover:border-sky-500 focus:outline-none focus:border-sky-700 focus-within:shadow-lg"
+                    className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-amber-100 hover:border-sky-500 focus:outline-none focus:border-sky-700 focus-within:shadow-lg"
                     style={{ transition: 'all .25s ' }}
                   >
                     <Flex
@@ -138,6 +108,7 @@ function Sidebar() {
                         icon={<HamburgerIcon />}
                         variant="outline"
                       />
+
                       <MenuList>
                         <MenuItem
                           icon={<EditIcon />}
@@ -209,10 +180,7 @@ function Sidebar() {
           <SocketConnector />
         </Flex>
 
-        <Flex className="px-3 justify-between ">
-          {/*<Icon as={ImMic} />*/}
-          {/*<Icon as={ImHeadphones} />*/}
-
+        <Flex className="px-3 justify-between">
           <Menu>
             <MenuButton>
               <SettingsIcon />

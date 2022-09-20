@@ -29,7 +29,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
     if (socket) {
       socket.on(
         'set-ongoing-call-for-conversation',
-        ({ from, fromUsername, to, toUsername, conversationUuid }) => {
+        ({ from, fromUsername }) => {
           dispatch(
             setOngoingCall({
               uuid: activeConversation.uuid,

@@ -7,19 +7,16 @@ import {
   Button,
   Link,
   Heading,
-  CloseButton,
-  useToast,
 } from '@chakra-ui/react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  addConversation,
   cancelPendingCall,
   getActiveConversation,
   getActiveConversee,
 } from '../../store/chat'
 
-import { addFriendEntry, getLoggedInUser } from '../../store/users'
+import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
 import NextLink from 'next/link'
 import { useCancelPendingCallForConversationMutation } from '../../generated/graphql'
