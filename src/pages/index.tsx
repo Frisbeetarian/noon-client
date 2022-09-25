@@ -218,7 +218,7 @@ const Index = () => {
                   } else if (response.data?.register.user) {
                     // await establishSocketConnection(values.username)
                     // worked
-                    router.push('/noon')
+                    // router.push('/noon')
                     // router.
                   }
                 }}

@@ -14,6 +14,8 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: import('graphql-upload-minimal').FileUpload;
 };
 
 export type Community = {
@@ -167,6 +169,7 @@ export type Mutation = {
   cancelPendingCallForConversation: Scalars['Boolean'];
   clearUnreadMessagesForConversation: Scalars['Boolean'];
   updateUnreadMessagesForConversation: Scalars['Boolean'];
+  uploadImage: Message;
   saveMessage: Message;
 };
 
@@ -280,6 +283,13 @@ export type MutationClearUnreadMessagesForConversationArgs = {
 
 
 export type MutationUpdateUnreadMessagesForConversationArgs = {
+  conversationUuid: Scalars['String'];
+  profileUuid: Scalars['String'];
+};
+
+
+export type MutationUploadImageArgs = {
+  file?: Maybe<Scalars['Upload']>;
   conversationUuid: Scalars['String'];
   profileUuid: Scalars['String'];
 };
@@ -431,6 +441,7 @@ export type Search = {
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
 };
+
 
 export type User = {
   __typename?: 'User';
@@ -1064,6 +1075,21 @@ export type UpdateUnreadMessagesForConversationMutationVariables = Exact<{
 export type UpdateUnreadMessagesForConversationMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'updateUnreadMessagesForConversation'>
+);
+
+export type UploadImageMutationVariables = Exact<{
+  profileUuid: Scalars['String'];
+  conversationUuid: Scalars['String'];
+  file: Scalars['Upload'];
+}>;
+
+
+export type UploadImageMutation = (
+  { __typename?: 'Mutation' }
+  & { uploadImage: (
+    { __typename?: 'Message' }
+    & Pick<Message, 'uuid'>
+  ) }
 );
 
 export type VoteMutationVariables = Exact<{
@@ -1737,6 +1763,21 @@ export const UpdateUnreadMessagesForConversationDocument = gql`
 
 export function useUpdateUnreadMessagesForConversationMutation() {
   return Urql.useMutation<UpdateUnreadMessagesForConversationMutation, UpdateUnreadMessagesForConversationMutationVariables>(UpdateUnreadMessagesForConversationDocument);
+};
+export const UploadImageDocument = gql`
+    mutation UploadImage($profileUuid: String!, $conversationUuid: String!, $file: Upload!) {
+  uploadImage(
+    profileUuid: $profileUuid
+    conversationUuid: $conversationUuid
+    file: $file
+  ) {
+    uuid
+  }
+}
+    `;
+
+export function useUploadImageMutation() {
+  return Urql.useMutation<UploadImageMutation, UploadImageMutationVariables>(UploadImageDocument);
 };
 export const VoteDocument = gql`
     mutation Vote($value: Int!, $postId: Int!) {

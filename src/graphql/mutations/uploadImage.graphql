@@ -1,0 +1,13 @@
+mutation UploadImage(
+  $profileUuid: String!
+  $conversationUuid: String!
+  $file: Upload!
+) {
+  uploadImage(
+    profileUuid: $profileUuid
+    conversationUuid: $conversationUuid
+    file: $file
+  ) {
+    uuid
+  }
+}

@@ -1,9 +1,15 @@
 overwrite: true
-schema: "http://localhost:4020/graphql"
-documents: "src/graphql/**/*.graphql"
+schema:
+  - 'http://localhost:4020/graphql'
+  - |
+    scalar Upload
+config:
+  scalars:
+    Upload: import('graphql-upload-minimal').FileUpload
+documents: 'src/graphql/**/*.graphql'
 generates:
   src/generated/graphql.tsx:
     plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-urql"
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-urql'

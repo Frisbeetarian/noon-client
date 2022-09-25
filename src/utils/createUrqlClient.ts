@@ -5,6 +5,7 @@ import {
   fetchExchange,
   stringifyVariables,
 } from 'urql'
+// import { multipartFetchExchange } from '@urql/exchange-multipart-fetch';
 import gql from 'graphql-tag'
 
 import { pipe, tap } from 'wonka'

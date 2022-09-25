@@ -30,6 +30,7 @@ import {
 } from '../../generated/graphql'
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 import { setFriendFlagOnProfile } from '../../store/profiles'
+import { FileUpload } from './FileUpload'
 
 function Chat() {
   const dispatch = useDispatch()
@@ -347,7 +348,16 @@ function Chat() {
           style={{ flex: '0.875' }}
         >
           <Header></Header>
-          <Messages />
+          <FileUpload>
+            {/* <div {...getRootProps({ className: 'dropzone' })}> */}
+            {/* <input {...getInputProps()} /> */}
+            <Messages />
+            {/* </div> */}
+          </FileUpload>
+          {/* <aside>
+            <h4>Files</h4>
+            <ul>{files}</ul>
+          </aside> */}
         </Flex>
       ) : null}
 
