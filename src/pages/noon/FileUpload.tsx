@@ -6,6 +6,7 @@ import { getLoggedInUser } from '../../store/users'
 import { getActiveConversation } from '../../store/chat'
 import axios from 'axios'
 import FormData from 'form-data'
+import { uuid } from 'uuidv4'
 
 export const FileUpload = ({ children }) => {
   const dispatch = useDispatch()
@@ -43,6 +44,9 @@ export const FileUpload = ({ children }) => {
       let file = acceptedFiles[0]
       let formData = new FormData()
       formData.append('file', file, 'file')
+      formData.append('conversationUuid', activeConversation.uuid)
+      formData.append('messageUuid', uuid())
+      formData.append('senderUuid', loggedInUser.user?.profile?.uuid)
 
       //   axios.post('http://localhost:4020/media_api/upload_image', {
       //     body: formData,
@@ -58,6 +62,7 @@ export const FileUpload = ({ children }) => {
         })
         .then((response) => {
           //handle success
+          console.log('response from upload image:', response)
         })
         .catch((error) => {
           //handle error
