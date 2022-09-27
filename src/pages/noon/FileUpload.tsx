@@ -1,17 +1,29 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
-import { useUploadImageMutation } from '../../generated/graphql'
+import {
+  useSaveMessageMutation,
+  useUploadImageMutation,
+} from '../../generated/graphql'
 import { getLoggedInUser } from '../../store/users'
-import { getActiveConversation } from '../../store/chat'
 import axios from 'axios'
 import FormData from 'form-data'
-import { uuid } from 'uuidv4'
+// import { uuid } from 'uuidv4'
+import { v4 as uuid } from 'uuid'
+import { getSocket } from '../../store/sockets'
+import {
+  addMessageToActiveConversation,
+  getActiveConversation,
+  getActiveConversee,
+} from '../../store/chat'
 
 export const FileUpload = ({ children }) => {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
+  const profile = useSelector(getActiveConversee)
+  const socket = useSelector(getSocket)
+  const [, saveMessage] = useSaveMessageMutation()
 
   const { acceptedFiles, getRootProps } = useDropzone()
   const [, uploadImage] = useUploadImageMutation()
@@ -60,9 +72,41 @@ export const FileUpload = ({ children }) => {
             'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
           },
         })
-        .then((response) => {
+        .then(async (response) => {
           //handle success
           console.log('response from upload image:', response)
+
+          socket.emit('private-chat-message', {
+            content:
+              loggedInUser.user?.profile?.username + ' sent you a message.',
+            from: loggedInUser.user?.profile?.uuid,
+            fromUsername: loggedInUser.user?.profile?.username,
+            to: profile.uuid,
+            toUsername: profile.username,
+            message: response.data.content,
+            type: response.data.type,
+            src: response.data.src,
+            conversationUuid: activeConversation.uuid,
+          })
+
+          dispatch(
+            addMessageToActiveConversation({
+              message: response.data.content,
+              loggedInUser,
+              from: 'me',
+              type: response.data.tyoe,
+              src: response.data.src,
+              conversationUuid: activeConversation.uuid,
+            })
+          )
+
+          //   await saveMessage({
+          //     message: response.data.content,
+          //     conversationUuid: activeConversation.uuid,
+          //     to: profile.uuid,
+          //     type: response.data.type,
+          //     src: response.data.src,
+          //   })
         })
         .catch((error) => {
           //handle error
@@ -114,14 +158,5 @@ export const FileUpload = ({ children }) => {
   //     //   </li>
   //   })
 
-  return (
-    <div {...getRootProps({ className: 'dropzone' })}>
-      {children}
-
-      <aside>
-        <h4>Files</h4>
-        {/* <ul>{files}</ul> */}
-      </aside>
-    </div>
-  )
+  return <div {...getRootProps({ className: 'dropzone' })}>{children}</div>
 }

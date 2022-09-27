@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Avatar, Flex, Text } from '@chakra-ui/react'
+import { Box, Avatar, Flex, Text, Image } from '@chakra-ui/react'
 import {
   useClearUnreadMessagesForConversationMutation,
   useGetConversationsByProfileUuidQuery,
@@ -73,37 +73,60 @@ const Messages = () => {
             if (item.from === 'me') {
               return (
                 <Flex key={index} w="100%" justify="flex-end">
-                  <Flex
-                    bg="black"
-                    color="white"
-                    minW="100px"
-                    maxW="350px"
-                    my="1"
-                    p="3"
-                  >
-                    <Text>{item.content}</Text>
-                  </Flex>
+                  {item.type === 'text' ? (
+                    <Flex
+                      bg="black"
+                      color="white"
+                      minW="100px"
+                      maxW="350px"
+                      my="1"
+                      p="3"
+                    >
+                      <Text>{item.content}</Text>
+                    </Flex>
+                  ) : (
+                    <Flex
+                      className="justify-end"
+                      boxSize="sm"
+                      minW="100px"
+                      maxW="350px"
+                      my="1"
+                    >
+                      <Image src={item.src} alt={item.content} />
+                    </Flex>
+                  )}
                 </Flex>
               )
             } else {
               return (
-                <Flex className="items-center" key={index} w="100%">
+                <Flex className="items-start" key={index} w="100%">
                   <Avatar
                     size="sm"
                     name={activeConversee.username}
                     className="mr-2"
                   ></Avatar>
-
-                  <Flex
-                    bg="gray.100"
-                    color="black"
-                    minW="100px"
-                    maxW="350px"
-                    my="1"
-                    p="3"
-                  >
-                    <Text>{item.content}</Text>
-                  </Flex>
+                  {item.type === 'text' ? (
+                    <Flex
+                      bg="gray.100"
+                      color="black"
+                      minW="100px"
+                      maxW="350px"
+                      my="1"
+                      p="3"
+                    >
+                      <Text>{item.content}</Text>
+                    </Flex>
+                  ) : (
+                    <Flex
+                      className="justify-start"
+                      boxSize="sm"
+                      minW="100px"
+                      maxW="350px"
+                      my="1"
+                    >
+                      <Image src={item.src} alt={item.content} />
+                    </Flex>
+                  )}
                 </Flex>
               )
             }

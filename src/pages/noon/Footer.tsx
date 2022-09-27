@@ -14,6 +14,11 @@ import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
 import { useSetPendingCallForConversationMutation } from '../../generated/graphql'
 
+import RecorderControls from '../../components/AudioRecorder/recorder-controls'
+// import RecordingsList from '../../components/recordings-list'
+import useRecorder from '../../components/AudioRecorder/hooks/use-recorder'
+import { UseRecorder } from '../../components/AudioRecorder/types/recorder'
+
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const dispatch = useDispatch()
   const socket = useSelector(getSocket)
@@ -24,6 +29,9 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
 
   const [, setPendingCallForConversation] =
     useSetPendingCallForConversationMutation()
+
+  const { recorderState, ...handlers }: UseRecorder = useRecorder()
+  const { audio } = recorderState
 
   useEffect(() => {
     if (socket) {
@@ -88,6 +96,13 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
         value={inputMessage}
         onChange={(e) => setInputMessage(e.target.value)}
       />
+
+      <section className="voice-recorder">
+        <div className="recorder-container">
+          <RecorderControls recorderState={recorderState} handlers={handlers} />
+          {/* <RecordingsList audio={audio} /> */}
+        </div>
+      </section>
 
       <Button
         className="mr-2"

@@ -1,10 +1,12 @@
 fragment MessageSnippet on Message {
+  uuid
+  content
+  updatedAt
+  createdAt
+  type
+  src
+  sender {
     uuid
-    content
-    updatedAt
-    createdAt
-    sender {
-        uuid
-        username
-    }
+    username
+  }
 }

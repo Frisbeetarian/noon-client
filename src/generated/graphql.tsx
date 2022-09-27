@@ -141,6 +141,8 @@ export type Message = {
   uuid: Scalars['String'];
   sender: Profile;
   content: Scalars['String'];
+  type: Scalars['String'];
+  src?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
 };
@@ -296,6 +298,8 @@ export type MutationUploadImageArgs = {
 
 
 export type MutationSaveMessageArgs = {
+  src: Scalars['String'];
+  type: Scalars['String'];
   conversationUuid: Scalars['String'];
   to: Scalars['String'];
   message: Scalars['String'];
@@ -663,7 +667,7 @@ export type FriendshipRequestSnippetFragment = (
 
 export type MessageSnippetFragment = (
   { __typename?: 'Message' }
-  & Pick<Message, 'uuid' | 'content' | 'updatedAt' | 'createdAt'>
+  & Pick<Message, 'uuid' | 'content' | 'updatedAt' | 'createdAt' | 'type' | 'src'>
   & { sender: (
     { __typename?: 'Profile' }
     & Pick<Profile, 'uuid' | 'username'>
@@ -1023,6 +1027,8 @@ export type SaveMessageMutationVariables = Exact<{
   message: Scalars['String'];
   conversationUuid: Scalars['String'];
   to: Scalars['String'];
+  type: Scalars['String'];
+  src: Scalars['String'];
 }>;
 
 
@@ -1132,6 +1138,8 @@ export const MessageSnippetFragmentDoc = gql`
   content
   updatedAt
   createdAt
+  type
+  src
   sender {
     uuid
     username
@@ -1712,8 +1720,14 @@ export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
 export const SaveMessageDocument = gql`
-    mutation SaveMessage($message: String!, $conversationUuid: String!, $to: String!) {
-  saveMessage(message: $message, conversationUuid: $conversationUuid, to: $to) {
+    mutation SaveMessage($message: String!, $conversationUuid: String!, $to: String!, $type: String!, $src: String!) {
+  saveMessage(
+    message: $message
+    conversationUuid: $conversationUuid
+    to: $to
+    type: $type
+    src: $src
+  ) {
     uuid
   }
 }

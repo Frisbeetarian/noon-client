@@ -16,6 +16,7 @@
     "@graphql-codegen/add": "^3.2.1",
     "@jitsi/react-sdk": "^1.0.2",
     "@reduxjs/toolkit": "^1.8.1",
+    "@types/dom-mediacapture-record": "^1.0.12",
     "@urql/exchange-graphcache": "^4.1.4",
     "@urql/exchange-multipart-fetch": "^1.0.1",
     "axios": "^0.26.1",
@@ -47,6 +48,7 @@
     "reselect": "^4.1.6",
     "socket.io-client": "^4.5.1",
     "urql": "^2.0.4",
+    "uuid": "^9.0.0",
     "uuidv4": "^6.2.13"
   },
   "license": "MIT",

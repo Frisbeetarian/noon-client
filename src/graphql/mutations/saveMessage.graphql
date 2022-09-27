@@ -1,5 +1,17 @@
-mutation SaveMessage($message: String!, $conversationUuid: String!, $to: String!) {
-    saveMessage(message: $message, conversationUuid: $conversationUuid, to: $to){
-        uuid
-    }
+mutation SaveMessage(
+  $message: String!
+  $conversationUuid: String!
+  $to: String!
+  $type: String!
+  $src: String!
+) {
+  saveMessage(
+    message: $message
+    conversationUuid: $conversationUuid
+    to: $to
+    type: $type
+    src: $src
+  ) {
+    uuid
+  }
 }

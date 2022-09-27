@@ -56,7 +56,16 @@ function Chat() {
     if (socket) {
       socket.on(
         'private-chat-message',
-        ({ content, from, fromUsername, to, message, conversationUuid }) => {
+        ({
+          content,
+          from,
+          fromUsername,
+          to,
+          message,
+          conversationUuid,
+          type,
+          src,
+        }) => {
           if (!message.trim().length) {
             return
           }
@@ -85,6 +94,8 @@ function Chat() {
               from: 'computer',
               conversationUuid,
               loggedInProfile: loggedInUser.user?.profile,
+              type,
+              src,
             })
           )
         }
@@ -304,6 +315,8 @@ function Chat() {
       return
     }
 
+    // inputMessage = { ...inputMessage, type: 'text', src: null }
+    console.log('input message:', inputMessage)
     const data = inputMessage
     // setMessages((old) => [...old, { from: 'me', text: data }])
     setInputMessage('')
@@ -315,6 +328,8 @@ function Chat() {
       to: profile.uuid,
       toUsername: profile.username,
       message: data,
+      type: 'text',
+      src: null,
       conversationUuid: activeConversation.uuid,
     })
 
@@ -323,12 +338,16 @@ function Chat() {
         message: data,
         loggedInUser,
         from: 'me',
+        type: 'text',
+        src: null,
         conversationUuid: activeConversation.uuid,
       })
     )
 
     await saveMessage({
       message: data,
+      type: 'text',
+      src: null,
       conversationUuid: activeConversation.uuid,
       to: profile.uuid,
     })
