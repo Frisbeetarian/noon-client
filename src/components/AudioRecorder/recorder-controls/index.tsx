@@ -6,7 +6,8 @@
 // } from '@fortawesome/free-solid-svg-icons'
 import { formatMinutes, formatSeconds } from '../../../utils/formatTime'
 import { RecorderControlsProps } from '../types/recorder'
-
+import { Icon } from '@chakra-ui/react'
+import { ImMic, ImFolderDownload, ImCancelCircle } from 'react-icons/im'
 export default function RecorderControls({
   recorderState,
   handlers,
@@ -31,6 +32,7 @@ export default function RecorderControls({
               onClick={cancelRecording}
             >
               {/* <FontAwesomeIcon icon={faTimes} /> */}
+              <Icon as={ImCancelCircle} />
             </button>
           </div>
         )}
@@ -44,6 +46,7 @@ export default function RecorderControls({
             onClick={saveRecording}
           >
             {/* <FontAwesomeIcon icon={faSave} size="2x" /> */}
+            <Icon as={ImFolderDownload} />
           </button>
         ) : (
           <button
@@ -52,6 +55,7 @@ export default function RecorderControls({
             onClick={startRecording}
           >
             {/* <FontAwesomeIcon icon={faMicrophone} size="2x" /> */}
+            <Icon as={ImMic} />
           </button>
         )}
       </div>
