@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Flex, Input, Button } from '@chakra-ui/react'
+import { Flex, Input, Button, Box } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
 import {
   cancelPendingCall,
@@ -81,77 +81,77 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   return (
     <Flex
       // mt="5"
-      className="bg-white text-red-500 items-center box-content h-full"
+      className="bg-white text-red-500 items-center box-content h-full justify-between"
     >
-      <Input
-        className="py-2 box-content"
-        placeholder="Type message..."
-        border="none"
-        borderRadius="none"
-        onKeyPress={(e) => {
-          if (e.key === 'Enter') {
-            handleSendMessage()
-          }
-        }}
-        value={inputMessage}
-        onChange={(e) => setInputMessage(e.target.value)}
-      />
+      <Box>
+        <Input
+          className="py-2 box-content"
+          placeholder="Type message..."
+          border="none"
+          borderRadius="none"
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              handleSendMessage()
+            }
+          }}
+          value={inputMessage}
+          onChange={(e) => setInputMessage(e.target.value)}
+        />
+      </Box>
 
-      <section className="voice-recorder">
-        <div className="recorder-container">
-          <RecorderControls recorderState={recorderState} handlers={handlers} />
-          {/* <RecordingsList audio={audio} /> */}
-        </div>
-      </section>
+      <Flex>
+        <RecorderControls recorderState={recorderState} handlers={handlers} />
+        {/* <RecordingsList audio={audio} /> */}
 
-      <Button
-        className="mr-2"
-        bg="green.500"
-        _hover={{
-          bg: 'black',
-          color: 'black',
-          border: '1px solid black',
-        }}
-        onClick={async () => {
-          dispatch(
-            setPendingCall({
-              uuid: activeConversation.uuid,
-              initiator: loggedInUser?.user?.profile,
+        <Button
+          className="mr-2"
+          bg="green.500"
+          _hover={{
+            bg: 'black',
+            color: 'black',
+            border: '1px solid black',
+          }}
+          onClick={async () => {
+            dispatch(
+              setPendingCall({
+                uuid: activeConversation.uuid,
+                initiator: loggedInUser?.user?.profile,
+              })
+            )
+
+            socket.emit('set-pending-call-for-conversation', {
+              from: loggedInUser.user?.profile?.uuid,
+              fromUsername: loggedInUser.user?.profile?.username,
+              to: activeConversee.uuid,
+              toUsername: activeConversee.username,
+              conversationUuid: activeConversation.uuid,
             })
-          )
 
-          socket.emit('set-pending-call-for-conversation', {
-            from: loggedInUser.user?.profile?.uuid,
-            fromUsername: loggedInUser.user?.profile?.username,
-            to: activeConversee.uuid,
-            toUsername: activeConversee.username,
-            conversationUuid: activeConversation.uuid,
-          })
+            await setPendingCallForConversation({
+              conversationUuid: activeConversation.uuid,
+              pendingCallInitiatorUuid: loggedInUser.user?.profile?.uuid,
+            })
+          }}
+        >
+          <PhoneIcon className="" color="white" />
+        </Button>
 
-          await setPendingCallForConversation({
-            conversationUuid: activeConversation.uuid,
-            pendingCallInitiatorUuid: loggedInUser.user?.profile?.uuid,
-          })
-        }}
-      >
-        <PhoneIcon className="" color="white" />
-      </Button>
-
-      <Button
-        bg="black"
-        color="white"
-        // borderRadius="none"
-        className="mr-3"
-        _hover={{
-          bg: 'white',
-          color: 'black',
-          border: '1px solid black',
-        }}
-        disabled={inputMessage.trim().length <= 0}
-        onClick={handleSendMessage}
-      >
-        Send
-      </Button>
+        <Button
+          bg="black"
+          color="white"
+          // borderRadius="none"
+          className="mr-3"
+          _hover={{
+            bg: 'white',
+            color: 'black',
+            border: '1px solid black',
+          }}
+          disabled={inputMessage.trim().length <= 0}
+          onClick={handleSendMessage}
+        >
+          Send
+        </Button>
+      </Flex>
     </Flex>
   )
 }

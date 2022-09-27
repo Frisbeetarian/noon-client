@@ -7,7 +7,9 @@
 import { formatMinutes, formatSeconds } from '../../../utils/formatTime'
 import { RecorderControlsProps } from '../types/recorder'
 import { Icon } from '@chakra-ui/react'
-import { ImMic, ImFolderDownload, ImCancelCircle } from 'react-icons/im'
+import { ImMic, ImArrowRight, ImCancelCircle } from 'react-icons/im'
+import { Flex } from '@chakra-ui/react'
+
 export default function RecorderControls({
   recorderState,
   handlers,
@@ -16,41 +18,45 @@ export default function RecorderControls({
   const { startRecording, saveRecording, cancelRecording } = handlers
 
   return (
-    <div className="controls-container">
-      <div className="recorder-display">
-        <div className="recording-time">
-          {initRecording && <div className="recording-indicator"></div>}
-          <span>{formatMinutes(recordingMinutes)}</span>
-          <span>:</span>
-          <span>{formatSeconds(recordingSeconds)}</span>
-        </div>
+    <Flex className="items-center mx-2 bg-blue-300 rounded px-2">
+      <Flex className="items-center py-2">
         {initRecording && (
-          <div className="cancel-button-container">
-            <button
-              className="cancel-button"
-              title="Cancel recording"
-              onClick={cancelRecording}
-            >
-              {/* <FontAwesomeIcon icon={faTimes} /> */}
-              <Icon as={ImCancelCircle} />
-            </button>
-          </div>
+          <>
+            <Flex className="">
+              <button
+                className="mb-1 mx-2"
+                title="Cancel recording"
+                onClick={cancelRecording}
+              >
+                {/* <FontAwesomeIcon icon={faTimes} /> */}
+                <Icon as={ImCancelCircle} />
+              </button>
+            </Flex>
+
+            <Flex className="mx-2 items-center text-lg bg-green-300 rounded p-1 px-2">
+              {initRecording && <div className="recording-indicator"></div>}
+              <span>{formatMinutes(recordingMinutes)}</span>
+              <span>:</span>
+              <span>{formatSeconds(recordingSeconds)}</span>
+            </Flex>
+          </>
         )}
-      </div>
-      <div className="start-button-container">
+      </Flex>
+
+      <Flex className="items-center">
         {initRecording ? (
           <button
-            className="start-button"
+            className="mb-1 text-green-600"
             title="Save recording"
             disabled={recordingSeconds === 0}
             onClick={saveRecording}
           >
             {/* <FontAwesomeIcon icon={faSave} size="2x" /> */}
-            <Icon as={ImFolderDownload} />
+            <Icon as={ImArrowRight} />
           </button>
         ) : (
           <button
-            className="start-button"
+            className="mb-1 mx-2"
             title="Start recording"
             onClick={startRecording}
           >
@@ -58,7 +64,7 @@ export default function RecorderControls({
             <Icon as={ImMic} />
           </button>
         )}
-      </div>
-    </div>
+      </Flex>
+    </Flex>
   )
 }
