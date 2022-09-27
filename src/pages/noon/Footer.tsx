@@ -106,6 +106,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
         <Button
           className="mr-2"
           bg="green.500"
+          title="Start call"
           _hover={{
             bg: 'black',
             color: 'black',
@@ -140,6 +141,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
           bg="black"
           color="white"
           // borderRadius="none"
+          title="Send message"
           className="mr-3"
           _hover={{
             bg: 'white',
