@@ -6,6 +6,22 @@ import {
   AudioTrack,
   MediaRecorderEvent,
 } from '../types/recorder'
+import axios from 'axios'
+import FormData from 'form-data'
+import { v4 as uuid } from 'uuid'
+import { useSelector, useDispatch } from 'react-redux'
+import { getLoggedInUser } from '../../../store/users'
+import { getSocket } from '../../../store/sockets'
+
+import {
+  cancelPendingCall,
+  getActiveConversation,
+  getActiveConversee,
+  setActiveConversation,
+  setOngoingCall,
+  setPendingCall,
+  addMessageToActiveConversation,
+} from '../../../store/chat'
 
 const initialState: Recorder = {
   recordingMinutes: 0,
@@ -18,6 +34,12 @@ const initialState: Recorder = {
 
 export default function useRecorder() {
   const [recorderState, setRecorderState] = useState<Recorder>(initialState)
+  const dispatch = useDispatch()
+  const socket = useSelector(getSocket)
+
+  const activeConversation = useSelector(getActiveConversation)
+  const loggedInUser = useSelector(getLoggedInUser)
+  const activeConversee = useSelector(getActiveConversee)
 
   useEffect(() => {
     const MAX_RECORDER_TIME = 5
@@ -82,10 +104,15 @@ export default function useRecorder() {
         chunks.push(e.data)
       }
 
-      recorder.onstop = () => {
+      recorder.onstop = async () => {
         const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' })
         chunks = []
 
+        let formData = new FormData()
+        formData.append('file', blob, 'file')
+        formData.append('conversationUuid', activeConversation.uuid)
+        // formData.append('messageUuid', uuid())
+        formData.append('senderUuid', loggedInUser.user?.profile?.uuid)
         setRecorderState((prevState: Recorder) => {
           if (prevState.mediaRecorder)
             return {
@@ -94,6 +121,49 @@ export default function useRecorder() {
             }
           else return initialState
         })
+
+        await axios
+          .post(
+            'http://localhost:4020/media_api/upload_audio_recording',
+            formData,
+            {
+              headers: {
+                accept: 'application/json',
+                'Accept-Language': 'en-US,en;q=0.8',
+                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+              },
+            }
+          )
+          .then(async (response) => {
+            console.log('response from upload audio recording:', response)
+
+            socket.emit('private-chat-message', {
+              content:
+                loggedInUser.user?.profile?.username + ' sent you a message.',
+              from: loggedInUser.user?.profile?.uuid,
+              fromUsername: loggedInUser.user?.profile?.username,
+              to: activeConversee.uuid,
+              toUsername: activeConversee.username,
+              message: response.data.content,
+              type: response.data.type,
+              src: response.data.src,
+              conversationUuid: activeConversation.uuid,
+            })
+
+            dispatch(
+              addMessageToActiveConversation({
+                message: response.data.content,
+                loggedInUser,
+                from: 'me',
+                type: response.data.type,
+                src: response.data.src,
+                conversationUuid: activeConversation.uuid,
+              })
+            )
+          })
+          .catch((error) => {
+            //handle error
+          })
       }
     }
 

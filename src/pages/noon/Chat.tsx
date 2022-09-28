@@ -329,7 +329,7 @@ function Chat() {
       toUsername: profile.username,
       message: data,
       type: 'text',
-      src: null,
+      src: '',
       conversationUuid: activeConversation.uuid,
     })
 
@@ -339,7 +339,7 @@ function Chat() {
         loggedInUser,
         from: 'me',
         type: 'text',
-        src: null,
+        src: '',
         conversationUuid: activeConversation.uuid,
       })
     )
@@ -347,7 +347,7 @@ function Chat() {
     await saveMessage({
       message: data,
       type: 'text',
-      src: null,
+      src: '',
       conversationUuid: activeConversation.uuid,
       to: profile.uuid,
     })

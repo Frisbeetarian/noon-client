@@ -94,7 +94,7 @@ export const FileUpload = ({ children }) => {
               message: response.data.content,
               loggedInUser,
               from: 'me',
-              type: response.data.tyoe,
+              type: response.data.type,
               src: response.data.src,
               conversationUuid: activeConversation.uuid,
             })

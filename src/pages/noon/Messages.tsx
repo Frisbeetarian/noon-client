@@ -15,6 +15,7 @@ import {
 } from '../../store/chat'
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
+import ReactAudioPlayer from 'react-audio-player'
 
 const Messages = () => {
   const dispatch = useDispatch()
@@ -84,7 +85,7 @@ const Messages = () => {
                     >
                       <Text>{item.content}</Text>
                     </Flex>
-                  ) : (
+                  ) : item.type === 'image' ? (
                     <Flex
                       className="justify-end"
                       boxSize="sm"
@@ -94,7 +95,16 @@ const Messages = () => {
                     >
                       <Image src={item.src} alt={item.content} />
                     </Flex>
-                  )}
+                  ) : item.type === 'audio' ? (
+                    <Flex
+                      className="justify-end bg-red-500"
+                      minW="100px"
+                      maxW="350px"
+                      my="1"
+                    >
+                      <ReactAudioPlayer src={item.src} controls />
+                    </Flex>
+                  ) : null}
                 </Flex>
               )
             } else {
@@ -116,7 +126,7 @@ const Messages = () => {
                     >
                       <Text>{item.content}</Text>
                     </Flex>
-                  ) : (
+                  ) : item.type === 'image' ? (
                     <Flex
                       className="justify-start"
                       boxSize="sm"
@@ -126,7 +136,16 @@ const Messages = () => {
                     >
                       <Image src={item.src} alt={item.content} />
                     </Flex>
-                  )}
+                  ) : item.type === 'audio' ? (
+                    <Flex
+                      className="justify-start"
+                      minW="100px"
+                      maxW="350px"
+                      my="1"
+                    >
+                      <ReactAudioPlayer src={item.src} controls />
+                    </Flex>
+                  ) : null}
                 </Flex>
               )
             }

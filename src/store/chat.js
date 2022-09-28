@@ -89,8 +89,8 @@ const slice = createSlice({
           type: action.payload.type,
           src: action.payload.src,
           sender: {
-            uuid: action.payload.loggedInUser.uuid,
-            username: action.payload.loggedInUser.username,
+            uuid: action.payload.loggedInUser?.user?.profile?.uuid,
+            username: action.payload.loggedInUser?.user?.profile?.username,
           },
         })
 
@@ -139,8 +139,8 @@ const slice = createSlice({
           createdAt: new Date(),
           from: action.payload.from,
           sender: {
-            uuid: action.payload.loggedInUser.uuid,
-            username: action.payload.loggedInUser.username,
+            uuid: action.payload.loggedInUser?.user?.profile?.uuid,
+            username: action.payload.loggedInUser?.user?.profile?.username,
           },
         })
       }
