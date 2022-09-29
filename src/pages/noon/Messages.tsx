@@ -13,6 +13,7 @@ import {
   setActiveConversation,
   setActiveConversationSet,
   setActiveConversee,
+  addMessagesToConversation,
 } from '../../store/chat'
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
@@ -47,12 +48,16 @@ const Messages = () => {
     return <div ref={elementRef} />
   }
 
-  // useEffect(() => {
-  //   if (activeConversation === null) {
-  //     dispatch(setActiveConversation(activeConversation))
-  //   }
-  // }, [])
-  //
+  useEffect(() => {
+    if (activeConversation === null) {
+      dispatch(
+        addMessagesToConversation({
+          conversationUuid: activeConversation.uuid,
+          messages: data.getMessagesForConversations,
+        })
+      )
+    }
+  }, [data.getMessagesForConversation])
 
   useEffect(() => {
     if (

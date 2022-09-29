@@ -73,7 +73,7 @@ const slice = createSlice({
 
       chat.conversations = conversationsArray
     },
-    addMessageToActiveConversation: (chat, action) => {
+    addMessagesToConversation: (chat, action) => {
       let conversationUuid = action.payload.conversationUuid
 
       if (
@@ -83,8 +83,8 @@ const slice = createSlice({
         chat.activeConversation.messages.push({
           uuid: uuid(),
           content: action.payload.message,
-          updatedAt: new Date(),
-          createdAt: new Date(),
+          updatedAt: action.payload.updatedAt,
+          createdAt: action.payload.createdAt,
           from: action.payload.from,
           type: action.payload.type,
           src: action.payload.src,
@@ -101,8 +101,48 @@ const slice = createSlice({
         conversationn.messages.push({
           uuid: uuid(),
           content: action.payload.message,
-          updatedAt: new Date(),
-          createdAt: new Date(),
+          updatedAt: action.payload.updatedAt,
+          createdAt: action.payload.createdAt,
+          from: action.payload.from,
+          type: action.payload.type,
+          src: action.payload.src,
+          sender: {
+            uuid: action.payload.loggedInUser?.user?.profile?.uuid,
+            username: action.payload.loggedInUser?.user?.profile?.username,
+          },
+        })
+      }
+    },
+    addMessageToActiveConversation: (chat, action) => {
+      let conversationUuid = action.payload.conversationUuid
+
+      if (
+        chat.activeConversation &&
+        chat.activeConversation.uuid === conversationUuid
+      ) {
+        chat.activeConversation.messages.push({
+          uuid: uuid(),
+          content: action.payload.message,
+          updatedAt: action.payload.updatedAt,
+          createdAt: action.payload.createdAt,
+          from: action.payload.from,
+          type: action.payload.type,
+          src: action.payload.src,
+          sender: {
+            uuid: action.payload.loggedInUser?.user?.profile?.uuid,
+            username: action.payload.loggedInUser?.user?.profile?.username,
+          },
+        })
+
+        const conversationn = chat.conversations.find(
+          (conversation) => conversation.uuid === conversationUuid
+        )
+
+        conversationn.messages.push({
+          uuid: uuid(),
+          content: action.payload.message,
+          updatedAt: action.payload.updatedAt,
+          createdAt: action.payload.createdAt,
           from: action.payload.from,
           type: action.payload.type,
           src: action.payload.src,
@@ -325,6 +365,7 @@ export const {
   setActiveConversee,
   setActiveConversation,
   addMessageToActiveConversation,
+  addMessagesToConversation,
   addMessageToConversationByConversationUuid,
   clearUnreadMessagesForConversationInStore,
   setActiveConversationSet,
