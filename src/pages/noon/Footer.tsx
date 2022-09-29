@@ -83,12 +83,13 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
       // mt="5"
       className="bg-white text-red-500 items-center box-content h-full justify-between"
     >
-      <Box>
+      <Box className="w-4/6">
         <Input
           className="py-2 box-content"
           placeholder="Type message..."
           border="none"
           borderRadius="none"
+          outline={0}
           onKeyPress={(e) => {
             if (e.key === 'Enter') {
               handleSendMessage()

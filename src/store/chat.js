@@ -138,6 +138,8 @@ const slice = createSlice({
           updatedAt: new Date(),
           createdAt: new Date(),
           from: action.payload.from,
+          type: action.payload.type,
+          src: action.payload.src,
           sender: {
             uuid: action.payload.loggedInUser?.user?.profile?.uuid,
             username: action.payload.loggedInUser?.user?.profile?.username,

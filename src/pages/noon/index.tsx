@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Container } from '@chakra-ui/react'
 import { withUrqlClient } from 'next-urql'

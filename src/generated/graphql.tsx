@@ -311,6 +311,12 @@ export type PaginatedEvents = {
   hasMore: Scalars['Boolean'];
 };
 
+export type PaginatedMessages = {
+  __typename?: 'PaginatedMessages';
+  messages: Array<Message>;
+  hasMore: Scalars['Boolean'];
+};
+
 export type PaginatedPosts = {
   __typename?: 'PaginatedPosts';
   posts: Array<Post>;
@@ -366,6 +372,7 @@ export type Query = {
   searchForProfileByUuid?: Maybe<Search>;
   getConversationForLoggedInUser?: Maybe<Array<Conversation>>;
   getConversationsByProfileUuid?: Maybe<Conversation>;
+  getMessagesForConversation: PaginatedMessages;
   getConversationProfileForLoggedInUser?: Maybe<ConversationToProfile>;
 };
 
@@ -434,6 +441,13 @@ export type QuerySearchForProfileByUuidArgs = {
 
 export type QueryGetConversationsByProfileUuidArgs = {
   profileUuid: Scalars['String'];
+};
+
+
+export type QueryGetMessagesForConversationArgs = {
+  cursor: Scalars['String'];
+  limit: Scalars['Int'];
+  conversationUuid: Scalars['String'];
 };
 
 export type Search = {
@@ -895,6 +909,25 @@ export type GetConversationsByProfileUuidQuery = (
     { __typename?: 'Conversation' }
     & ConversationSnippetFragment
   )> }
+);
+
+export type GetMessagesForConversationQueryVariables = Exact<{
+  conversationUuid: Scalars['String'];
+  limit: Scalars['Int'];
+  cursor: Scalars['String'];
+}>;
+
+
+export type GetMessagesForConversationQuery = (
+  { __typename?: 'Query' }
+  & { getMessagesForConversation: (
+    { __typename?: 'PaginatedMessages' }
+    & Pick<PaginatedMessages, 'hasMore'>
+    & { messages: Array<(
+      { __typename?: 'Message' }
+      & MessageSnippetFragment
+    )> }
+  ) }
 );
 
 export type GetProfileByUserIdQueryVariables = Exact<{
@@ -1589,6 +1622,24 @@ export const GetConversationsByProfileUuidDocument = gql`
 
 export function useGetConversationsByProfileUuidQuery(options: Omit<Urql.UseQueryArgs<GetConversationsByProfileUuidQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GetConversationsByProfileUuidQuery>({ query: GetConversationsByProfileUuidDocument, ...options });
+};
+export const GetMessagesForConversationDocument = gql`
+    query GetMessagesForConversation($conversationUuid: String!, $limit: Int!, $cursor: String!) {
+  getMessagesForConversation(
+    conversationUuid: $conversationUuid
+    cursor: $cursor
+    limit: $limit
+  ) {
+    hasMore
+    messages {
+      ...MessageSnippet
+    }
+  }
+}
+    ${MessageSnippetFragmentDoc}`;
+
+export function useGetMessagesForConversationQuery(options: Omit<Urql.UseQueryArgs<GetMessagesForConversationQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetMessagesForConversationQuery>({ query: GetMessagesForConversationDocument, ...options });
 };
 export const GetProfileByUserIdDocument = gql`
     query GetProfileByUserId($userId: Int!) {

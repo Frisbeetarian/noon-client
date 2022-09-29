@@ -1,8 +1,9 @@
-import React, { useEffect, useRef } from 'react'
-import { Box, Avatar, Flex, Text, Image } from '@chakra-ui/react'
+import React, { useEffect, useRef, useState } from 'react'
+import { Box, Avatar, Flex, Text, Image, Button } from '@chakra-ui/react'
 import {
   useClearUnreadMessagesForConversationMutation,
   useGetConversationsByProfileUuidQuery,
+  useGetMessagesForConversationQuery,
 } from '../../generated/graphql'
 
 import {
@@ -26,6 +27,17 @@ const Messages = () => {
 
   const [, clearUnreadMessagesForConversation] =
     useClearUnreadMessagesForConversationMutation()
+
+  const [variables, setVariables] = useState({
+    limit: 5,
+    cursor: null as null | string,
+  })
+  // const [{ data, error, fetching }] = usePostsQuery({
+  //   variables,
+  // })
+  const [{ data, error, fetching }] = useGetMessagesForConversationQuery({
+    variables,
+  })
 
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef()
@@ -152,6 +164,18 @@ const Messages = () => {
           })
         : null}
       <AlwaysScrollToBottom />
+
+      <Button
+        onClick={() => {
+          setVariables({
+            limit: variables.limit,
+            cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
+          })
+        }}
+        isLoading={fetching}
+      >
+        Load more messages
+      </Button>
     </Flex>
   )
 }
