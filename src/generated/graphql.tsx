@@ -445,7 +445,7 @@ export type QueryGetConversationsByProfileUuidArgs = {
 
 
 export type QueryGetMessagesForConversationArgs = {
-  cursor: Scalars['String'];
+  cursor?: Maybe<Scalars['String']>;
   limit: Scalars['Int'];
   conversationUuid: Scalars['String'];
 };
@@ -914,7 +914,7 @@ export type GetConversationsByProfileUuidQuery = (
 export type GetMessagesForConversationQueryVariables = Exact<{
   conversationUuid: Scalars['String'];
   limit: Scalars['Int'];
-  cursor: Scalars['String'];
+  cursor?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -1624,7 +1624,7 @@ export function useGetConversationsByProfileUuidQuery(options: Omit<Urql.UseQuer
   return Urql.useQuery<GetConversationsByProfileUuidQuery>({ query: GetConversationsByProfileUuidDocument, ...options });
 };
 export const GetMessagesForConversationDocument = gql`
-    query GetMessagesForConversation($conversationUuid: String!, $limit: Int!, $cursor: String!) {
+    query GetMessagesForConversation($conversationUuid: String!, $limit: Int!, $cursor: String) {
   getMessagesForConversation(
     conversationUuid: $conversationUuid
     cursor: $cursor

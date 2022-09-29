@@ -31,6 +31,7 @@ const Messages = () => {
   const [variables, setVariables] = useState({
     limit: 5,
     cursor: null as null | string,
+    conversationUuid: activeConversation.uuid,
   })
   // const [{ data, error, fetching }] = usePostsQuery({
   //   variables,
@@ -39,6 +40,7 @@ const Messages = () => {
     variables,
   })
 
+  console.log('messages:', data)
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef()
     useEffect(() => elementRef.current.scrollIntoView())
@@ -168,8 +170,12 @@ const Messages = () => {
       <Button
         onClick={() => {
           setVariables({
+            conversationUuid: activeConversation.uuid,
             limit: variables.limit,
-            cursor: data.posts.posts[data.posts.posts.length - 1].createdAt,
+            cursor:
+              data.getMessagesForConversation.messages[
+                data.getMessagesForConversation.messages.length - 1
+              ].createdAt,
           })
         }}
         isLoading={fetching}
