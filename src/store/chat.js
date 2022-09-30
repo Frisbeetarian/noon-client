@@ -67,6 +67,7 @@ const slice = createSlice({
           // conversationObject.ongoingCall = false
 
           conversationObject.conversee = converseeObject
+          conversationObject.messages = []
           conversationsArray.push(conversationObject)
         })
       )
@@ -75,42 +76,29 @@ const slice = createSlice({
     },
     addMessagesToConversation: (chat, action) => {
       let conversationUuid = action.payload.conversationUuid
+      let messages = action.payload.messages
+      let loggedInProfileUuid = action.payload.loggedInUser.user?.profile?.uuid
 
       if (
         chat.activeConversation &&
         chat.activeConversation.uuid === conversationUuid
       ) {
-        chat.activeConversation.messages.push({
-          uuid: uuid(),
-          content: action.payload.message,
-          updatedAt: action.payload.updatedAt,
-          createdAt: action.payload.createdAt,
-          from: action.payload.from,
-          type: action.payload.type,
-          src: action.payload.src,
-          sender: {
-            uuid: action.payload.loggedInUser?.user?.profile?.uuid,
-            username: action.payload.loggedInUser?.user?.profile?.username,
-          },
-        })
+        // chat.activeConversation.messages.push(messages)
 
-        const conversationn = chat.conversations.find(
-          (conversation) => conversation.uuid === conversationUuid
-        )
+        messages.forEach((message) => {
+          if (message.sender.uuid === loggedInProfileUuid) {
+            message = { ...message, from: 'me' }
+          } else {
+            message = { ...message, from: 'other' }
+          }
 
-        conversationn.messages.push({
-          uuid: uuid(),
-          content: action.payload.message,
-          updatedAt: action.payload.updatedAt,
-          createdAt: action.payload.createdAt,
-          from: action.payload.from,
-          type: action.payload.type,
-          src: action.payload.src,
-          sender: {
-            uuid: action.payload.loggedInUser?.user?.profile?.uuid,
-            username: action.payload.loggedInUser?.user?.profile?.username,
-          },
+          chat.activeConversation.messages.push(message)
         })
+        // const conversationn = chat.conversations.find(
+        //   (conversation) => conversation.uuid === conversationUuid
+        // )
+
+        // conversationn.messages.push(messages)
       }
     },
     addMessageToActiveConversation: (chat, action) => {

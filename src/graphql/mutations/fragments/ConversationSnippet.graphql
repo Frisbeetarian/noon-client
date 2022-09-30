@@ -1,18 +1,15 @@
 fragment ConversationSnippet on Conversation {
-    uuid
-    unreadMessages
-    profileThatHasUnreadMessages
-    updatedAt
-    createdAt
-    profiles{
-        ...ConversationProfileSnippet
-    }
-    messages{
-        ...MessageSnippet
-    }
-    ongoingCall
-    pendingCall
-    pendingCallProfile {
-        ...ConversationProfileSnippet
-    }
+  uuid
+  unreadMessages
+  profileThatHasUnreadMessages
+  updatedAt
+  createdAt
+  profiles {
+    ...ConversationProfileSnippet
+  }
+  ongoingCall
+  pendingCall
+  pendingCallProfile {
+    ...ConversationProfileSnippet
+  }
 }

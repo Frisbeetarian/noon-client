@@ -15,6 +15,7 @@ import {
   setActiveConversee,
   addMessagesToConversation,
 } from '../../store/chat'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import ReactAudioPlayer from 'react-audio-player'
@@ -22,7 +23,6 @@ import ReactAudioPlayer from 'react-audio-player'
 const Messages = () => {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
-
   const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
 
@@ -34,30 +34,44 @@ const Messages = () => {
     cursor: null as null | string,
     conversationUuid: activeConversation.uuid,
   })
+
   // const [{ data, error, fetching }] = usePostsQuery({
   //   variables,
   // })
+
   const [{ data, error, fetching }] = useGetMessagesForConversationQuery({
     variables,
   })
 
-  console.log('messages:', data)
+  // let localMessages = data
+
+  // useEffect(() => {}, [localMessages])
+
+  // console.log('messages:', data)
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef()
     useEffect(() => elementRef.current.scrollIntoView())
     return <div ref={elementRef} />
   }
 
+  // TODO check how to initialize data
   useEffect(() => {
-    if (activeConversation === null) {
+    // if (data) {
+    if (data && data.getMessagesForConversation) {
+      console.log(
+        'data.getMessagesForConversation:',
+        data.getMessagesForConversation.messages
+      )
       dispatch(
         addMessagesToConversation({
           conversationUuid: activeConversation.uuid,
-          messages: data.getMessagesForConversations,
+          messages: data.getMessagesForConversation.messages,
+          loggedInUser,
         })
       )
     }
-  }, [data.getMessagesForConversation])
+    // }
+  }, [data])
 
   useEffect(() => {
     if (

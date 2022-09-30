@@ -38,6 +38,48 @@ const errorExchange: Exchange =
     )
   }
 
+const messagesCursorPagination = (mergeMode = 'after'): Resolver => {
+  return (_parent, fieldArgs, cache, info) => {
+    const { parentKey: entityKey, fieldName } = info
+
+    const allFields = cache.inspectFields(entityKey)
+    const fieldInfos = allFields.filter((info) => info.fieldName === fieldName)
+    const size = fieldInfos.length
+
+    if (size === 0) {
+      return undefined
+    }
+
+    const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`
+    const isItInTheCache = cache.resolve(
+      cache.resolveFieldByKey(entityKey, fieldKey) as string,
+      'messages'
+    )
+
+    info.partial = !isItInTheCache
+    let hasMore = true
+    const results: string[] = []
+
+    fieldInfos.forEach((fi) => {
+      const key = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string
+      const data = cache.resolve(key, messages) as string[]
+      const _hasMore = cache.resolve(key, 'hasMore)')
+
+      if (!_hasMore) {
+        hasMore = _hasMore as boolean
+      }
+
+      results.push(...data)
+    })
+
+    return {
+      __typename: 'PaginatedMessages',
+      hasMore,
+      messages: results,
+    }
+  }
+}
+
 const eventsCursorPagination = (mergeMode = 'after'): Resolver => {
   return (_parent, fieldArgs, cache, info) => {
     const { parentKey: entityKey, fieldName } = info
@@ -295,11 +337,13 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
           Search: (data) => data.uuid,
           Conversation: (data) => data.uuid,
           Message: (data) => data.uuid,
+          PaginatedMessages: () => null,
         },
         resolvers: {
           Query: {
             posts: postsCursorPagination(),
             events: eventsCursorPagination(),
+            messages: messagesCursorPagination(),
             eventToProfiles: filteredProfilesPagination(),
             communities: {
               description: '00009',
