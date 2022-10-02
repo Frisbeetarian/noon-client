@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Box, Avatar, Flex, Text, Image, Button } from '@chakra-ui/react'
+import React, { useEffect, useState } from 'react'
+import { Avatar, Flex, Text, Image, Button } from '@chakra-ui/react'
 import {
   useClearUnreadMessagesForConversationMutation,
   useGetConversationsByProfileUuidQuery,
@@ -19,6 +19,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import ReactAudioPlayer from 'react-audio-player'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 const Messages = () => {
   const dispatch = useDispatch()
@@ -31,47 +32,89 @@ const Messages = () => {
 
   const [variables, setVariables] = useState({
     limit: 5,
-    cursor: null as null | string,
+    cursor:
+      activeConversation.messages.length !== 0
+        ? activeConversation.messages[activeConversation.messages.length - 1]
+            .createdAt
+        : null,
     conversationUuid: activeConversation.uuid,
   })
 
   // const [{ data, error, fetching }] = usePostsQuery({
   //   variables,
   // })
+  const [shouldPause, setShouldPause] = useState(true)
+  const [localMessages, setLocalMessages] = useState([])
+  console.log('activeConversation.uuid:', activeConversation.uuid)
 
-  const [{ data, error, fetching }] = useGetMessagesForConversationQuery({
+  let [{ data, error, fetching }] = useGetMessagesForConversationQuery({
     variables,
+    pause: shouldPause,
+    requestPolicy: 'network-only',
   })
-
+  // let data = null
   // let localMessages = data
-
   // useEffect(() => {}, [localMessages])
 
-  // console.log('messages:', data)
-  const AlwaysScrollToBottom = () => {
-    const elementRef = useRef()
-    useEffect(() => elementRef.current.scrollIntoView())
-    return <div ref={elementRef} />
-  }
+  console.log('messages in get messages for converstaion:', data)
+
+  // console.log('has more in get messages for converstaion:', data)
+  // const AlwaysScrollToBottom = () => {
+  //   const elementRef = useRef()
+  //   useEffect(() => elementRef.current.scrollIntoView())
+  //   return <div ref={elementRef} />
+  // }
+
+  useEffect(() => {
+    if (data) setLocalMessages(data.getMessagesForConversation.messages)
+
+    return () => {
+      setLocalMessages([])
+    }
+    // if (activeConversation.uuid) {
+    //   console.log('activeConversation.uuid:', activeConversation.uuid)
+
+    //   setVariables({
+    //     conversationUuid: activeConversation.uuid,
+    //     limit: variables.limit,
+    //     cursor: null,
+    //   })
+    // }
+  }, [data])
 
   // TODO check how to initialize data
   useEffect(() => {
     // if (data) {
-    if (data && data.getMessagesForConversation) {
-      console.log(
-        'data.getMessagesForConversation:',
-        data.getMessagesForConversation.messages
-      )
+    if (localMessages.length !== 0) {
+      //   console.log(
+      //     'data.getMessagesForConversation:',
+      //     data.getMessagesForConversation.messages
+      //   )
+
+      // setVariables({
+      //   conversationUuid: activeConversation.uuid,
+      //   limit: variables.limit,
+      //   cursor: null,
+      // })
       dispatch(
         addMessagesToConversation({
           conversationUuid: activeConversation.uuid,
-          messages: data.getMessagesForConversation.messages,
+          messages: localMessages,
           loggedInUser,
         })
       )
+    } else {
+      // dispatch(
+      //   addMessagesToConversation({
+      //     conversationUuid: activeConversation.uuid,
+      //     messages: activeConversation.messages
+      //       ? activeConversation.messages
+      //       : [],
+      //     loggedInUser,
+      //   })
+      // )
     }
-    // }
-  }, [data])
+  }, [localMessages])
 
   useEffect(() => {
     if (
@@ -92,16 +135,77 @@ const Messages = () => {
       dispatch(setActiveConversationSet(false))
       dispatch(setActiveConversee(null))
       dispatch(setActiveConversation(null))
+
+      // setVariables({
+      //   conversationUuid: null,
+      //   limit: variables.limit,
+      //   cursor: null,
+      // })
     }
   }, [])
+
+  const fetchMoreMessage = () => {
+    setTimeout(() => {
+      setVariables({
+        conversationUuid: activeConversation.uuid,
+        limit: variables.limit,
+        cursor:
+          data.getMessagesForConversation.messages[
+            data.getMessagesForConversation.messages.length - 1
+          ].createdAt,
+      })
+
+      // dispatch(
+      //   addMessagesToConversation({
+      //     conversationUuid: activeConversation.uuid,
+      //     messages: data ? data.getMessagesForConversation.messages : [],
+      //     loggedInUser,
+      //   })
+      // )
+    }, 750)
+  }
 
   return (
     <Flex
       // w="100%"
-      overflowY="scroll"
-      flexDirection="column"
-      className="w-full top-0 py-3 px-5"
+      id="scrollableDiv"
+      overflowY="auto"
+      flexDirection="column-reverse"
+      className="w-full top-0 py-3 px-5 relative"
+      style={{ height: '80vh' }}
     >
+      {/* <div
+        style={{
+          height: 600,
+          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column-reverse',
+        }}
+      > */}
+      {/*Put the scroll bar always on the bottom*/}
+
+      {/* {data && data.getMessagesForConversation.messages.length !== 0 ? (
+        <InfiniteScroll
+          dataLength={activeConversation.messages}
+          next={fetchMoreMessage}
+          style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+          inverse={true}
+          hasMore={
+            data.getMessagesForConversation
+              ? data.getMessagesForConversation.hasMore
+              : false
+          }
+          loader={
+            <h4 className="m-auto text-xl py-5 top-0 left-1/2">Loading...</h4>
+          }
+          scrollableTarget="scrollableDiv"
+        > */}
+      {/* {this.state.items.map((_, index) => (
+            <div style={style} key={index}>
+              div - #{index}
+            </div>
+          ))} */}
+
       {activeConversation
         ? activeConversation.messages.map((item, index) => {
             if (item.from === 'me') {
@@ -184,7 +288,7 @@ const Messages = () => {
             }
           })
         : null}
-      <AlwaysScrollToBottom />
+      {/* <AlwaysScrollToBottom /> */}
 
       <Button
         onClick={() => {
@@ -192,15 +296,20 @@ const Messages = () => {
             conversationUuid: activeConversation.uuid,
             limit: variables.limit,
             cursor:
-              data.getMessagesForConversation.messages[
-                data.getMessagesForConversation.messages.length - 1
+              activeConversation.messages[
+                activeConversation.messages.length - 1
               ].createdAt,
           })
+
+          setShouldPause(false)
         }}
         isLoading={fetching}
       >
         Load more messages
       </Button>
+      {/* </InfiniteScroll> */}
+      {/* ) : null} */}
+      {/* </div> */}
     </Flex>
   )
 }

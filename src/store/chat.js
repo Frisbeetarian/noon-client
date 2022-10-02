@@ -49,7 +49,7 @@ const slice = createSlice({
       Promise.all(
         action.payload.conversationsToSend.map((conversation) => {
           let conversationObject = { ...conversation }
-
+          // console.log("conversatio")
           let converseeObject = conversationObject.profiles.find(
             (element) => element.uuid != action.payload.loggedInProfileUuid
           )
@@ -67,7 +67,7 @@ const slice = createSlice({
           // conversationObject.ongoingCall = false
 
           conversationObject.conversee = converseeObject
-          conversationObject.messages = []
+          // conversationObject.messages =
           conversationsArray.push(conversationObject)
         })
       )
@@ -79,21 +79,35 @@ const slice = createSlice({
       let messages = action.payload.messages
       let loggedInProfileUuid = action.payload.loggedInUser.user?.profile?.uuid
 
+      // chat.activeConversation.message = []
+
       if (
         chat.activeConversation &&
         chat.activeConversation.uuid === conversationUuid
       ) {
         // chat.activeConversation.messages.push(messages)
 
-        messages.forEach((message) => {
-          if (message.sender.uuid === loggedInProfileUuid) {
-            message = { ...message, from: 'me' }
-          } else {
-            message = { ...message, from: 'other' }
-          }
+        let tempMessages = [...chat.activeConversation.messages]
 
-          chat.activeConversation.messages.push(message)
-        })
+        Promise.all(
+          messages.map((message) => {
+            if (message.sender.uuid === loggedInProfileUuid) {
+              message = { ...message, from: 'me' }
+            } else {
+              message = { ...message, from: 'other' }
+            }
+
+            tempMessages.push(message)
+          })
+        )
+
+        let sortedMessages = tempMessages.sort(
+          (a, b) => b.createdAt - a.createdAt
+        )
+
+        console.log('sorted messages:', sortedMessages)
+        chat.activeConversation.messages = sortedMessages
+
         // const conversationn = chat.conversations.find(
         //   (conversation) => conversation.uuid === conversationUuid
         // )
@@ -108,11 +122,11 @@ const slice = createSlice({
         chat.activeConversation &&
         chat.activeConversation.uuid === conversationUuid
       ) {
-        chat.activeConversation.messages.push({
+        chat.activeConversation.messages.unshift({
           uuid: uuid(),
           content: action.payload.message,
-          updatedAt: action.payload.updatedAt,
-          createdAt: action.payload.createdAt,
+          updatedAt: new Date().getTime(),
+          createdAt: new Date().getTime(),
           from: action.payload.from,
           type: action.payload.type,
           src: action.payload.src,
@@ -126,13 +140,13 @@ const slice = createSlice({
           (conversation) => conversation.uuid === conversationUuid
         )
 
-        conversationn.messages.push({
+        conversationn.messages.unshift({
           uuid: uuid(),
           content: action.payload.message,
           updatedAt: action.payload.updatedAt,
           createdAt: action.payload.createdAt,
-          from: action.payload.from,
-          type: action.payload.type,
+          updatedAt: new Date().getTime(),
+          createdAt: new Date().getTime(),
           src: action.payload.src,
           sender: {
             uuid: action.payload.loggedInUser?.user?.profile?.uuid,
@@ -160,11 +174,11 @@ const slice = createSlice({
         }
         console.log('conversationn:', conversationn)
 
-        conversationn.messages.push({
+        conversationn.messages.unshift({
           uuid: uuid(),
           content: action.payload.message,
-          updatedAt: new Date(),
-          createdAt: new Date(),
+          updatedAt: new Date().getTime(),
+          createdAt: new Date().getTime(),
           from: action.payload.from,
           type: action.payload.type,
           src: action.payload.src,
@@ -239,24 +253,29 @@ const slice = createSlice({
       conversationFromStack.profileThatHasUnreadMessages = []
       conversationFromStack.ongoingCall = false
 
-      let messagesArray = []
+      if (!action.payload.conversation.messages) {
+        conversationObject.messages = []
+      } else {
+        let messagesArray = []
 
-      action.payload.conversation.messages.map((message) => {
-        let messageObject = { ...message }
+        action.payload.conversation.messages.map((message) => {
+          let messageObject = { ...message }
 
-        messageObject.from =
-          messageObject.sender.uuid == action.payload.loggedInProfileUuid
-            ? 'me'
-            : 'computer'
+          messageObject.from =
+            messageObject.sender.uuid == action.payload.loggedInProfileUuid
+              ? 'me'
+              : 'computer'
 
-        messagesArray.push(messageObject)
-      })
+          messagesArray.push(messageObject)
+        })
 
-      let sortedMessage = messagesArray.sort(
-        (a, b) => a.createdAt - b.createdAt
-      )
+        let sortedMessage = messagesArray.sort(
+          (a, b) => b.createdAt - a.createdAt
+        )
 
-      conversationObject.messages = [...sortedMessage]
+        conversationObject.messages = [...sortedMessage]
+      }
+
       if (!chat['activeConversation']) {
         chat['activeConversation'] = null
       }

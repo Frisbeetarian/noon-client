@@ -361,11 +361,7 @@ function Chat() {
       <ChatControlsAndSearch />
       {/*<Flex w="100%" className="flex-col " style={{ flex: '0.9' }}>*/}
       {profile && activeConversation ? (
-        <Flex
-          className="flex-col p-0 box-content"
-          overflowY="scroll"
-          style={{ flex: '0.875' }}
-        >
+        <Flex className="flex-col p-0 box-content" style={{ flex: '0.875' }}>
           <Header></Header>
           <FileUpload>
             {/* <div {...getRootProps({ className: 'dropzone' })}> */}

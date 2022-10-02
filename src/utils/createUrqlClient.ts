@@ -62,7 +62,7 @@ const messagesCursorPagination = (mergeMode = 'after'): Resolver => {
 
     fieldInfos.forEach((fi) => {
       const key = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string
-      const data = cache.resolve(key, messages) as string[]
+      const data = cache.resolve(key, 'messages') as string[]
       const _hasMore = cache.resolve(key, 'hasMore)')
 
       if (!_hasMore) {

@@ -35,10 +35,16 @@ function Sidebar() {
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
   const [, unfriend] = useUnfriendMutation()
   const loggedInUser = useSelector(getLoggedInUser)
+
   const getConversationsFromStore = useSelector(getSortedConversations)
   const [profile, setProfile] = useState()
 
   function setActiveConverseeFunction(profile, conversation) {
+    // dispatch(setActiveConversationSet(false))
+    // dispatch(setActiveConversee(null))
+    // dispatch(setActiveConversation(null))
+
+    // setTimeout(() => {
     dispatch(setActiveConversationSet(true))
     dispatch(setActiveConversee(profile))
     dispatch(
@@ -47,6 +53,7 @@ function Sidebar() {
         loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
       })
     )
+    // }, 500)
   }
 
   return (

@@ -637,6 +637,9 @@ export type ConversationSnippetFragment = (
   & { profiles: Array<(
     { __typename?: 'Profile' }
     & ConversationProfileSnippetFragment
+  )>, messages: Array<(
+    { __typename?: 'Message' }
+    & MessageSnippetFragment
   )>, pendingCallProfile?: Maybe<(
     { __typename?: 'Profile' }
     & ConversationProfileSnippetFragment
@@ -1162,6 +1165,20 @@ export const ConversationProfileSnippetFragmentDoc = gql`
   username
 }
     `;
+export const MessageSnippetFragmentDoc = gql`
+    fragment MessageSnippet on Message {
+  uuid
+  content
+  updatedAt
+  createdAt
+  type
+  src
+  sender {
+    uuid
+    username
+  }
+}
+    `;
 export const ConversationSnippetFragmentDoc = gql`
     fragment ConversationSnippet on Conversation {
   uuid
@@ -1172,13 +1189,17 @@ export const ConversationSnippetFragmentDoc = gql`
   profiles {
     ...ConversationProfileSnippet
   }
+  messages {
+    ...MessageSnippet
+  }
   ongoingCall
   pendingCall
   pendingCallProfile {
     ...ConversationProfileSnippet
   }
 }
-    ${ConversationProfileSnippetFragmentDoc}`;
+    ${ConversationProfileSnippetFragmentDoc}
+${MessageSnippetFragmentDoc}`;
 export const ConversationToProfileSnippetFragmentDoc = gql`
     fragment ConversationToProfileSnippet on ConversationToProfile {
   uuid
@@ -1209,20 +1230,6 @@ export const EventSnippetFragmentDoc = gql`
 export const EventToProfileSnippetFragmentDoc = gql`
     fragment EventToProfileSnippet on EventToProfile {
   id
-}
-    `;
-export const MessageSnippetFragmentDoc = gql`
-    fragment MessageSnippet on Message {
-  uuid
-  content
-  updatedAt
-  createdAt
-  type
-  src
-  sender {
-    uuid
-    username
-  }
 }
     `;
 export const PostSnippetFragmentDoc = gql`

@@ -7,6 +7,9 @@ fragment ConversationSnippet on Conversation {
   profiles {
     ...ConversationProfileSnippet
   }
+  messages {
+    ...MessageSnippet
+  }
   ongoingCall
   pendingCall
   pendingCallProfile {
