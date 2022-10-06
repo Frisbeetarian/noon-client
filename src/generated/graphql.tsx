@@ -57,6 +57,7 @@ export type Conversation = {
   uuid: Scalars['String'];
   unreadMessages: Scalars['Float'];
   profileThatHasUnreadMessages: Scalars['String'];
+  hasMore: Scalars['Boolean'];
   ongoingCall: Scalars['Boolean'];
   pendingCall: Scalars['Boolean'];
   pendingCallProfile?: Maybe<Profile>;
@@ -370,6 +371,7 @@ export type Query = {
   getCommunitiesParticipants: Array<CommunityParticipant>;
   searchForProfileByUsername?: Maybe<Array<Search>>;
   searchForProfileByUuid?: Maybe<Search>;
+  checkIfConversationHasMoreMessages: Scalars['Boolean'];
   getConversationForLoggedInUser?: Maybe<Array<Conversation>>;
   getConversationsByProfileUuid?: Maybe<Conversation>;
   getMessagesForConversation: PaginatedMessages;
@@ -436,6 +438,11 @@ export type QuerySearchForProfileByUsernameArgs = {
 
 export type QuerySearchForProfileByUuidArgs = {
   profileUuid: Scalars['String'];
+};
+
+
+export type QueryCheckIfConversationHasMoreMessagesArgs = {
+  conversationUuid: Scalars['String'];
 };
 
 
@@ -633,7 +640,7 @@ export type ConversationProfileSnippetFragment = (
 
 export type ConversationSnippetFragment = (
   { __typename?: 'Conversation' }
-  & Pick<Conversation, 'uuid' | 'unreadMessages' | 'profileThatHasUnreadMessages' | 'updatedAt' | 'createdAt' | 'ongoingCall' | 'pendingCall'>
+  & Pick<Conversation, 'uuid' | 'unreadMessages' | 'profileThatHasUnreadMessages' | 'updatedAt' | 'createdAt' | 'hasMore' | 'ongoingCall' | 'pendingCall'>
   & { profiles: Array<(
     { __typename?: 'Profile' }
     & ConversationProfileSnippetFragment
@@ -785,6 +792,16 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 export type LogoutMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'logout'>
+);
+
+export type CheckIfConversationHasMoreMessagesQueryVariables = Exact<{
+  conversationUuid: Scalars['String'];
+}>;
+
+
+export type CheckIfConversationHasMoreMessagesQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'checkIfConversationHasMoreMessages'>
 );
 
 export type CommunitiesQueryVariables = Exact<{ [key: string]: never; }>;
@@ -1192,6 +1209,7 @@ export const ConversationSnippetFragmentDoc = gql`
   messages {
     ...MessageSnippet
   }
+  hasMore
   ongoingCall
   pendingCall
   pendingCallProfile {
@@ -1489,6 +1507,15 @@ export const LogoutDocument = gql`
 
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const CheckIfConversationHasMoreMessagesDocument = gql`
+    query CheckIfConversationHasMoreMessages($conversationUuid: String!) {
+  checkIfConversationHasMoreMessages(conversationUuid: $conversationUuid)
+}
+    `;
+
+export function useCheckIfConversationHasMoreMessagesQuery(options: Omit<Urql.UseQueryArgs<CheckIfConversationHasMoreMessagesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<CheckIfConversationHasMoreMessagesQuery>({ query: CheckIfConversationHasMoreMessagesDocument, ...options });
 };
 export const CommunitiesDocument = gql`
     query Communities {

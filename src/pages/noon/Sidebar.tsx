@@ -21,6 +21,8 @@ import {
   setActiveConversation,
   setActiveConversationSet,
   setActiveConversee,
+  setShouldPauseCheckHasMore,
+  getActiveConversation,
 } from '../../store/chat'
 
 import SocketConnector from '../../components/SocketIo/SocketConnector'
@@ -35,24 +37,46 @@ function Sidebar() {
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
   const [, unfriend] = useUnfriendMutation()
   const loggedInUser = useSelector(getLoggedInUser)
+  const activeConversation = useSelector(getActiveConversation)
 
   const getConversationsFromStore = useSelector(getSortedConversations)
   const [profile, setProfile] = useState()
 
   function setActiveConverseeFunction(profile, conversation) {
-    // dispatch(setActiveConversationSet(false))
-    // dispatch(setActiveConversee(null))
-    // dispatch(setActiveConversation(null))
+    if (activeConversation) {
+      if (conversation.uuid !== activeConversation.uuid) {
+        dispatch(setActiveConversationSet(false))
+        dispatch(setActiveConversee(null))
+        dispatch(setActiveConversation(null))
+        dispatch(setShouldPauseCheckHasMore(false))
 
-    // setTimeout(() => {
-    dispatch(setActiveConversationSet(true))
-    dispatch(setActiveConversee(profile))
-    dispatch(
-      setActiveConversation({
-        conversation: conversation,
-        loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
-      })
-    )
+        // setTimeout(() => {
+        dispatch(setActiveConversationSet(true))
+        dispatch(setActiveConversee(profile))
+        dispatch(
+          setActiveConversation({
+            conversation: conversation,
+            loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+          })
+        )
+      }
+    } else {
+      dispatch(setActiveConversationSet(false))
+      dispatch(setActiveConversee(null))
+      dispatch(setActiveConversation(null))
+      dispatch(setShouldPauseCheckHasMore(false))
+
+      // setTimeout(() => {
+      dispatch(setActiveConversationSet(true))
+      dispatch(setActiveConversee(profile))
+      dispatch(
+        setActiveConversation({
+          conversation: conversation,
+          loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+        })
+      )
+    }
+
     // }, 500)
   }
 

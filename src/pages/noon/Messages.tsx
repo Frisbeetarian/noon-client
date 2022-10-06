@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Avatar, Flex, Text, Image, Button } from '@chakra-ui/react'
 import {
+  useCheckIfConversationHasMoreMessagesQuery,
   useClearUnreadMessagesForConversationMutation,
-  useGetConversationsByProfileUuidQuery,
   useGetMessagesForConversationQuery,
 } from '../../generated/graphql'
 
@@ -14,6 +14,9 @@ import {
   setActiveConversationSet,
   setActiveConversee,
   addMessagesToConversation,
+  setActiveConversationHasMoreMessages,
+  setShouldPauseCheckHasMore,
+  getShouldPauseCheckHasMore,
 } from '../../store/chat'
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -26,12 +29,13 @@ const Messages = () => {
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
+  const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
 
   const [, clearUnreadMessagesForConversation] =
     useClearUnreadMessagesForConversationMutation()
 
   const [variables, setVariables] = useState({
-    limit: 5,
+    limit: 20,
     cursor:
       activeConversation.messages.length !== 0
         ? activeConversation.messages[activeConversation.messages.length - 1]
@@ -40,62 +44,61 @@ const Messages = () => {
     conversationUuid: activeConversation.uuid,
   })
 
-  // const [{ data, error, fetching }] = usePostsQuery({
-  //   variables,
-  // })
   const [shouldPause, setShouldPause] = useState(true)
+  const [shouldCheckHasMorePause, setShouldCheckHasMorePause] = useState(false)
   const [localMessages, setLocalMessages] = useState([])
-  console.log('activeConversation.uuid:', activeConversation.uuid)
 
   let [{ data, error, fetching }] = useGetMessagesForConversationQuery({
     variables,
     pause: shouldPause,
     requestPolicy: 'network-only',
   })
-  // let data = null
-  // let localMessages = data
-  // useEffect(() => {}, [localMessages])
 
-  console.log('messages in get messages for converstaion:', data)
-
-  // console.log('has more in get messages for converstaion:', data)
-  // const AlwaysScrollToBottom = () => {
-  //   const elementRef = useRef()
-  //   useEffect(() => elementRef.current.scrollIntoView())
-  //   return <div ref={elementRef} />
-  // }
+  let [{ data: hasMoreOnInit }] = useCheckIfConversationHasMoreMessagesQuery({
+    variables: {
+      conversationUuid: activeConversation.uuid,
+    },
+    pause: shouldPauseCheckHasMore,
+    requestPolicy: 'network-only',
+  })
 
   useEffect(() => {
-    if (data) setLocalMessages(data.getMessagesForConversation.messages)
+    console.log(
+      'hasmore on init:',
+      hasMoreOnInit?.checkIfConversationHasMoreMessages
+    )
+    if (hasMoreOnInit?.checkIfConversationHasMoreMessages) {
+      dispatch(
+        setActiveConversationHasMoreMessages(
+          hasMoreOnInit?.checkIfConversationHasMoreMessages
+        )
+      )
+    }
 
     return () => {
+      setShouldCheckHasMorePause(false)
       setLocalMessages([])
     }
-    // if (activeConversation.uuid) {
-    //   console.log('activeConversation.uuid:', activeConversation.uuid)
+  }, [hasMoreOnInit?.checkIfConversationHasMoreMessages])
 
-    //   setVariables({
-    //     conversationUuid: activeConversation.uuid,
-    //     limit: variables.limit,
-    //     cursor: null,
-    //   })
-    // }
+  useEffect(() => {
+    if (data) {
+      setShouldCheckHasMorePause(true)
+      dispatch(setShouldPauseCheckHasMore(true))
+      hasMoreOnInit = null
+      setLocalMessages(data.getMessagesForConversation.messages)
+    }
+
+    return () => {
+      setShouldCheckHasMorePause(false)
+      // dispatch(setShouldPauseCheckHasMore(false))
+      setLocalMessages([])
+    }
   }, [data])
 
   // TODO check how to initialize data
   useEffect(() => {
-    // if (data) {
     if (localMessages.length !== 0) {
-      //   console.log(
-      //     'data.getMessagesForConversation:',
-      //     data.getMessagesForConversation.messages
-      //   )
-
-      // setVariables({
-      //   conversationUuid: activeConversation.uuid,
-      //   limit: variables.limit,
-      //   cursor: null,
-      // })
       dispatch(
         addMessagesToConversation({
           conversationUuid: activeConversation.uuid,
@@ -104,15 +107,6 @@ const Messages = () => {
         })
       )
     } else {
-      // dispatch(
-      //   addMessagesToConversation({
-      //     conversationUuid: activeConversation.uuid,
-      //     messages: activeConversation.messages
-      //       ? activeConversation.messages
-      //       : [],
-      //     loggedInUser,
-      //   })
-      // )
     }
   }, [localMessages])
 
@@ -132,10 +126,9 @@ const Messages = () => {
     }
 
     return () => {
-      dispatch(setActiveConversationSet(false))
-      dispatch(setActiveConversee(null))
-      dispatch(setActiveConversation(null))
-
+      // dispatch(setActiveConversationSet(false))
+      // dispatch(setActiveConversee(null))
+      // dispatch(setActiveConversation(null))
       // setVariables({
       //   conversationUuid: null,
       //   limit: variables.limit,
@@ -150,11 +143,11 @@ const Messages = () => {
         conversationUuid: activeConversation.uuid,
         limit: variables.limit,
         cursor:
-          data.getMessagesForConversation.messages[
-            data.getMessagesForConversation.messages.length - 1
-          ].createdAt,
+          activeConversation.messages[activeConversation.messages.length - 1]
+            .createdAt,
       })
 
+      setShouldPause(false)
       // dispatch(
       //   addMessagesToConversation({
       //     conversationUuid: activeConversation.uuid,
@@ -167,7 +160,6 @@ const Messages = () => {
 
   return (
     <Flex
-      // w="100%"
       id="scrollableDiv"
       overflowY="auto"
       flexDirection="column-reverse"
@@ -184,130 +176,132 @@ const Messages = () => {
       > */}
       {/*Put the scroll bar always on the bottom*/}
 
-      {/* {data && data.getMessagesForConversation.messages.length !== 0 ? (
-        <InfiniteScroll
-          dataLength={activeConversation.messages}
-          next={fetchMoreMessage}
-          style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
-          inverse={true}
-          hasMore={
-            data.getMessagesForConversation
-              ? data.getMessagesForConversation.hasMore
-              : false
-          }
-          loader={
-            <h4 className="m-auto text-xl py-5 top-0 left-1/2">Loading...</h4>
-          }
-          scrollableTarget="scrollableDiv"
-        > */}
-      {/* {this.state.items.map((_, index) => (
+      {/* {data && data.getMessagesForConversation.messages.length !== 0 ? ( */}
+      <InfiniteScroll
+        dataLength={activeConversation.messages}
+        next={fetchMoreMessage}
+        style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+        inverse={true}
+        hasMore={
+          !shouldPauseCheckHasMore
+            ? hasMoreOnInit?.checkIfConversationHasMoreMessages
+            : data?.getMessagesForConversation
+            ? data?.getMessagesForConversation.hasMore
+            : true
+        }
+        loader={
+          <h4 className="m-auto text-xl py-5 top-0 left-1/2">Loading...</h4>
+        }
+        scrollableTarget="scrollableDiv"
+      >
+        {/* {this.state.items.map((_, index) => (
             <div style={style} key={index}>
               div - #{index}
             </div>
           ))} */}
 
-      {activeConversation
-        ? activeConversation.messages.map((item, index) => {
-            if (item.from === 'me') {
-              return (
-                <Flex key={index} w="100%" justify="flex-end">
-                  {item.type === 'text' ? (
-                    <Flex
-                      bg="black"
-                      color="white"
-                      minW="100px"
-                      maxW="350px"
-                      my="1"
-                      p="3"
-                    >
-                      <Text>{item.content}</Text>
-                    </Flex>
-                  ) : item.type === 'image' ? (
-                    <Flex
-                      className="justify-end"
-                      boxSize="sm"
-                      minW="100px"
-                      maxW="350px"
-                      my="1"
-                    >
-                      <Image src={item.src} alt={item.content} />
-                    </Flex>
-                  ) : item.type === 'audio' ? (
-                    <Flex
-                      className="justify-end bg-red-500"
-                      minW="100px"
-                      maxW="350px"
-                      my="1"
-                    >
-                      <ReactAudioPlayer src={item.src} controls />
-                    </Flex>
-                  ) : null}
-                </Flex>
-              )
-            } else {
-              return (
-                <Flex className="items-start" key={index} w="100%">
-                  <Avatar
-                    size="sm"
-                    name={activeConversee.username}
-                    className="mr-2"
-                  ></Avatar>
-                  {item.type === 'text' ? (
-                    <Flex
-                      bg="gray.100"
-                      color="black"
-                      minW="100px"
-                      maxW="350px"
-                      my="1"
-                      p="3"
-                    >
-                      <Text>{item.content}</Text>
-                    </Flex>
-                  ) : item.type === 'image' ? (
-                    <Flex
-                      className="justify-start"
-                      boxSize="sm"
-                      minW="100px"
-                      maxW="350px"
-                      my="1"
-                    >
-                      <Image src={item.src} alt={item.content} />
-                    </Flex>
-                  ) : item.type === 'audio' ? (
-                    <Flex
-                      className="justify-start"
-                      minW="100px"
-                      maxW="350px"
-                      my="1"
-                    >
-                      <ReactAudioPlayer src={item.src} controls />
-                    </Flex>
-                  ) : null}
-                </Flex>
-              )
-            }
-          })
-        : null}
-      {/* <AlwaysScrollToBottom /> */}
+        {activeConversation
+          ? activeConversation.messages.map((item, index) => {
+              if (item.from === 'me') {
+                return (
+                  <Flex key={index} w="100%" justify="flex-end">
+                    {item.type === 'text' ? (
+                      <Flex
+                        bg="black"
+                        color="white"
+                        minW="100px"
+                        maxW="350px"
+                        my="1"
+                        p="3"
+                      >
+                        <Text>{item.content}</Text>
+                      </Flex>
+                    ) : item.type === 'image' ? (
+                      <Flex
+                        className="justify-end"
+                        boxSize="sm"
+                        minW="100px"
+                        maxW="350px"
+                        my="1"
+                      >
+                        <Image src={item.src} alt={item.content} />
+                      </Flex>
+                    ) : item.type === 'audio' ? (
+                      <Flex
+                        className="justify-end bg-red-500"
+                        minW="100px"
+                        maxW="350px"
+                        my="1"
+                      >
+                        <ReactAudioPlayer src={item.src} controls />
+                      </Flex>
+                    ) : null}
+                  </Flex>
+                )
+              } else {
+                return (
+                  <Flex className="items-start" key={index} w="100%">
+                    <Avatar
+                      size="sm"
+                      name={activeConversee.username}
+                      className="mr-2"
+                    ></Avatar>
+                    {item.type === 'text' ? (
+                      <Flex
+                        bg="gray.100"
+                        color="black"
+                        minW="100px"
+                        maxW="350px"
+                        my="1"
+                        p="3"
+                      >
+                        <Text>{item.content}</Text>
+                      </Flex>
+                    ) : item.type === 'image' ? (
+                      <Flex
+                        className="justify-start"
+                        boxSize="sm"
+                        minW="100px"
+                        maxW="350px"
+                        my="1"
+                      >
+                        <Image src={item.src} alt={item.content} />
+                      </Flex>
+                    ) : item.type === 'audio' ? (
+                      <Flex
+                        className="justify-start"
+                        minW="100px"
+                        maxW="350px"
+                        my="1"
+                      >
+                        <ReactAudioPlayer src={item.src} controls />
+                      </Flex>
+                    ) : null}
+                  </Flex>
+                )
+              }
+            })
+          : null}
+        {/* <AlwaysScrollToBottom /> */}
 
-      <Button
-        onClick={() => {
-          setVariables({
-            conversationUuid: activeConversation.uuid,
-            limit: variables.limit,
-            cursor:
-              activeConversation.messages[
-                activeConversation.messages.length - 1
-              ].createdAt,
-          })
+        {/* <Button
+          onClick={() => {
+            setVariables({
+              conversationUuid: activeConversation.uuid,
+              limit: variables.limit,
+              cursor:
+                activeConversation.messages[
+                  activeConversation.messages.length - 1
+                ].createdAt,
+            })
 
-          setShouldPause(false)
-        }}
-        isLoading={fetching}
-      >
-        Load more messages
-      </Button>
-      {/* </InfiniteScroll> */}
+            setShouldPause(false)
+          }}
+          isLoading={fetching}
+        >
+          Load more messages
+        </Button> */}
+      </InfiniteScroll>
       {/* ) : null} */}
       {/* </div> */}
     </Flex>

@@ -50,7 +50,7 @@ export const FileUpload = ({ children }) => {
   //   )
 
   useEffect(() => {
-    console.log('accepted files:', acceptedFiles)
+    // console.log('accepted files:', acceptedFiles)
 
     if (acceptedFiles.length !== 0) {
       let file = acceptedFiles[0]

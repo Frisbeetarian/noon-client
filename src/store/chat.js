@@ -12,6 +12,7 @@ const slice = createSlice({
     activeConversation: null,
     conversationsThatHaveUnreadMessagesForProfile: [],
     activeConversationSet: false,
+    shouldPauseCheckHasMore: false,
   },
   reducers: {
     setActiveConversationSet: (chat, action) => {
@@ -33,7 +34,6 @@ const slice = createSlice({
       //     conversation.uuid
       //   )
       // }
-
       // conversationObject.ongoingCall = false
 
       chat.conversations.push(conversationObject)
@@ -49,7 +49,7 @@ const slice = createSlice({
       Promise.all(
         action.payload.conversationsToSend.map((conversation) => {
           let conversationObject = { ...conversation }
-          // console.log("conversatio")
+
           let converseeObject = conversationObject.profiles.find(
             (element) => element.uuid != action.payload.loggedInProfileUuid
           )
@@ -65,9 +65,7 @@ const slice = createSlice({
           }
 
           // conversationObject.ongoingCall = false
-
           conversationObject.conversee = converseeObject
-          // conversationObject.messages =
           conversationsArray.push(conversationObject)
         })
       )
@@ -79,14 +77,10 @@ const slice = createSlice({
       let messages = action.payload.messages
       let loggedInProfileUuid = action.payload.loggedInUser.user?.profile?.uuid
 
-      // chat.activeConversation.message = []
-
       if (
         chat.activeConversation &&
         chat.activeConversation.uuid === conversationUuid
       ) {
-        // chat.activeConversation.messages.push(messages)
-
         let tempMessages = [...chat.activeConversation.messages]
 
         Promise.all(
@@ -158,7 +152,6 @@ const slice = createSlice({
           (conversation) => conversation.uuid === conversationUuid
         )
 
-        console.log('conversationUuid:', conversationUuid)
         conversationn.unreadMessages = conversationn.unreadMessages + 1
         conversationn.profileThatHasUnreadMessages =
           action.payload.loggedInProfile.uuid
@@ -172,7 +165,6 @@ const slice = createSlice({
             conversationUuid
           )
         }
-        console.log('conversationn:', conversationn)
 
         conversationn.messages.unshift({
           uuid: uuid(),
@@ -210,14 +202,19 @@ const slice = createSlice({
       })
     },
     setActiveConversee: (chat, action) => {
-      console.log('set active conversee uuid:', action.payload)
+      // console.log('set active conversee uuid:', action.payload)
       chat.activeConversee = action.payload
     },
     clearUnreadMessagesForConversationInStore: (chat, action) => {
       const conversation = chat.activeConversation
-
       conversation.unreadMessages = 0
       conversation.profileThatHasUnreadMessages = []
+    },
+    setActiveConversationHasMoreMessages: (chat, action) => {
+      chat.activeConversation.hasMore = action.payload
+    },
+    setShouldPauseCheckHasMore: (chat, action) => {
+      chat.shouldPauseCheckHasMore = action.payload
     },
     setActiveConversation: (chat, action) => {
       if (action.payload === null) {
@@ -225,7 +222,6 @@ const slice = createSlice({
         return
       }
 
-      // if (action.payload) {
       let index = chat.conversationsThatHaveUnreadMessagesForProfile.indexOf(
         action.payload.conversation.uuid
       )
@@ -233,7 +229,6 @@ const slice = createSlice({
       if (index > -1) {
         chat.conversationsThatHaveUnreadMessagesForProfile.splice(index, 1)
       }
-      // }
 
       // chat.conversationsThatHaveUnreadMessagesForProfile =
       //   chat.conversationsThatHaveUnreadMessagesForProfile.filter(
@@ -360,6 +355,11 @@ export const getActiveConversationSet = createSelector(
   (chat) => chat.activeConversationSet
 )
 
+export const getShouldPauseCheckHasMore = createSelector(
+  (state) => state.entities.chat,
+  (chat) => chat.shouldPauseCheckHasMore
+)
+
 export const getConversationsThatHaveUnreadMessagesForProfile = createSelector(
   (state) => state.entities.chat,
   (chat) => chat.conversationsThatHaveUnreadMessagesForProfile
@@ -379,5 +379,8 @@ export const {
   setOngoingCall,
   setPendingCall,
   cancelPendingCall,
+  setActiveConversationHasMoreMessages,
+  setShouldPauseCheckHasMore,
 } = slice.actions
+
 export default slice.reducer
