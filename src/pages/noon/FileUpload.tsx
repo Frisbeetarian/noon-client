@@ -92,11 +92,14 @@ export const FileUpload = ({ children }) => {
           dispatch(
             addMessageToActiveConversation({
               message: response.data.content,
-              loggedInUser,
               from: 'me',
               type: response.data.type,
               src: response.data.src,
               conversationUuid: activeConversation.uuid,
+              sender: {
+                uuid: loggedInUser?.user?.profile?.uuid,
+                username: loggedInUser?.user?.profile?.username,
+              },
             })
           )
 

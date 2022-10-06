@@ -125,8 +125,8 @@ const slice = createSlice({
           type: action.payload.type,
           src: action.payload.src,
           sender: {
-            uuid: action.payload.loggedInUser?.user?.profile?.uuid,
-            username: action.payload.loggedInUser?.user?.profile?.username,
+            uuid: action.payload.sender?.uuid,
+            username: action.payload.sender?.username,
           },
         })
 
@@ -141,10 +141,11 @@ const slice = createSlice({
           createdAt: action.payload.createdAt,
           updatedAt: new Date().getTime(),
           createdAt: new Date().getTime(),
+          type: action.payload.type,
           src: action.payload.src,
           sender: {
-            uuid: action.payload.loggedInUser?.user?.profile?.uuid,
-            username: action.payload.loggedInUser?.user?.profile?.username,
+            uuid: action.payload.sender?.uuid,
+            username: action.payload.sender?.username,
           },
         })
       } else {
@@ -175,8 +176,8 @@ const slice = createSlice({
           type: action.payload.type,
           src: action.payload.src,
           sender: {
-            uuid: action.payload.loggedInUser?.user?.profile?.uuid,
-            username: action.payload.loggedInUser?.user?.profile?.username,
+            uuid: action.payload.sender?.uuid,
+            username: action.payload.sender?.username,
           },
         })
       }

@@ -108,7 +108,10 @@ export default function ChatSidebar() {
     dispatch(
       addMessageToActiveConversation({
         message: data,
-        loggedInUser,
+        sender: {
+          uuid: loggedInUser?.user?.profile?.uuid,
+          username: loggedInUser?.user?.profile?.username,
+        },
         from: 'me',
         conversationUuid: activeConversation.uuid,
       })

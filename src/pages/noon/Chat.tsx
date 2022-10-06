@@ -90,7 +90,7 @@ function Chat() {
           dispatch(
             addMessageToActiveConversation({
               message: data,
-              loggedInUser: { uuid: from, username: fromUsername },
+              sender: { uuid: from, username: fromUsername },
               from: 'computer',
               conversationUuid,
               loggedInProfile: loggedInUser.user?.profile,
@@ -336,7 +336,10 @@ function Chat() {
     dispatch(
       addMessageToActiveConversation({
         message: data,
-        loggedInUser,
+        sender: {
+          uuid: loggedInUser?.user?.profile?.uuid,
+          username: loggedInUser?.user?.profile?.username,
+        },
         from: 'me',
         type: 'text',
         src: '',

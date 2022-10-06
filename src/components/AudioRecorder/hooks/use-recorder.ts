@@ -153,7 +153,10 @@ export default function useRecorder() {
             dispatch(
               addMessageToActiveConversation({
                 message: response.data.content,
-                loggedInUser,
+                sender: {
+                  uuid: loggedInUser?.user?.profile?.uuid,
+                  username: loggedInUser?.user?.profile?.username,
+                },
                 from: 'me',
                 type: response.data.type,
                 src: response.data.src,
