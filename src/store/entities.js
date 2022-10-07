@@ -8,6 +8,7 @@ import uiReducer from './ui'
 import profilesReducer from './profiles'
 import chatReducer from './chat'
 import searchReducer from './search'
+import groupsReducer from './groups'
 
 export default combineReducers({
   // bugs: bugsReducer,
@@ -19,4 +20,5 @@ export default combineReducers({
   ui: uiReducer,
   chat: chatReducer,
   search: searchReducer,
+  groups: groupsReducer,
 })

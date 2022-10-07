@@ -2,10 +2,8 @@ import React, { useEffect } from 'react'
 import { Flex, Input, Button, Box } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
 import {
-  cancelPendingCall,
   getActiveConversation,
   getActiveConversee,
-  setActiveConversation,
   setOngoingCall,
   setPendingCall,
 } from '../../store/chat'
@@ -15,7 +13,6 @@ import { getSocket } from '../../store/sockets'
 import { useSetPendingCallForConversationMutation } from '../../generated/graphql'
 
 import RecorderControls from '../../components/AudioRecorder/recorder-controls'
-// import RecordingsList from '../../components/recordings-list'
 import useRecorder from '../../components/AudioRecorder/hooks/use-recorder'
 import { UseRecorder } from '../../components/AudioRecorder/types/recorder'
 
@@ -31,7 +28,6 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
     useSetPendingCallForConversationMutation()
 
   const { recorderState, ...handlers }: UseRecorder = useRecorder()
-  const { audio } = recorderState
 
   useEffect(() => {
     if (socket) {
@@ -51,30 +47,8 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
       )
     }
 
-    // socket.on(
-    //   'set-pending-call-for-conversation',
-    //   ({ from, fromUsername, to, toUsername, conversationUuid }) => {
-    //     dispatch(
-    //       setPendingCall({
-    //         uuid: activeConversation.uuid,
-    //         initiator: {
-    //           uuid: from,
-    //           username: fromUsername,
-    //         },
-    //       })
-    //     )
-    //   }
-    // )
-    //
-    // socket.on('cancel-pending-call-for-conversation', () => {
-    //   alert('FEWFWEFWEFW')
-    //   dispatch(cancelPendingCall())
-    // })
-
     return () => {
       if (socket) socket.off('set-ongoing-call-for-conversation')
-      // socket.off('set-pending-call-for-conversation')
-      // socket.off('cancel-pending-call-for-conversation')
     }
   }, [activeConversee])
 

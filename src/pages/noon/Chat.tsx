@@ -23,18 +23,26 @@ import {
 } from '../../store/users'
 import {
   useAcceptFriendRequestMutation,
-  useCancelPendingCallForConversationMutation,
   useSaveMessageMutation,
   useSendFriendRequestMutation,
   useUpdateUnreadMessagesForConversationMutation,
 } from '../../generated/graphql'
+
+import {
+  setCreateGroupComponent,
+  getCreateGroupComponent,
+} from '../../store/ui'
+import { createGroup, getGroups } from '../../store/groups'
+
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 import { setFriendFlagOnProfile } from '../../store/profiles'
 import { FileUpload } from './FileUpload'
+import CreateGroup from './CreateGroup'
 
 function Chat() {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
+  const isCreateGroupOpen = useSelector(getCreateGroupComponent)
 
   const [inputMessage, setInputMessage] = useState('')
   const socket = useSelector(getSocket)
@@ -362,27 +370,22 @@ function Chat() {
       style={{ flex: '0.75', height: '100vh' }}
     >
       <ChatControlsAndSearch />
-      {/*<Flex w="100%" className="flex-col " style={{ flex: '0.9' }}>*/}
+
+      {isCreateGroupOpen ? (
+        <Flex className="flex-col p-0 box-content" style={{ flex: '0.875' }}>
+          <CreateGroup />
+        </Flex>
+      ) : null}
+
       {profile && activeConversation ? (
         <Flex className="flex-col p-0 box-content" style={{ flex: '0.875' }}>
           <Header></Header>
           <FileUpload>
-            {/* <div {...getRootProps({ className: 'dropzone' })}> */}
-            {/* <input {...getInputProps()} /> */}
             <Messages />
-            {/* </div> */}
           </FileUpload>
-          {/* <aside>
-            <h4>Files</h4>
-            <ul>{files}</ul>
-          </aside> */}
         </Flex>
       ) : null}
 
-      {/*<Flex className="flex-col" style={{ flex: '0.95' }}>*/}
-      {/*  fewfewf*/}
-      {/*</Flex>*/}
-      {/*</Flex>*/}
       {activeConversation ? (
         <Flex
           w="100%"

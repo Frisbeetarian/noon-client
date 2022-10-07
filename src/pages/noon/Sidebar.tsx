@@ -85,8 +85,61 @@ function Sidebar() {
       className="flex flex-col bg-neutral text-white box-content"
       style={{ flex: '0.25', height: '100vh' }}
     >
-      <Flex className="items-center border-b" style={{ flex: '0.05' }}>
+      <Flex
+        className="items-center justify-between border-b"
+        style={{ flex: '0.05' }}
+      >
         <Heading className="w-full px-4">Noon</Heading>
+
+        <Menu>
+          <MenuButton
+            as={IconButton}
+            aria-label="Options"
+            icon={<HamburgerIcon />}
+            variant="outline"
+            className="mr-3"
+          />
+
+          <MenuList>
+            <MenuItem
+              icon={<EditIcon />}
+              onClick={async () => {
+                const unfriendResponse = await unfriend({
+                  profileUuid: conversation.conversee.uuid,
+                  conversationUuid: conversation.uuid,
+                })
+
+                dispatch(
+                  removeFriendEntry({
+                    profileUuid: conversation.conversee.uuid,
+                    friends: loggedInUser.user?.friends,
+                  })
+                )
+                dispatch(
+                  removeConversation({
+                    conversationUuid: conversation.uuid,
+                  })
+                )
+
+                if (unfriendResponse) {
+                  socket.emit('unfriend', {
+                    content:
+                      loggedInUser.user?.profile?.username + ' unfriended you.',
+                    from: loggedInUser.user?.profile?.uuid,
+                    fromUsername: loggedInUser.user?.profile?.username,
+                    to: conversation.conversee.uuid,
+                    toUsername: conversation.conversee.username,
+                    conversationUuid: conversation.uuid,
+                  })
+                }
+              }}
+            >
+              Create group
+            </MenuItem>
+
+            {/* <MenuItem icon={<EditIcon />}>Block</MenuItem> */}
+          </MenuList>
+        </Menu>
       </Flex>
 
       <Flex className="flex-col pt-3" style={{ flex: '0.875' }}>

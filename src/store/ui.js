@@ -10,6 +10,7 @@ const slice = createSlice({
   name: 'ui',
   initialState: {
     chatComponent: 'closed',
+    createGroupComponentOpen: true,
   },
   reducers: {
     setSocket: (sockets, action) => {
@@ -19,6 +20,9 @@ const slice = createSlice({
 
     setChatComponentState: (ui, action) => {
       ui.chatComponent = action.payload
+    },
+    setCreateGroupComponent: (ui, action) => {
+      ui.createGroupComponentOpen = action.payload
     },
   },
 })
@@ -36,6 +40,15 @@ export const getChatComponentState = createSelector(
   (ui) => ui.chatComponent
 )
 
-export const { showFriendshipRequestToast, setChatComponentState } =
-  slice.actions
+export const getCreateGroupComponent = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.createGroupComponentOpen
+)
+
+export const {
+  showFriendshipRequestToast,
+  setChatComponentState,
+  setCreateGroupComponent,
+} = slice.actions
+
 export default slice.reducer
