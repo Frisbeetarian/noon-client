@@ -278,6 +278,55 @@ const slice = createSlice({
 
       chat.activeConversation = conversationObject
     },
+    setActiveGroupInStore: (chat, action) => {
+      if (action.payload === null) {
+        chat.activeConversation = null
+        return
+      }
+
+      let conversationObject = { ...action.payload.conversation }
+      // conversationObject.unreadMessages = 0
+      // conversationObject.profileThatHasUnreadMessages = []
+
+      const conversationFromStack = chat.conversations.find(
+        (conversation) => conversation.uuid === conversationObject.uuid
+      )
+
+      console.log('conversation from stack:', conversationFromStack)
+
+      conversationFromStack.unreadMessages = 0
+      conversationFromStack.profileThatHasUnreadMessages = []
+      conversationFromStack.ongoingCall = false
+
+      if (!action.payload.conversation.messages) {
+        conversationObject.messages = []
+      } else {
+        let messagesArray = []
+
+        action.payload.conversation.messages.map((message) => {
+          let messageObject = { ...message }
+
+          messageObject.from =
+            messageObject.sender.uuid == action.payload.loggedInProfileUuid
+              ? 'me'
+              : 'computer'
+
+          messagesArray.push(messageObject)
+        })
+
+        let sortedMessage = messagesArray.sort(
+          (a, b) => b.createdAt - a.createdAt
+        )
+
+        conversationObject.messages = [...sortedMessage]
+      }
+
+      if (!chat['activeConversation']) {
+        chat['activeConversation'] = null
+      }
+
+      chat.activeConversation = conversationObject
+    },
     setOngoingCall: (chat, action) => {
       let activeConversationObject = { ...chat.activeConversation }
       activeConversationObject.ongoingCall = action.payload
@@ -382,6 +431,7 @@ export const {
   cancelPendingCall,
   setActiveConversationHasMoreMessages,
   setShouldPauseCheckHasMore,
+  setActiveGroupInStore,
 } = slice.actions
 
 export default slice.reducer

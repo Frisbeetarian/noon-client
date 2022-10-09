@@ -56,6 +56,7 @@ function Chat() {
   const [, sendFriendRequest] = useSendFriendRequestMutation()
   const [, acceptFriendRequest] = useAcceptFriendRequestMutation()
   const [socketError, setSocketError] = useState(false)
+
   const [, updateUnreadMessagesForConversation] =
     useUpdateUnreadMessagesForConversationMutation()
   const toast = useToast()
@@ -377,7 +378,16 @@ function Chat() {
         </Flex>
       ) : null}
 
-      {profile && activeConversation ? (
+      {activeConversation && activeConversation.type === 'group' ? (
+        <Flex className="flex-col p-0 box-content" style={{ flex: '0.875' }}>
+          <Header></Header>
+          <FileUpload>
+            <Messages />
+          </FileUpload>
+        </Flex>
+      ) : null}
+
+      {profile && activeConversation && activeConversation.type === 'pm' ? (
         <Flex className="flex-col p-0 box-content" style={{ flex: '0.875' }}>
           <Header></Header>
           <FileUpload>

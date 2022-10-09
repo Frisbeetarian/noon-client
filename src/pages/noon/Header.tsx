@@ -33,30 +33,32 @@ const Header = () => {
     useCancelPendingCallForConversationMutation()
 
   useEffect(() => {
-    socket.emit('check-friend-connection', {
-      from: loggedInUser.user?.profile?.uuid,
-      fromUsername: loggedInUser.user?.profile?.username,
-      to: activeConversee.uuid,
-      toUsername: activeConversee.username,
-    })
+    if (activeConversee) {
+      socket.emit('check-friend-connection', {
+        from: loggedInUser.user?.profile?.uuid,
+        fromUsername: loggedInUser.user?.profile?.username,
+        to: activeConversee.uuid,
+        toUsername: activeConversee.username,
+      })
 
-    socket.on('check-friend-connection', ({ session }) => {
-      if (session.connected === true) {
-        setOnline('true')
-      }
-    })
+      socket.on('check-friend-connection', ({ session }) => {
+        if (session.connected === true) {
+          setOnline('true')
+        }
+      })
 
-    socket.on('friend-connected', ({ uuid }) => {
-      if (uuid === activeConversee.uuid) {
-        setOnline('true')
-      }
-    })
+      socket.on('friend-connected', ({ uuid }) => {
+        if (uuid === activeConversee.uuid) {
+          setOnline('true')
+        }
+      })
 
-    socket.on('friend-disconnected', ({ uuid }) => {
-      if (uuid === activeConversee.uuid) {
-        setOnline('false')
-      }
-    })
+      socket.on('friend-disconnected', ({ uuid }) => {
+        if (uuid === activeConversee.uuid) {
+          setOnline('false')
+        }
+      })
+    }
 
     return () => {
       setOnline('loading')
@@ -69,7 +71,14 @@ const Header = () => {
   return (
     <Flex w="100%" className="items-center justify-between">
       <Flex className="items-center px-3">
-        <Avatar size="md" name={activeConversee.username}>
+        <Avatar
+          size="md"
+          name={
+            activeConversation.type === 'pm'
+              ? activeConversee.username
+              : activeConversation.name
+          }
+        >
           <AvatarBadge
             boxSize="1.25em"
             bg={online !== 'true' ? 'yellow.500' : 'green.500'}
@@ -78,7 +87,9 @@ const Header = () => {
 
         <Flex flexDirection="column" mx="3" my="5" justify="center">
           <Text fontSize="lg" fontWeight="bold">
-            {activeConversee.username}
+            {activeConversation.type === 'pm'
+              ? activeConversee.username
+              : activeConversation.name}
           </Text>
 
           <Text color="green.500" fontSize="sm">

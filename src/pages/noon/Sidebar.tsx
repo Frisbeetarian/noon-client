@@ -23,6 +23,7 @@ import {
   setActiveConversee,
   setShouldPauseCheckHasMore,
   getActiveConversation,
+  setActiveGroupInStore,
 } from '../../store/chat'
 
 import SocketConnector from '../../components/SocketIo/SocketConnector'
@@ -78,6 +79,16 @@ function Sidebar() {
     }
 
     // }, 500)
+  }
+
+  function setActiveGroup(conversation) {
+    dispatch(setActiveConversationSet(false))
+    dispatch(setActiveConversee(null))
+    dispatch(setActiveConversation(null))
+    dispatch(setShouldPauseCheckHasMore(false))
+    dispatch(setActiveGroupInStore(null))
+
+    dispatch(setActiveGroupInStore({ conversation }))
   }
 
   return (
@@ -206,6 +217,7 @@ function Sidebar() {
                                 friends: loggedInUser.user?.friends,
                               })
                             )
+
                             dispatch(
                               removeConversation({
                                 conversationUuid: conversation.uuid,
@@ -244,6 +256,7 @@ function Sidebar() {
                     <Flex
                       className="items-center cursor-pointer flex-1"
                       onClick={() => {
+                        setActiveGroup(conversation)
                         // setActiveConverseeFunction(
                         //   conversation.conversee,
                         //   conversation
