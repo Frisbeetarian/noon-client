@@ -56,8 +56,12 @@ export type Conversation = {
   __typename?: 'Conversation';
   uuid: Scalars['String'];
   unreadMessages: Scalars['Float'];
+  type: Scalars['String'];
   profileThatHasUnreadMessages: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
   hasMore: Scalars['Boolean'];
+  conversationToProfiles: Array<ConversationToProfile>;
   ongoingCall: Scalars['Boolean'];
   pendingCall: Scalars['Boolean'];
   pendingCallProfile?: Maybe<Profile>;
@@ -137,6 +141,12 @@ export type FriendshipRequest = {
   reverse?: Maybe<Scalars['Boolean']>;
 };
 
+export type GroupInput = {
+  name: Scalars['String'];
+  description: Scalars['String'];
+  type: Scalars['String'];
+};
+
 export type Message = {
   __typename?: 'Message';
   uuid: Scalars['String'];
@@ -144,6 +154,7 @@ export type Message = {
   content: Scalars['String'];
   type: Scalars['String'];
   src?: Maybe<Scalars['String']>;
+  conversationUuid: Scalars['String'];
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
 };
@@ -168,6 +179,7 @@ export type Mutation = {
   unfriend: Scalars['Boolean'];
   createCommunity: Community;
   joinCommunity: Scalars['Boolean'];
+  createGroupConversation: Conversation;
   setPendingCallForConversation: Scalars['Boolean'];
   cancelPendingCallForConversation: Scalars['Boolean'];
   clearUnreadMessagesForConversation: Scalars['Boolean'];
@@ -265,6 +277,12 @@ export type MutationCreateCommunityArgs = {
 
 export type MutationJoinCommunityArgs = {
   communityId: Scalars['Int'];
+};
+
+
+export type MutationCreateGroupConversationArgs = {
+  participants: Array<Scalars['String']>;
+  input: GroupInput;
 };
 
 
@@ -591,6 +609,20 @@ export type CreateEventMutation = (
   ) }
 );
 
+export type CreateGroupConversationMutationVariables = Exact<{
+  input: GroupInput;
+  participants: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type CreateGroupConversationMutation = (
+  { __typename?: 'Mutation' }
+  & { createGroupConversation: (
+    { __typename?: 'Conversation' }
+    & ConversationSnippetFragment
+  ) }
+);
+
 export type CreatePostMutationVariables = Exact<{
   input: PostInput;
 }>;
@@ -640,7 +672,7 @@ export type ConversationProfileSnippetFragment = (
 
 export type ConversationSnippetFragment = (
   { __typename?: 'Conversation' }
-  & Pick<Conversation, 'uuid' | 'unreadMessages' | 'profileThatHasUnreadMessages' | 'updatedAt' | 'createdAt' | 'hasMore' | 'ongoingCall' | 'pendingCall'>
+  & Pick<Conversation, 'uuid' | 'unreadMessages' | 'profileThatHasUnreadMessages' | 'updatedAt' | 'createdAt' | 'hasMore' | 'ongoingCall' | 'pendingCall' | 'type' | 'name' | 'description'>
   & { profiles: Array<(
     { __typename?: 'Profile' }
     & ConversationProfileSnippetFragment
@@ -1212,6 +1244,9 @@ export const ConversationSnippetFragmentDoc = gql`
   hasMore
   ongoingCall
   pendingCall
+  type
+  name
+  description
   pendingCallProfile {
     ...ConversationProfileSnippet
   }
@@ -1432,6 +1467,17 @@ export const CreateEventDocument = gql`
 
 export function useCreateEventMutation() {
   return Urql.useMutation<CreateEventMutation, CreateEventMutationVariables>(CreateEventDocument);
+};
+export const CreateGroupConversationDocument = gql`
+    mutation CreateGroupConversation($input: GroupInput!, $participants: [String!]!) {
+  createGroupConversation(input: $input, participants: $participants) {
+    ...ConversationSnippet
+  }
+}
+    ${ConversationSnippetFragmentDoc}`;
+
+export function useCreateGroupConversationMutation() {
+  return Urql.useMutation<CreateGroupConversationMutation, CreateGroupConversationMutationVariables>(CreateGroupConversationDocument);
 };
 export const CreatePostDocument = gql`
     mutation CreatePost($input: PostInput!) {

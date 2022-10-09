@@ -1,0 +1,8 @@
+mutation CreateGroupConversation(
+  $input: GroupInput!
+  $participants: [String!]!
+) {
+  createGroupConversation(input: $input, participants: $participants) {
+    ...ConversationSnippet
+  }
+}

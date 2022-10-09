@@ -136,8 +136,6 @@ function Sidebar() {
             >
               Create group
             </MenuItem>
-
-            {/* <MenuItem icon={<EditIcon />}>Block</MenuItem> */}
           </MenuList>
         </Menu>
       </Flex>
@@ -146,7 +144,7 @@ function Sidebar() {
         {getConversationsFromStore
           ? [...Object.values(getConversationsFromStore)].map(
               (conversation, i) =>
-                !conversation ? null : (
+                !conversation ? null : conversation.type === 'pm' ? (
                   <Flex
                     key={conversation.uuid}
                     tabindex="0"
@@ -233,19 +231,93 @@ function Sidebar() {
                         </MenuItem>
 
                         <MenuItem icon={<EditIcon />}>Block</MenuItem>
-                        {/*  */}
-                        {/*  <MenuItem icon={<AddIcon />} command="⌘T">*/}
-                        {/*    New Tab*/}
-                        {/*  </MenuItem>*/}
-                        {/*  <MenuItem icon={<ExternalLinkIcon />} command="⌘N">*/}
-                        {/*    New Window*/}
-                        {/*  </MenuItem>*/}
-                        {/*  <MenuItem icon={<RepeatIcon />} command="⌘⇧N">*/}
-                        {/*    Open Closed Tab*/}
-                        {/*  </MenuItem>*/}
-                        {/*  <MenuItem icon={<EditIcon />} command="⌘O">*/}
-                        {/*    Open File...*/}
-                        {/*  </MenuItem>*/}
+                      </MenuList>
+                    </Menu>
+                  </Flex>
+                ) : (
+                  <Flex
+                    key={conversation.uuid}
+                    tabindex="0"
+                    className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-amber-100 hover:border-sky-500 focus:outline-none focus:border-sky-700 focus-within:shadow-lg"
+                    style={{ transition: 'all .25s ' }}
+                  >
+                    <Flex
+                      className="items-center cursor-pointer flex-1"
+                      onClick={() => {
+                        // setActiveConverseeFunction(
+                        //   conversation.conversee,
+                        //   conversation
+                        // )
+                        // setProfile(conversation.conversee)
+                      }}
+                    >
+                      <Avatar
+                        key={i}
+                        name={conversation.name}
+                        size="sm"
+                        className="mr-2"
+                      >
+                        {conversation.unreadMessages &&
+                        conversation.unreadMessages !== 0 &&
+                        conversation.profileThatHasUnreadMessages ===
+                          loggedInUser.user.profile.uuid ? (
+                          <AvatarBadge boxSize="1.25em" bg="red.500">
+                            <p className="text-xs">
+                              {conversation.unreadMessages}
+                            </p>
+                          </AvatarBadge>
+                        ) : null}
+                      </Avatar>
+
+                      <p>{conversation.name}</p>
+                    </Flex>
+
+                    <Menu>
+                      <MenuButton
+                        as={IconButton}
+                        aria-label="Options"
+                        icon={<HamburgerIcon />}
+                        variant="outline"
+                      />
+
+                      <MenuList>
+                        <MenuItem
+                          icon={<EditIcon />}
+                          onClick={async () => {
+                            // const unfriendResponse = await unfriend({
+                            //   profileUuid: conversation.conversee.uuid,
+                            //   conversationUuid: conversation.uuid,
+                            // })
+                            // dispatch(
+                            //   removeFriendEntry({
+                            //     profileUuid: conversation.conversee.uuid,
+                            //     friends: loggedInUser.user?.friends,
+                            //   })
+                            // )
+                            // dispatch(
+                            //   removeConversation({
+                            //     conversationUuid: conversation.uuid,
+                            //   })
+                            // )
+                            // if (unfriendResponse) {
+                            //   socket.emit('unfriend', {
+                            //     content:
+                            //       loggedInUser.user?.profile?.username +
+                            //       ' unfriended you.',
+                            //     from: loggedInUser.user?.profile?.uuid,
+                            //     fromUsername:
+                            //       loggedInUser.user?.profile?.username,
+                            //     to: conversation.conversee.uuid,
+                            //     toUsername: conversation.conversee.username,
+                            //     conversationUuid: conversation.uuid,
+                            //   })
+                            // }
+                          }}
+                        >
+                          Leave group
+                        </MenuItem>
+
+                        {/* <MenuItem icon={<EditIcon />}>Block</MenuItem> */}
                       </MenuList>
                     </Menu>
                   </Flex>

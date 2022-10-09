@@ -13,6 +13,9 @@ fragment ConversationSnippet on Conversation {
   hasMore
   ongoingCall
   pendingCall
+  type
+  name
+  description
   pendingCallProfile {
     ...ConversationProfileSnippet
   }
