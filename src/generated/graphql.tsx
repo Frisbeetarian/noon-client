@@ -185,6 +185,7 @@ export type Mutation = {
   clearUnreadMessagesForConversation: Scalars['Boolean'];
   updateUnreadMessagesForConversation: Scalars['Boolean'];
   uploadImage: Message;
+  saveGroupMessage: Message;
   saveMessage: Message;
 };
 
@@ -313,6 +314,14 @@ export type MutationUploadImageArgs = {
   file?: Maybe<Scalars['Upload']>;
   conversationUuid: Scalars['String'];
   profileUuid: Scalars['String'];
+};
+
+
+export type MutationSaveGroupMessageArgs = {
+  src: Scalars['String'];
+  type: Scalars['String'];
+  conversationUuid: Scalars['String'];
+  message: Scalars['String'];
 };
 
 
@@ -1105,6 +1114,22 @@ export type RegisterMutation = (
   ) }
 );
 
+export type SaveGroupMessageMutationVariables = Exact<{
+  message: Scalars['String'];
+  conversationUuid: Scalars['String'];
+  type: Scalars['String'];
+  src: Scalars['String'];
+}>;
+
+
+export type SaveGroupMessageMutation = (
+  { __typename?: 'Mutation' }
+  & { saveGroupMessage: (
+    { __typename?: 'Message' }
+    & Pick<Message, 'uuid'>
+  ) }
+);
+
 export type SaveMessageMutationVariables = Exact<{
   message: Scalars['String'];
   conversationUuid: Scalars['String'];
@@ -1842,6 +1867,22 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const SaveGroupMessageDocument = gql`
+    mutation SaveGroupMessage($message: String!, $conversationUuid: String!, $type: String!, $src: String!) {
+  saveGroupMessage(
+    message: $message
+    conversationUuid: $conversationUuid
+    type: $type
+    src: $src
+  ) {
+    uuid
+  }
+}
+    `;
+
+export function useSaveGroupMessageMutation() {
+  return Urql.useMutation<SaveGroupMessageMutation, SaveGroupMessageMutationVariables>(SaveGroupMessageDocument);
 };
 export const SaveMessageDocument = gql`
     mutation SaveMessage($message: String!, $conversationUuid: String!, $to: String!, $type: String!, $src: String!) {

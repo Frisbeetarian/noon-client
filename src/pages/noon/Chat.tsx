@@ -24,6 +24,7 @@ import {
 import {
   useAcceptFriendRequestMutation,
   useSaveMessageMutation,
+  useSaveGroupMessageMutation,
   useSendFriendRequestMutation,
   useUpdateUnreadMessagesForConversationMutation,
 } from '../../generated/graphql'
@@ -52,6 +53,7 @@ function Chat() {
 
   const profile = useSelector(getActiveConversee)
   const [, saveMessage] = useSaveMessageMutation()
+  const [, saveGroupMessage] = useSaveGroupMessageMutation()
 
   const [, sendFriendRequest] = useSendFriendRequestMutation()
   const [, acceptFriendRequest] = useAcceptFriendRequestMutation()
@@ -447,11 +449,19 @@ function Chat() {
           className="justify-center"
           style={{ flex: '0.075' }}
         >
-          <Footer
-            inputMessage={inputMessage}
-            setInputMessage={setInputMessage}
-            handleSendMessage={handleSendMessage}
-          />
+          {activeConversation.type === 'pm' ? (
+            <Footer
+              inputMessage={inputMessage}
+              setInputMessage={setInputMessage}
+              handleSendMessage={handleSendMessage}
+            />
+          ) : (
+            <Footer
+              inputMessage={inputMessage}
+              setInputMessage={setInputMessage}
+              handleSendMessage={handleSendGroupMessage}
+            />
+          )}
         </Flex>
       ) : null}
     </Flex>
