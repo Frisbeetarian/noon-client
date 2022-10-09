@@ -292,8 +292,6 @@ const slice = createSlice({
         (conversation) => conversation.uuid === conversationObject.uuid
       )
 
-      console.log('conversation from stack:', conversationFromStack)
-
       conversationFromStack.unreadMessages = 0
       conversationFromStack.profileThatHasUnreadMessages = []
       conversationFromStack.ongoingCall = false

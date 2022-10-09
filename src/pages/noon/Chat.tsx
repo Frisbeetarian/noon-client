@@ -319,6 +319,50 @@ function Chat() {
     }
   }, [socket])
 
+  const handleSendGroupMessage = async () => {
+    if (!inputMessage.trim().length) {
+      return
+    }
+
+    console.log('input message:', inputMessage)
+    const data = inputMessage
+    setInputMessage('')
+
+    socket.emit('group-chat-message', {
+      content:
+        loggedInUser.user?.profile?.username + ' sent a message to the group.',
+      from: loggedInUser.user?.profile?.uuid,
+      fromUsername: loggedInUser.user?.profile?.username,
+      groupUuid: activeConversation.uuid,
+      groupUsername: activeConversation.name,
+      message: data,
+      type: 'text',
+      src: '',
+      conversationUuid: activeConversation.uuid,
+    })
+
+    dispatch(
+      addMessageToActiveConversation({
+        message: data,
+        sender: {
+          uuid: loggedInUser?.user?.profile?.uuid,
+          username: loggedInUser?.user?.profile?.username,
+        },
+        from: 'me',
+        type: 'text',
+        src: '',
+        conversationUuid: activeConversation.uuid,
+      })
+    )
+
+    await saveGroupMessage({
+      message: data,
+      type: 'text',
+      src: '',
+      conversationUuid: activeConversation.uuid,
+    })
+  }
+
   const handleSendMessage = async () => {
     if (!inputMessage.trim().length) {
       return

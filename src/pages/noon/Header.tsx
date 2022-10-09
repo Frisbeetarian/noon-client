@@ -79,10 +79,12 @@ const Header = () => {
               : activeConversation.name
           }
         >
-          <AvatarBadge
-            boxSize="1.25em"
-            bg={online !== 'true' ? 'yellow.500' : 'green.500'}
-          />
+          {activeConversation.type === 'pm' ? (
+            <AvatarBadge
+              boxSize="1.25em"
+              bg={online !== 'true' ? 'yellow.500' : 'green.500'}
+            />
+          ) : null}
         </Avatar>
 
         <Flex flexDirection="column" mx="3" my="5" justify="center">
@@ -92,13 +94,15 @@ const Header = () => {
               : activeConversation.name}
           </Text>
 
-          <Text color="green.500" fontSize="sm">
-            {online === 'true' ? (
-              'Online'
-            ) : (
-              <span className="opacity-0">f</span>
-            )}
-          </Text>
+          {activeConversation.type === 'pm' ? (
+            <Text color="green.500" fontSize="sm">
+              {online === 'true' ? (
+                'Online'
+              ) : (
+                <span className="opacity-0">f</span>
+              )}
+            </Text>
+          ) : null}
         </Flex>
       </Flex>
 
