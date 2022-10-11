@@ -38,8 +38,8 @@ function Sidebar() {
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
   const [, unfriend] = useUnfriendMutation()
   const loggedInUser = useSelector(getLoggedInUser)
-  const activeConversation = useSelector(getActiveConversation)
 
+  const activeConversation = useSelector(getActiveConversation)
   const getConversationsFromStore = useSelector(getSortedConversations)
   const [profile, setProfile] = useState()
 
@@ -88,7 +88,12 @@ function Sidebar() {
     dispatch(setShouldPauseCheckHasMore(false))
     dispatch(setActiveGroupInStore(null))
 
-    dispatch(setActiveGroupInStore({ conversation }))
+    dispatch(
+      setActiveGroupInStore({
+        conversation,
+        loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+      })
+    )
   }
 
   return (

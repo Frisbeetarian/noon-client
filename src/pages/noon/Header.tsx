@@ -104,6 +104,12 @@ const Header = () => {
             </Text>
           ) : null}
         </Flex>
+
+        {activeConversation.type === 'group'
+          ? activeConversation.profiles.map((item, index) => {
+              return <Text className="mr-2">{item.username},</Text>
+            })
+          : null}
       </Flex>
 
       {activeConversation?.pendingCall ? (

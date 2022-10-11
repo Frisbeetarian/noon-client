@@ -330,17 +330,34 @@ function Chat() {
     const data = inputMessage
     setInputMessage('')
 
-    socket.emit('group-chat-message', {
-      content:
-        loggedInUser.user?.profile?.username + ' sent a message to the group.',
-      from: loggedInUser.user?.profile?.uuid,
-      fromUsername: loggedInUser.user?.profile?.username,
-      groupUuid: activeConversation.uuid,
-      groupUsername: activeConversation.name,
-      message: data,
-      type: 'text',
-      src: '',
-      conversationUuid: activeConversation.uuid,
+    // socket.emit('group-chat-message', {
+    //   content:
+    //     loggedInUser.user?.profile?.username + ' sent a message to the group.',
+    //   from: loggedInUser.user?.profile?.uuid,
+    //   fromUsername: loggedInUser.user?.profile?.username,
+    //   groupUuid: activeConversation.uuid,
+    //   groupUsername: activeConversation.name,
+    //   message: data,
+    //   type: 'text',
+    //   src: '',
+    //   conversationUuid: activeConversation.uuid,
+    // })
+
+    activeConversation.profiles.map((profile) => {
+      if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
+        socket.emit('private-chat-message', {
+          content:
+            loggedInUser.user?.profile?.username + ' sent you a message.',
+          from: loggedInUser.user?.profile?.uuid,
+          fromUsername: loggedInUser.user?.profile?.username,
+          to: profile.uuid,
+          toUsername: profile.username,
+          message: data,
+          type: 'text',
+          src: '',
+          conversationUuid: activeConversation.uuid,
+        })
+      }
     })
 
     dispatch(

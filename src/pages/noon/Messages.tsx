@@ -67,6 +67,7 @@ const Messages = () => {
       'hasmore on init:',
       hasMoreOnInit?.checkIfConversationHasMoreMessages
     )
+
     if (hasMoreOnInit?.checkIfConversationHasMoreMessages) {
       dispatch(
         setActiveConversationHasMoreMessages(
@@ -200,7 +201,7 @@ const Messages = () => {
             </div>
           ))} */}
 
-        {activeConversation
+        {activeConversation && activeConversation.type === 'pm'
           ? activeConversation.messages.map((item, index) => {
               if (item.from === 'me') {
                 return (
@@ -244,6 +245,87 @@ const Messages = () => {
                     <Avatar
                       size="sm"
                       name={activeConversee.username}
+                      className="mr-2"
+                    ></Avatar>
+                    {item.type === 'text' ? (
+                      <Flex
+                        bg="gray.100"
+                        color="black"
+                        minW="100px"
+                        maxW="350px"
+                        my="1"
+                        p="3"
+                      >
+                        <Text>{item.content}</Text>
+                      </Flex>
+                    ) : item.type === 'image' ? (
+                      <Flex
+                        className="justify-start"
+                        boxSize="sm"
+                        minW="100px"
+                        maxW="350px"
+                        my="1"
+                      >
+                        <Image src={item.src} alt={item.content} />
+                      </Flex>
+                    ) : item.type === 'audio' ? (
+                      <Flex
+                        className="justify-start"
+                        minW="100px"
+                        maxW="350px"
+                        my="1"
+                      >
+                        <ReactAudioPlayer src={item.src} controls />
+                      </Flex>
+                    ) : null}
+                  </Flex>
+                )
+              }
+            })
+          : activeConversation && activeConversation.type === 'group'
+          ? activeConversation.messages.map((item, index) => {
+              if (item.from === 'me') {
+                return (
+                  <Flex key={index} w="100%" justify="flex-end">
+                    {item.type === 'text' ? (
+                      <Flex
+                        bg="black"
+                        color="white"
+                        minW="100px"
+                        maxW="350px"
+                        my="1"
+                        p="3"
+                      >
+                        <Text>{item.content}</Text>
+                      </Flex>
+                    ) : item.type === 'image' ? (
+                      <Flex
+                        className="justify-end"
+                        boxSize="sm"
+                        minW="100px"
+                        maxW="350px"
+                        my="1"
+                      >
+                        <Image src={item.src} alt={item.content} />
+                      </Flex>
+                    ) : item.type === 'audio' ? (
+                      <Flex
+                        className="justify-end bg-red-500"
+                        minW="100px"
+                        maxW="350px"
+                        my="1"
+                      >
+                        <ReactAudioPlayer src={item.src} controls />
+                      </Flex>
+                    ) : null}
+                  </Flex>
+                )
+              } else {
+                return (
+                  <Flex className="items-start" key={index} w="100%">
+                    <Avatar
+                      size="sm"
+                      name={item.sender.username}
                       className="mr-2"
                     ></Avatar>
                     {item.type === 'text' ? (

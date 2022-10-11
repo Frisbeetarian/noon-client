@@ -15,13 +15,12 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react'
+
 import { withUrqlClient } from 'next-urql'
 import NextLink from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Layout } from '../components/Layout'
-
 import { createUrqlClient } from '../utils/createUrqlClient'
-
 import { useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
 import { useDisclosure } from '@chakra-ui/hooks'
@@ -92,17 +91,19 @@ const Index = () => {
               {/*  ✌️*/}
               {/*</Text>*/}
             </Stack>
+
             <Box
               // rounded={'lg'}
               // bg={useColorModeValue('white', 'gray.700')}
               boxShadow={'lg'}
               p={8}
-              className="border bg-black "
+              className="border bg-black"
             >
               <Formik
                 initialValues={{ usernameOrEmail: '', password: '' }}
                 onSubmit={async (values, { setErrors }) => {
                   const response = await login(values)
+
                   if (response.data?.login.errors) {
                     setErrors(toErrorMap(response.data.login.errors))
                   } else if (response.data?.login.user) {
@@ -127,6 +128,7 @@ const Index = () => {
 
                       <FormControl id="password">
                         {/*<FormLabel>Password</FormLabel>*/}
+
                         <InputField
                           name="password"
                           label="Password"
@@ -152,6 +154,7 @@ const Index = () => {
                             Forgot password?
                           </Link>
                         </Stack>
+
                         <Button
                           size="lg"
                           bg={'green.400'}
@@ -197,6 +200,7 @@ const Index = () => {
                 Register
               </Heading>
             </Stack>
+
             <Box
               // rounded={'lg'}
               // bg={useColorModeValue('white', 'gray.700')}

@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
 import { useSelector } from 'react-redux'
+
 import { getSocket } from './sockets'
 // import { createAsyncThunk } from '@reduxjs/toolkit/src/createAsyncThunk'
 let lastId = 0
@@ -17,7 +18,6 @@ const slice = createSlice({
       sockets.socket = action.payload.socket
     },
     showFriendshipRequestToast: (ui, action) => {},
-
     setChatComponentState: (ui, action) => {
       ui.chatComponent = action.payload
     },

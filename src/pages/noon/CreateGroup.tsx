@@ -14,6 +14,7 @@ import {
 import { Form, Formik, useFormik } from 'formik'
 import { setOngoingCall } from '../../store/chat'
 import { useSelector, useDispatch } from 'react-redux'
+
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
 import { useCreateGroupConversationMutation } from '../../generated/graphql'
@@ -28,6 +29,7 @@ const CreateGroup = ({}) => {
 
   useEffect(() => {
     setFriends(loggedInUser?.user?.friends)
+
     if (socket) {
       socket.on(
         'set-ongoing-call-for-conversation',
@@ -55,24 +57,33 @@ const CreateGroup = ({}) => {
       name: '',
       description: '',
     },
-    onSubmit: async (values) => {
-      console.log('FDEWFWEFWEFWE:', values)
 
+    onSubmit: async (values) => {
       const conversation = await createGroupConversation({
         input: { ...values, type: 'group' },
         participants: [
-          '58b081b9-929f-4508-860a-7bdfb8c8786a',
-          'e0741bd4-39b3-4b82-a2bf-04f0e4e1d4fe',
-          '4916f3a7-3d59-4ab1-9718-a404fc36ab36',
+          '5552ea28-9446-40c4-8c8c-3faff087b492',
+          '61774c01-0d73-4ca0-aa54-cd33d250c0dd',
+          '2147ceeb-4f52-4bfd-8b9a-26a6ef5e9054',
         ],
       })
+
+      socket.emit('group-created', {
+        groupUuid: conversation.uuid,
+        participants: [
+          '5552ea28-9446-40c4-8c8c-3faff087b492',
+          '61774c01-0d73-4ca0-aa54-cd33d250c0dd',
+          '2147ceeb-4f52-4bfd-8b9a-26a6ef5e9054',
+        ],
+      })
+
       console.log('conversation:', conversation)
     },
   })
 
   return (
     <Flex
-      className="flex-col w-full py-3 px-5 relative box-content h-full "
+      className="flex-col w-full py-3 px-5 relative box-content h-full"
       style={{ height: '70vh' }}
     >
       <p className="mb-5">Create Group</p>
@@ -119,7 +130,6 @@ const CreateGroup = ({}) => {
         <Flex className="flex-col text-black w-2/4 box-content">
           <p className="text-white">Add friends</p>
 
-          {/* <Flex className="flex-col"> */}
           {friends
             ? friends
                 // .sort((a, b) => a.time - b.time)
@@ -131,6 +141,7 @@ const CreateGroup = ({}) => {
                     <span className="bg-gray-300 p-2 hover:bg-green-300 ">
                       {friend.username}
                     </span>
+
                     {/* <span className="message">{message.value}</span>
                     <span className="date">
                       {new Date(message.time).toLocaleTimeString()}
