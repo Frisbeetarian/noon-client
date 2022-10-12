@@ -5,10 +5,13 @@ import {
   useSaveMessageMutation,
   useUploadImageMutation,
 } from '../../generated/graphql'
+
 import { getLoggedInUser } from '../../store/users'
 import axios from 'axios'
+
 import FormData from 'form-data'
 // import { uuid } from 'uuidv4'
+
 import { v4 as uuid } from 'uuid'
 import { getSocket } from '../../store/sockets'
 import {
@@ -23,8 +26,8 @@ export const FileUpload = ({ children }) => {
   const activeConversation = useSelector(getActiveConversation)
   const profile = useSelector(getActiveConversee)
   const socket = useSelector(getSocket)
-  const [, saveMessage] = useSaveMessageMutation()
 
+  const [, saveMessage] = useSaveMessageMutation()
   const { acceptedFiles, getRootProps } = useDropzone()
   const [, uploadImage] = useUploadImageMutation()
 
@@ -50,11 +53,10 @@ export const FileUpload = ({ children }) => {
   //   )
 
   useEffect(() => {
-    // console.log('accepted files:', acceptedFiles)
-
     if (acceptedFiles.length !== 0) {
       let file = acceptedFiles[0]
       let formData = new FormData()
+
       formData.append('file', file, 'file')
       formData.append('conversationUuid', activeConversation.uuid)
       formData.append('messageUuid', uuid())
@@ -74,20 +76,42 @@ export const FileUpload = ({ children }) => {
         })
         .then(async (response) => {
           //handle success
-          console.log('response from upload image:', response)
+          // console.log('response from upload image:', response)
 
-          socket.emit('private-chat-message', {
-            content:
-              loggedInUser.user?.profile?.username + ' sent you a message.',
-            from: loggedInUser.user?.profile?.uuid,
-            fromUsername: loggedInUser.user?.profile?.username,
-            to: profile.uuid,
-            toUsername: profile.username,
-            message: response.data.content,
-            type: response.data.type,
-            src: response.data.src,
-            conversationUuid: activeConversation.uuid,
-          })
+          if (activeConversation.type === 'pm') {
+            socket.emit('private-chat-message', {
+              content:
+                loggedInUser.user?.profile?.username + ' sent you a message.',
+              from: loggedInUser.user?.profile?.uuid,
+              fromUsername: loggedInUser.user?.profile?.username,
+              to: profile.uuid,
+              toUsername: profile.username,
+              message: response.data.content,
+              type: response.data.type,
+              src: response.data.src,
+              conversationUuid: activeConversation.uuid,
+            })
+          } else {
+            activeConversation.profiles.map((conversationProfile) => {
+              if (
+                conversationProfile.uuid !== loggedInUser.user?.profile?.uuid
+              ) {
+                socket.emit('private-chat-message', {
+                  content:
+                    loggedInUser.user?.profile?.username +
+                    ' sent you a message.',
+                  from: loggedInUser.user?.profile?.uuid,
+                  fromUsername: loggedInUser.user?.profile?.username,
+                  to: conversationProfile.uuid,
+                  toUsername: conversationProfile.username,
+                  message: response.data.content,
+                  type: response.data.type,
+                  src: response.data.src,
+                  conversationUuid: activeConversation.uuid,
+                })
+              }
+            })
+          }
 
           dispatch(
             addMessageToActiveConversation({
@@ -112,6 +136,7 @@ export const FileUpload = ({ children }) => {
           //   })
         })
         .catch((error) => {
+          console.log('error:', error)
           //handle error
         })
 

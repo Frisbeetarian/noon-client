@@ -137,18 +137,38 @@ export default function useRecorder() {
           .then(async (response) => {
             console.log('response from upload audio recording:', response)
 
-            socket.emit('private-chat-message', {
-              content:
-                loggedInUser.user?.profile?.username + ' sent you a message.',
-              from: loggedInUser.user?.profile?.uuid,
-              fromUsername: loggedInUser.user?.profile?.username,
-              to: activeConversee.uuid,
-              toUsername: activeConversee.username,
-              message: response.data.content,
-              type: response.data.type,
-              src: response.data.src,
-              conversationUuid: activeConversation.uuid,
-            })
+            if (activeConversation.type === 'pm') {
+              socket.emit('private-chat-message', {
+                content:
+                  loggedInUser.user?.profile?.username + ' sent you a message.',
+                from: loggedInUser.user?.profile?.uuid,
+                fromUsername: loggedInUser.user?.profile?.username,
+                to: activeConversee.uuid,
+                toUsername: activeConversee.username,
+                message: response.data.content,
+                type: response.data.type,
+                src: response.data.src,
+                conversationUuid: activeConversation.uuid,
+              })
+            } else {
+              activeConversation.profiles.map((profile) => {
+                if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
+                  socket.emit('private-chat-message', {
+                    content:
+                      loggedInUser.user?.profile?.username +
+                      ' sent you a message.',
+                    from: loggedInUser.user?.profile?.uuid,
+                    fromUsername: loggedInUser.user?.profile?.username,
+                    to: profile.uuid,
+                    toUsername: profile.username,
+                    message: response.data.content,
+                    type: response.data.type,
+                    src: response.data.src,
+                    conversationUuid: activeConversation.uuid,
+                  })
+                }
+              })
+            }
 
             dispatch(
               addMessageToActiveConversation({
