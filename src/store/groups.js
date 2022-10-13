@@ -8,6 +8,7 @@ const slice = createSlice({
   initialState: {
     groups: null,
     groupBeingCreated: null,
+    participants: [],
   },
   reducers: {
     createGroup: (groups, action) => {
@@ -15,6 +16,14 @@ const slice = createSlice({
         id: ++lastId,
         name: action.payload.name,
       })
+    },
+    addParticipants: (groups, action) => {
+      groups.participants.push(action.payload)
+    },
+    removeParticipants: (groups, action) => {
+      const temp = [...groups.participants]
+      temp.splice(temp.indexOf(action.payload), 1)
+      groups.participants = temp
     },
   },
 })
@@ -24,5 +33,11 @@ export const getGroups = createSelector(
   (groups) => groups.groups
 )
 
-export const { createGroup } = slice.actions
+export const getParticipants = createSelector(
+  (state) => state.entities.groups,
+  (groups) => groups.participants
+)
+
+export const { createGroup, addParticipants, removeParticipants } =
+  slice.actions
 export default slice.reducer

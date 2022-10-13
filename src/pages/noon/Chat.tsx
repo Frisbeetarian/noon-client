@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, CloseButton, Flex, Text, useToast } from '@chakra-ui/react'
-import { SearchIcon } from '@chakra-ui/icons'
 import Footer from './Footer'
+
 import {
   addConversation,
   addMessageToActiveConversation,
@@ -10,10 +10,13 @@ import {
   getActiveConversee,
   removeConversation,
 } from '../../store/chat'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { getSocket } from '../../store/sockets'
+
 import Header from './Header'
 import Messages from './Messages'
+
 import {
   addFriendEntry,
   addFriendRequestEntry,
@@ -21,6 +24,7 @@ import {
   removeFriendEntry,
   removeFriendRequestEntry,
 } from '../../store/users'
+
 import {
   useAcceptFriendRequestMutation,
   useSaveMessageMutation,
@@ -37,6 +41,7 @@ import { createGroup, getGroups } from '../../store/groups'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 import { setFriendFlagOnProfile } from '../../store/profiles'
+
 import { FileUpload } from './FileUpload'
 import CreateGroup from './CreateGroup'
 

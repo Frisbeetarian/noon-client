@@ -137,8 +137,8 @@ const slice = createSlice({
         conversationn.messages.unshift({
           uuid: uuid(),
           content: action.payload.message,
-          updatedAt: action.payload.updatedAt,
-          createdAt: action.payload.createdAt,
+          // updatedAt: action.payload.updatedAt,
+          // createdAt: action.payload.createdAt,
           updatedAt: new Date().getTime(),
           createdAt: new Date().getTime(),
           type: action.payload.type,

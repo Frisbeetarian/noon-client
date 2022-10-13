@@ -69,7 +69,7 @@ export default function SearchController() {
 
   // data?.searchForProfileByUsername?.forEach((profile) => {
   //   // let profileObject = { ...profile }
-  //
+
   //   const friendsCheck = loggedInUser.user.friends.find(
   //     (element) => element.uuid == profile.uuid
   //   )

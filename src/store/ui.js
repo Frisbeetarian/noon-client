@@ -11,7 +11,7 @@ const slice = createSlice({
   name: 'ui',
   initialState: {
     chatComponent: 'closed',
-    createGroupComponentOpen: false,
+    createGroupComponentOpen: true,
   },
   reducers: {
     setSocket: (sockets, action) => {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+
 import {
   Box,
   Button,
@@ -17,14 +18,20 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
+import GroupParticipant, {
+  groupParticipant,
+} from '../../components/GroupParticipant'
 import { useCreateGroupConversationMutation } from '../../generated/graphql'
+import { getParticipants } from '../../store/groups'
 
 const CreateGroup = ({}) => {
   const dispatch = useDispatch()
   const socket = useSelector(getSocket)
+  let participants = useSelector(getParticipants)
 
   const loggedInUser = useSelector(getLoggedInUser)
   const [friends, setFriends] = useState(null)
+
   const [, createGroupConversation] = useCreateGroupConversationMutation()
 
   useEffect(() => {
@@ -59,25 +66,24 @@ const CreateGroup = ({}) => {
     },
 
     onSubmit: async (values) => {
-      const conversation = await createGroupConversation({
-        input: { ...values, type: 'group' },
-        participants: [
-          '5552ea28-9446-40c4-8c8c-3faff087b492',
-          '61774c01-0d73-4ca0-aa54-cd33d250c0dd',
-          '2147ceeb-4f52-4bfd-8b9a-26a6ef5e9054',
-        ],
-      })
+      if (participants.length !== 0) {
+        let participantsToSend = [...participants]
 
-      socket.emit('group-created', {
-        groupUuid: conversation.uuid,
-        participants: [
-          '5552ea28-9446-40c4-8c8c-3faff087b492',
-          '61774c01-0d73-4ca0-aa54-cd33d250c0dd',
-          '2147ceeb-4f52-4bfd-8b9a-26a6ef5e9054',
-        ],
-      })
+        participantsToSend.push(loggedInUser.user?.profile?.uuid)
+        console.log('participants:', participantsToSend)
 
-      console.log('conversation:', conversation)
+        const conversation = await createGroupConversation({
+          input: { ...values, type: 'group' },
+          participants: participantsToSend,
+        })
+
+        socket.emit('group-created', {
+          groupUuid: conversation.uuid,
+          participants: participantsToSend,
+        })
+
+        console.log('conversation:', conversation)
+      }
     },
   })
 
@@ -134,22 +140,45 @@ const CreateGroup = ({}) => {
             ? friends
                 // .sort((a, b) => a.time - b.time)
                 .map((friend) => (
-                  <Flex
+                  <GroupParticipant
                     key={friend.uuid}
-                    className=" mb-3 box-content cursor-pointer"
-                  >
-                    <span className="bg-gray-300 p-2 hover:bg-green-300 ">
-                      {friend.username}
-                    </span>
-
-                    {/* <span className="message">{message.value}</span>
-                    <span className="date">
-                      {new Date(message.time).toLocaleTimeString()}
-                    </span> */}
-                  </Flex>
+                    participant={friend}
+                    className="mb-3 box-content cursor-pointer"
+                  ></GroupParticipant>
+                  // <Flex
+                  //   key={friend.uuid}
+                  //   className="mb-3 box-content cursor-pointer"
+                  // >
+                  //   <span
+                  //     className="p-2 hover:bg-green-300"
+                  //     style={{ backgroundColor: participantsColor }}
+                  //     onClick={() => {
+                  //       setParticipantsColor('green')
+                  //       if (participants.indexOf(friend.uuid) === -1) {
+                  //         setParticipants((oldArray) => [
+                  //           friend.uuid,
+                  //           ...oldArray,
+                  //         ])
+                  //       } else {
+                  //         const temp = [...participants]
+                  //
+                  //         // removing the element using splice
+                  //         temp.splice(friend.uuid, 1)
+                  //
+                  //         // updating the list
+                  //         setParticipants(temp)
+                  //       }
+                  //     }}
+                  //   >
+                  //     {friend.username}
+                  //   </span>
+                  //   {/* <span className="message">{message.value}</span>
+                  //   <span className="date">
+                  //     {new Date(message.time).toLocaleTimeString()}
+                  //   </span> */}
+                  // </Flex>
                 ))
             : null}
-          {/* </Flex> */}
         </Flex>
       </Flex>
     </Flex>
