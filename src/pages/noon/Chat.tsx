@@ -325,7 +325,6 @@ function Chat() {
           console.log('active conversation:', activeConversation)
           console.log('conversation uuid:', conversationUuid)
 
-          // TODO check why condition is not entering when unfriend is triggering
           if (
             activeConversation &&
             activeConversation.uuid === conversationUuid
@@ -335,6 +334,20 @@ function Chat() {
             dispatch(setActiveConversation(null))
             dispatch(setShouldPauseCheckHasMore(false))
           }
+        }
+      )
+
+      socket.on(
+        'invited-to-group',
+        ({ fromUuid, fromUsername, conversation, groupUuid, participants }) => {
+          console.log('invited to group received:', conversation)
+
+          dispatch(
+            addConversation({
+              conversation,
+              loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+            })
+          )
         }
       )
     }

@@ -83,7 +83,10 @@ const CreateGroup = ({}) => {
         })
 
         socket.emit('group-created', {
-          groupUuid: conversation.uuid,
+          fromUuid: loggedInUser.user?.profile?.uuid,
+          fromUsername: loggedInUser.user?.profile?.username,
+          groupUuid: conversation.data?.createGroupConversation.uuid,
+          conversation: conversation.data?.createGroupConversation,
           participants: participantsToSend,
         })
 
