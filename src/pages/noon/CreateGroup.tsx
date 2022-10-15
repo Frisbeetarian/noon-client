@@ -13,7 +13,11 @@ import {
 } from '@chakra-ui/react'
 
 import { Form, Formik, useFormik } from 'formik'
-import { setOngoingCall } from '../../store/chat'
+import {
+  addConversation,
+  setActiveGroupInStore,
+  setOngoingCall,
+} from '../../store/chat'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { getLoggedInUser } from '../../store/users'
@@ -23,6 +27,7 @@ import GroupParticipant, {
 } from '../../components/GroupParticipant'
 import { useCreateGroupConversationMutation } from '../../generated/graphql'
 import { getParticipants } from '../../store/groups'
+import { setCreateGroupComponent } from '../../store/ui'
 
 const CreateGroup = ({}) => {
   const dispatch = useDispatch()
@@ -82,6 +87,22 @@ const CreateGroup = ({}) => {
           participants: participantsToSend,
         })
 
+        dispatch(
+          addConversation({
+            conversation: conversation.data?.createGroupConversation,
+            loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+          })
+        )
+
+        dispatch(setCreateGroupComponent(false))
+
+        dispatch(
+          setActiveGroupInStore({
+            conversation: conversation.data?.createGroupConversation,
+            loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+          })
+        )
+
         console.log('conversation:', conversation)
       }
     },
@@ -92,8 +113,17 @@ const CreateGroup = ({}) => {
       className="flex-col w-full py-3 px-5 relative box-content h-full"
       style={{ height: '70vh' }}
     >
-      <p className="mb-5">Create Group</p>
-
+      <Flex className="w-full justify-between">
+        <p className="mb-5">Create Group</p>
+        <Button
+          className="mr-8"
+          onClick={() => {
+            dispatch(setCreateGroupComponent(false))
+          }}
+        >
+          X
+        </Button>
+      </Flex>
       <Flex>
         <form className="flex w-2/4" onSubmit={formik.handleSubmit}>
           <Flex className="mr-5" direction="column">
@@ -137,47 +167,13 @@ const CreateGroup = ({}) => {
           <p className="text-white">Add friends</p>
 
           {friends
-            ? friends
-                // .sort((a, b) => a.time - b.time)
-                .map((friend) => (
-                  <GroupParticipant
-                    key={friend.uuid}
-                    participant={friend}
-                    className="mb-3 box-content cursor-pointer"
-                  ></GroupParticipant>
-                  // <Flex
-                  //   key={friend.uuid}
-                  //   className="mb-3 box-content cursor-pointer"
-                  // >
-                  //   <span
-                  //     className="p-2 hover:bg-green-300"
-                  //     style={{ backgroundColor: participantsColor }}
-                  //     onClick={() => {
-                  //       setParticipantsColor('green')
-                  //       if (participants.indexOf(friend.uuid) === -1) {
-                  //         setParticipants((oldArray) => [
-                  //           friend.uuid,
-                  //           ...oldArray,
-                  //         ])
-                  //       } else {
-                  //         const temp = [...participants]
-                  //
-                  //         // removing the element using splice
-                  //         temp.splice(friend.uuid, 1)
-                  //
-                  //         // updating the list
-                  //         setParticipants(temp)
-                  //       }
-                  //     }}
-                  //   >
-                  //     {friend.username}
-                  //   </span>
-                  //   {/* <span className="message">{message.value}</span>
-                  //   <span className="date">
-                  //     {new Date(message.time).toLocaleTimeString()}
-                  //   </span> */}
-                  // </Flex>
-                ))
+            ? friends.map((friend) => (
+                <GroupParticipant
+                  key={friend.uuid}
+                  participant={friend}
+                  className="mb-3 box-content cursor-pointer"
+                ></GroupParticipant>
+              ))
             : null}
         </Flex>
       </Flex>

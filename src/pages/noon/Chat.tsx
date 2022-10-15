@@ -9,12 +9,16 @@ import {
   getActiveConversationSet,
   getActiveConversee,
   removeConversation,
+  setActiveConversation,
+  setActiveConversationSet,
+  setActiveConversee,
+  setShouldPauseCheckHasMore,
 } from '../../store/chat'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { getSocket } from '../../store/sockets'
-
 import Header from './Header'
+
 import Messages from './Messages'
 
 import {
@@ -266,6 +270,11 @@ function Chat() {
                         })
                       )
 
+                      console.log(
+                        'accept friend ship response:',
+                        acceptFriendshipResponse
+                      )
+
                       dispatch(
                         addConversation({
                           conversation:
@@ -293,6 +302,7 @@ function Chat() {
                   >
                     Accept
                   </Button>
+
                   <Button>Reject</Button>
                 </Flex>
               </Flex>
@@ -310,7 +320,21 @@ function Chat() {
               friends: loggedInUser.user?.friends,
             })
           )
+
           dispatch(removeConversation({ conversationUuid }))
+          console.log('active conversation:', activeConversation)
+          console.log('conversation uuid:', conversationUuid)
+
+          // TODO check why condition is not entering when unfriend is triggering
+          if (
+            activeConversation &&
+            activeConversation.uuid === conversationUuid
+          ) {
+            dispatch(setActiveConversationSet(false))
+            dispatch(setActiveConversee(null))
+            dispatch(setActiveConversation(null))
+            dispatch(setShouldPauseCheckHasMore(false))
+          }
         }
       )
     }
@@ -435,7 +459,7 @@ function Chat() {
 
   return (
     <Flex
-      className="flex-col bg-gray-700 text-white box-content "
+      className="flex-col bg-gray-700 text-white box-content"
       style={{ flex: '0.75', height: '100vh' }}
     >
       <ChatControlsAndSearch />

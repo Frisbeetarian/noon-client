@@ -20,6 +20,7 @@ const slice = createSlice({
     },
     addConversation: (chat, action) => {
       let conversationObject = { ...action.payload.conversation }
+      console.log('conversation object:', conversationObject)
 
       conversationObject.conversee = conversationObject.profiles.find(
         (element) => element.uuid != action.payload.loggedInProfileUuid

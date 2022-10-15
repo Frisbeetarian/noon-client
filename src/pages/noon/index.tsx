@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Container } from '@chakra-ui/react'
 import { withUrqlClient } from 'next-urql'
 import { createUrqlClient } from '../../utils/createUrqlClient'
 import Sidebar from './Sidebar'
+
 import {
   useGetConversationForLoggedInUserQuery,
   useLogoutMutation,
   useMeQuery,
 } from '../../generated/graphql'
+
 import { isServer } from '../../utils/isServer'
 import { getLoggedInUser, setLoggedInUser } from '../../store/users'
 import {
