@@ -179,6 +179,7 @@ export type Mutation = {
   unfriend: Scalars['Boolean'];
   createCommunity: Community;
   joinCommunity: Scalars['Boolean'];
+  leaveGroup: Scalars['Boolean'];
   createGroupConversation: Conversation;
   setPendingCallForConversation: Scalars['Boolean'];
   cancelPendingCallForConversation: Scalars['Boolean'];
@@ -278,6 +279,11 @@ export type MutationCreateCommunityArgs = {
 
 export type MutationJoinCommunityArgs = {
   communityId: Scalars['Int'];
+};
+
+
+export type MutationLeaveGroupArgs = {
+  groupUuid: Scalars['String'];
 };
 
 
@@ -811,6 +817,16 @@ export type JoinEventMutation = (
     { __typename?: 'Event' }
     & Pick<Event, 'timezone'>
   ) }
+);
+
+export type LeaveGroupMutationVariables = Exact<{
+  groupUuid: Scalars['String'];
+}>;
+
+
+export type LeaveGroupMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'leaveGroup'>
 );
 
 export type LoginMutationVariables = Exact<{
@@ -1558,6 +1574,15 @@ export const JoinEventDocument = gql`
 
 export function useJoinEventMutation() {
   return Urql.useMutation<JoinEventMutation, JoinEventMutationVariables>(JoinEventDocument);
+};
+export const LeaveGroupDocument = gql`
+    mutation LeaveGroup($groupUuid: String!) {
+  leaveGroup(groupUuid: $groupUuid)
+}
+    `;
+
+export function useLeaveGroupMutation() {
+  return Urql.useMutation<LeaveGroupMutation, LeaveGroupMutationVariables>(LeaveGroupDocument);
 };
 export const LoginDocument = gql`
     mutation Login($usernameOrEmail: String!, $password: String!) {

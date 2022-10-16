@@ -1,0 +1,3 @@
+mutation LeaveGroup($groupUuid: String!) {
+    leaveGroup(groupUuid: $groupUuid)
+}

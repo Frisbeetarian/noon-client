@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLogoutMutation, useUnfriendMutation } from '../../generated/graphql'
+import {
+  useLogoutMutation,
+  useUnfriendMutation,
+  useLeaveGroupMutation,
+} from '../../generated/graphql'
 import { getLoggedInUser, removeFriendEntry } from '../../store/users'
 import { SettingsIcon, HamburgerIcon, EditIcon } from '@chakra-ui/icons'
 import {
@@ -39,6 +43,7 @@ function Sidebar() {
 
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
   const [, unfriend] = useUnfriendMutation()
+  const [, leaveGroup] = useLeaveGroupMutation()
   const loggedInUser = useSelector(getLoggedInUser)
 
   const activeConversation = useSelector(getActiveConversation)
@@ -287,6 +292,17 @@ function Sidebar() {
                         <MenuItem
                           icon={<EditIcon />}
                           onClick={async () => {
+                            const leaveGroupResponse = await leaveGroup({
+                              groupUuid: conversation.uuid,
+                            })
+
+                            socket.emit('left-group', {
+                              from: loggedInUser.user?.profile?.uuid,
+                              fromUsername:
+                                loggedInUser.user?.profile?.username,
+                              conversationUuid: conversation.uuid,
+                            })
+
                             // const unfriendResponse = await unfriend({
                             //   profileUuid: conversation.conversee.uuid,
                             //   conversationUuid: conversation.uuid,

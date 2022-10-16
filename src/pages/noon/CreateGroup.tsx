@@ -25,6 +25,7 @@ import { getSocket } from '../../store/sockets'
 import GroupParticipant, {
   groupParticipant,
 } from '../../components/GroupParticipant'
+
 import { useCreateGroupConversationMutation } from '../../generated/graphql'
 import { getParticipants } from '../../store/groups'
 import { setCreateGroupComponent } from '../../store/ui'
