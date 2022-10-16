@@ -295,13 +295,47 @@ function Sidebar() {
                             const leaveGroupResponse = await leaveGroup({
                               groupUuid: conversation.uuid,
                             })
+                            console.log(
+                              'leave group response:',
+                              leaveGroupResponse
+                            )
 
-                            socket.emit('left-group', {
-                              from: loggedInUser.user?.profile?.uuid,
-                              fromUsername:
-                                loggedInUser.user?.profile?.username,
-                              conversationUuid: conversation.uuid,
-                            })
+                            dispatch(
+                              removeConversation({
+                                conversationUuid: conversation.uuid,
+                              })
+                            )
+
+                            if (
+                              activeConversation &&
+                              activeConversation.uuid === conversation.uuid
+                            ) {
+                              dispatch(setActiveConversationSet(false))
+                              dispatch(setActiveConversee(null))
+                              dispatch(setActiveConversation(null))
+                              dispatch(setShouldPauseCheckHasMore(false))
+                            }
+
+                            if (leaveGroupResponse) {
+                              let participantsToSend = []
+
+                              conversation.profiles.map((profile) => {
+                                if (
+                                  profile.uuid !==
+                                  loggedInUser.user?.profile?.uuid
+                                ) {
+                                  participantsToSend.push(profile.uuid)
+                                }
+                              })
+
+                              socket.emit('left-group', {
+                                fromUuid: loggedInUser.user?.profile?.uuid,
+                                fromUsername:
+                                  loggedInUser.user?.profile?.username,
+                                conversationUuid: conversation.uuid,
+                                participants: participantsToSend,
+                              })
+                            }
 
                             // const unfriendResponse = await unfriend({
                             //   profileUuid: conversation.conversee.uuid,

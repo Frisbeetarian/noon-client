@@ -35,6 +35,7 @@ const slice = createSlice({
       //     conversation.uuid
       //   )
       // }
+
       // conversationObject.ongoingCall = false
 
       chat.conversations.push(conversationObject)
@@ -43,6 +44,28 @@ const slice = createSlice({
       chat.conversations = chat.conversations.filter(
         (conversation) => conversation.uuid != action.payload.conversationUuid
       )
+    },
+    removeParticipantFromGroup: (chat, action) => {
+      const conversation = chat.conversations.find(
+        (conversation) => conversation.uuid === action.payload.conversationUuid
+      )
+
+      const profiles = [...conversation.profiles]
+      profiles.splice(profiles.indexOf(action.payload.participantUuid), 1)
+      conversation.profiles = profiles
+
+      if (
+        chat.activeConversation &&
+        chat.activeConversation.uuid === action.payload.conversationUuid
+      ) {
+        let activeConversationProfiles = [...chat.activeConversation.profiles]
+
+        activeConversationProfiles = activeConversationProfiles.filter(
+          (profile) => profile.uuid != action.payload.participantUuid
+        )
+
+        chat.activeConversation.profiles = activeConversationProfiles
+      }
     },
     setConversations: (chat, action) => {
       const conversationsArray = []
@@ -75,7 +98,7 @@ const slice = createSlice({
     },
     addMessagesToConversation: (chat, action) => {
       let conversationUuid = action.payload.conversationUuid
-      let messages = action.payload.messages
+      let messages = <action className="payload messages"></action>
       let loggedInProfileUuid = action.payload.loggedInUser.user?.profile?.uuid
 
       if (
@@ -431,6 +454,7 @@ export const {
   setActiveConversationHasMoreMessages,
   setShouldPauseCheckHasMore,
   setActiveGroupInStore,
+  removeParticipantFromGroup,
 } = slice.actions
 
 export default slice.reducer

@@ -27,7 +27,7 @@ import GroupParticipant, {
 } from '../../components/GroupParticipant'
 
 import { useCreateGroupConversationMutation } from '../../generated/graphql'
-import { getParticipants } from '../../store/groups'
+import { clearState, getParticipants } from '../../store/groups'
 import { setCreateGroupComponent } from '../../store/ui'
 
 const CreateGroup = ({}) => {
@@ -100,6 +100,7 @@ const CreateGroup = ({}) => {
 
         dispatch(setCreateGroupComponent(false))
 
+        dispatch(clearState())
         dispatch(
           setActiveGroupInStore({
             conversation: conversation.data?.createGroupConversation,

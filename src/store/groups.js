@@ -17,6 +17,10 @@ const slice = createSlice({
         name: action.payload.name,
       })
     },
+    clearState: (groups, action) => {
+      groups.participants = []
+      groups.groupBeingCreated = null
+    },
     addParticipants: (groups, action) => {
       groups.participants.push(action.payload)
     },
@@ -38,6 +42,6 @@ export const getParticipants = createSelector(
   (groups) => groups.participants
 )
 
-export const { createGroup, addParticipants, removeParticipants } =
+export const { createGroup, addParticipants, removeParticipants, clearState } =
   slice.actions
 export default slice.reducer

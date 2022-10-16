@@ -9,6 +9,7 @@ import {
   getActiveConversationSet,
   getActiveConversee,
   removeConversation,
+  removeParticipantFromGroup,
   setActiveConversation,
   setActiveConversationSet,
   setActiveConversee,
@@ -346,6 +347,18 @@ function Chat() {
             addConversation({
               conversation,
               loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+            })
+          )
+        }
+      )
+
+      socket.on(
+        'left-group',
+        ({ fromUuid, fromUsername, conversationUuid }) => {
+          dispatch(
+            removeParticipantFromGroup({
+              conversationUuid,
+              participantUuid: fromUuid,
             })
           )
         }
