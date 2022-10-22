@@ -9,7 +9,7 @@ const slice = createSlice({
     videoFrameOpen: false,
   },
   reducers: {
-    setVideoFrame: (video, action) => {
+    setVideoFrameForConversation: (video, action) => {
       video.videoFrameOpen = action.payload
     },
   },
@@ -20,5 +20,5 @@ export const getVideoFrameOpenState = createSelector(
   (video) => video.videoFrameOpen
 )
 
-export const { setVideoFrame } = slice.actions
+export const { setVideoFrameForConversation } = slice.actions
 export default slice.reducer

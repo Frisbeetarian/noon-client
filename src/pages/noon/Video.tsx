@@ -22,7 +22,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import { Layout } from '../../components/Layout'
-import { setVideoFrame } from '../../store/video'
+import { setVideoFrameForConversation } from '../../store/video'
 
 const Video = () => {
   const dispatch = useDispatch()
@@ -41,7 +41,6 @@ const Video = () => {
   }
 
   const handleAudioStatusChange = (payload, feature) => {
-    alert('FEWFEWFEW')
     if (payload.muted) {
       updateLog((items) => [...items, `${feature} off`])
     } else {
@@ -51,7 +50,7 @@ const Video = () => {
 
   const handleOnReadyToClose = (payload) => {
     console.log('on ready to close handler:', payload)
-    dispatch(setVideoFrame(false))
+    dispatch(setVideoFrameForConversation(false))
   }
 
   const handleChatUpdates = (payload) => {

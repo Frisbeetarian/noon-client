@@ -8,7 +8,7 @@ import {
   setPendingCall,
 } from '../../store/chat'
 
-import { setVideoFrame } from '../../store/video'
+import { setVideoFrameForConversation } from '../../store/video'
 import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
@@ -55,10 +55,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   }, [activeConversee])
 
   return (
-    <Flex
-      // mt="5"
-      className="bg-white text-red-500 items-center box-content h-full justify-between"
-    >
+    <Flex className="bg-white text-red-500 items-center box-content h-full justify-between">
       <Box className="w-4/6">
         <Input
           className="py-2 box-content"
@@ -90,14 +87,15 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
             border: '1px solid black',
           }}
           onClick={async () => {
-            dispatch(setVideoFrame(true))
+            dispatch(setVideoFrameForConversation(true))
+
             // dispatch(
             //   setPendingCall({
             //     uuid: activeConversation.uuid,
             //     initiator: loggedInUser?.user?.profile,
             //   })
             // )
-            //
+
             // socket.emit('set-pending-call-for-conversation', {
             //   from: loggedInUser.user?.profile?.uuid,
             //   fromUsername: loggedInUser.user?.profile?.username,

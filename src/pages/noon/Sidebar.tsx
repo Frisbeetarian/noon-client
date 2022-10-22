@@ -35,6 +35,7 @@ import { useRouter } from 'next/router'
 import { getSocket } from '../../store/sockets'
 
 import { setCreateGroupComponent } from '../../store/ui'
+import { setVideoFrameForConversation } from '../../store/video'
 
 function Sidebar() {
   const router = useRouter()
@@ -57,6 +58,7 @@ function Sidebar() {
         dispatch(setActiveConversee(null))
         dispatch(setActiveConversation(null))
         dispatch(setShouldPauseCheckHasMore(false))
+        dispatch(setVideoFrameForConversation(false))
 
         // setTimeout(() => {
         dispatch(setActiveConversationSet(true))
