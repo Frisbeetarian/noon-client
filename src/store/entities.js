@@ -9,6 +9,7 @@ import profilesReducer from './profiles'
 import chatReducer from './chat'
 import searchReducer from './search'
 import groupsReducer from './groups'
+import videoReducer from './video'
 
 export default combineReducers({
   // bugs: bugsReducer,
@@ -21,4 +22,5 @@ export default combineReducers({
   chat: chatReducer,
   search: searchReducer,
   groups: groupsReducer,
+  video: videoReducer,
 })
