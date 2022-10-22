@@ -22,9 +22,11 @@ const slice = createSlice({
       let conversationObject = { ...action.payload.conversation }
       console.log('conversation object:', conversationObject)
 
-      conversationObject.conversee = conversationObject.profiles.find(
-        (element) => element.uuid != action.payload.loggedInProfileUuid
-      )
+      if (conversationObject.type !== 'group') {
+        conversationObject.conversee = conversationObject.profiles.find(
+          (element) => element.uuid != action.payload.loggedInProfileUuid
+        )
+      }
 
       // if (
       //   conversation.unreadMessages !== 0 &&
@@ -98,7 +100,7 @@ const slice = createSlice({
     },
     addMessagesToConversation: (chat, action) => {
       let conversationUuid = action.payload.conversationUuid
-      let messages = <action className="payload messages"></action>
+      let messages = action.payload.messages
       let loggedInProfileUuid = action.payload.loggedInUser.user?.profile?.uuid
 
       if (

@@ -18,15 +18,19 @@ import {
   setActiveGroupInStore,
   setOngoingCall,
 } from '../../store/chat'
-import { useSelector, useDispatch } from 'react-redux'
 
+import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
 import GroupParticipant, {
   groupParticipant,
 } from '../../components/GroupParticipant'
 
-import { useCreateGroupConversationMutation } from '../../generated/graphql'
+import {
+  useCreateGroupConversationMutation,
+  useGetMessagesForConversationQuery,
+} from '../../generated/graphql'
+
 import { clearState, getParticipants } from '../../store/groups'
 import { setCreateGroupComponent } from '../../store/ui'
 
@@ -70,6 +74,7 @@ const CreateGroup = ({}) => {
       name: '',
       description: '',
     },
+    // enableReinitialize: false,
 
     onSubmit: async (values) => {
       if (participants.length !== 0) {
@@ -78,18 +83,26 @@ const CreateGroup = ({}) => {
         participantsToSend.push(loggedInUser.user?.profile?.uuid)
         console.log('participants:', participantsToSend)
 
+        // let [{ data, error, fetching }] = useGetMessagesForConversationQuery({
+        //   variables,
+        //   pause: shouldPause,
+        //   requestPolicy: 'network-only',
+        // })
+
         const conversation = await createGroupConversation({
           input: { ...values, type: 'group' },
           participants: participantsToSend,
         })
 
-        socket.emit('group-created', {
-          fromUuid: loggedInUser.user?.profile?.uuid,
-          fromUsername: loggedInUser.user?.profile?.username,
-          groupUuid: conversation.data?.createGroupConversation.uuid,
-          conversation: conversation.data?.createGroupConversation,
-          participants: participantsToSend,
-        })
+        dispatch(clearState())
+
+        // socket.emit('group-created', {
+        //   fromUuid: loggedInUser.user?.profile?.uuid,
+        //   fromUsername: loggedInUser.user?.profile?.username,
+        //   groupUuid: conversation.data?.createGroupConversation.uuid,
+        //   conversation: conversation.data?.createGroupConversation,
+        //   participants: participantsToSend,
+        // })
 
         dispatch(
           addConversation({
@@ -99,14 +112,12 @@ const CreateGroup = ({}) => {
         )
 
         dispatch(setCreateGroupComponent(false))
-
-        dispatch(clearState())
-        dispatch(
-          setActiveGroupInStore({
-            conversation: conversation.data?.createGroupConversation,
-            loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
-          })
-        )
+        // dispatch(
+        //   setActiveGroupInStore({
+        //     conversation: conversation.data?.createGroupConversation,
+        //     loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+        //   })
+        // )
 
         console.log('conversation:', conversation)
       }

@@ -15,6 +15,7 @@ import { getLoggedInUser, setLoggedInUser } from '../../store/users'
 import {
   getConversationsThatHaveUnreadMessagesForProfile,
   setConversations,
+  getConversations,
 } from '../../store/chat'
 import Chat from './Chat'
 
@@ -23,9 +24,11 @@ function Noon() {
   const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
   })
+
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
 
   const loggedInUser = useSelector(getLoggedInUser)
+  const conversations = useSelector(getConversations)
   const conversationsThatHaveUnreadMessages = useSelector(
     getConversationsThatHaveUnreadMessagesForProfile
   )
@@ -43,7 +46,10 @@ function Noon() {
   }, [data])
 
   useEffect(() => {
-    if (fetchedConversations?.getConversationForLoggedInUser) {
+    if (
+      fetchedConversations?.getConversationForLoggedInUser &&
+      conversations === null
+    ) {
       dispatch(
         setConversations({
           conversationsToSend:
