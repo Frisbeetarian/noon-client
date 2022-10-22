@@ -22,6 +22,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import { Layout } from '../../components/Layout'
+import { setVideoFrame } from '../../store/video'
 
 const Video = () => {
   const dispatch = useDispatch()
@@ -40,11 +41,17 @@ const Video = () => {
   }
 
   const handleAudioStatusChange = (payload, feature) => {
+    alert('FEWFEWFEW')
     if (payload.muted) {
       updateLog((items) => [...items, `${feature} off`])
     } else {
       updateLog((items) => [...items, `${feature} on`])
     }
+  }
+
+  const handleOnReadyToClose = (payload) => {
+    console.log('on ready to close handler:', payload)
+    dispatch(setVideoFrame(false))
   }
 
   const handleChatUpdates = (payload) => {
@@ -171,8 +178,9 @@ const Video = () => {
     >
       <JitsiMeeting
         domain={'noon-vid.com/'}
-        roomName={generateRoomName()}
+        // roomName={generateRoomName()}
         roomName="test1"
+        onReadyToClose={handleOnReadyToClose}
         spinner={renderSpinner}
         config={{
           hideConferenceSubject: false,
