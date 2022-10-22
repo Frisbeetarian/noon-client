@@ -105,7 +105,7 @@ function Sidebar() {
 
   return (
     <div
-      className="flex flex-col bg-neutral text-white box-content"
+      className="flex flex-col bg-neutral text-white box-content scroll-auto"
       style={{ flex: '0.25', height: '100vh' }}
     >
       <Flex
@@ -141,7 +141,10 @@ function Sidebar() {
         </Menu>
       </Flex>
 
-      <Flex className="flex-col pt-3" style={{ flex: '0.875' }}>
+      <Flex
+        className="flex-col pt-3 scroll-auto overflow-auto"
+        style={{ flex: '0.875' }}
+      >
         {getConversationsFromStore
           ? [...Object.values(getConversationsFromStore)].map(
               (conversation, i) =>
