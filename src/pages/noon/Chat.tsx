@@ -15,6 +15,7 @@ import {
   setActiveConversee,
   setShouldPauseCheckHasMore,
 } from '../../store/chat'
+import { getVideoFrameOpenState } from '../../store/video'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { getSocket } from '../../store/sockets'
@@ -49,6 +50,7 @@ import { setFriendFlagOnProfile } from '../../store/profiles'
 
 import { FileUpload } from './FileUpload'
 import CreateGroup from './CreateGroup'
+import Video from './Video'
 
 function Chat() {
   const dispatch = useDispatch()
@@ -60,6 +62,7 @@ function Chat() {
 
   const activeConversation = useSelector(getActiveConversation)
   const activeConversationSet = useSelector(getActiveConversationSet)
+  const videoFrameOpenState = useSelector(getVideoFrameOpenState)
 
   const profile = useSelector(getActiveConversee)
   const [, saveMessage] = useSaveMessageMutation()
@@ -499,6 +502,7 @@ function Chat() {
       {activeConversation && activeConversation.type === 'group' ? (
         <Flex className="flex-col p-0 box-content" style={{ flex: '0.875' }}>
           <Header></Header>
+
           <FileUpload>
             <Messages />
           </FileUpload>
@@ -508,9 +512,14 @@ function Chat() {
       {profile && activeConversation && activeConversation.type === 'pm' ? (
         <Flex className="flex-col p-0 box-content" style={{ flex: '0.875' }}>
           <Header></Header>
-          <FileUpload>
-            <Messages />
-          </FileUpload>
+
+          {videoFrameOpenState !== true ? (
+            <FileUpload>
+              <Messages />
+            </FileUpload>
+          ) : (
+            <Video></Video>
+          )}
         </Flex>
       ) : null}
 

@@ -7,6 +7,8 @@ import {
   setOngoingCall,
   setPendingCall,
 } from '../../store/chat'
+
+import { setVideoFrame } from '../../store/video'
 import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
@@ -88,25 +90,26 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
             border: '1px solid black',
           }}
           onClick={async () => {
-            dispatch(
-              setPendingCall({
-                uuid: activeConversation.uuid,
-                initiator: loggedInUser?.user?.profile,
-              })
-            )
-
-            socket.emit('set-pending-call-for-conversation', {
-              from: loggedInUser.user?.profile?.uuid,
-              fromUsername: loggedInUser.user?.profile?.username,
-              to: activeConversee.uuid,
-              toUsername: activeConversee.username,
-              conversationUuid: activeConversation.uuid,
-            })
-
-            await setPendingCallForConversation({
-              conversationUuid: activeConversation.uuid,
-              pendingCallInitiatorUuid: loggedInUser.user?.profile?.uuid,
-            })
+            dispatch(setVideoFrame(true))
+            // dispatch(
+            //   setPendingCall({
+            //     uuid: activeConversation.uuid,
+            //     initiator: loggedInUser?.user?.profile,
+            //   })
+            // )
+            //
+            // socket.emit('set-pending-call-for-conversation', {
+            //   from: loggedInUser.user?.profile?.uuid,
+            //   fromUsername: loggedInUser.user?.profile?.username,
+            //   to: activeConversee.uuid,
+            //   toUsername: activeConversee.username,
+            //   conversationUuid: activeConversation.uuid,
+            // })
+            //
+            // await setPendingCallForConversation({
+            //   conversationUuid: activeConversation.uuid,
+            //   pendingCallInitiatorUuid: loggedInUser.user?.profile?.uuid,
+            // })
           }}
         >
           <PhoneIcon className="" color="white" />

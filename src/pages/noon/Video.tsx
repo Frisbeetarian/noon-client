@@ -23,7 +23,9 @@ const Video = () => {
       flexDirection="column-reverse"
       className="w-full top-0 py-3 px-5 relative"
       style={{ height: '80vh' }}
-    ></Flex>
+    >
+      video should be here
+    </Flex>
   )
 }
 
