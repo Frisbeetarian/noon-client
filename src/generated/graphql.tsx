@@ -62,13 +62,12 @@ export type Conversation = {
   description?: Maybe<Scalars['String']>;
   hasMore: Scalars['Boolean'];
   conversationToProfiles: Array<ConversationToProfile>;
-  ongoingCall: Scalars['Boolean'];
-  pendingCall: Scalars['Boolean'];
   pendingCallProfile?: Maybe<Profile>;
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
   profiles: Array<Profile>;
   conversations: Array<ConversationToProfile>;
+  calls: Array<ConversationToProfile>;
   messages: Array<Message>;
 };
 
@@ -302,6 +301,7 @@ export type MutationSetPendingCallForConversationArgs = {
 
 
 export type MutationCancelPendingCallForConversationArgs = {
+  profileUuid: Scalars['String'];
   conversationUuid: Scalars['String'];
 };
 
@@ -567,6 +567,7 @@ export type CancelFriendRequestMutation = (
 
 export type CancelPendingCallForConversationMutationVariables = Exact<{
   conversationUuid: Scalars['String'];
+  profileUuid: Scalars['String'];
 }>;
 
 
@@ -673,6 +674,11 @@ export type ForgotPasswordMutation = (
   & Pick<Mutation, 'forgotPassword'>
 );
 
+export type CallsSnippetFragment = (
+  { __typename?: 'ConversationToProfile' }
+  & Pick<ConversationToProfile, 'profileUuid' | 'pendingCall' | 'ongoingCall'>
+);
+
 export type CommunitySnippetFragment = (
   { __typename?: 'Community' }
   & Pick<Community, 'id' | 'title' | 'description' | 'privacy' | 'timezone' | 'startDate' | 'endDate' | 'createdAt' | 'updatedAt'>
@@ -689,13 +695,16 @@ export type ConversationProfileSnippetFragment = (
 
 export type ConversationSnippetFragment = (
   { __typename?: 'Conversation' }
-  & Pick<Conversation, 'uuid' | 'unreadMessages' | 'profileThatHasUnreadMessages' | 'updatedAt' | 'createdAt' | 'hasMore' | 'ongoingCall' | 'pendingCall' | 'type' | 'name' | 'description'>
+  & Pick<Conversation, 'uuid' | 'unreadMessages' | 'profileThatHasUnreadMessages' | 'updatedAt' | 'createdAt' | 'hasMore' | 'type' | 'name' | 'description'>
   & { profiles: Array<(
     { __typename?: 'Profile' }
     & ConversationProfileSnippetFragment
   )>, messages: Array<(
     { __typename?: 'Message' }
     & MessageSnippetFragment
+  )>, calls: Array<(
+    { __typename?: 'ConversationToProfile' }
+    & CallsSnippetFragment
   )>, pendingCallProfile?: Maybe<(
     { __typename?: 'Profile' }
     & ConversationProfileSnippetFragment
@@ -1271,6 +1280,13 @@ export const MessageSnippetFragmentDoc = gql`
   }
 }
     `;
+export const CallsSnippetFragmentDoc = gql`
+    fragment CallsSnippet on ConversationToProfile {
+  profileUuid
+  pendingCall
+  ongoingCall
+}
+    `;
 export const ConversationSnippetFragmentDoc = gql`
     fragment ConversationSnippet on Conversation {
   uuid
@@ -1285,8 +1301,9 @@ export const ConversationSnippetFragmentDoc = gql`
     ...MessageSnippet
   }
   hasMore
-  ongoingCall
-  pendingCall
+  calls {
+    ...CallsSnippet
+  }
   type
   name
   description
@@ -1295,7 +1312,8 @@ export const ConversationSnippetFragmentDoc = gql`
   }
 }
     ${ConversationProfileSnippetFragmentDoc}
-${MessageSnippetFragmentDoc}`;
+${MessageSnippetFragmentDoc}
+${CallsSnippetFragmentDoc}`;
 export const ConversationToProfileSnippetFragmentDoc = gql`
     fragment ConversationToProfileSnippet on ConversationToProfile {
   uuid
@@ -1442,8 +1460,11 @@ export function useCancelFriendRequestMutation() {
   return Urql.useMutation<CancelFriendRequestMutation, CancelFriendRequestMutationVariables>(CancelFriendRequestDocument);
 };
 export const CancelPendingCallForConversationDocument = gql`
-    mutation CancelPendingCallForConversation($conversationUuid: String!) {
-  cancelPendingCallForConversation(conversationUuid: $conversationUuid)
+    mutation CancelPendingCallForConversation($conversationUuid: String!, $profileUuid: String!) {
+  cancelPendingCallForConversation(
+    conversationUuid: $conversationUuid
+    profileUuid: $profileUuid
+  )
 }
     `;
 

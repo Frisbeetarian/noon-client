@@ -97,20 +97,20 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
             // )
 
             activeConversation.profiles.map(async (profile) => {
-              if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
-                socket.emit('set-pending-call-for-conversation', {
-                  from: loggedInUser.user?.profile?.uuid,
-                  fromUsername: loggedInUser.user?.profile?.username,
-                  to: profile.uuid,
-                  toUsername: profile.username,
-                  conversationUuid: activeConversation.uuid,
-                })
+              // if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
+              socket.emit('set-pending-call-for-conversation', {
+                from: loggedInUser.user?.profile?.uuid,
+                fromUsername: loggedInUser.user?.profile?.username,
+                to: profile.uuid,
+                toUsername: profile.username,
+                conversationUuid: activeConversation.uuid,
+              })
 
-                await setPendingCallForConversation({
-                  conversationUuid: activeConversation.uuid,
-                  profileUuid: profile.uuid,
-                })
-              }
+              await setPendingCallForConversation({
+                conversationUuid: activeConversation.uuid,
+                profileUuid: profile.uuid,
+              })
+              // }
             })
 
             //

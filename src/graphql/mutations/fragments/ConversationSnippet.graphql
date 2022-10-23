@@ -11,8 +11,11 @@ fragment ConversationSnippet on Conversation {
     ...MessageSnippet
   }
   hasMore
-  ongoingCall
-  pendingCall
+#  ongoingCall
+#  pendingCall
+  calls {
+    ...CallsSnippet
+  }
   type
   name
   description
