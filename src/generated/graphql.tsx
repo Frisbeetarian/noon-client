@@ -79,6 +79,8 @@ export type ConversationToProfile = {
   profileUuid: Scalars['String'];
   unreadMessages: Scalars['Float'];
   profileThatHasUnreadMessages: Scalars['String'];
+  ongoingCall: Scalars['Boolean'];
+  pendingCall: Scalars['Boolean'];
   conversation: Conversation;
   profile: Array<Profile>;
   updatedAt: Scalars['String'];
@@ -294,7 +296,7 @@ export type MutationCreateGroupConversationArgs = {
 
 
 export type MutationSetPendingCallForConversationArgs = {
-  pendingCallInitiatorUuid: Scalars['String'];
+  profileUuid: Scalars['String'];
   conversationUuid: Scalars['String'];
 };
 
@@ -1175,7 +1177,7 @@ export type SendFriendRequestMutation = (
 
 export type SetPendingCallForConversationMutationVariables = Exact<{
   conversationUuid: Scalars['String'];
-  pendingCallInitiatorUuid: Scalars['String'];
+  profileUuid: Scalars['String'];
 }>;
 
 
@@ -1936,10 +1938,10 @@ export function useSendFriendRequestMutation() {
   return Urql.useMutation<SendFriendRequestMutation, SendFriendRequestMutationVariables>(SendFriendRequestDocument);
 };
 export const SetPendingCallForConversationDocument = gql`
-    mutation SetPendingCallForConversation($conversationUuid: String!, $pendingCallInitiatorUuid: String!) {
+    mutation SetPendingCallForConversation($conversationUuid: String!, $profileUuid: String!) {
   setPendingCallForConversation(
     conversationUuid: $conversationUuid
-    pendingCallInitiatorUuid: $pendingCallInitiatorUuid
+    profileUuid: $profileUuid
   )
 }
     `;
