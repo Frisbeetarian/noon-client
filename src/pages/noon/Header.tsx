@@ -20,6 +20,7 @@ import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
 import NextLink from 'next/link'
 import { useCancelPendingCallForConversationMutation } from '../../generated/graphql'
+import { setVideoFrameForConversation } from '../../store/video'
 
 const Header = () => {
   const activeConversee = useSelector(getActiveConversee)
@@ -119,47 +120,53 @@ const Header = () => {
             bg="blue.500"
           >
             <Text className="mb-2 mr-3 mt-1 font-black">Call ongoing</Text>
-
-            {activeConversation?.pendingCallProfile?.uuid ===
-            loggedInUser?.user?.profile?.uuid ? (
-              <Button bg="red.500" className="mr-2">
-                <Heading
-                  fontSize="md"
-                  onClick={async () => {
-                    dispatch(
-                      cancelPendingCall({
-                        conversationUuid: activeConversation.uuid,
-                      })
-                    )
-
-                    await cancelPendingCallForConversation({
+            {/*{activeConversation?.pendingCallProfile?.uuid ===*/}
+            {/*loggedInUser?.user?.profile?.uuid ? (*/}
+            <Button bg="red.500" className="mr-2">
+              <Heading
+                fontSize="md"
+                onClick={async () => {
+                  dispatch(
+                    cancelPendingCall({
                       conversationUuid: activeConversation.uuid,
                     })
+                  )
 
-                    socket.emit('cancel-pending-call-for-conversation', {
-                      from: loggedInUser.user?.profile?.uuid,
-                      fromUsername: loggedInUser.user?.profile?.username,
-                      to: activeConversee.uuid,
-                      toUsername: activeConversee.username,
-                      conversationUuid: activeConversation.uuid,
-                    })
-                  }}
-                >
-                  Cancel
-                </Heading>
-              </Button>
-            ) : null}
+                  await cancelPendingCallForConversation({
+                    conversationUuid: activeConversation.uuid,
+                    profileUuid: loggedInUser.user?.profile?.uuid,
+                  })
 
-            <NextLink
-              href="/conferences/[id]"
-              as={`/conferences/${activeConversation.uuid}`}
-            >
-              <Link>
-                <Button bg="green.500">
-                  <Heading fontSize="md">Join</Heading>
-                </Button>
-              </Link>
-            </NextLink>
+                  socket.emit('cancel-pending-call-for-conversation', {
+                    from: loggedInUser.user?.profile?.uuid,
+                    fromUsername: loggedInUser.user?.profile?.username,
+                    to: activeConversee.uuid,
+                    toUsername: activeConversee.username,
+                    conversationUuid: activeConversation.uuid,
+                  })
+                }}
+              >
+                Cancel
+              </Heading>
+            </Button>
+            {/*): null}*/}
+            {/*<NextLink*/}
+            {/*  href="/conferences/[id]"*/}
+            {/*  as={`/conferences/${activeConversation.uuid}`}*/}
+            {/*>*/}
+            {/*  <Link>*/}
+            <Button bg="green.500">
+              <Heading
+                fontSize="md"
+                onClick={async () => {
+                  dispatch(setVideoFrameForConversation(true))
+                }}
+              >
+                Join
+              </Heading>
+            </Button>
+            {/*</Link>*/}
+            {/*</NextLink>*/}
           </Flex>
         </Flex>
       ) : null}

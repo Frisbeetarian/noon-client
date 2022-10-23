@@ -23,7 +23,7 @@ const slice = createSlice({
       console.log('conversation object:', conversationObject)
 
       if (conversationObject.type !== 'group') {
-        conversationObject.conversee = conversationObject.profiles.find(
+        conversationObject.conversee = conversationObject.profiles?.find(
           (element) => element.uuid != action.payload.loggedInProfileUuid
         )
       }
@@ -76,8 +76,12 @@ const slice = createSlice({
         action.payload.conversationsToSend.map((conversation) => {
           let conversationObject = { ...conversation }
 
-          let converseeObject = conversationObject.profiles.find(
+          const converseeObject = conversationObject.profiles.find(
             (element) => element.uuid != action.payload.loggedInProfileUuid
+          )
+
+          const callObject = conversationObject.calls.find(
+            (call) => call.profileUuid === action.payload.loggedInProfileUuid
           )
 
           if (
@@ -90,7 +94,8 @@ const slice = createSlice({
             )
           }
 
-          // conversationObject.ongoingCall = false
+          conversationObject.pendingCall = callObject.pendingCall
+          conversationObject.ongoingCall = callObject.ongoingCall
           conversationObject.conversee = converseeObject
           conversationsArray.push(conversationObject)
         })

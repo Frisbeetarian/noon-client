@@ -337,6 +337,8 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
           Search: (data) => data.uuid,
           Conversation: (data) => data.uuid,
           Message: (data) => data.uuid,
+          Calls: (data) => data.profileUuid,
+          ConversationToProfile: (data) => data.uuid,
           PaginatedMessages: () => null,
         },
         resolvers: {
