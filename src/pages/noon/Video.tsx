@@ -14,6 +14,7 @@ const JitsiMeeting = dynamic(
 ) as FC<IJitsiMeetingProps>
 
 import {
+  cancelPendingCall,
   getActiveConversation,
   getActiveConversee,
   getShouldPauseCheckHasMore,
@@ -23,6 +24,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import { Layout } from '../../components/Layout'
 import { setVideoFrameForConversation } from '../../store/video'
+import { useCancelPendingCallForConversationMutation } from '../../generated/graphql'
 
 const Video = () => {
   const dispatch = useDispatch()
@@ -36,6 +38,9 @@ const Video = () => {
   const [showNew, toggleShowNew] = useState(false)
   const [knockingParticipants, updateKnockingParticipants] = useState([])
 
+  const [, cancelPendingCallForConversation] =
+    useCancelPendingCallForConversationMutation()
+
   const printEventOutput = (payload) => {
     updateLog((items) => [...items, JSON.stringify(payload)])
   }
@@ -48,9 +53,19 @@ const Video = () => {
     }
   }
 
-  const handleOnReadyToClose = (payload) => {
-    console.log('on ready to close handler:', payload)
+  const handleOnReadyToClose = async (payload) => {
     dispatch(setVideoFrameForConversation(false))
+
+    dispatch(
+      cancelPendingCall({
+        conversationUuid: activeConversation.uuid,
+      })
+    )
+
+    await cancelPendingCallForConversation({
+      conversationUuid: activeConversation.uuid,
+      profileUuid: loggedInUser.user?.profile?.uuid,
+    })
   }
 
   const handleChatUpdates = (payload) => {
