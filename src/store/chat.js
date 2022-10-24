@@ -80,7 +80,7 @@ const slice = createSlice({
             (element) => element.uuid != action.payload.loggedInProfileUuid
           )
 
-          const callObject = conversationObject.calls.find(
+          const callObject = conversationObject.calls?.find(
             (call) => call.profileUuid === action.payload.loggedInProfileUuid
           )
 
@@ -94,8 +94,11 @@ const slice = createSlice({
             )
           }
 
+          // if (conversationObject.call) {
           conversationObject.pendingCall = callObject.pendingCall
           conversationObject.ongoingCall = callObject.ongoingCall
+          // }
+
           conversationObject.conversee = converseeObject
           conversationsArray.push(conversationObject)
         })
@@ -309,6 +312,11 @@ const slice = createSlice({
 
       chat.activeConversation = conversationObject
     },
+    setOngoingCall: (chat, action) => {
+      let activeConversationObject = { ...chat.activeConversation }
+      activeConversationObject.ongoingCall = action.payload
+      chat.activeConversation = { ...activeConversationObject }
+    },
     setActiveGroupInStore: (chat, action) => {
       if (action.payload === null) {
         chat.activeConversation = null
@@ -356,39 +364,26 @@ const slice = createSlice({
 
       chat.activeConversation = conversationObject
     },
-    setOngoingCall: (chat, action) => {
-      let activeConversationObject = { ...chat.activeConversation }
-      activeConversationObject.ongoingCall = action.payload
-      chat.activeConversation = { ...activeConversationObject }
-    },
     setPendingCall: (chat, action) => {
-      if (
-        chat.activeConversation &&
-        chat.activeConversation.uuid === action.payload?.uuid
-      ) {
-        let activeConversationObject = { ...chat.activeConversation }
-        activeConversationObject.pendingCall = true
-
-        activeConversationObject.pendingCallProfile = {
-          uuid: action.payload?.initiator?.uuid,
-          username: action.payload?.initiator?.username,
-          updatedAt: new Date(),
-          createdAt: new Date(),
+      try {
+        if (
+          chat.activeConversation &&
+          chat.activeConversation.uuid === action.payload?.conversationUuid &&
+          action.payload.profileUuid !== action.payload.from
+        ) {
+          let activeConversationObject = { ...chat.activeConversation }
+          activeConversationObject.pendingCall = true
+          chat.activeConversation = { ...activeConversationObject }
         }
 
-        chat.activeConversation = { ...activeConversationObject }
-      }
+        const conversationInList = chat.conversations.find(
+          (conversation) =>
+            conversation.uuid === action.payload?.conversationUuid
+        )
 
-      const conversationInList = chat.conversations.find(
-        (conversation) => conversation.uuid === action.payload?.uuid
-      )
-
-      conversationInList.pendingCall = true
-      conversationInList.pendingCallProfile = {
-        uuid: action.payload?.initiator?.uuid,
-        username: action.payload?.initiator?.username,
-        updatedAt: new Date(),
-        createdAt: new Date(),
+        conversationInList.pendingCall = true
+      } catch (e) {
+        console.log('error:', e)
       }
     },
     cancelPendingCall: (chat, action) => {

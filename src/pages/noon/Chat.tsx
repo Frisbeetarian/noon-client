@@ -13,6 +13,7 @@ import {
   setActiveConversation,
   setActiveConversationSet,
   setActiveConversee,
+  setPendingCall,
   setShouldPauseCheckHasMore,
 } from '../../store/chat'
 import { getVideoFrameOpenState } from '../../store/video'
@@ -366,6 +367,26 @@ function Chat() {
           )
         }
       )
+
+      if (socket) {
+        socket.on(
+          'set-pending-call-for-conversation',
+          ({ conversationUuid, from }) => {
+            // if (activeConversation && activeConversation.uuid === conversationUuid) {
+            console.log('entered set pending call listener')
+            dispatch(
+              setPendingCall({
+                profileUuid: loggedInUser.user?.profile?.uuid,
+                from,
+                pendingCall: true,
+                ongoingCall: false,
+                conversationUuid,
+              })
+            )
+            // }
+          }
+        )
+      }
     }
 
     return () => {
@@ -375,6 +396,7 @@ function Chat() {
         socket.off('cancel-friend-request')
         socket.off('friendship-request-accepted')
         socket.off('unfriend')
+        socket.off('set-pending-call-for-conversation')
       }
     }
   }, [socket])

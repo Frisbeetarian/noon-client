@@ -14,6 +14,7 @@ import {
   cancelPendingCall,
   getActiveConversation,
   getActiveConversee,
+  setPendingCall,
 } from '../../store/chat'
 
 import { getLoggedInUser } from '../../store/users'
@@ -149,12 +150,14 @@ const Header = () => {
                 Cancel
               </Heading>
             </Button>
+
             {/*): null}*/}
             {/*<NextLink*/}
             {/*  href="/conferences/[id]"*/}
             {/*  as={`/conferences/${activeConversation.uuid}`}*/}
             {/*>*/}
             {/*  <Link>*/}
+
             <Button bg="green.500">
               <Heading
                 fontSize="md"
