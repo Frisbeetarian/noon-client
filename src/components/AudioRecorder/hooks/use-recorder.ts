@@ -14,12 +14,8 @@ import { getLoggedInUser } from '../../../store/users'
 import { getSocket } from '../../../store/sockets'
 
 import {
-  cancelPendingCall,
   getActiveConversation,
   getActiveConversee,
-  setActiveConversation,
-  setOngoingCall,
-  setPendingCall,
   addMessageToActiveConversation,
 } from '../../../store/chat'
 

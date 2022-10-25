@@ -402,6 +402,7 @@ const slice = createSlice({
         let callInConversationObject = conversationInList.calls.find(
           (call) => call.profileUuid === action.payload.profileUuid
         )
+
         if (!action.payload.fromJoin) {
           callInConversationObject.pendingCall = action.payload.pendingCall
         }
@@ -415,15 +416,25 @@ const slice = createSlice({
       if (chat.activeConversation) {
         let activeConversationObject = { ...chat.activeConversation }
 
+        let callInActiveConversation = activeConversationObject.calls.find(
+          (call) => call.profileUuid === action.payload.loggedInProfileUuid
+        )
+
+        callInActiveConversation.pendingCall = false
         activeConversationObject.pendingCall = false
         activeConversationObject.pendingCallProfile = null
         chat.activeConversation = { ...activeConversationObject }
       }
 
-      const conversationInList = chat.conversations.find(
+      let conversationInList = chat.conversations.find(
         (conversation) => conversation.uuid === action.payload.conversationUuid
       )
 
+      let callInConversationInList = conversationInList.calls.find(
+        (call) => call.profileUuid === action.payload.loggedInProfileUuid
+      )
+
+      callInConversationInList.pendingCall = false
       conversationInList.pendingCall = false
       conversationInList.pendingCallProfile = null
     },

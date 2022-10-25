@@ -130,6 +130,7 @@ const Header = () => {
                   dispatch(
                     cancelPendingCall({
                       conversationUuid: activeConversation.uuid,
+                      loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
                     })
                   )
 
@@ -168,7 +169,6 @@ const Header = () => {
                   dispatch(
                     setPendingCall({
                       profileUuid: loggedInUser.user?.profile?.uuid,
-
                       from: 'fewfewf',
                       fromJoin: true,
                       pendingCall: false,

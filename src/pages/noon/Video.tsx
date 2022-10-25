@@ -59,6 +59,7 @@ const Video = () => {
     dispatch(
       cancelPendingCall({
         conversationUuid: activeConversation.uuid,
+        loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
       })
     )
 
