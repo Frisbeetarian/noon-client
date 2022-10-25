@@ -154,6 +154,7 @@ const Header = () => {
             {/*): null}*/}
             {/*<NextLink*/}
             {/*  href="/conferences/[id]"*/}
+
             {/*  as={`/conferences/${activeConversation.uuid}`}*/}
             {/*>*/}
             {/*  <Link>*/}
@@ -163,6 +164,18 @@ const Header = () => {
                 fontSize="md"
                 onClick={async () => {
                   dispatch(setVideoFrameForConversation(true))
+
+                  dispatch(
+                    setPendingCall({
+                      profileUuid: loggedInUser.user?.profile?.uuid,
+
+                      from: 'fewfewf',
+
+                      pendingCall: false,
+                      ongoingCall: false,
+                      conversationUuid: activeConversation.uuid,
+                    })
+                  )
                 }}
               >
                 Join

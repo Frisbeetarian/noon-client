@@ -372,7 +372,16 @@ const slice = createSlice({
           action.payload.profileUuid !== action.payload.from
         ) {
           let activeConversationObject = { ...chat.activeConversation }
-          activeConversationObject.pendingCall = true
+          activeConversationObject.pendingCall = action.payload.pendingCall
+
+          let callInActiveConversationObject =
+            activeConversationObject.calls.find(
+              (call) => call.profileUuid === action.payload.profileUuid
+            )
+
+          callInActiveConversationObject.pendingCall =
+            action.payload.pendingCall
+
           chat.activeConversation = { ...activeConversationObject }
         }
 
@@ -381,7 +390,13 @@ const slice = createSlice({
             conversation.uuid === action.payload?.conversationUuid
         )
 
-        conversationInList.pendingCall = true
+        let callInConversationObject = conversationInList.calls.find(
+          (call) => call.profileUuid === action.payload.profileUuid
+        )
+
+        callInConversationObject.pendingCall = action.payload.pendingCall
+
+        conversationInList.pendingCall = action.payload.pendingCall
       } catch (e) {
         console.log('error:', e)
       }
@@ -389,6 +404,7 @@ const slice = createSlice({
     cancelPendingCall: (chat, action) => {
       if (chat.activeConversation) {
         let activeConversationObject = { ...chat.activeConversation }
+
         activeConversationObject.pendingCall = false
         activeConversationObject.pendingCallProfile = null
         chat.activeConversation = { ...activeConversationObject }
