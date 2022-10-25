@@ -373,7 +373,7 @@ function Chat() {
           'set-pending-call-for-conversation',
           ({ conversationUuid, from }) => {
             // if (activeConversation && activeConversation.uuid === conversationUuid) {
-            console.log('entered set pending call listener')
+            // console.log('entered set pending call listener')
             dispatch(
               setPendingCall({
                 profileUuid: loggedInUser.user?.profile?.uuid,
@@ -540,7 +540,11 @@ function Chat() {
               <Messages />
             </FileUpload>
           ) : (
-            <Video></Video>
+            <Video
+              conversationUuid={activeConversation.uuid}
+              profile={loggedInUser.user?.profile}
+              email={loggedInUser.user?.email}
+            ></Video>
           )}
         </Flex>
       ) : null}

@@ -789,7 +789,7 @@ export type RegularProfileFragment = (
 
 export type RegularUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'uuid' | 'username'>
+  & Pick<User, 'uuid' | 'username' | 'email'>
   & { profile: (
     { __typename?: 'Profile' }
     & Pick<Profile, 'uuid' | 'username'>
@@ -1408,6 +1408,7 @@ export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   uuid
   username
+  email
   profile {
     uuid
     username

@@ -26,7 +26,7 @@ import { Layout } from '../../components/Layout'
 import { setVideoFrameForConversation } from '../../store/video'
 import { useCancelPendingCallForConversationMutation } from '../../generated/graphql'
 
-const Video = () => {
+const Video = ({ conversationUuid, profile, email }) => {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
@@ -143,7 +143,8 @@ const Video = () => {
       <JitsiMeeting
         domain={'noon-vid.com/'}
         // roomName={generateRoomName()}
-        roomName="test1"
+        roomName={conversationUuid}
+        onReadyToClose={handleOnReadyToClose}
         spinner={renderSpinner}
         config={{
           subject: 'lalalala',
@@ -194,9 +195,13 @@ const Video = () => {
       <JitsiMeeting
         domain={'noon-vid.com/'}
         // roomName={generateRoomName()}
-        roomName="test1"
+        roomName={conversationUuid}
         onReadyToClose={handleOnReadyToClose}
         spinner={renderSpinner}
+        userInfo={{
+          displayName: profile.username,
+          email: email,
+        }}
         config={{
           hideConferenceSubject: false,
         }}
