@@ -170,7 +170,7 @@ const Header = () => {
                       profileUuid: loggedInUser.user?.profile?.uuid,
 
                       from: 'fewfewf',
-
+                      fromJoin: true,
                       pendingCall: false,
                       ongoingCall: false,
                       conversationUuid: activeConversation.uuid,

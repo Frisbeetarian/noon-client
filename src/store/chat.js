@@ -279,6 +279,15 @@ const slice = createSlice({
         (conversation) => conversation.uuid === conversationObject.uuid
       )
 
+      let callInConversationStack = conversationFromStack.calls.find(
+        (call) => call.profileUuid === action.payload.loggedInProfileUuid
+      )
+
+      // let callInActiveConversation = conversationObject.calls.find(
+      //   (call) => call.profileUuid === action.payload.loggedInProfileUuid
+      // )
+
+      conversationObject.pendingCall = callInConversationStack.pendingCall
       conversationFromStack.unreadMessages = 0
       conversationFromStack.profileThatHasUnreadMessages = []
       conversationFromStack.ongoingCall = false
@@ -393,8 +402,9 @@ const slice = createSlice({
         let callInConversationObject = conversationInList.calls.find(
           (call) => call.profileUuid === action.payload.profileUuid
         )
-
-        callInConversationObject.pendingCall = action.payload.pendingCall
+        if (!action.payload.fromJoin) {
+          callInConversationObject.pendingCall = action.payload.pendingCall
+        }
 
         conversationInList.pendingCall = action.payload.pendingCall
       } catch (e) {
