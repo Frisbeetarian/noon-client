@@ -103,6 +103,7 @@ const CreateGroup = ({}) => {
         //   conversation: conversation.data?.createGroupConversation,
         //   participants: participantsToSend,
         // })
+        console.log('conversation:', conversation)
 
         dispatch(
           addConversation({
@@ -118,8 +119,6 @@ const CreateGroup = ({}) => {
         //     loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
         //   })
         // )
-
-        console.log('conversation:', conversation)
       }
     },
   })

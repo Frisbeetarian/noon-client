@@ -11,6 +11,7 @@ const slice = createSlice({
     addProfiles: (profiles, action, loggedInUser) => {
       // let profilesArray = [...action.payload.profiles]
       let profilesArray = []
+
       if (action.payload.profiles == null) {
         profiles.list = null
       } else {
@@ -82,7 +83,7 @@ const slice = createSlice({
       profile.hasFriendshipRequestFromLoggedInProfile = false
     },
     setFriendFlagOnProfile: (profiles, action) => {
-      if (profiles.list.length !== 0) {
+      if (profiles.list !== null && profiles.list?.length !== 0) {
         let profile = profiles.list.find(
           (profile) => profile.uuid == action.payload.profileUuid
         )

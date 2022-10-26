@@ -43,9 +43,13 @@ const slice = createSlice({
       users.user.friendshipRequests = friendRequests
     },
     addFriendEntry: (users, action) => {
-      let userObject = { ...users.user }
-
-      userObject.friends.push(action.payload.friend)
+      try {
+        let userObject = { ...users.user }
+        console.log('add friend entry:', action.payload.friend)
+        userObject.friends.push(action.payload.friend)
+      } catch (e) {
+        console.log('error:', e)
+      }
     },
     removeFriendEntry: (users, action) => {
       let friends

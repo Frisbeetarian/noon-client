@@ -126,6 +126,7 @@ function Chat() {
         }
       )
     }
+
     return () => {
       if (socket) {
         socket.off('private-chat-message')
@@ -196,17 +197,15 @@ function Chat() {
         'cancel-friend-request',
         ({ content, from, fromUsername, to }) => {
           dispatch(
-            dispatch(
-              removeFriendRequestEntry({
-                profileUuid: from,
-                friendRequests: loggedInUser.user?.friendshipRequests,
-              })
-            )
+            removeFriendRequestEntry({
+              profileUuid: from,
+              friendRequests: loggedInUser.user?.friendshipRequests,
+            })
           )
+
           // toast.closeAll()
 
           toast.close(from)
-
           toast({
             id: from,
             title: `${fromUsername} has cancelled the friend request.`,
@@ -261,17 +260,17 @@ function Chat() {
                         })
 
                       dispatch(
-                        setFriendFlagOnProfile({
-                          profileUuid: from,
-                        })
-                      )
-
-                      dispatch(
                         addFriendEntry({
                           friend: {
                             uuid: from,
                             username: fromUsername,
                           },
+                        })
+                      )
+
+                      dispatch(
+                        setFriendFlagOnProfile({
+                          profileUuid: from,
                         })
                       )
 

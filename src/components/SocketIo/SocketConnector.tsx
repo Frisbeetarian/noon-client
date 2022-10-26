@@ -17,6 +17,7 @@ export default function SocketConnector() {
 
   useEffect(() => {
     const sessionID = localStorage.getItem('sessionID')
+
     try {
       // if (!socket.connected) {
       // TODO check why adding condition for logged in user generates new session id item in storage

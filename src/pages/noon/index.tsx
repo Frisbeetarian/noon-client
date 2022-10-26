@@ -23,6 +23,7 @@ function Noon() {
   const dispatch = useDispatch()
   const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
+    requestPolicy: 'network-only',
   })
 
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
@@ -43,7 +44,7 @@ function Noon() {
 
   useEffect(() => {
     dispatch(setLoggedInUser({ user: data }))
-  }, [data])
+  }, [data?.me?.username])
 
   useEffect(() => {
     if (

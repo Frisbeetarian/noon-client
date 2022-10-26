@@ -75,6 +75,7 @@ const Video = ({ conversationUuid, profile, email }) => {
     }
 
     apiRef.current.executeCommand('toggleChat')
+
     updateLog((items) => [
       ...items,
       `you have ${payload.unreadCount} unread messages`,
