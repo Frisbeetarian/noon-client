@@ -260,17 +260,24 @@ function Chat() {
                         })
 
                       dispatch(
+                        setFriendFlagOnProfile({
+                          profileUuid: from,
+                        })
+                      )
+
+                      dispatch(
+                        removeFriendRequestEntry({
+                          profileUuid: from,
+                          friendRequests: loggedInUser.user?.friendshipRequests,
+                        })
+                      )
+
+                      dispatch(
                         addFriendEntry({
                           friend: {
                             uuid: from,
                             username: fromUsername,
                           },
-                        })
-                      )
-
-                      dispatch(
-                        setFriendFlagOnProfile({
-                          profileUuid: from,
                         })
                       )
 
