@@ -18,19 +18,33 @@ import {
 
 import { withUrqlClient } from 'next-urql'
 import NextLink from 'next/link'
+import { useDisclosure } from '@chakra-ui/hooks'
 import React, { useEffect, useState } from 'react'
 import { Layout } from '../components/Layout'
 import { createUrqlClient } from '../utils/createUrqlClient'
 import { useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
-import { useDisclosure } from '@chakra-ui/hooks'
+
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { toErrorMap } from '../utils/toErrorMap'
 import { Form, Formik } from 'formik'
+
 import { useLoginMutation, useRegisterMutation } from '../generated/graphql'
 import { useRouter } from 'next/router'
 import { InputField } from '../components/InputField'
+import * as Yup from 'yup'
 
+const RegisterSchema = Yup.object().shape({
+  username: Yup.string()
+    .min(3, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Username is required'),
+  email: Yup.string().email('Invalid email').required('Email is required'),
+  password: Yup.string()
+    .min(4, 'Password is too short')
+    .max(120, 'Password is too long')
+    .required('Password is required'),
+})
 // function FormLabel(props: { children: ReactNode }) {
 //   return null
 // }
@@ -50,8 +64,8 @@ const Index = () => {
   const loggedInUser = useSelector(getLoggedInUser)
   const [showPassword, setShowPassword] = useState(false)
 
-  const [showLogin, setLogin] = useState(true)
-  const [showRegister, setRegister] = useState(false)
+  const [showLogin, setLogin] = useState(false)
+  const [showRegister, setRegister] = useState(true)
   const [showForgotPassword, setForgotPassword] = useState(false)
 
   // const {
@@ -210,6 +224,7 @@ const Index = () => {
             >
               <Formik
                 initialValues={{ email: '', username: '', password: '' }}
+                validationSchema={RegisterSchema}
                 onSubmit={async (values, { setErrors }) => {
                   // values.usernameOrEmail = values.firstname + '-'
 
@@ -227,7 +242,7 @@ const Index = () => {
                   }
                 }}
               >
-                {({ isSubmitting }) => (
+                {({ isSubmitting, errors, touched }) => (
                   <Form>
                     <Stack spacing={4}>
                       <HStack>
@@ -246,6 +261,9 @@ const Index = () => {
                               placeholder="username"
                               label="Username"
                             />
+                            {/*{errors.username && touched.username ? (*/}
+                            {/*  <div>{errors.username}</div>*/}
+                            {/*) : null}*/}
                           </FormControl>
                         </Box>
                         {/*<Box>*/}
@@ -260,10 +278,15 @@ const Index = () => {
                         {/*  </FormControl>*/}
                         {/*</Box>*/}
                       </HStack>
+
                       <FormControl id="email" isRequired>
                         <FormLabel>Email address</FormLabel>
                         <InputField name="email" placeholder="" label="" />
+                        {/*{errors.email && touched.email ? (*/}
+                        {/*  <div>{errors.email}</div>*/}
+                        {/*) : null}*/}
                       </FormControl>
+
                       <FormControl id="password" isRequired>
                         <FormLabel>Password</FormLabel>
                         <InputGroup>

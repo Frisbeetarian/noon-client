@@ -115,7 +115,7 @@ const Header = () => {
       </Flex>
 
       {activeConversation?.pendingCall ? (
-        <Flex className=" h-full py-4 flex-col justify-end items-end w-1/2">
+        <Flex className="h-full py-4 flex-col justify-end items-end w-1/2">
           <Flex
             className="flex justify-end px-4 py-2 items-center"
             bg="blue.500"

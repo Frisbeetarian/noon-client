@@ -51,7 +51,8 @@
     "socket.io-client": "^4.5.1",
     "urql": "^2.0.4",
     "uuid": "^9.0.0",
-    "uuidv4": "^6.2.13"
+    "uuidv4": "^6.2.13",
+    "yup": "^0.32.11"
   },
   "license": "MIT",
   "devDependencies": {
