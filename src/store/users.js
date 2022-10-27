@@ -28,7 +28,6 @@ const slice = createSlice({
     },
     addFriendRequestEntry: (users, action) => {
       let userObject = { ...users.user }
-
       userObject.friendshipRequests.push(action.payload.friendRequest)
     },
     removeFriendRequestEntry: (users, action) => {
@@ -39,7 +38,6 @@ const slice = createSlice({
       )
 
       console.log('friend request entries:', friendRequests)
-
       users.user.friendshipRequests = friendRequests
     },
     addFriendEntry: (users, action) => {

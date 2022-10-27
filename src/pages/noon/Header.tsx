@@ -123,6 +123,7 @@ const Header = () => {
             <Text className="mb-2 mr-3 mt-1 font-black">Call ongoing</Text>
             {/*{activeConversation?.pendingCallProfile?.uuid ===*/}
             {/*loggedInUser?.user?.profile?.uuid ? (*/}
+
             <Button bg="red.500" className="mr-2">
               <Heading
                 fontSize="md"
@@ -139,12 +140,14 @@ const Header = () => {
                     profileUuid: loggedInUser.user?.profile?.uuid,
                   })
 
-                  socket.emit('cancel-pending-call-for-conversation', {
-                    from: loggedInUser.user?.profile?.uuid,
-                    fromUsername: loggedInUser.user?.profile?.username,
-                    to: activeConversee.uuid,
-                    toUsername: activeConversee.username,
-                    conversationUuid: activeConversation.uuid,
+                  activeConversation.calls.map((call) => {
+                    socket.emit('cancel-pending-call-for-conversation', {
+                      from: loggedInUser.user?.profile?.uuid,
+                      fromUsername: loggedInUser.user?.profile?.username,
+                      to: call.profileUuid,
+                      toUsername: call.profileUsername,
+                      conversationUuid: activeConversation.uuid,
+                    })
                   })
                 }}
               >

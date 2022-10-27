@@ -1,5 +1,6 @@
 fragment CallsSnippet on ConversationToProfile {
     profileUuid
+    profileUsername
     pendingCall
     ongoingCall
 }

@@ -5,8 +5,10 @@ import {
   useUnfriendMutation,
   useLeaveGroupMutation,
 } from '../../generated/graphql'
+
 import { getLoggedInUser, removeFriendEntry } from '../../store/users'
 import { SettingsIcon, HamburgerIcon, EditIcon } from '@chakra-ui/icons'
+
 import {
   Avatar,
   AvatarBadge,
@@ -133,7 +135,6 @@ function Sidebar() {
                 dispatch(setActiveConversee(null))
                 dispatch(setActiveConversation(null))
                 dispatch(setShouldPauseCheckHasMore(false))
-
                 dispatch(setCreateGroupComponent(true))
               }}
             >
@@ -300,6 +301,7 @@ function Sidebar() {
                             const leaveGroupResponse = await leaveGroup({
                               groupUuid: conversation.uuid,
                             })
+
                             console.log(
                               'leave group response:',
                               leaveGroupResponse

@@ -531,9 +531,17 @@ function Chat() {
         <Flex className="flex-col p-0 box-content" style={{ flex: '0.875' }}>
           <Header></Header>
 
-          <FileUpload>
-            <Messages />
-          </FileUpload>
+          {videoFrameOpenState !== true ? (
+            <FileUpload>
+              <Messages />
+            </FileUpload>
+          ) : (
+            <Video
+              conversationUuid={activeConversation.uuid}
+              profile={loggedInUser.user?.profile}
+              email={loggedInUser.user?.email}
+            ></Video>
+          )}
         </Flex>
       ) : null}
 

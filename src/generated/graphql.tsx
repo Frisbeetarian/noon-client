@@ -76,6 +76,7 @@ export type ConversationToProfile = {
   uuid: Scalars['String'];
   conversationUuid: Scalars['String'];
   profileUuid: Scalars['String'];
+  profileUsername: Scalars['String'];
   unreadMessages: Scalars['Float'];
   profileThatHasUnreadMessages: Scalars['String'];
   ongoingCall: Scalars['Boolean'];
@@ -676,7 +677,7 @@ export type ForgotPasswordMutation = (
 
 export type CallsSnippetFragment = (
   { __typename?: 'ConversationToProfile' }
-  & Pick<ConversationToProfile, 'profileUuid' | 'pendingCall' | 'ongoingCall'>
+  & Pick<ConversationToProfile, 'profileUuid' | 'profileUsername' | 'pendingCall' | 'ongoingCall'>
 );
 
 export type CommunitySnippetFragment = (
@@ -1283,6 +1284,7 @@ export const MessageSnippetFragmentDoc = gql`
 export const CallsSnippetFragmentDoc = gql`
     fragment CallsSnippet on ConversationToProfile {
   profileUuid
+  profileUsername
   pendingCall
   ongoingCall
 }
