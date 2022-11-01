@@ -19,9 +19,11 @@ import {
 import { withUrqlClient } from 'next-urql'
 import NextLink from 'next/link'
 import { useDisclosure } from '@chakra-ui/hooks'
+
 import React, { useEffect, useState } from 'react'
 import { Layout } from '../components/Layout'
 import { createUrqlClient } from '../utils/createUrqlClient'
+
 import { useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
 
@@ -45,6 +47,7 @@ const RegisterSchema = Yup.object().shape({
     .max(120, 'Password is too long')
     .required('Password is required'),
 })
+
 // function FormLabel(props: { children: ReactNode }) {
 //   return null
 // }
@@ -231,13 +234,19 @@ const Index = () => {
                   console.log(values)
                   const response = await register({ options: values })
 
-                  console.log('register response: ', response.data)
+                  console.log(
+                    'register response: ',
+                    response.data?.register.errors
+                  )
+
                   if (response.data?.register.errors) {
+                    console.log('register response: ', response.data)
                     setErrors(toErrorMap(response.data.register.errors))
                   } else if (response.data?.register.user) {
                     // await establishSocketConnection(values.username)
                     // worked
-                    // router.push('/noon')
+                    console.log('register response: ', response.data)
+                    router.push('/noon')
                     // router.
                   }
                 }}

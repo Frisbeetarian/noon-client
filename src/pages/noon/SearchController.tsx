@@ -4,6 +4,7 @@ import {
   useSearchForProfileByUsernameQuery,
   useSearchForProfileByUuidQuery,
 } from '../../generated/graphql'
+
 import { Avatar, AvatarBadge, Flex } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import Profile from './Profile'

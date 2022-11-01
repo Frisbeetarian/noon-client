@@ -36,7 +36,7 @@ import SocketConnector from '../../components/SocketIo/SocketConnector'
 import { useRouter } from 'next/router'
 import { getSocket } from '../../store/sockets'
 
-import { setCreateGroupComponent } from '../../store/ui'
+import { setCreateGroupComponent, setSearchComponent } from '../../store/ui'
 import { setVideoFrameForConversation } from '../../store/video'
 
 function Sidebar() {
@@ -54,6 +54,15 @@ function Sidebar() {
   const [profile, setProfile] = useState()
 
   function setActiveConverseeFunction(profile, conversation) {
+    dispatch(
+      setSearchComponent({
+        searchActive: false,
+        containerDisplay: 'relative',
+        containerHeight: '5vh',
+        inputPadding: '5px',
+      })
+    )
+
     if (activeConversation) {
       if (conversation.uuid !== activeConversation.uuid) {
         dispatch(setActiveConversationSet(false))
@@ -100,6 +109,14 @@ function Sidebar() {
     dispatch(setActiveGroupInStore(null))
 
     dispatch(
+      setSearchComponent({
+        searchActive: false,
+        containerDisplay: 'relative',
+        containerHeight: '5vh',
+        inputPadding: '5px',
+      })
+    )
+    dispatch(
       setActiveGroupInStore({
         conversation,
         loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
@@ -136,6 +153,15 @@ function Sidebar() {
                 dispatch(setActiveConversation(null))
                 dispatch(setShouldPauseCheckHasMore(false))
                 dispatch(setCreateGroupComponent(true))
+
+                dispatch(
+                  setSearchComponent({
+                    searchActive: false,
+                    containerDisplay: 'relative',
+                    containerHeight: '5vh',
+                    inputPadding: '5px',
+                  })
+                )
               }}
             >
               Create group

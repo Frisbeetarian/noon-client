@@ -179,6 +179,7 @@ function Chat() {
               <Flex direction="column" color="white" p={3} bg="green.500">
                 <Flex>
                   <p>{fromUsername} accepted your friend request.</p>
+
                   <CloseButton
                     className="sticky top ml-4"
                     size="sm"
@@ -380,6 +381,7 @@ function Chat() {
           ({ conversationUuid, from }) => {
             // if (activeConversation && activeConversation.uuid === conversationUuid) {
             // console.log('entered set pending call listener')
+
             dispatch(
               setPendingCall({
                 profileUuid: loggedInUser.user?.profile?.uuid,
@@ -516,7 +518,7 @@ function Chat() {
 
   return (
     <Flex
-      className="flex-col bg-gray-700 text-white box-content"
+      className="flex-col bg-gray-700 text-white box-content relative"
       style={{ flex: '0.75', height: '100vh' }}
     >
       <ChatControlsAndSearch />
