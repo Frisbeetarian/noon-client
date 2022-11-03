@@ -2,7 +2,6 @@ mutation DeleteMessage(
     $messageUuid: String!
     $conversationUuid: String!
     $from: String!
-    $to: String!
     $type: String!
     $src: String!
 ) {
@@ -10,7 +9,6 @@ mutation DeleteMessage(
         messageUuid: $messageUuid
         conversationUuid: $conversationUuid
         from: $from
-        to: $to
         type: $type
         src: $src
     ) {

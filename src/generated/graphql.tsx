@@ -156,6 +156,7 @@ export type Message = {
   content: Scalars['String'];
   type: Scalars['String'];
   src?: Maybe<Scalars['String']>;
+  deleted: Scalars['Boolean'];
   conversationUuid: Scalars['String'];
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
@@ -189,6 +190,7 @@ export type Mutation = {
   updateUnreadMessagesForConversation: Scalars['Boolean'];
   uploadImage: Message;
   saveGroupMessage: Message;
+  deleteMessage: Message;
   saveMessage: Message;
 };
 
@@ -331,6 +333,15 @@ export type MutationSaveGroupMessageArgs = {
   type: Scalars['String'];
   conversationUuid: Scalars['String'];
   message: Scalars['String'];
+};
+
+
+export type MutationDeleteMessageArgs = {
+  from: Scalars['String'];
+  src: Scalars['String'];
+  type: Scalars['String'];
+  conversationUuid: Scalars['String'];
+  messageUuid: Scalars['String'];
 };
 
 
@@ -519,7 +530,7 @@ export type User = {
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
-  user: User;
+  user?: Maybe<User>;
 };
 
 export type UsernamePasswordInput = {
@@ -652,6 +663,23 @@ export type CreatePostMutation = (
   & { createPost: (
     { __typename?: 'Post' }
     & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'text' | 'points' | 'creatorId'>
+  ) }
+);
+
+export type DeleteMessageMutationVariables = Exact<{
+  messageUuid: Scalars['String'];
+  conversationUuid: Scalars['String'];
+  from: Scalars['String'];
+  type: Scalars['String'];
+  src: Scalars['String'];
+}>;
+
+
+export type DeleteMessageMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteMessage: (
+    { __typename?: 'Message' }
+    & Pick<Message, 'uuid'>
   ) }
 );
 
@@ -802,10 +830,10 @@ export type RegularUserResponseFragment = (
   & { errors?: Maybe<Array<(
     { __typename?: 'FieldError' }
     & RegularErrorFragment
-  )>>, user: (
+  )>>, user?: Maybe<(
     { __typename?: 'User' }
     & RegularUserFragment
-  ) }
+  )> }
 );
 
 export type JoinCommunityMutationVariables = Exact<{
@@ -1562,6 +1590,23 @@ export const CreatePostDocument = gql`
 
 export function useCreatePostMutation() {
   return Urql.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument);
+};
+export const DeleteMessageDocument = gql`
+    mutation DeleteMessage($messageUuid: String!, $conversationUuid: String!, $from: String!, $type: String!, $src: String!) {
+  deleteMessage(
+    messageUuid: $messageUuid
+    conversationUuid: $conversationUuid
+    from: $from
+    type: $type
+    src: $src
+  ) {
+    uuid
+  }
+}
+    `;
+
+export function useDeleteMessageMutation() {
+  return Urql.useMutation<DeleteMessageMutation, DeleteMessageMutationVariables>(DeleteMessageDocument);
 };
 export const DeletePostDocument = gql`
     mutation DeletePost($id: Int!) {

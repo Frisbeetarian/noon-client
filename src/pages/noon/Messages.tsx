@@ -22,6 +22,7 @@ import {
 import {
   useCheckIfConversationHasMoreMessagesQuery,
   useClearUnreadMessagesForConversationMutation,
+  useDeleteMessageMutation,
   useGetMessagesForConversationQuery,
 } from '../../generated/graphql'
 
@@ -52,6 +53,8 @@ const Messages = () => {
 
   const [, clearUnreadMessagesForConversation] =
     useClearUnreadMessagesForConversationMutation()
+
+  const [, deleteMessage] = useDeleteMessageMutation()
 
   const [variables, setVariables] = useState({
     limit: 20,
@@ -250,7 +253,17 @@ const Messages = () => {
                             my={0}
                           />
                           <MenuList>
-                            <MenuItem onClick={async () => {}}>
+                            <MenuItem
+                              onClick={async () => {
+                                await deleteMessage({
+                                  messageUuid: item.uuid,
+                                  conversationUuid: activeConversation.uuid,
+                                  from: loggedInUser.user.profile.uuid,
+                                  type: 'text',
+                                  src: '',
+                                })
+                              }}
+                            >
                               Unsend message
                             </MenuItem>
                             {/*  <MenuItem*/}
