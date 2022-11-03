@@ -5,7 +5,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getActiveConversee } from '../../store/chat'
 import SearchController from './SearchController'
 import { getSearchQuery, setSearchQuery } from '../../store/search'
-import { setSearchComponent, getSearchComponentState } from '../../store/ui'
+import {
+  setSearchComponent,
+  getSearchComponentState,
+  setChatContainerHeight,
+} from '../../store/ui'
 
 function ChatControlsAndSearch() {
   const dispatch = useDispatch()
@@ -50,9 +54,9 @@ function ChatControlsAndSearch() {
     >
       {/*<p className="m-0 p-0">{profile?.username}</p>*/}
 
-      <Flex className="px-3 justify-center h-full w-full ">
+      <Flex className="px-3 justify-center h-full w-full">
         <Flex
-          className="flex-col items-start justify-start "
+          className="flex-col items-start justify-start"
           style={{ flex: '0.7' }}
         >
           {searchComponentState.searchActive ? (
@@ -81,11 +85,13 @@ function ChatControlsAndSearch() {
               dispatch(
                 setSearchComponent({
                   searchActive: true,
-                  containerDisplay: 'absolute',
+                  containerDisplay: 'relative',
                   containerHeight: '40vh',
                   inputPadding: '10px',
                 })
               )
+
+              dispatch(setChatContainerHeight('52.5vh'))
             }}
             style={{
               padding: searchComponentState.inputPadding,
@@ -112,7 +118,7 @@ function ChatControlsAndSearch() {
             <SearchIcon className="absolute right-5" />
           )}
         </Flex>
-        {searchComponentState.containerDisplay === 'absolute' ? (
+        {searchComponentState.containerDisplay === 'relative' ? (
           <ArrowUpIcon
             className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer"
             onClick={() => {
@@ -131,6 +137,8 @@ function ChatControlsAndSearch() {
                   inputPadding: '5px',
                 })
               )
+
+              dispatch(setChatContainerHeight('87.5vh'))
             }}
           />
         ) : null}

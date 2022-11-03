@@ -36,7 +36,11 @@ import SocketConnector from '../../components/SocketIo/SocketConnector'
 import { useRouter } from 'next/router'
 import { getSocket } from '../../store/sockets'
 
-import { setCreateGroupComponent, setSearchComponent } from '../../store/ui'
+import {
+  setChatContainerHeight,
+  setCreateGroupComponent,
+  setSearchComponent,
+} from '../../store/ui'
 import { setVideoFrameForConversation } from '../../store/video'
 
 function Sidebar() {
@@ -98,7 +102,7 @@ function Sidebar() {
       )
     }
 
-    // }, 500)
+    dispatch(setChatContainerHeight('87.5vh'))
   }
 
   function setActiveGroup(conversation) {
@@ -116,6 +120,9 @@ function Sidebar() {
         inputPadding: '5px',
       })
     )
+
+    dispatch(setChatContainerHeight('87.5vh'))
+
     dispatch(
       setActiveGroupInStore({
         conversation,

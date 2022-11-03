@@ -13,6 +13,7 @@ const slice = createSlice({
   initialState: {
     chatComponent: 'closed',
     createGroupComponentOpen: false,
+    chatContainerHeight: '87.5vh',
     search: {
       searchActive: false,
       containerDisplay: 'relative',
@@ -31,6 +32,9 @@ const slice = createSlice({
     },
     setCreateGroupComponent: (ui, action) => {
       ui.createGroupComponentOpen = action.payload
+    },
+    setChatContainerHeight: (ui, action) => {
+      ui.chatContainerHeight = action.payload
     },
     setSearchComponent: (ui, action) => {
       ui.search.searchActive = action.payload.searchActive
@@ -71,11 +75,17 @@ export const getSearchComponentState = createSelector(
   (ui) => ui.search
 )
 
+export const getChatContainerHeight = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.chatContainerHeight
+)
+
 export const {
   showFriendshipRequestToast,
   setChatComponentState,
   setCreateGroupComponent,
   setSearchComponent,
+  setChatContainerHeight,
 } = slice.actions
 
 export default slice.reducer

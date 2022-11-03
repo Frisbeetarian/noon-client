@@ -43,6 +43,7 @@ import {
 import {
   setCreateGroupComponent,
   getCreateGroupComponent,
+  getChatContainerHeight,
 } from '../../store/ui'
 import { createGroup, getGroups } from '../../store/groups'
 
@@ -64,6 +65,7 @@ function Chat() {
   const activeConversation = useSelector(getActiveConversation)
   const activeConversationSet = useSelector(getActiveConversationSet)
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
+  const chatContainerHeight = useSelector(getChatContainerHeight)
 
   const profile = useSelector(getActiveConversee)
   const [, saveMessage] = useSaveMessageMutation()
@@ -524,13 +526,19 @@ function Chat() {
       <ChatControlsAndSearch />
 
       {isCreateGroupOpen ? (
-        <Flex className="flex-col p-0 box-content" style={{ flex: '0.875' }}>
+        <Flex
+          className="flex-col p-0 box-content"
+          style={{ height: chatContainerHeight, transition: 'all .5s' }}
+        >
           <CreateGroup />
         </Flex>
       ) : null}
 
       {activeConversation && activeConversation.type === 'group' ? (
-        <Flex className="flex-col p-0 box-content" style={{ flex: '0.875' }}>
+        <Flex
+          className="flex-col p-0 box-content"
+          style={{ height: chatContainerHeight, transition: 'all .5s' }}
+        >
           <Header></Header>
 
           {videoFrameOpenState !== true ? (
@@ -548,7 +556,10 @@ function Chat() {
       ) : null}
 
       {profile && activeConversation && activeConversation.type === 'pm' ? (
-        <Flex className="flex-col p-0 box-content" style={{ flex: '0.875' }}>
+        <Flex
+          className="flex-col p-0 box-content"
+          style={{ height: chatContainerHeight, transition: 'all .5s' }}
+        >
           <Header></Header>
 
           {videoFrameOpenState !== true ? (
@@ -570,7 +581,7 @@ function Chat() {
           w="100%"
           flexDir="column"
           className="justify-center"
-          style={{ flex: '0.075' }}
+          style={{ height: '7.5vh' }}
         >
           {activeConversation.type === 'pm' ? (
             <Footer
