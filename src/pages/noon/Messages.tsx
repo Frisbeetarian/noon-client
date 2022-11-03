@@ -1,5 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import { Avatar, Flex, Text, Image, Button } from '@chakra-ui/react'
+import {
+  Avatar,
+  Flex,
+  Text,
+  Image,
+  Button,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  IconButton,
+} from '@chakra-ui/react'
+
+import {
+  SettingsIcon,
+  HamburgerIcon,
+  EditIcon,
+  ChevronDownIcon,
+} from '@chakra-ui/icons'
+
 import {
   useCheckIfConversationHasMoreMessagesQuery,
   useClearUnreadMessagesForConversationMutation,
@@ -214,8 +233,37 @@ const Messages = () => {
                         maxW="350px"
                         my="1"
                         p="3"
+                        className="relative"
                       >
                         <Text>{item.content}</Text>
+                        {/*<Icon></Icon>*/}
+                        {/*<ChevronDownIcon className="mx-2 -mr-1 " />*/}
+                        <Menu>
+                          <MenuButton
+                            as={IconButton}
+                            aria-label="Options"
+                            icon={<ChevronDownIcon />}
+                            variant="none"
+                            px={0}
+                            py={0}
+                            mx={0}
+                            my={0}
+                          />
+                          <MenuList>
+                            <MenuItem onClick={async () => {}}>
+                              Unsend message
+                            </MenuItem>
+                            {/*  <MenuItem*/}
+                            {/*    icon={<ChevronDownIcon />}*/}
+                            {/*    onClick={async () => {*/}
+                            {/*      // const unfriendResponse = await unfriend({*/}
+                            {/*      //   profileUuid: conversation.conversee.uuid,*/}
+                            {/*      //   conversationUuid: conversation.uuid,*/}
+                            {/*      // })*/}
+                            {/*    }}*/}
+                            {/*  />*/}
+                          </MenuList>
+                        </Menu>
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex

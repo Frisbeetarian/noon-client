@@ -1,0 +1,19 @@
+mutation DeleteMessage(
+    $messageUuid: String!
+    $conversationUuid: String!
+    $from: String!
+    $to: String!
+    $type: String!
+    $src: String!
+) {
+    deleteMessage(
+        messageUuid: $messageUuid
+        conversationUuid: $conversationUuid
+        from: $from
+        to: $to
+        type: $type
+        src: $src
+    ) {
+        uuid
+    }
+}
