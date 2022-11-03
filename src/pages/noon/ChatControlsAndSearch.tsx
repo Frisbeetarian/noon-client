@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getActiveConversee } from '../../store/chat'
 import SearchController from './SearchController'
 import { getSearchQuery, setSearchQuery } from '../../store/search'
+
 import {
   setSearchComponent,
   getSearchComponentState,
@@ -63,7 +64,7 @@ function ChatControlsAndSearch() {
             <p className="text-xl mt-4 mb-10">Search Results</p>
           ) : null}
 
-          {searchInput ? (
+          {searchInput && searchComponentState.searchActive ? (
             <Flex className="w-full" style={{ flex: '1' }}>
               <SearchController />
             </Flex>
@@ -82,6 +83,7 @@ function ChatControlsAndSearch() {
               // setContainerHeight('40vh')
               // setInputPadding('10px')
 
+              dispatch(setChatContainerHeight('52.5vh'))
               dispatch(
                 setSearchComponent({
                   searchActive: true,
@@ -90,8 +92,6 @@ function ChatControlsAndSearch() {
                   inputPadding: '10px',
                 })
               )
-
-              dispatch(setChatContainerHeight('52.5vh'))
             }}
             style={{
               padding: searchComponentState.inputPadding,
@@ -118,7 +118,7 @@ function ChatControlsAndSearch() {
             <SearchIcon className="absolute right-5" />
           )}
         </Flex>
-        {searchComponentState.containerDisplay === 'relative' ? (
+        {searchComponentState.searchActive ? (
           <ArrowUpIcon
             className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer"
             onClick={() => {
