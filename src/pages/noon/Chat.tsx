@@ -99,7 +99,6 @@ function Chat() {
 
           console.log('RECEIVED MESSAGES:', message)
           console.log('activeConversation:', activeConversationSet)
-
           const data = message
 
           if (
@@ -112,6 +111,7 @@ function Chat() {
               profileUuid: loggedInUser?.user?.profile?.uuid,
             })
           }
+
           // if (activeConversation) {
 
           dispatch(

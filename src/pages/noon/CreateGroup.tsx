@@ -38,7 +38,6 @@ const CreateGroup = ({}) => {
   const dispatch = useDispatch()
   const socket = useSelector(getSocket)
   let participants = useSelector(getParticipants)
-
   const loggedInUser = useSelector(getLoggedInUser)
   const [friends, setFriends] = useState(null)
 
@@ -96,13 +95,14 @@ const CreateGroup = ({}) => {
 
         dispatch(clearState())
 
-        // socket.emit('group-created', {
-        //   fromUuid: loggedInUser.user?.profile?.uuid,
-        //   fromUsername: loggedInUser.user?.profile?.username,
-        //   groupUuid: conversation.data?.createGroupConversation.uuid,
-        //   conversation: conversation.data?.createGroupConversation,
-        //   participants: participantsToSend,
-        // })
+        socket.emit('group-created', {
+          fromUuid: loggedInUser.user?.profile?.uuid,
+          fromUsername: loggedInUser.user?.profile?.username,
+          groupUuid: conversation.data?.createGroupConversation.uuid,
+          conversation: conversation.data?.createGroupConversation,
+          participants: participantsToSend,
+        })
+
         console.log('conversation:', conversation)
 
         dispatch(
@@ -139,6 +139,7 @@ const CreateGroup = ({}) => {
           X
         </Button>
       </Flex>
+
       <Flex>
         <form className="flex w-2/4" onSubmit={formik.handleSubmit}>
           <Flex className="mr-5" direction="column">
