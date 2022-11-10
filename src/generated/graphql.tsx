@@ -775,7 +775,7 @@ export type FriendshipRequestSnippetFragment = (
 
 export type MessageSnippetFragment = (
   { __typename?: 'Message' }
-  & Pick<Message, 'uuid' | 'content' | 'updatedAt' | 'createdAt' | 'type' | 'src'>
+  & Pick<Message, 'uuid' | 'content' | 'updatedAt' | 'createdAt' | 'type' | 'src' | 'deleted'>
   & { sender: (
     { __typename?: 'Profile' }
     & Pick<Profile, 'uuid' | 'username'>
@@ -1303,6 +1303,7 @@ export const MessageSnippetFragmentDoc = gql`
   createdAt
   type
   src
+  deleted
   sender {
     uuid
     username

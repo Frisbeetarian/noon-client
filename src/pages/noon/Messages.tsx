@@ -238,45 +238,50 @@ const Messages = () => {
                         p="3"
                         className="relative"
                       >
-                        <Text>{item.content}</Text>
+                        <Text>
+                          {!item.deleted ? item.content : <i>{item.content}</i>}
+                        </Text>
+
                         {/*<Icon></Icon>*/}
                         {/*<ChevronDownIcon className="mx-2 -mr-1 " />*/}
-                        <Menu>
-                          <MenuButton
-                            as={IconButton}
-                            aria-label="Options"
-                            icon={<ChevronDownIcon />}
-                            variant="none"
-                            px={0}
-                            py={0}
-                            mx={0}
-                            my={0}
-                          />
-                          <MenuList>
-                            <MenuItem
-                              onClick={async () => {
-                                await deleteMessage({
-                                  messageUuid: item.uuid,
-                                  conversationUuid: activeConversation.uuid,
-                                  from: loggedInUser.user.profile.uuid,
-                                  type: 'text',
-                                  src: '',
-                                })
-                              }}
-                            >
-                              Unsend message
-                            </MenuItem>
-                            {/*  <MenuItem*/}
-                            {/*    icon={<ChevronDownIcon />}*/}
-                            {/*    onClick={async () => {*/}
-                            {/*      // const unfriendResponse = await unfriend({*/}
-                            {/*      //   profileUuid: conversation.conversee.uuid,*/}
-                            {/*      //   conversationUuid: conversation.uuid,*/}
-                            {/*      // })*/}
-                            {/*    }}*/}
-                            {/*  />*/}
-                          </MenuList>
-                        </Menu>
+                        {!item.deleted ? (
+                          <Menu>
+                            <MenuButton
+                              as={IconButton}
+                              aria-label="Options"
+                              icon={<ChevronDownIcon />}
+                              variant="none"
+                              px={0}
+                              py={0}
+                              mx={0}
+                              my={0}
+                            />
+                            <MenuList>
+                              <MenuItem
+                                onClick={async () => {
+                                  await deleteMessage({
+                                    messageUuid: item.uuid,
+                                    conversationUuid: activeConversation.uuid,
+                                    from: loggedInUser.user.profile.uuid,
+                                    type: 'text',
+                                    src: '',
+                                  })
+                                }}
+                              >
+                                Unsend message
+                              </MenuItem>
+                              {/*  <MenuItem*/}
+                              {/*    icon={<ChevronDownIcon />}*/}
+                              {/*    onClick={async () => {*/}
+                              {/*      // const unfriendResponse = await unfriend({*/}
+                              {/*      //   profileUuid: conversation.conversee.uuid,*/}
+                              {/*      //   conversationUuid: conversation.uuid,*/}
+                              {/*      // })*/}
+                              {/*    }}*/}
+                              {/*  />*/}
+                            </MenuList>
+                          </Menu>
+                        ) : null}
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex

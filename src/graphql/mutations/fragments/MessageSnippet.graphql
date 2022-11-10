@@ -5,6 +5,7 @@ fragment MessageSnippet on Message {
   createdAt
   type
   src
+  deleted
   sender {
     uuid
     username
