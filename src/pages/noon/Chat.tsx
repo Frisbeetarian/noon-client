@@ -88,6 +88,7 @@ function Chat() {
           from,
           fromUsername,
           to,
+          messageUuid,
           message,
           conversationUuid,
           type,
@@ -116,6 +117,7 @@ function Chat() {
 
           dispatch(
             addMessageToActiveConversation({
+              uuid: messageUuid,
               message: data,
               sender: { uuid: from, username: fromUsername },
               from: 'computer',
@@ -433,6 +435,13 @@ function Chat() {
     //   conversationUuid: activeConversation.uuid,
     // })
 
+    const message = await saveGroupMessage({
+      message: data,
+      type: 'text',
+      src: '',
+      conversationUuid: activeConversation.uuid,
+    })
+
     activeConversation.profiles.map((profile) => {
       if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
         socket.emit('private-chat-message', {
@@ -442,6 +451,7 @@ function Chat() {
           fromUsername: loggedInUser.user?.profile?.username,
           to: profile.uuid,
           toUsername: profile.username,
+          messageUuid: message.data?.saveGroupMessage?.uuid,
           message: data,
           type: 'text',
           src: '',
@@ -452,6 +462,7 @@ function Chat() {
 
     dispatch(
       addMessageToActiveConversation({
+        uuid: message.data?.saveGroupMessage?.uuid,
         message: data,
         sender: {
           uuid: loggedInUser?.user?.profile?.uuid,
@@ -463,13 +474,6 @@ function Chat() {
         conversationUuid: activeConversation.uuid,
       })
     )
-
-    await saveGroupMessage({
-      message: data,
-      type: 'text',
-      src: '',
-      conversationUuid: activeConversation.uuid,
-    })
   }
 
   const handleSendMessage = async () => {
@@ -483,12 +487,23 @@ function Chat() {
     // setMessages((old) => [...old, { from: 'me', text: data }])
     setInputMessage('')
 
+    const message = await saveMessage({
+      message: data,
+      type: 'text',
+      src: '',
+      conversationUuid: activeConversation.uuid,
+      to: profile.uuid,
+    })
+
+    console.log('save message on input:', message)
+
     socket.emit('private-chat-message', {
       content: loggedInUser.user?.profile?.username + ' sent you a message.',
       from: loggedInUser.user?.profile?.uuid,
       fromUsername: loggedInUser.user?.profile?.username,
       to: profile.uuid,
       toUsername: profile.username,
+      messageUuid: message.data?.saveMessage?.uuid,
       message: data,
       type: 'text',
       src: '',
@@ -497,6 +512,7 @@ function Chat() {
 
     dispatch(
       addMessageToActiveConversation({
+        uuid: message.data?.saveMessage?.uuid,
         message: data,
         sender: {
           uuid: loggedInUser?.user?.profile?.uuid,
@@ -508,14 +524,6 @@ function Chat() {
         conversationUuid: activeConversation.uuid,
       })
     )
-
-    await saveMessage({
-      message: data,
-      type: 'text',
-      src: '',
-      conversationUuid: activeConversation.uuid,
-      to: profile.uuid,
-    })
   }
 
   return (
