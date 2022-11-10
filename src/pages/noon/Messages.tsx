@@ -270,6 +270,7 @@ const Messages = () => {
                                     type: 'text',
                                     src: '',
                                   })
+
                                   console.log(
                                     'message in update message1:',
                                     message

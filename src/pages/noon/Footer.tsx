@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Flex, Input, Button, Box } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
 import {
+  deleteMessageInStore,
   getActiveConversation,
   getActiveConversee,
   setOngoingCall,
@@ -57,7 +58,16 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
           from,
           fromUsername,
           conversationUuid,
-        }) => {}
+        }) => {
+          dispatch(
+            deleteMessageInStore({
+              uuid: messageUuid,
+              content: 'Message has been deleted.',
+              deleted: true,
+              conversationUuid: conversationUuid,
+            })
+          )
+        }
       )
     }
 
