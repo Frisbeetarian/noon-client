@@ -443,10 +443,6 @@ const Messages = () => {
                                       conversationUuid: activeConversation.uuid,
                                     })
                                   )
-                                  // socket.emit(
-                                  //   'message-deleted',
-                                  //   ({ session }) => {}
-                                  // )
 
                                   activeConversation.profiles.map((profile) => {
                                     if (
@@ -483,16 +479,166 @@ const Messages = () => {
                         maxW="350px"
                         my="1"
                       >
-                        <Image src={item.src} alt={item.content} />
+                        {/*<Text>*/}
+                        {/*   item.content : <i>{item.content}</i>}*/}
+                        {/*</Text>*/}
+
+                        {!item.deleted ? (
+                          <Image src={item.src} alt={item.content} />
+                        ) : (
+                          <Text>
+                            <i>{item.content}</i>
+                          </Text>
+                        )}
+
+                        {!item.deleted ? (
+                          <Menu>
+                            <MenuButton
+                              as={IconButton}
+                              aria-label="Options"
+                              icon={<ChevronDownIcon />}
+                              variant="none"
+                              px={0}
+                              py={0}
+                              mx={0}
+                              my={0}
+                            />
+                            <MenuList>
+                              <MenuItem
+                                onClick={async () => {
+                                  const message = await deleteMessage({
+                                    messageUuid: item.uuid,
+                                    conversationUuid: activeConversation.uuid,
+                                    from: loggedInUser.user.profile.uuid,
+                                    type: 'text',
+                                    src: '',
+                                  })
+
+                                  console.log(
+                                    'message in update message1:',
+                                    message
+                                  )
+
+                                  dispatch(
+                                    deleteMessageInStore({
+                                      uuid: message.data?.deleteMessage.uuid,
+                                      content:
+                                        message.data?.deleteMessage.content,
+                                      deleted:
+                                        message.data?.deleteMessage.deleted,
+                                      conversationUuid: activeConversation.uuid,
+                                    })
+                                  )
+
+                                  activeConversation.profiles.map((profile) => {
+                                    if (
+                                      profile.uuid !==
+                                      loggedInUser.user?.profile?.uuid
+                                    ) {
+                                      socket.emit('message-deleted', {
+                                        messageUuid: item.uuid,
+                                        to: profile.uuid,
+                                        toUsername: profile.username,
+                                        fromUsername:
+                                          loggedInUser.user?.profile?.username,
+                                        from: loggedInUser.user.profile.uuid,
+                                        fromUsername:
+                                          loggedInUser.user.profile.username,
+                                        conversationUuid:
+                                          activeConversation.uuid,
+                                      })
+                                    }
+                                  })
+                                }}
+                              >
+                                Unsend message
+                              </MenuItem>
+                            </MenuList>
+                          </Menu>
+                        ) : null}
                       </Flex>
                     ) : item.type === 'audio' ? (
                       <Flex
-                        className="justify-end bg-red-500"
+                        className="justify-end "
                         minW="100px"
                         maxW="350px"
                         my="1"
                       >
-                        <ReactAudioPlayer src={item.src} controls />
+                        {/*<ReactAudioPlayer src={item.src} controls />*/}
+
+                        {!item.deleted ? (
+                          <ReactAudioPlayer src={item.src} controls />
+                        ) : (
+                          <Text>
+                            <i>{item.content}</i>
+                          </Text>
+                        )}
+
+                        {!item.deleted ? (
+                          <Menu>
+                            <MenuButton
+                              as={IconButton}
+                              aria-label="Options"
+                              icon={<ChevronDownIcon />}
+                              variant="none"
+                              px={0}
+                              py={0}
+                              mx={0}
+                              my={0}
+                            />
+                            <MenuList>
+                              <MenuItem
+                                onClick={async () => {
+                                  const message = await deleteMessage({
+                                    messageUuid: item.uuid,
+                                    conversationUuid: activeConversation.uuid,
+                                    from: loggedInUser.user.profile.uuid,
+                                    type: 'text',
+                                    src: '',
+                                  })
+
+                                  console.log(
+                                    'message in update message1:',
+                                    message
+                                  )
+
+                                  dispatch(
+                                    deleteMessageInStore({
+                                      uuid: message.data?.deleteMessage.uuid,
+                                      content:
+                                        message.data?.deleteMessage.content,
+                                      deleted:
+                                        message.data?.deleteMessage.deleted,
+                                      conversationUuid: activeConversation.uuid,
+                                    })
+                                  )
+
+                                  activeConversation.profiles.map((profile) => {
+                                    if (
+                                      profile.uuid !==
+                                      loggedInUser.user?.profile?.uuid
+                                    ) {
+                                      socket.emit('message-deleted', {
+                                        messageUuid: item.uuid,
+                                        to: profile.uuid,
+                                        toUsername: profile.username,
+                                        fromUsername:
+                                          loggedInUser.user?.profile?.username,
+                                        from: loggedInUser.user.profile.uuid,
+                                        fromUsername:
+                                          loggedInUser.user.profile.username,
+                                        conversationUuid:
+                                          activeConversation.uuid,
+                                      })
+                                    }
+                                  })
+                                }}
+                              >
+                                Unsend message
+                              </MenuItem>
+                            </MenuList>
+                          </Menu>
+                        ) : null}
                       </Flex>
                     ) : null}
                   </Flex>
@@ -517,6 +663,7 @@ const Messages = () => {
                         <Text>
                           {!item.deleted ? item.content : <i>{item.content}</i>}
                         </Text>
+
                         {/*<Text>{item.content}</Text>*/}
                       </Flex>
                     ) : item.type === 'image' ? (
@@ -527,7 +674,15 @@ const Messages = () => {
                         maxW="350px"
                         my="1"
                       >
-                        <Image src={item.src} alt={item.content} />
+                        {!item.deleted ? (
+                          <Image src={item.src} alt={item.content} />
+                        ) : (
+                          <Text>
+                            <i>{item.content}</i>
+                          </Text>
+                        )}
+
+                        {/*<Image src={item.src} alt={item.content} />*/}
                       </Flex>
                     ) : item.type === 'audio' ? (
                       <Flex
@@ -536,7 +691,13 @@ const Messages = () => {
                         maxW="350px"
                         my="1"
                       >
-                        <ReactAudioPlayer src={item.src} controls />
+                        {!item.deleted ? (
+                          <ReactAudioPlayer src={item.src} controls />
+                        ) : (
+                          <Text>
+                            <i>{item.content}</i>
+                          </Text>
+                        )}
                       </Flex>
                     ) : null}
                   </Flex>
