@@ -438,6 +438,37 @@ const slice = createSlice({
       conversationInList.pendingCall = false
       conversationInList.pendingCallProfile = null
     },
+    deleteMessageInStore: (chat, action) => {
+      console.log('message in update message:', action.payload)
+
+      try {
+        let conversation = chat.conversations.find(
+          (conversation) =>
+            conversation.uuid === action.payload.conversationUuid
+        )
+
+        let messageInConversation = conversation.messages.find(
+          (message) => message.uuid === action.payload.uuid
+        )
+
+        console.log('message in update message:', action.payload.message)
+        messageInConversation.deleted = action.payload.deleted
+        messageInConversation.content = action.payload.content
+
+        if (chat.activeConversation) {
+          let messageInActiveConversation =
+            chat.activeConversation.messages.find(
+              (message) => message.uuid === action.payload.uuid
+            )
+
+          messageInActiveConversation.deleted = action.payload.deleted
+          messageInActiveConversation.content = action.payload.content
+        }
+        // messageInConversation = { ...action.payload.message }
+      } catch (e) {
+        console.log('error:', e)
+      }
+    },
   },
 })
 
@@ -494,6 +525,7 @@ export const {
   setShouldPauseCheckHasMore,
   setActiveGroupInStore,
   removeParticipantFromGroup,
+  deleteMessageInStore,
 } = slice.actions
 
 export default slice.reducer

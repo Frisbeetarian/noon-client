@@ -679,7 +679,7 @@ export type DeleteMessageMutation = (
   { __typename?: 'Mutation' }
   & { deleteMessage: (
     { __typename?: 'Message' }
-    & Pick<Message, 'uuid'>
+    & Pick<Message, 'uuid' | 'content' | 'deleted'>
   ) }
 );
 
@@ -1602,6 +1602,8 @@ export const DeleteMessageDocument = gql`
     src: $src
   ) {
     uuid
+    content
+    deleted
   }
 }
     `;

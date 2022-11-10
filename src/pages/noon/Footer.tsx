@@ -47,6 +47,18 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
           )
         }
       )
+
+      socket.on(
+        'message-deleted',
+        ({
+          messageUuid,
+          to,
+          toUsername,
+          from,
+          fromUsername,
+          conversationUuid,
+        }) => {}
+      )
     }
 
     return () => {

@@ -37,12 +37,14 @@ import {
   setActiveConversationHasMoreMessages,
   setShouldPauseCheckHasMore,
   getShouldPauseCheckHasMore,
+  deleteMessageInStore,
 } from '../../store/chat'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import ReactAudioPlayer from 'react-audio-player'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { getSocket } from '../../store/sockets'
 
 const Messages = () => {
   const dispatch = useDispatch()
@@ -50,6 +52,7 @@ const Messages = () => {
   const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
   const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
+  const socket = useSelector(getSocket)
 
   const [, clearUnreadMessagesForConversation] =
     useClearUnreadMessagesForConversationMutation()
@@ -171,6 +174,7 @@ const Messages = () => {
       })
 
       setShouldPause(false)
+
       // dispatch(
       //   addMessagesToConversation({
       //     conversationUuid: activeConversation.uuid,
@@ -259,12 +263,51 @@ const Messages = () => {
                             <MenuList>
                               <MenuItem
                                 onClick={async () => {
-                                  await deleteMessage({
+                                  const message = await deleteMessage({
                                     messageUuid: item.uuid,
                                     conversationUuid: activeConversation.uuid,
                                     from: loggedInUser.user.profile.uuid,
                                     type: 'text',
                                     src: '',
+                                  })
+                                  console.log(
+                                    'message in update message1:',
+                                    message
+                                  )
+
+                                  dispatch(
+                                    deleteMessageInStore({
+                                      uuid: message.data?.deleteMessage.uuid,
+                                      content:
+                                        message.data?.deleteMessage.content,
+                                      deleted:
+                                        message.data?.deleteMessage.deleted,
+                                      conversationUuid: activeConversation.uuid,
+                                    })
+                                  )
+                                  // socket.emit(
+                                  //   'message-deleted',
+                                  //   ({ session }) => {}
+                                  // )
+
+                                  activeConversation.profiles.map((profile) => {
+                                    if (
+                                      profile.uuid !==
+                                      loggedInUser.user?.profile?.uuid
+                                    ) {
+                                      socket.emit('message-deleted', {
+                                        messageUuid: item.uuid,
+                                        to: profile.uuid,
+                                        toUsername: profile.username,
+                                        fromUsername:
+                                          loggedInUser.user?.profile?.username,
+                                        from: loggedInUser.user.profile.uuid,
+                                        fromUsername:
+                                          loggedInUser.user.profile.username,
+                                        conversationUuid:
+                                          activeConversation.uuid,
+                                      })
+                                    }
                                   })
                                 }}
                               >
