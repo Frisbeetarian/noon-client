@@ -11,6 +11,7 @@ import {
 
 import { setVideoFrameForConversation } from '../../store/video'
 import { useSelector, useDispatch } from 'react-redux'
+
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
 import { useSetPendingCallForConversationMutation } from '../../generated/graphql'
@@ -132,7 +133,6 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
                 conversationUuid: activeConversation.uuid,
                 profileUuid: profile.uuid,
               })
-              // }
             })
 
             //
