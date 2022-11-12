@@ -185,6 +185,46 @@ const Messages = () => {
     }, 750)
   }
 
+  const deleteMessageHandler = async (item) => {
+    const message = await deleteMessage({
+      messageUuid: item.uuid,
+      conversationUuid: activeConversation.uuid,
+      from: loggedInUser.user.profile.uuid,
+      type: item.type,
+      src: item.src,
+    })
+
+    console.log('message in update message1:', message)
+
+    dispatch(
+      deleteMessageInStore({
+        uuid: message.data?.deleteMessage.uuid,
+        content: message.data?.deleteMessage.content,
+        deleted: message.data?.deleteMessage.deleted,
+        conversationUuid: activeConversation.uuid,
+      })
+    )
+
+    // socket.emit(
+    //   'message-deleted',
+    //   ({ session }) => {}
+    // )
+
+    activeConversation.profiles.map((profile) => {
+      if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
+        socket.emit('message-deleted', {
+          messageUuid: item.uuid,
+          to: profile.uuid,
+          toUsername: profile.username,
+          fromUsername: loggedInUser.user?.profile?.username,
+          from: loggedInUser.user.profile.uuid,
+          fromUsername: loggedInUser.user.profile.username,
+          conversationUuid: activeConversation.uuid,
+        })
+      }
+    })
+  }
+
   return (
     <Flex
       id="scrollableDiv"
@@ -202,8 +242,8 @@ const Messages = () => {
         }}
       > */}
       {/*Put the scroll bar always on the bottom*/}
-
       {/* {data && data.getMessagesForConversation.messages.length !== 0 ? ( */}
+
       <InfiniteScroll
         dataLength={activeConversation.messages}
         next={fetchMoreMessage}
@@ -248,6 +288,7 @@ const Messages = () => {
 
                         {/*<Icon></Icon>*/}
                         {/*<ChevronDownIcon className="mx-2 -mr-1 " />*/}
+
                         {!item.deleted ? (
                           <Menu>
                             <MenuButton
@@ -260,56 +301,11 @@ const Messages = () => {
                               mx={0}
                               my={0}
                             />
+
                             <MenuList>
                               <MenuItem
                                 onClick={async () => {
-                                  const message = await deleteMessage({
-                                    messageUuid: item.uuid,
-                                    conversationUuid: activeConversation.uuid,
-                                    from: loggedInUser.user.profile.uuid,
-                                    type: 'text',
-                                    src: '',
-                                  })
-
-                                  console.log(
-                                    'message in update message1:',
-                                    message
-                                  )
-
-                                  dispatch(
-                                    deleteMessageInStore({
-                                      uuid: message.data?.deleteMessage.uuid,
-                                      content:
-                                        message.data?.deleteMessage.content,
-                                      deleted:
-                                        message.data?.deleteMessage.deleted,
-                                      conversationUuid: activeConversation.uuid,
-                                    })
-                                  )
-                                  // socket.emit(
-                                  //   'message-deleted',
-                                  //   ({ session }) => {}
-                                  // )
-
-                                  activeConversation.profiles.map((profile) => {
-                                    if (
-                                      profile.uuid !==
-                                      loggedInUser.user?.profile?.uuid
-                                    ) {
-                                      socket.emit('message-deleted', {
-                                        messageUuid: item.uuid,
-                                        to: profile.uuid,
-                                        toUsername: profile.username,
-                                        fromUsername:
-                                          loggedInUser.user?.profile?.username,
-                                        from: loggedInUser.user.profile.uuid,
-                                        fromUsername:
-                                          loggedInUser.user.profile.username,
-                                        conversationUuid:
-                                          activeConversation.uuid,
-                                      })
-                                    }
-                                  })
+                                  await deleteMessageHandler(item)
                                 }}
                               >
                                 Unsend message
@@ -320,22 +316,94 @@ const Messages = () => {
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex
-                        className="justify-end"
-                        boxSize="sm"
-                        minW="100px"
-                        maxW="350px"
+                        className="justify-end relative"
+                        boxSize="{!item.deleted ? 'sm' : ''}"
+                        bg={!item.deleted ? '' : 'black'}
+                        minW={!item.deleted ? '100px' : ''}
+                        maxW={!item.deleted ? '350px' : ''}
                         my="1"
+                        p={!item.deleted ? '0' : '3'}
                       >
-                        <Image src={item.src} alt={item.content} />
+                        {/*<Image src={item.src} alt={item.content} />*/}
+
+                        {!item.deleted ? (
+                          <Image src={item.src} alt={item.content} />
+                        ) : (
+                          <Text>
+                            <i>{item.content}</i>
+                          </Text>
+                        )}
+
+                        {!item.deleted ? (
+                          <div className="absolute border rounded border-black">
+                            <Menu>
+                              <MenuButton
+                                as={IconButton}
+                                aria-label="Options"
+                                icon={<ChevronDownIcon />}
+                                variant="none"
+                                px={0}
+                                py={0}
+                                mx={0}
+                                my={0}
+                              />
+
+                              <MenuList>
+                                <MenuItem
+                                  onClick={async () => {
+                                    await deleteMessageHandler(item)
+                                  }}
+                                >
+                                  Unsend message
+                                </MenuItem>
+                              </MenuList>
+                            </Menu>
+                          </div>
+                        ) : null}
                       </Flex>
                     ) : item.type === 'audio' ? (
                       <Flex
-                        className="justify-end bg-red-500"
-                        minW="100px"
-                        maxW="350px"
+                        className="justify-end relative"
+                        boxSize="{!item.deleted ? 'sm' : ''}"
+                        bg={!item.deleted ? 'red' : 'black'}
+                        minW={!item.deleted ? '100px' : ''}
+                        maxW={!item.deleted ? '350px' : ''}
                         my="1"
+                        p={!item.deleted ? '0' : '3'}
                       >
-                        <ReactAudioPlayer src={item.src} controls />
+                        {!item.deleted ? (
+                          <ReactAudioPlayer src={item.src} controls />
+                        ) : (
+                          <Text>
+                            <i>{item.content}</i>
+                          </Text>
+                        )}
+                        {!item.deleted ? (
+                          // <div className=" border rounded border-black">
+                          <Menu>
+                            <MenuButton
+                              as={IconButton}
+                              aria-label="Options"
+                              icon={<ChevronDownIcon />}
+                              variant="none"
+                              px={0}
+                              py={0}
+                              mx={0}
+                              my={0}
+                            />
+
+                            <MenuList>
+                              <MenuItem
+                                onClick={async () => {
+                                  await deleteMessageHandler(item)
+                                }}
+                              >
+                                Unsend message
+                              </MenuItem>
+                            </MenuList>
+                          </Menu>
+                        ) : // </div>
+                        null}
                       </Flex>
                     ) : null}
                   </Flex>
@@ -417,52 +485,11 @@ const Messages = () => {
                               mx={0}
                               my={0}
                             />
+
                             <MenuList>
                               <MenuItem
                                 onClick={async () => {
-                                  const message = await deleteMessage({
-                                    messageUuid: item.uuid,
-                                    conversationUuid: activeConversation.uuid,
-                                    from: loggedInUser.user.profile.uuid,
-                                    type: 'text',
-                                    src: '',
-                                  })
-
-                                  console.log(
-                                    'message in update message1:',
-                                    message
-                                  )
-
-                                  dispatch(
-                                    deleteMessageInStore({
-                                      uuid: message.data?.deleteMessage.uuid,
-                                      content:
-                                        message.data?.deleteMessage.content,
-                                      deleted:
-                                        message.data?.deleteMessage.deleted,
-                                      conversationUuid: activeConversation.uuid,
-                                    })
-                                  )
-
-                                  activeConversation.profiles.map((profile) => {
-                                    if (
-                                      profile.uuid !==
-                                      loggedInUser.user?.profile?.uuid
-                                    ) {
-                                      socket.emit('message-deleted', {
-                                        messageUuid: item.uuid,
-                                        to: profile.uuid,
-                                        toUsername: profile.username,
-                                        fromUsername:
-                                          loggedInUser.user?.profile?.username,
-                                        from: loggedInUser.user.profile.uuid,
-                                        fromUsername:
-                                          loggedInUser.user.profile.username,
-                                        conversationUuid:
-                                          activeConversation.uuid,
-                                      })
-                                    }
-                                  })
+                                  await deleteMessageHandler(item)
                                 }}
                               >
                                 Unsend message
@@ -473,11 +500,13 @@ const Messages = () => {
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex
-                        className="justify-end"
-                        boxSize="sm"
-                        minW="100px"
-                        maxW="350px"
+                        className="justify-end relative"
+                        boxSize="{!item.deleted ? 'sm' : ''}"
+                        bg={!item.deleted ? 'red' : 'black'}
+                        minW={!item.deleted ? '100px' : ''}
+                        maxW={!item.deleted ? '350px' : ''}
                         my="1"
+                        p={!item.deleted ? '0' : '3'}
                       >
                         {/*<Text>*/}
                         {/*   item.content : <i>{item.content}</i>}*/}
@@ -503,52 +532,11 @@ const Messages = () => {
                               mx={0}
                               my={0}
                             />
+
                             <MenuList>
                               <MenuItem
                                 onClick={async () => {
-                                  const message = await deleteMessage({
-                                    messageUuid: item.uuid,
-                                    conversationUuid: activeConversation.uuid,
-                                    from: loggedInUser.user.profile.uuid,
-                                    type: 'text',
-                                    src: '',
-                                  })
-
-                                  console.log(
-                                    'message in update message1:',
-                                    message
-                                  )
-
-                                  dispatch(
-                                    deleteMessageInStore({
-                                      uuid: message.data?.deleteMessage.uuid,
-                                      content:
-                                        message.data?.deleteMessage.content,
-                                      deleted:
-                                        message.data?.deleteMessage.deleted,
-                                      conversationUuid: activeConversation.uuid,
-                                    })
-                                  )
-
-                                  activeConversation.profiles.map((profile) => {
-                                    if (
-                                      profile.uuid !==
-                                      loggedInUser.user?.profile?.uuid
-                                    ) {
-                                      socket.emit('message-deleted', {
-                                        messageUuid: item.uuid,
-                                        to: profile.uuid,
-                                        toUsername: profile.username,
-                                        fromUsername:
-                                          loggedInUser.user?.profile?.username,
-                                        from: loggedInUser.user.profile.uuid,
-                                        fromUsername:
-                                          loggedInUser.user.profile.username,
-                                        conversationUuid:
-                                          activeConversation.uuid,
-                                      })
-                                    }
-                                  })
+                                  deleteMessageHandler(item)
                                 }}
                               >
                                 Unsend message
@@ -559,10 +547,13 @@ const Messages = () => {
                       </Flex>
                     ) : item.type === 'audio' ? (
                       <Flex
-                        className="justify-end "
-                        minW="100px"
-                        maxW="350px"
+                        className="justify-end relative"
+                        boxSize="{!item.deleted ? 'sm' : ''}"
+                        bg={!item.deleted ? 'red' : 'black'}
+                        minW={!item.deleted ? '100px' : ''}
+                        maxW={!item.deleted ? '350px' : ''}
                         my="1"
+                        p={!item.deleted ? '0' : '3'}
                       >
                         {/*<ReactAudioPlayer src={item.src} controls />*/}
 
@@ -589,49 +580,7 @@ const Messages = () => {
                             <MenuList>
                               <MenuItem
                                 onClick={async () => {
-                                  const message = await deleteMessage({
-                                    messageUuid: item.uuid,
-                                    conversationUuid: activeConversation.uuid,
-                                    from: loggedInUser.user.profile.uuid,
-                                    type: 'text',
-                                    src: '',
-                                  })
-
-                                  console.log(
-                                    'message in update message1:',
-                                    message
-                                  )
-
-                                  dispatch(
-                                    deleteMessageInStore({
-                                      uuid: message.data?.deleteMessage.uuid,
-                                      content:
-                                        message.data?.deleteMessage.content,
-                                      deleted:
-                                        message.data?.deleteMessage.deleted,
-                                      conversationUuid: activeConversation.uuid,
-                                    })
-                                  )
-
-                                  activeConversation.profiles.map((profile) => {
-                                    if (
-                                      profile.uuid !==
-                                      loggedInUser.user?.profile?.uuid
-                                    ) {
-                                      socket.emit('message-deleted', {
-                                        messageUuid: item.uuid,
-                                        to: profile.uuid,
-                                        toUsername: profile.username,
-                                        fromUsername:
-                                          loggedInUser.user?.profile?.username,
-                                        from: loggedInUser.user.profile.uuid,
-                                        fromUsername:
-                                          loggedInUser.user.profile.username,
-                                        conversationUuid:
-                                          activeConversation.uuid,
-                                      })
-                                    }
-                                  })
+                                  deleteMessageHandler(item)
                                 }}
                               >
                                 Unsend message
@@ -668,11 +617,13 @@ const Messages = () => {
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex
-                        className="justify-start"
-                        boxSize="sm"
-                        minW="100px"
-                        maxW="350px"
+                        className="justify-end relative"
+                        boxSize="{!item.deleted ? 'sm' : ''}"
+                        bg={!item.deleted ? 'red' : 'black'}
+                        minW={!item.deleted ? '100px' : ''}
+                        maxW={!item.deleted ? '350px' : ''}
                         my="1"
+                        p={!item.deleted ? '0' : '3'}
                       >
                         {!item.deleted ? (
                           <Image src={item.src} alt={item.content} />
@@ -686,10 +637,13 @@ const Messages = () => {
                       </Flex>
                     ) : item.type === 'audio' ? (
                       <Flex
-                        className="justify-start"
-                        minW="100px"
-                        maxW="350px"
+                        className="justify-end relative"
+                        boxSize="{!item.deleted ? 'sm' : ''}"
+                        bg={!item.deleted ? 'red' : 'black'}
+                        minW={!item.deleted ? '100px' : ''}
+                        maxW={!item.deleted ? '350px' : ''}
                         my="1"
+                        p={!item.deleted ? '0' : '3'}
                       >
                         {!item.deleted ? (
                           <ReactAudioPlayer src={item.src} controls />
@@ -705,8 +659,8 @@ const Messages = () => {
               }
             })
           : null}
-        {/* <AlwaysScrollToBottom /> */}
 
+        {/* <AlwaysScrollToBottom /> */}
         {/* <Button
           onClick={() => {
             setVariables({
