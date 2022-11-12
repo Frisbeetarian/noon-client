@@ -141,6 +141,7 @@ export default function useRecorder() {
                 fromUsername: loggedInUser.user?.profile?.username,
                 to: activeConversee.uuid,
                 toUsername: activeConversee.username,
+                messageUuid: response.data.content,
                 message: response.data.content,
                 type: response.data.type,
                 src: response.data.src,
@@ -157,6 +158,7 @@ export default function useRecorder() {
                     fromUsername: loggedInUser.user?.profile?.username,
                     to: profile.uuid,
                     toUsername: profile.username,
+                    messageUuid: response.data.uuid,
                     message: response.data.content,
                     type: response.data.type,
                     src: response.data.src,
@@ -168,6 +170,7 @@ export default function useRecorder() {
 
             dispatch(
               addMessageToActiveConversation({
+                uuid: response.data.uuid,
                 message: response.data.content,
                 sender: {
                   uuid: loggedInUser?.user?.profile?.uuid,
@@ -176,6 +179,7 @@ export default function useRecorder() {
                 from: 'me',
                 type: response.data.type,
                 src: response.data.src,
+                deleted: false,
                 conversationUuid: activeConversation.uuid,
               })
             )
