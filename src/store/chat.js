@@ -146,6 +146,9 @@ const slice = createSlice({
     addMessageToActiveConversation: (chat, action) => {
       let conversationUuid = action.payload.conversationUuid
 
+      console.log('chat active converastion:', chat.activeConversation)
+      console.log('payload.conversationUuid:', action.payload.conversationUuid)
+      console.log('action.payload:', action.payload)
       if (
         chat.activeConversation &&
         chat.activeConversation.uuid === conversationUuid
@@ -158,6 +161,7 @@ const slice = createSlice({
           from: action.payload.from,
           type: action.payload.type,
           src: action.payload.src,
+          deleted: action.payload.deleted,
           sender: {
             uuid: action.payload.sender?.uuid,
             username: action.payload.sender?.username,
@@ -177,6 +181,7 @@ const slice = createSlice({
           createdAt: new Date().getTime(),
           type: action.payload.type,
           src: action.payload.src,
+          deleted: action.payload.deleted,
           sender: {
             uuid: action.payload.sender?.uuid,
             username: action.payload.sender?.username,
@@ -209,6 +214,7 @@ const slice = createSlice({
           from: action.payload.from,
           type: action.payload.type,
           src: action.payload.src,
+          deleted: action.payload.deleted,
           sender: {
             uuid: action.payload.sender?.uuid,
             username: action.payload.sender?.username,

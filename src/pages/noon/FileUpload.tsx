@@ -86,6 +86,7 @@ export const FileUpload = ({ children }) => {
               fromUsername: loggedInUser.user?.profile?.username,
               to: profile.uuid,
               toUsername: profile.username,
+              messageUuid: response.data.uuid,
               message: response.data.content,
               type: response.data.type,
               src: response.data.src,
@@ -104,6 +105,7 @@ export const FileUpload = ({ children }) => {
                   fromUsername: loggedInUser.user?.profile?.username,
                   to: conversationProfile.uuid,
                   toUsername: conversationProfile.username,
+                  messageUuid: response.data.uuid,
                   message: response.data.content,
                   type: response.data.type,
                   src: response.data.src,
@@ -115,11 +117,13 @@ export const FileUpload = ({ children }) => {
 
           dispatch(
             addMessageToActiveConversation({
+              uuid: response.data.uuid,
               message: response.data.content,
               from: 'me',
               type: response.data.type,
               src: response.data.src,
               conversationUuid: activeConversation.uuid,
+              deleted: false,
               sender: {
                 uuid: loggedInUser?.user?.profile?.uuid,
                 username: loggedInUser?.user?.profile?.username,

@@ -317,7 +317,7 @@ const Messages = () => {
                     ) : item.type === 'image' ? (
                       <Flex
                         className="justify-end relative"
-                        boxSize="{!item.deleted ? 'sm' : ''}"
+                        boxSize={!item.deleted ? 'sm' : ''}
                         bg={!item.deleted ? '' : 'black'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
@@ -335,7 +335,7 @@ const Messages = () => {
                         )}
 
                         {!item.deleted ? (
-                          <div className="absolute border rounded border-black">
+                          <div className="absolute  rounded border-black">
                             <Menu>
                               <MenuButton
                                 as={IconButton}
@@ -364,7 +364,7 @@ const Messages = () => {
                     ) : item.type === 'audio' ? (
                       <Flex
                         className="justify-end relative"
-                        boxSize="{!item.deleted ? 'sm' : ''}"
+                        boxSize={!item.deleted ? 'sm' : ''}
                         bg={!item.deleted ? 'red' : 'black'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
@@ -501,8 +501,8 @@ const Messages = () => {
                     ) : item.type === 'image' ? (
                       <Flex
                         className="justify-end relative"
-                        boxSize="{!item.deleted ? 'sm' : ''}"
-                        bg={!item.deleted ? 'red' : 'black'}
+                        boxSize={!item.deleted ? 'sm' : ''}
+                        bg={!item.deleted ? '' : 'black'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
                         my="1"
@@ -521,34 +521,36 @@ const Messages = () => {
                         )}
 
                         {!item.deleted ? (
-                          <Menu>
-                            <MenuButton
-                              as={IconButton}
-                              aria-label="Options"
-                              icon={<ChevronDownIcon />}
-                              variant="none"
-                              px={0}
-                              py={0}
-                              mx={0}
-                              my={0}
-                            />
+                          <div className="absolute rounded border-black">
+                            <Menu>
+                              <MenuButton
+                                as={IconButton}
+                                aria-label="Options"
+                                icon={<ChevronDownIcon />}
+                                variant="none"
+                                px={0}
+                                py={0}
+                                mx={0}
+                                my={0}
+                              />
 
-                            <MenuList>
-                              <MenuItem
-                                onClick={async () => {
-                                  deleteMessageHandler(item)
-                                }}
-                              >
-                                Unsend message
-                              </MenuItem>
-                            </MenuList>
-                          </Menu>
+                              <MenuList>
+                                <MenuItem
+                                  onClick={async () => {
+                                    deleteMessageHandler(item)
+                                  }}
+                                >
+                                  Unsend message
+                                </MenuItem>
+                              </MenuList>
+                            </Menu>
+                          </div>
                         ) : null}
                       </Flex>
                     ) : item.type === 'audio' ? (
                       <Flex
                         className="justify-end relative"
-                        boxSize="{!item.deleted ? 'sm' : ''}"
+                        boxSize={!item.deleted ? 'sm' : ''}
                         bg={!item.deleted ? 'red' : 'black'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
@@ -618,7 +620,7 @@ const Messages = () => {
                     ) : item.type === 'image' ? (
                       <Flex
                         className="justify-end relative"
-                        boxSize="{!item.deleted ? 'sm' : ''}"
+                        boxSize={!item.deleted ? 'sm' : ''}
                         bg={!item.deleted ? 'red' : 'black'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
@@ -638,7 +640,7 @@ const Messages = () => {
                     ) : item.type === 'audio' ? (
                       <Flex
                         className="justify-end relative"
-                        boxSize="{!item.deleted ? 'sm' : ''}"
+                        boxSize={!item.deleted ? 'sm' : ''}
                         bg={!item.deleted ? 'red' : 'black'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
