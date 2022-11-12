@@ -324,8 +324,6 @@ const Messages = () => {
                         my="1"
                         p={!item.deleted ? '0' : '3'}
                       >
-                        {/*<Image src={item.src} alt={item.content} />*/}
-
                         {!item.deleted ? (
                           <Image src={item.src} alt={item.content} />
                         ) : (
@@ -431,22 +429,39 @@ const Messages = () => {
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex
-                        className="justify-start"
-                        boxSize="sm"
-                        minW="100px"
-                        maxW="350px"
+                        className="justify-end relative"
+                        boxSize={!item.deleted ? 'sm' : ''}
+                        bg={!item.deleted ? '' : 'black'}
+                        minW={!item.deleted ? '100px' : ''}
+                        maxW={!item.deleted ? '350px' : ''}
                         my="1"
+                        p={!item.deleted ? '0' : '3'}
                       >
-                        <Image src={item.src} alt={item.content} />
+                        {!item.deleted ? (
+                          <Image src={item.src} alt={item.content} />
+                        ) : (
+                          <Text>
+                            <i>{item.content}</i>
+                          </Text>
+                        )}
                       </Flex>
                     ) : item.type === 'audio' ? (
                       <Flex
-                        className="justify-start"
-                        minW="100px"
-                        maxW="350px"
+                        className="justify-end relative"
+                        boxSize={!item.deleted ? 'sm' : ''}
+                        bg={!item.deleted ? 'red' : 'black'}
+                        minW={!item.deleted ? '100px' : ''}
+                        maxW={!item.deleted ? '350px' : ''}
                         my="1"
+                        p={!item.deleted ? '0' : '3'}
                       >
-                        <ReactAudioPlayer src={item.src} controls />
+                        {!item.deleted ? (
+                          <ReactAudioPlayer src={item.src} controls />
+                        ) : (
+                          <Text>
+                            <i>{item.content}</i>
+                          </Text>
+                        )}
                       </Flex>
                     ) : null}
                   </Flex>

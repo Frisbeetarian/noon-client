@@ -113,8 +113,6 @@ function Chat() {
             })
           }
 
-          // if (activeConversation) {
-
           dispatch(
             addMessageToActiveConversation({
               uuid: messageUuid,
