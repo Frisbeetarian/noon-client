@@ -23,12 +23,12 @@ import { ChevronDownIcon, ChatIcon } from '@chakra-ui/icons'
 import { getLoggedInUser, setLoggedInUser } from '../store/users'
 import { useDispatch, useSelector } from 'react-redux'
 import SocketConnector from './SocketIo/SocketConnector'
+
 import ChatSidebar from './ChatSidebar'
 import { getChatComponentState } from '../store/ui'
 import { getConversationsThatHaveUnreadMessagesForProfile } from '../store/chat'
 
 interface NavbarProps {}
-
 export const Navbar: React.FC<NavbarProps> = ({}) => {
   const dispatch = useDispatch()
   const router = useRouter()
