@@ -31,10 +31,17 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { toErrorMap } from '../utils/toErrorMap'
 import { Form, Formik } from 'formik'
 
-import { useLoginMutation, useRegisterMutation } from '../generated/graphql'
+import {
+  useLoginMutation,
+  useRegisterMutation,
+  useLogoutMutation,
+  useMeQuery,
+} from '../generated/graphql'
+
 import { useRouter } from 'next/router'
 import { InputField } from '../components/InputField'
 import * as Yup from 'yup'
+import { isServer } from '../utils/isServer'
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -56,13 +63,18 @@ const Index = () => {
   const router = useRouter()
   const [, login] = useLoginMutation()
   const [, register] = useRegisterMutation()
+  //
+  // const [{ data, fetching }] = useMeQuery({
+  //   pause: isServer(),
+  //   requestPolicy: 'network-only',
+  // })
 
   const [variables, setVariables] = useState({
     limit: 15,
     cursor: null as null | string,
   })
-  let data = null
-  let fetching = null
+  // let data = null
+  // let fetching = null
 
   const loggedInUser = useSelector(getLoggedInUser)
   const [showPassword, setShowPassword] = useState(false)
@@ -70,6 +82,17 @@ const Index = () => {
   const [showLogin, setLogin] = useState(false)
   const [showRegister, setRegister] = useState(true)
   const [showForgotPassword, setForgotPassword] = useState(false)
+
+  let [{ data, fetching }] = useMeQuery({
+    pause: isServer(),
+    requestPolicy: 'network-only',
+  })
+
+  useEffect(() => {
+    if (data?.me?.username) {
+      router.push('/noon')
+    }
+  }, [data])
 
   // const {
   //   isOpen: isLoginOpen,
@@ -84,8 +107,10 @@ const Index = () => {
   // } = useDisclosure()
 
   return (
-    <Layout>
-      {loggedInUser.user.profile != null ? (
+    <Flex className="flex-col justify-center items-center bg-black text-white h-screen">
+      <p className="fixed top-12 text-5xl">NOON</p>
+
+      {fetching ? (
         <div>loading...</div>
       ) : (
         // <Stack spacing={8}></Stack>
@@ -119,7 +144,10 @@ const Index = () => {
               <Formik
                 initialValues={{ usernameOrEmail: '', password: '' }}
                 onSubmit={async (values, { setErrors }) => {
-                  const response = await login(values)
+                  const response = await login({
+                    username: values.usernameOrEmail,
+                    password: values.password,
+                  })
 
                   if (response.data?.login.errors) {
                     setErrors(toErrorMap(response.data.login.errors))
@@ -410,7 +438,7 @@ const Index = () => {
         </Flex>
       )}
       {/*)}*/}
-    </Layout>
+    </Flex>
   )
 }
 

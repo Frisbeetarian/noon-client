@@ -31,7 +31,7 @@ const errorExchange: Exchange =
       tap(({ error }) => {
         if (error) {
           if (error?.message.includes('not authenticated')) {
-            Router.replace('/login')
+            Router.replace('/')
           }
         }
       })
@@ -312,6 +312,8 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
   if (isServer()) {
     cookie = ctx?.req?.headers?.cookie
   }
+
+  console.log('cookie on platform start:', ctx)
 
   return {
     url: 'http://localhost:4020/graphql',

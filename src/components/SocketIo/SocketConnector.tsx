@@ -3,7 +3,6 @@ import io from 'socket.io-client'
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import { Box } from '@chakra-ui/react'
-
 import { setSocket } from '../../store/sockets'
 
 const ENDPOINT = 'http://localhost:4020'
@@ -17,7 +16,7 @@ export default function SocketConnector() {
 
   useEffect(() => {
     const sessionID = localStorage.getItem('sessionID')
-
+    console.log('session id:', sessionID)
     try {
       // if (!socket.connected) {
       // TODO check why adding condition for logged in user generates new session id item in storage
@@ -36,18 +35,16 @@ export default function SocketConnector() {
 
         socket.connect()
         dispatch(setSocket({ socket }))
-      }
+      } else {
+        socket.auth = {
+          username: loggedInUser?.user?.profile?.username,
+          userSocketUuid: loggedInUser.user?.profile?.uuid,
+          userID: loggedInUser.user?.profile?.uuid,
+        }
 
-      // else {
-      //   socket.auth = {
-      //     username: loggedInUser?.user?.profile?.username,
-      //     userSocketUuid: loggedInUser.user?.profile?.uuid,
-      //     userID: loggedInUser.user?.profile?.uuid,
-      //   }
-      //
-      //   socket.connect()
-      //   dispatch(setSocket({ socket }))
-      // }
+        socket.connect()
+        dispatch(setSocket({ socket }))
+      }
     } catch (e) {
       setSocketError(true)
       console.log('socket error:', socketError)

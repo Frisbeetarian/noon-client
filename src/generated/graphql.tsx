@@ -236,7 +236,7 @@ export type MutationRegisterArgs = {
 
 export type MutationLoginArgs = {
   password: Scalars['String'];
-  usernameOrEmail: Scalars['String'];
+  username: Scalars['String'];
 };
 
 
@@ -870,7 +870,7 @@ export type LeaveGroupMutation = (
 );
 
 export type LoginMutationVariables = Exact<{
-  usernameOrEmail: Scalars['String'];
+  username: Scalars['String'];
   password: Scalars['String'];
 }>;
 
@@ -1659,8 +1659,8 @@ export function useLeaveGroupMutation() {
   return Urql.useMutation<LeaveGroupMutation, LeaveGroupMutationVariables>(LeaveGroupDocument);
 };
 export const LoginDocument = gql`
-    mutation Login($usernameOrEmail: String!, $password: String!) {
-  login(usernameOrEmail: $usernameOrEmail, password: $password) {
+    mutation Login($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
     ...RegularUserResponse
   }
 }

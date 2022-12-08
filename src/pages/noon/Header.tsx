@@ -50,6 +50,7 @@ const Header = () => {
       })
 
       socket.on('friend-connected', ({ uuid }) => {
+        console.log('friend connected:', uuid)
         if (uuid === activeConversee.uuid) {
           setOnline('true')
         }

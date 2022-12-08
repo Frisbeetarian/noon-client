@@ -12,6 +12,7 @@ import {
 
 import { isServer } from '../../utils/isServer'
 import { getLoggedInUser, setLoggedInUser } from '../../store/users'
+
 import {
   getConversationsThatHaveUnreadMessagesForProfile,
   setConversations,
@@ -28,7 +29,6 @@ function Noon() {
   })
 
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
-
   const loggedInUser = useSelector(getLoggedInUser)
   const conversations = useSelector(getConversations)
 
@@ -45,6 +45,7 @@ function Noon() {
   ] = useGetConversationForLoggedInUserQuery()
 
   useEffect(() => {
+    console.log('loggedInUser:', loggedInUser)
     dispatch(setLoggedInUser({ user: data }))
   }, [data?.me?.username])
 

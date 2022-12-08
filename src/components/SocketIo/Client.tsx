@@ -10,22 +10,26 @@ const socket = io(ENDPOINT, { autoConnect: false })
 export default function ClientComponent() {
   // const [response, setResponse] = useState('')
   // const [socket, setSocket] = useState(null)
+
   const [isConnected, setIsConnected] = useState(socket.connected)
   const loggedInUser = useSelector(getLoggedInUser)
 
   // useEffect(() => {
   //   socket.connect()
-  //
+
   //   socket.on('connect', () => {
   //     console.log('connected')
   //     setIsConnected(true)
   //   })
+
   //   socket.on('disconnect', () => {
   //     setIsConnected(false)
   //   })
-  //   // socket.on('message', (data) => {
-  //   //   setLastMessage(data)
-  //   // })
+
+  //   socket.on('message', (data) => {
+  //      setLastMessage(data)
+  //   })
+
   //   return () => {
   //     socket.off('connect')
   //     socket.off('disconnect')
@@ -40,15 +44,16 @@ export default function ClientComponent() {
     if (!socket.connected) {
       if (sessionID && loggedInUser.user.profile) {
         // this.usernameAlreadySelected = true
+
         socket.auth = {
           sessionID,
           username: loggedInUser?.user?.profile?.username,
         }
+
         socket.connect()
       }
     }
 
-    // console.log('EWGFWEGEWGWEFWEEW')
     socket.on('session', ({ sessionID, userID }) => {
       console.log('session received:', sessionID)
       // attach the session ID to the next reconnection attempts
@@ -73,12 +78,14 @@ export default function ClientComponent() {
     socket.onAny((event, ...args) => {
       console.log(event, args)
     })
+
     return () => socket.off('connect_error')
   }, [loggedInUser])
 
   return (
     <div className="">
       <header className="app-header">React Chat</header>
+
       {isConnected ? (
         <div className="chat-container">
           <Messages socket={socket} />
