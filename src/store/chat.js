@@ -149,6 +149,7 @@ const slice = createSlice({
       console.log('chat active converastion:', chat.activeConversation)
       console.log('payload.conversationUuid:', action.payload.conversationUuid)
       console.log('action.payload:', action.payload)
+
       if (
         chat.activeConversation &&
         chat.activeConversation.uuid === conversationUuid

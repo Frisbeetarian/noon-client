@@ -23,6 +23,7 @@ import Chat from './Chat'
 
 function Noon() {
   const dispatch = useDispatch()
+
   const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
     requestPolicy: 'network-only',

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import io from 'socket.io-client'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { getLoggedInUser } from '../../store/users'
 import { Box } from '@chakra-ui/react'
 import { setSocket } from '../../store/sockets'
@@ -17,6 +18,7 @@ export default function SocketConnector() {
   useEffect(() => {
     const sessionID = localStorage.getItem('sessionID')
     console.log('session id:', sessionID)
+
     try {
       // if (!socket.connected) {
       // TODO check why adding condition for logged in user generates new session id item in storage

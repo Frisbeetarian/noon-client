@@ -31,7 +31,7 @@ const errorExchange: Exchange =
       tap(({ error }) => {
         if (error) {
           if (error?.message.includes('not authenticated')) {
-            Router.replace('/')
+            Router.replace('/onboarding')
           }
         }
       })

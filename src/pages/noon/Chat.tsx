@@ -16,12 +16,12 @@ import {
   setPendingCall,
   setShouldPauseCheckHasMore,
 } from '../../store/chat'
-import { getVideoFrameOpenState } from '../../store/video'
 
+import { getVideoFrameOpenState } from '../../store/video'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSocket } from '../../store/sockets'
-import Header from './Header'
 
+import Header from './Header'
 import Messages from './Messages'
 
 import {
@@ -45,6 +45,7 @@ import {
   getCreateGroupComponent,
   getChatContainerHeight,
 } from '../../store/ui'
+
 import { createGroup, getGroups } from '../../store/groups'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
@@ -107,6 +108,7 @@ function Chat() {
             conversationUuid !== activeConversation.uuid
           ) {
             console.log('entering update')
+
             updateUnreadMessagesForConversation({
               conversationUuid: conversationUuid,
               profileUuid: loggedInUser?.user?.profile?.uuid,
@@ -207,8 +209,8 @@ function Chat() {
           )
 
           // toast.closeAll()
-
           toast.close(from)
+
           toast({
             id: from,
             title: `${fromUsername} has cancelled the friend request.`,
@@ -244,6 +246,7 @@ function Chat() {
               <Flex direction="column" color="white" p={3} bg="green.500">
                 <Flex>
                   <p>{fromUsername} sent you a friend request.</p>
+
                   <CloseButton
                     className="sticky top ml-4"
                     size="sm"
