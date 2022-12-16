@@ -78,10 +78,10 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   }, [activeConversee])
 
   return (
-    <Flex className="bg-white text-red-500 items-center box-content h-full justify-between">
+    <Flex className="bg-white  items-center box-content h-full justify-between">
       <Box className="w-4/6">
         <Input
-          className="py-2 box-content"
+          className="py-2 box-content text-black"
           placeholder="Type message..."
           border="none"
           borderRadius="none"
@@ -98,7 +98,6 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
 
       <Flex>
         <RecorderControls recorderState={recorderState} handlers={handlers} />
-        {/* <RecordingsList audio={audio} /> */}
 
         <Button
           className="mr-2"
@@ -112,15 +111,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
           onClick={async () => {
             dispatch(setVideoFrameForConversation(true))
 
-            // dispatch(
-            //   setPendingCall({
-            //     uuid: activeConversation.uuid,
-            //     initiator: loggedInUser?.user?.profile,
-            //   })
-            // )
-
             activeConversation.profiles.map(async (profile) => {
-              // if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
               socket.emit('set-pending-call-for-conversation', {
                 from: loggedInUser.user?.profile?.uuid,
                 fromUsername: loggedInUser.user?.profile?.username,
@@ -134,12 +125,6 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
                 profileUuid: profile.uuid,
               })
             })
-
-            //
-            // await setPendingCallForConversation({
-            //   conversationUuid: activeConversation.uuid,
-            //   pendingCallInitiatorUuid: loggedInUser.user?.profile?.uuid,
-            // })
           }}
         >
           <PhoneIcon className="" color="white" />
@@ -148,7 +133,6 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
         <Button
           bg="black"
           color="white"
-          // borderRadius="none"
           title="Send message"
           className="mr-3"
           _hover={{

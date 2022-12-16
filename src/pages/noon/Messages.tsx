@@ -10,6 +10,7 @@ import {
   MenuItem,
   MenuList,
   IconButton,
+  Portal,
 } from '@chakra-ui/react'
 
 import {
@@ -117,7 +118,6 @@ const Messages = () => {
 
     return () => {
       setShouldCheckHasMorePause(false)
-      // dispatch(setShouldPauseCheckHasMore(false))
       setLocalMessages([])
     }
   }, [data])
@@ -174,14 +174,6 @@ const Messages = () => {
       })
 
       setShouldPause(false)
-
-      // dispatch(
-      //   addMessagesToConversation({
-      //     conversationUuid: activeConversation.uuid,
-      //     messages: data ? data.getMessagesForConversation.messages : [],
-      //     loggedInUser,
-      //   })
-      // )
     }, 750)
   }
 
@@ -204,11 +196,6 @@ const Messages = () => {
         conversationUuid: activeConversation.uuid,
       })
     )
-
-    // socket.emit(
-    //   'message-deleted',
-    //   ({ session }) => {}
-    // )
 
     activeConversation.profiles.map((profile) => {
       if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
@@ -233,17 +220,6 @@ const Messages = () => {
       className="w-full top-0 py-3 px-5 relative"
       style={{ height: '80vh' }}
     >
-      {/* <div
-        style={{
-          height: 600,
-          overflow: 'auto',
-          display: 'flex',
-          flexDirection: 'column-reverse',
-        }}
-      > */}
-      {/*Put the scroll bar always on the bottom*/}
-      {/* {data && data.getMessagesForConversation.messages.length !== 0 ? ( */}
-
       <InfiniteScroll
         dataLength={activeConversation.messages}
         next={fetchMoreMessage}
@@ -261,12 +237,6 @@ const Messages = () => {
         }
         scrollableTarget="scrollableDiv"
       >
-        {/* {this.state.items.map((_, index) => (
-            <div style={style} key={index}>
-              div - #{index}
-            </div>
-          ))} */}
-
         {activeConversation && activeConversation.type === 'pm'
           ? activeConversation.messages.map((item, index) => {
               if (item.from === 'me') {
@@ -279,38 +249,61 @@ const Messages = () => {
                         minW="100px"
                         maxW="350px"
                         my="1"
-                        p="3"
+                        pr={!item.deleted ? '0' : '3'}
+                        pl="3"
+                        py="2"
                         className="relative"
                       >
-                        <Text>
-                          {!item.deleted ? item.content : <i>{item.content}</i>}
+                        <Text className="">
+                          {!item.deleted ? (
+                            item.content
+                          ) : (
+                            <i className="text-gray-400">{item.content}</i>
+                          )}
                         </Text>
-
-                        {/*<Icon></Icon>*/}
-                        {/*<ChevronDownIcon className="mx-2 -mr-1 " />*/}
 
                         {!item.deleted ? (
                           <Menu>
                             <MenuButton
+                              className=""
+                              boxSize="1rem"
                               as={IconButton}
                               aria-label="Options"
                               icon={<ChevronDownIcon />}
                               variant="none"
+                              mr="0"
+                              ml="0"
+                              pr="0"
+                              pl="0"
                               px={0}
                               py={0}
                               mx={0}
                               my={0}
                             />
 
-                            <MenuList>
-                              <MenuItem
-                                onClick={async () => {
-                                  await deleteMessageHandler(item)
-                                }}
-                              >
-                                Unsend message
-                              </MenuItem>
-                            </MenuList>
+                            <Portal>
+                              <MenuList>
+                                <MenuItem
+                                  className="text-white"
+                                  color="white"
+                                  onClick={async () => {
+                                    await deleteMessageHandler(item)
+                                  }}
+                                >
+                                  Unsend message
+                                </MenuItem>
+                              </MenuList>
+                            </Portal>
+
+                            {/*<MenuList>*/}
+                            {/*  <MenuItem*/}
+                            {/*    onClick={async () => {*/}
+                            {/*      await deleteMessageHandler(item)*/}
+                            {/*    }}*/}
+                            {/*  >*/}
+                            {/*    Unsend message*/}
+                            {/*  </MenuItem>*/}
+                            {/*</MenuList>*/}
                           </Menu>
                         ) : null}
                       </Flex>
@@ -377,7 +370,6 @@ const Messages = () => {
                           </Text>
                         )}
                         {!item.deleted ? (
-                          // <div className=" border rounded border-black">
                           <Menu>
                             <MenuButton
                               as={IconButton}
@@ -400,8 +392,7 @@ const Messages = () => {
                               </MenuItem>
                             </MenuList>
                           </Menu>
-                        ) : // </div>
-                        null}
+                        ) : null}
                       </Flex>
                     ) : null}
                   </Flex>
@@ -483,7 +474,6 @@ const Messages = () => {
                         p="3"
                         className="relative"
                       >
-                        {/*<Text>{item.content}</Text>*/}
                         <Text>
                           {!item.deleted ? item.content : <i>{item.content}</i>}
                         </Text>
@@ -523,10 +513,6 @@ const Messages = () => {
                         my="1"
                         p={!item.deleted ? '0' : '3'}
                       >
-                        {/*<Text>*/}
-                        {/*   item.content : <i>{item.content}</i>}*/}
-                        {/*</Text>*/}
-
                         {!item.deleted ? (
                           <Image src={item.src} alt={item.content} />
                         ) : (
@@ -629,8 +615,6 @@ const Messages = () => {
                         <Text>
                           {!item.deleted ? item.content : <i>{item.content}</i>}
                         </Text>
-
-                        {/*<Text>{item.content}</Text>*/}
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex
@@ -649,8 +633,6 @@ const Messages = () => {
                             <i>{item.content}</i>
                           </Text>
                         )}
-
-                        {/*<Image src={item.src} alt={item.content} />*/}
                       </Flex>
                     ) : item.type === 'audio' ? (
                       <Flex
@@ -676,28 +658,7 @@ const Messages = () => {
               }
             })
           : null}
-
-        {/* <AlwaysScrollToBottom /> */}
-        {/* <Button
-          onClick={() => {
-            setVariables({
-              conversationUuid: activeConversation.uuid,
-              limit: variables.limit,
-              cursor:
-                activeConversation.messages[
-                  activeConversation.messages.length - 1
-                ].createdAt,
-            })
-
-            setShouldPause(false)
-          }}
-          isLoading={fetching}
-        >
-          Load more messages
-        </Button> */}
       </InfiniteScroll>
-      {/* ) : null} */}
-      {/* </div> */}
     </Flex>
   )
 }
