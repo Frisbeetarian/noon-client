@@ -1,10 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  useLogoutMutation,
-  useUnfriendMutation,
-  useLeaveGroupMutation,
-} from '../../generated/graphql'
+import { useLogoutMutation } from '../../generated/graphql'
 
 import { getLoggedInUser, removeFriendEntry } from '../../store/users'
 import { SettingsIcon, HamburgerIcon, EditIcon } from '@chakra-ui/icons'
@@ -23,33 +19,24 @@ import {
 
 import {
   getSortedConversations,
-  removeConversation,
   setActiveConversation,
   setActiveConversationSet,
   setActiveConversee,
   setShouldPauseCheckHasMore,
-  getActiveConversation,
-  setActiveGroupInStore,
 } from '../../store/chat'
 
 import SocketConnector from '../../components/SocketIo/SocketConnector'
 import { useRouter } from 'next/router'
 import { getSocket } from '../../store/sockets'
 
-import {
-  setChatContainerHeight,
-  setCreateGroupComponent,
-  setSearchComponent,
-} from '../../store/ui'
+import { setCreateGroupComponent, setSearchComponent } from '../../store/ui'
 
-import { setVideoFrameForConversation } from '../../store/video'
 import PrivateConversationListing from '../../components/PrivateConversationListing'
 import GroupConversationListing from '../../components/GroupConversationListing'
 
 function Sidebar() {
   const router = useRouter()
   const dispatch = useDispatch()
-  const socket = useSelector(getSocket)
 
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
   const loggedInUser = useSelector(getLoggedInUser)
@@ -141,7 +128,6 @@ function Sidebar() {
                 onClick={async () => {
                   await logout()
                   router.push('/')
-                  // router.reload()
                 }}
                 // isLoading={fetching}
               >

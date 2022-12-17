@@ -40,13 +40,7 @@ import {
   useUpdateUnreadMessagesForConversationMutation,
 } from '../../generated/graphql'
 
-import {
-  setCreateGroupComponent,
-  getCreateGroupComponent,
-  getChatContainerHeight,
-} from '../../store/ui'
-
-import { createGroup, getGroups } from '../../store/groups'
+import { getCreateGroupComponent, getChatContainerHeight } from '../../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 import { setFriendFlagOnProfile } from '../../store/profiles'
@@ -72,9 +66,7 @@ function Chat() {
   const [, saveMessage] = useSaveMessageMutation()
   const [, saveGroupMessage] = useSaveGroupMessageMutation()
 
-  const [, sendFriendRequest] = useSendFriendRequestMutation()
   const [, acceptFriendRequest] = useAcceptFriendRequestMutation()
-  const [socketError, setSocketError] = useState(false)
 
   const [, updateUnreadMessagesForConversation] =
     useUpdateUnreadMessagesForConversationMutation()
@@ -107,8 +99,6 @@ function Chat() {
             activeConversationSet === false ||
             conversationUuid !== activeConversation.uuid
           ) {
-            console.log('entering update')
-
             updateUnreadMessagesForConversation({
               conversationUuid: conversationUuid,
               profileUuid: loggedInUser?.user?.profile?.uuid,
@@ -419,7 +409,6 @@ function Chat() {
       return
     }
 
-    console.log('input message:', inputMessage)
     const data = inputMessage
     setInputMessage('')
 
@@ -530,7 +519,7 @@ function Chat() {
   return (
     <Flex
       className="flex-col bg-gray-700 text-white box-content relative"
-      style={{ flex: '0.75', height: '100vh' }}
+      style={{ flex: '0.75', height: '100vh', overflow: 'hidden' }}
     >
       <ChatControlsAndSearch />
 

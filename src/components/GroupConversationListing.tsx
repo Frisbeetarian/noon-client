@@ -9,7 +9,9 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react'
+
 import { EditIcon, HamburgerIcon } from '@chakra-ui/icons'
+
 import {
   getActiveConversation,
   removeConversation,
@@ -19,9 +21,11 @@ import {
   setActiveGroupInStore,
   setShouldPauseCheckHasMore,
 } from '../store/chat'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
 import { getSocket } from '../store/sockets'
+
 import { useLeaveGroupMutation } from '../generated/graphql'
 import { setChatContainerHeight, setSearchComponent } from '../store/ui'
 

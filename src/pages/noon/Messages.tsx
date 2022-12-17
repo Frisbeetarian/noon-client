@@ -4,7 +4,6 @@ import {
   Flex,
   Text,
   Image,
-  Button,
   Menu,
   MenuButton,
   MenuItem,
@@ -13,12 +12,7 @@ import {
   Portal,
 } from '@chakra-ui/react'
 
-import {
-  SettingsIcon,
-  HamburgerIcon,
-  EditIcon,
-  ChevronDownIcon,
-} from '@chakra-ui/icons'
+import { ChevronDownIcon } from '@chakra-ui/icons'
 
 import {
   useCheckIfConversationHasMoreMessagesQuery,
@@ -31,9 +25,6 @@ import {
   clearUnreadMessagesForConversationInStore,
   getActiveConversation,
   getActiveConversee,
-  setActiveConversation,
-  setActiveConversationSet,
-  setActiveConversee,
   addMessagesToConversation,
   setActiveConversationHasMoreMessages,
   setShouldPauseCheckHasMore,

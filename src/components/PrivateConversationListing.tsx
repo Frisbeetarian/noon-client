@@ -85,6 +85,7 @@ function PrivateConversationListing({ conversation, i }) {
 
     dispatch(setChatContainerHeight('87.5vh'))
   }
+
   return (
     <Flex
       key={conversation.uuid}
@@ -96,7 +97,6 @@ function PrivateConversationListing({ conversation, i }) {
         className="items-center cursor-pointer flex-1"
         onClick={() => {
           setActiveConverseeFunction(conversation.conversee, conversation)
-
           setProfile(conversation.conversee)
         }}
       >

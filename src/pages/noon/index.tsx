@@ -46,7 +46,6 @@ function Noon() {
   ] = useGetConversationForLoggedInUserQuery()
 
   useEffect(() => {
-    console.log('loggedInUser:', loggedInUser)
     dispatch(setLoggedInUser({ user: data }))
   }, [data?.me?.username])
 
@@ -66,7 +65,7 @@ function Noon() {
   }, [fetchedConversations])
 
   return (
-    <div className="flex">
+    <div className="flex" style={{ overflow: 'hidden' }}>
       {loggedInUser.user?.profile ? (
         <>
           <Sidebar />
