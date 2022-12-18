@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { withUrqlClient } from 'next-urql'
 import { createUrqlClient } from '../../utils/createUrqlClient'
@@ -13,11 +13,7 @@ import {
 import { isServer } from '../../utils/isServer'
 import { getLoggedInUser, setLoggedInUser } from '../../store/users'
 
-import {
-  getConversationsThatHaveUnreadMessagesForProfile,
-  setConversations,
-  getConversations,
-} from '../../store/chat'
+import { setConversations, getConversations } from '../../store/chat'
 
 import Chat from './Chat'
 
@@ -33,17 +29,8 @@ function Noon() {
   const loggedInUser = useSelector(getLoggedInUser)
   const conversations = useSelector(getConversations)
 
-  const conversationsThatHaveUnreadMessages = useSelector(
-    getConversationsThatHaveUnreadMessagesForProfile
-  )
-
-  const [
-    {
-      data: fetchedConversations,
-      error: conversationsError,
-      fetching: conversationsFetching,
-    },
-  ] = useGetConversationForLoggedInUserQuery()
+  const [{ data: fetchedConversations }] =
+    useGetConversationForLoggedInUserQuery()
 
   useEffect(() => {
     dispatch(setLoggedInUser({ user: data }))

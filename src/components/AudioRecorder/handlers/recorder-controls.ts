@@ -1,8 +1,4 @@
 import { SetRecorder } from '../types/recorder'
-import axios from 'axios'
-import FormData from 'form-data'
-import { v4 as uuid } from 'uuid'
-import { ReadStream } from 'fs'
 
 export async function startRecording(setRecorderState: SetRecorder) {
   try {
@@ -22,7 +18,10 @@ export async function startRecording(setRecorderState: SetRecorder) {
   }
 }
 
-export async function saveRecording(recorder: any) {
-  console.log('recorder:', recorder)
-  if (recorder.state !== 'inactive') recorder.stop()
+export function saveRecording(recorder: any) {
+  if (recorder.state !== 'inactive') {
+    console.log('recorder state:', JSON.stringify(recorder))
+
+    recorder.stop()
+  }
 }

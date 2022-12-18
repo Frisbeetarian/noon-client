@@ -17,8 +17,9 @@ import { getSocket } from '../../store/sockets'
 import { useSetPendingCallForConversationMutation } from '../../generated/graphql'
 
 import RecorderControls from '../../components/AudioRecorder/recorder-controls'
-import useRecorder from '../../components/AudioRecorder/hooks/use-recorder'
+// import useRecorder from '../../components/AudioRecorder/hooks/use-recorder_old'
 import { UseRecorder } from '../../components/AudioRecorder/types/recorder'
+import useRecorder from '../../components/AudioRecorder/hooks/use-recorder'
 
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const dispatch = useDispatch()
@@ -79,7 +80,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
 
   return (
     <Flex className="bg-white  items-center box-content h-full justify-between">
-      <Box className="w-4/6">
+      <Box className="w-4/6 relative z-10">
         <Input
           className="py-2 box-content text-black"
           placeholder="Type message..."
@@ -96,7 +97,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
         />
       </Box>
 
-      <Flex>
+      <Flex className="w-2/6  justify-end">
         <RecorderControls recorderState={recorderState} handlers={handlers} />
 
         <Button
