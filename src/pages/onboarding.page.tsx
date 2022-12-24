@@ -13,7 +13,6 @@ import {
   Link,
   Stack,
   Text,
-  useColorModeValue,
 } from '@chakra-ui/react'
 
 import { withUrqlClient } from 'next-urql'
@@ -418,4 +417,4 @@ const OnboardingPage = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(OnboardingPage)
+export default withUrqlClient(createUrqlClient, { ssr: true })(OnboardingPage)
