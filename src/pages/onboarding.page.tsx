@@ -21,7 +21,6 @@ import NextLink from 'next/link'
 import { useDisclosure } from '@chakra-ui/hooks'
 
 import React, { useEffect, useState } from 'react'
-import { Layout } from '../components/Layout'
 import { createUrqlClient } from '../utils/createUrqlClient'
 
 import { useSelector } from 'react-redux'
@@ -55,7 +54,7 @@ const RegisterSchema = Yup.object().shape({
     .required('Password is required'),
 })
 
-const Onboarding = () => {
+const OnboardingPage = () => {
   const router = useRouter()
   const [, login] = useLoginMutation()
   const [, register] = useRegisterMutation()
@@ -376,7 +375,7 @@ const Onboarding = () => {
 
             <Text
               fontSize={{ base: 'sm', sm: 'md' }}
-              color={useColorModeValue('gray.800', 'gray.400')}
+              // color={useColorModeValue('gray.800', 'gray.400')}
             >
               You&apos;ll get an email with a reset link
             </Text>
@@ -419,4 +418,4 @@ const Onboarding = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(Onboarding)
+export default withUrqlClient(createUrqlClient, { ssr: false })(OnboardingPage)

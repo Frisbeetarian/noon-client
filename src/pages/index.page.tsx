@@ -1,9 +1,9 @@
+// @ts-nocheck
 import { Flex } from '@chakra-ui/react'
 
 import { withUrqlClient } from 'next-urql'
 
 import React, { useEffect, useState } from 'react'
-import { Layout } from '../components/Layout'
 import { createUrqlClient } from '../utils/createUrqlClient'
 
 import { useMeQuery } from '../generated/graphql'
@@ -11,10 +11,10 @@ import { useMeQuery } from '../generated/graphql'
 import { useRouter } from 'next/router'
 import { isServer } from '../utils/isServer'
 
-const Index = () => {
+const IndexPage = () => {
   const router = useRouter()
 
-  let [{ data, fetching }] = useMeQuery({
+  const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
     requestPolicy: 'network-only',
   })
@@ -34,4 +34,4 @@ const Index = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(Index)
+export default withUrqlClient(createUrqlClient, { ssr: false })(IndexPage)

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document'
 import { ColorModeScript } from '@chakra-ui/react'
 

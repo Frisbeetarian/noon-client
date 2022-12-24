@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Button,
   Flex,
@@ -27,7 +28,7 @@ function ChatControlsAndSearch() {
 
   const searchQuery = useSelector(getSearchQuery)
   const searchComponentState = useSelector(getSearchComponentState)
-  let [searchInput, setSearchInput] = useState(null)
+  const [searchInput, setSearchInput] = useState(null)
 
   useOutsideClick({
     ref: ref,

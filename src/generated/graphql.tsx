@@ -1,3 +1,4 @@
+// @ts-nocheck
 import gql from 'graphql-tag';
 import * as Urql from 'urql';
 export type Maybe<T> = T | null;
@@ -15,7 +16,6 @@ export type Scalars = {
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
   /** The `Upload` scalar type represents a file upload. */
-  Upload: import('graphql-upload-minimal').FileUpload;
 };
 
 export type Community = {

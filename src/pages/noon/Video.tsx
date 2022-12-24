@@ -1,9 +1,17 @@
+// @ts-nocheck
 import React, { useEffect, useRef, useState } from 'react'
 import { Avatar, Flex, Text, Image, Button } from '@chakra-ui/react'
 
 import dynamic from 'next/dynamic'
 import { FC } from 'react'
 import { IJitsiMeetingProps } from '@jitsi/react-sdk/lib/types'
+
+import {
+  cancelPendingCall,
+  getActiveConversation,
+  getActiveConversee,
+  getShouldPauseCheckHasMore,
+} from '../../store/chat'
 
 const JitsiMeeting = dynamic(
   () =>
@@ -13,16 +21,10 @@ const JitsiMeeting = dynamic(
   }
 ) as FC<IJitsiMeetingProps>
 
-import {
-  cancelPendingCall,
-  getActiveConversation,
-  getActiveConversee,
-  getShouldPauseCheckHasMore,
-} from '../../store/chat'
+
 
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
-import { Layout } from '../../components/Layout'
 import { setVideoFrameForConversation } from '../../store/video'
 import { useCancelPendingCallForConversationMutation } from '../../generated/graphql'
 

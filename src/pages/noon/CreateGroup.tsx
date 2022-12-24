@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 
 import {
@@ -37,7 +38,7 @@ import { setCreateGroupComponent } from '../../store/ui'
 const CreateGroup = ({}) => {
   const dispatch = useDispatch()
   const socket = useSelector(getSocket)
-  let participants = useSelector(getParticipants)
+  const participants = useSelector(getParticipants)
   const loggedInUser = useSelector(getLoggedInUser)
   const [friends, setFriends] = useState(null)
 

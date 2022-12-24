@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 import { Button, CloseButton, Flex, Text, useToast } from '@chakra-ui/react'
 import Footer from './Footer'
@@ -74,6 +75,10 @@ function Chat() {
 
   useEffect(() => {
     if (socket) {
+      socket.on('message-deleted-confirmed', () => {
+        alert('delete message confirmed received')
+      })
+
       socket.on(
         'private-chat-message',
         ({

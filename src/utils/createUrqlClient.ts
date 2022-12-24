@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { cacheExchange, Resolver, Cache } from '@urql/exchange-graphcache'
 import {
   dedupExchange,
@@ -19,6 +20,7 @@ import {
   VoteMutationVariables,
 } from '../generated/graphql'
 import { betterUpdateQuery } from './betterUpdateQuery'
+
 import Router from 'next/router'
 import { fieldInfoOfKey } from '@urql/exchange-graphcache/dist/types/store'
 import { isServer } from './isServer'
@@ -231,6 +233,7 @@ const filteredProfilesPagination = (mergeMode = 'after'): Resolver => {
       cache.resolveFieldByKey(entityKey, fieldKey) as string,
       'eventToProfiles'
     )
+
     info.partial = !isItInTheCache
 
     // let hasMore = true
@@ -243,6 +246,7 @@ const filteredProfilesPagination = (mergeMode = 'after'): Resolver => {
       // if (!_hasMore) {
       //   hasMore = _hasMore as boolean
       // }
+
       results.push(...data)
     })
 
@@ -314,9 +318,10 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
   }
 
   console.log('cookie on platform start:', ctx)
+  console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL)
 
   return {
-    url: 'http://localhost:4020/graphql',
+    url: process.env.NEXT_PUBLIC_API_URL as string,
     fetchOptions: {
       credentials: 'include' as const,
       headers: cookie

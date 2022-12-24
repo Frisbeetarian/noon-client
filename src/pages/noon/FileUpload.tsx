@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
@@ -10,8 +11,6 @@ import { getLoggedInUser } from '../../store/users'
 import axios from 'axios'
 
 import FormData from 'form-data'
-// import { uuid } from 'uuidv4'
-
 import { v4 as uuid } from 'uuid'
 import { getSocket } from '../../store/sockets'
 import {

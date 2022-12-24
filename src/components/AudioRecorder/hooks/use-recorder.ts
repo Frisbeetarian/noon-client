@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from 'react'
 import { startRecording, saveRecording } from '../handlers/recorder-controls'
 import {
@@ -178,7 +179,7 @@ export default function useRecorder() {
             .catch((error) => {
               //handle error
             })
-            .finally(() => {})
+            .finally()
         }
         setRecorderState((prevState: Recorder) => {
           if (prevState.mediaRecorder) {
