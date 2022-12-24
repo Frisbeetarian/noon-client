@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Flex } from '@chakra-ui/react'
 
 import { withUrqlClient } from 'next-urql'

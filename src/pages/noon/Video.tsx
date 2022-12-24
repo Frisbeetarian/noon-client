@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useRef, useState } from 'react'
 import { Avatar, Flex, Text, Image, Button } from '@chakra-ui/react'
 
