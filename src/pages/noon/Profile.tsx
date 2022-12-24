@@ -142,7 +142,7 @@ export default function Profile({ profile }) {
 
               // dispatch(
               //   setFriendFlagOnProfile({
-              //     profileUuid: profile.uuid,
+              //     profileUuid: profile.uuid
               //   })
               // )
 
