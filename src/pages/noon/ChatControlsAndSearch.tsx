@@ -51,7 +51,7 @@ function ChatControlsAndSearch() {
 
   // useEffect(() => {
   //   // return () => {
-  //   //   effect;
+  //   //   effect
   //   // };
   // }, [searchComponentState])
 
