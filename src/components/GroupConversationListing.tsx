@@ -76,6 +76,7 @@ function GroupConversationListing({ conversation, i }) {
           setActiveGroup(conversation)
         }}
       >
+
         <Avatar key={i} name={conversation.name} size="sm" className="mr-2">
           {conversation.unreadMessages &&
           conversation.unreadMessages !== 0 &&
