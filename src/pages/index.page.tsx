@@ -2,7 +2,7 @@ import { Flex } from '@chakra-ui/react'
 
 import { withUrqlClient } from 'next-urql'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { createUrqlClient } from '../utils/createUrqlClient'
 
 import { useMeQuery } from '../generated/graphql'

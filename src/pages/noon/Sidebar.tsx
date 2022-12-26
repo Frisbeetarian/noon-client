@@ -1,13 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLogoutMutation } from '../../generated/graphql'
 
-import { getLoggedInUser, removeFriendEntry } from '../../store/users'
+import { getLoggedInUser } from '../../store/users'
 import { SettingsIcon, HamburgerIcon, EditIcon } from '@chakra-ui/icons'
 
 import {
   Avatar,
-  AvatarBadge,
   Flex,
   Heading,
   IconButton,
@@ -27,7 +26,6 @@ import {
 
 import SocketConnector from '../../components/SocketIo/SocketConnector'
 import { useRouter } from 'next/router'
-import { getSocket } from '../../store/sockets'
 
 import { setCreateGroupComponent, setSearchComponent } from '../../store/ui'
 
@@ -38,7 +36,7 @@ function Sidebar() {
   const router = useRouter()
   const dispatch = useDispatch()
 
-  const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
+  const [, logout] = useLogoutMutation()
   const loggedInUser = useSelector(getLoggedInUser)
   const getConversationsFromStore = useSelector(getSortedConversations)
 
@@ -95,7 +93,7 @@ function Sidebar() {
         {getConversationsFromStore
           ? [...Object.values(getConversationsFromStore)].map(
               (conversation, i) =>
-                !conversation ? null : conversation.type === 'pm' ? (
+                !conversation ? null : (conversation as any).type === 'pm' ? (
                   <PrivateConversationListing
                     conversation={conversation}
                     i={i}
@@ -127,7 +125,7 @@ function Sidebar() {
               <MenuItem
                 onClick={async () => {
                   await logout()
-                  router.push('/')
+                  await router.push('/')
                 }}
                 // isLoading={fetching}
               >

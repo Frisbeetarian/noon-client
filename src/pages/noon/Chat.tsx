@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, CloseButton, Flex, Text, useToast } from '@chakra-ui/react'
+import { Button, CloseButton, Flex, useToast } from '@chakra-ui/react'
 import Footer from './Footer'
 
 import {
@@ -36,7 +36,6 @@ import {
   useAcceptFriendRequestMutation,
   useSaveMessageMutation,
   useSaveGroupMessageMutation,
-  useSendFriendRequestMutation,
   useUpdateUnreadMessagesForConversationMutation,
 } from '../../generated/graphql'
 
@@ -81,10 +80,8 @@ function Chat() {
       socket.on(
         'private-chat-message',
         ({
-          content,
           from,
           fromUsername,
-          to,
           messageUuid,
           message,
           conversationUuid,
@@ -94,9 +91,6 @@ function Chat() {
           if (!message.trim().length) {
             return
           }
-
-          console.log('RECEIVED MESSAGES:', message)
-          console.log('activeConversation:', activeConversationSet)
           const data = message
 
           if (
@@ -136,12 +130,7 @@ function Chat() {
     if (socket) {
       socket.on(
         'friendship-request-accepted',
-        ({ content, from, fromUsername, to, conversation }) => {
-          // dispatch(
-          //   setFriendFlagOnProfile({
-          //     profileUuid: from,
-          //   })
-          // )
+        ({  from, fromUsername, conversation }) => {
 
           dispatch(
             removeFriendRequestEntry({
@@ -184,6 +173,7 @@ function Chat() {
                     onClick={() => {
                       toast.close(from)
                     }}
+                    name="close button"
                   />
                 </Flex>
               </Flex>
@@ -194,7 +184,7 @@ function Chat() {
 
       socket.on(
         'cancel-friend-request',
-        ({ content, from, fromUsername, to }) => {
+        ({  from, fromUsername}) => {
           dispatch(
             removeFriendRequestEntry({
               profileUuid: from,
@@ -218,7 +208,7 @@ function Chat() {
 
       socket.on(
         'send-friend-request',
-        ({ content, from, fromUsername, to }) => {
+        ({  from, fromUsername }) => {
           dispatch(
             addFriendRequestEntry({
               friendRequest: {
@@ -247,6 +237,7 @@ function Chat() {
                     onClick={() => {
                       toast.close(from)
                     }}
+                    name="close button"
                   />
                 </Flex>
 
@@ -324,7 +315,7 @@ function Chat() {
 
       socket.on(
         'unfriend',
-        ({ content, from, fromUsername, to, conversationUuid }) => {
+        ({ from, conversationUuid }) => {
           dispatch(
             removeFriendEntry({
               profileUuid: from,
@@ -350,7 +341,7 @@ function Chat() {
 
       socket.on(
         'invited-to-group',
-        ({ fromUuid, fromUsername, conversation, groupUuid, participants }) => {
+        ({ conversation}) => {
           console.log('invited to group received:', conversation)
 
           dispatch(
@@ -364,7 +355,7 @@ function Chat() {
 
       socket.on(
         'left-group',
-        ({ fromUuid, fromUsername, conversationUuid }) => {
+        ({ fromUuid, conversationUuid }) => {
           dispatch(
             removeParticipantFromGroup({
               conversationUuid,
@@ -378,9 +369,6 @@ function Chat() {
         socket.on(
           'set-pending-call-for-conversation',
           ({ conversationUuid, from }) => {
-            // if (activeConversation && activeConversation.uuid === conversationUuid) {
-            // console.log('entered set pending call listener')
-
             dispatch(
               setPendingCall({
                 profileUuid: loggedInUser.user?.profile?.uuid,
@@ -390,7 +378,6 @@ function Chat() {
                 conversationUuid,
               })
             )
-            // }
           }
         )
       }
@@ -398,7 +385,6 @@ function Chat() {
 
     return () => {
       if (socket) {
-        // setOnline('loading')
         socket.off('send-friend-request')
         socket.off('cancel-friend-request')
         socket.off('friendship-request-accepted')
@@ -415,19 +401,6 @@ function Chat() {
 
     const data = inputMessage
     setInputMessage('')
-
-    // socket.emit('group-chat-message', {
-    //   content:
-    //     loggedInUser.user?.profile?.username + ' sent a message to the group.',
-    //   from: loggedInUser.user?.profile?.uuid,
-    //   fromUsername: loggedInUser.user?.profile?.username,
-    //   groupUuid: activeConversation.uuid,
-    //   groupUsername: activeConversation.name,
-    //   message: data,
-    //   type: 'text',
-    //   src: '',
-    //   conversationUuid: activeConversation.uuid,
-    // })
 
     const message = await saveGroupMessage({
       message: data,
@@ -475,10 +448,7 @@ function Chat() {
       return
     }
 
-    // inputMessage = { ...inputMessage, type: 'text', src: null }
-    console.log('input message:', inputMessage)
     const data = inputMessage
-    // setMessages((old) => [...old, { from: 'me', text: data }])
     setInputMessage('')
 
     const message = await saveMessage({
@@ -488,8 +458,6 @@ function Chat() {
       conversationUuid: activeConversation.uuid,
       to: profile.uuid,
     })
-
-    console.log('save message on input:', message)
 
     socket.emit('private-chat-message', {
       content: loggedInUser.user?.profile?.username + ' sent you a message.',

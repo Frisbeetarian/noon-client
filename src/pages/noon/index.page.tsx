@@ -6,7 +6,7 @@ import Sidebar from './Sidebar'
 
 import {
   useGetConversationForLoggedInUserQuery,
-  useLogoutMutation,
+  // useLogoutMutation,
   useMeQuery,
 } from '../../generated/graphql'
 
@@ -20,12 +20,12 @@ import Chat from './Chat'
 function Noon() {
   const dispatch = useDispatch()
 
-  const [{ data, fetching }] = useMeQuery({
+  const [{ data }] = useMeQuery({
     pause: isServer(),
     requestPolicy: 'network-only',
   })
 
-  const [{ fetching: logoutFetching }, logout] = useLogoutMutation()
+  // const [, logout] = useLogoutMutation()
   const loggedInUser = useSelector(getLoggedInUser)
   const conversations = useSelector(getConversations)
 

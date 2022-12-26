@@ -2,15 +2,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getSearchQuery } from '../../store/search'
 import {
   useSearchForProfileByUsernameQuery,
-  useSearchForProfileByUuidQuery,
 } from '../../generated/graphql'
 
-import { Avatar, AvatarBadge, Flex } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
+import {  Flex } from '@chakra-ui/react'
+import React, { useEffect } from 'react'
 import Profile from './Profile'
 
 import { getLoggedInUser } from '../../store/users'
-import { setProfiles } from '../../store/search'
 import { addProfiles, getProfiles } from '../../store/profiles'
 
 export default function SearchController() {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   Avatar,
   AvatarBadge,
@@ -125,7 +125,7 @@ function GroupConversationListing({ conversation, i }) {
               }
 
               if (leaveGroupResponse) {
-                let participantsToSend = []
+                const participantsToSend: string[] = []
 
                 conversation.profiles.map((profile) => {
                   if (profile.uuid !== loggedInUser.user?.profile?.uuid) {

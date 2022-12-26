@@ -30,20 +30,21 @@ function Messages({ socket }) {
     }
   }, [socket])
 
+
   return (
     <div className="message-list">
       {[...Object.values(messages)]
-        .sort((a, b) => a.time - b.time)
+        .sort((a, b) => (a as any).time - (b as any).time)
         .map((message) => (
           <div
-            key={message.id}
+            key={(message as any).id}
             className="message-container"
-            title={`Sent at ${new Date(message.time).toLocaleTimeString()}`}
+            title={`Sent at ${new Date((message as any).time).toLocaleTimeString()}`}
           >
-            <span className="user">{message.user.name}:</span>
-            <span className="message">{message.value}</span>
+            <span className="user">{(message as any).user.name}:</span>
+            <span className="message">{(message as any).value}</span>
             <span className="date">
-              {new Date(message.time).toLocaleTimeString()}
+              {new Date((message as any).time).toLocaleTimeString()}
             </span>
           </div>
         ))}

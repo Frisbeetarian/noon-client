@@ -62,10 +62,10 @@ const Messages = () => {
   })
 
   const [shouldPause, setShouldPause] = useState(true)
-  const [shouldCheckHasMorePause, setShouldCheckHasMorePause] = useState(false)
+  const [, setShouldCheckHasMorePause] = useState(false)
   const [localMessages, setLocalMessages] = useState([])
 
-  let [{ data, error, fetching }] = useGetMessagesForConversationQuery({
+  const [{ data }] = useGetMessagesForConversationQuery({
     variables,
     pause: shouldPause,
     requestPolicy: 'network-only',
@@ -103,8 +103,10 @@ const Messages = () => {
     if (data) {
       setShouldCheckHasMorePause(true)
       dispatch(setShouldPauseCheckHasMore(true))
-      hasMoreOnInit = null
-      setLocalMessages(data.getMessagesForConversation.messages)
+      hasMoreOnInit = undefined
+      setLocalMessages(localMessages => [...localMessages])
+
+      // updateMyArray( arr => [...arr, `${arr.length}`]);
     }
 
     return () => {
@@ -196,7 +198,6 @@ const Messages = () => {
           toUsername: profile.username,
           fromUsername: loggedInUser.user?.profile?.username,
           from: loggedInUser.user.profile.uuid,
-          fromUsername: loggedInUser.user.profile.username,
           conversationUuid: activeConversation.uuid,
         })
       }
@@ -214,13 +215,13 @@ const Messages = () => {
       <InfiniteScroll
         dataLength={activeConversation.messages}
         next={fetchMoreMessage}
-        style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+        style={{ display: 'flex', flexDirection: 'column-reverse' }}
         inverse={true}
         hasMore={
           !shouldPauseCheckHasMore
-            ? hasMoreOnInit?.checkIfConversationHasMoreMessages
-            : data?.getMessagesForConversation
-            ? data?.getMessagesForConversation.hasMore
+            ? !!(hasMoreOnInit?.checkIfConversationHasMoreMessages)
+            : !!(data?.getMessagesForConversation)
+            ? !!(data?.getMessagesForConversation.hasMore)
             : true
         }
         loader={

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Flex } from '@chakra-ui/react'
 
-import { useSelector, useDispatch } from 'react-redux'
+import {  useDispatch } from 'react-redux'
 
 // import { getLoggedInUser } from '../../store/users'
 // import { getSocket } from '../../store/sockets'
@@ -14,7 +14,7 @@ const GroupParticipant = ({ participant }) => {
   // const socket = useSelector(getSocket)
   const dispatch = useDispatch()
 
-  const [active, setActive] = useState(false)
+  // const [active, setActive] = useState(false)
   const [participantsColor, setParticipantsColor] = useState('')
 
   return (
@@ -29,17 +29,6 @@ const GroupParticipant = ({ participant }) => {
           setParticipantsColor('')
           dispatch(removeParticipants(participant.uuid))
         }
-        // if (participants.indexOf(friend.uuid) === -1) {
-        //   setParticipants((oldArray) => [friend.uuid, ...oldArray])
-        // } else {
-        //   const temp = [...participants]
-        //
-        //   // removing the element using splice
-        //   temp.splice(friend.uuid, 1)
-        //
-        //   // updating the list
-        //   setParticipants(temp)
-        // }
       }}
     >
       {participant.username}

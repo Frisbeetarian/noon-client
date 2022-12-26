@@ -1,35 +1,25 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 
 import {
   Box,
   Button,
-  Container,
   Flex,
   Input,
-  Radio,
-  RadioGroup,
-  Select,
-  Stack,
 } from '@chakra-ui/react'
 
-import { Form, Formik, useFormik } from 'formik'
+import { useFormik } from 'formik'
 import {
   addConversation,
-  setActiveGroupInStore,
   setOngoingCall,
 } from '../../store/chat'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
-import GroupParticipant, {
-  groupParticipant,
-} from '../../components/GroupParticipant'
+import GroupParticipant from '../../components/GroupParticipant'
 
 import {
   useCreateGroupConversationMutation,
-  useGetMessagesForConversationQuery,
 } from '../../generated/graphql'
 
 import { clearState, getParticipants } from '../../store/groups'
@@ -74,27 +64,19 @@ const CreateGroup = ({}) => {
       name: '',
       description: '',
     },
-    // enableReinitialize: false,
 
     onSubmit: async (values) => {
       if (participants.length !== 0) {
-        let participantsToSend = [...participants]
+        const participantsToSend = [...participants]
 
         participantsToSend.push(loggedInUser.user?.profile?.uuid)
-        console.log('participants:', participantsToSend)
-
-        // let [{ data, error, fetching }] = useGetMessagesForConversationQuery({
-        //   variables,
-        //   pause: shouldPause,
-        //   requestPolicy: 'network-only',
-        // })
 
         const conversation = await createGroupConversation({
           input: { ...values, type: 'group' },
           participants: participantsToSend,
         })
 
-        dispatch(clearState())
+        dispatch(clearState(null))
 
         socket.emit('group-created', {
           fromUuid: loggedInUser.user?.profile?.uuid,
@@ -114,12 +96,6 @@ const CreateGroup = ({}) => {
         )
 
         dispatch(setCreateGroupComponent(false))
-        // dispatch(
-        //   setActiveGroupInStore({
-        //     conversation: conversation.data?.createGroupConversation,
-        //     loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
-        //   })
-        // )
       }
     },
   })
@@ -184,11 +160,11 @@ const CreateGroup = ({}) => {
           <p className="text-white">Add friends</p>
 
           {friends
-            ? friends.map((friend) => (
+            ? (friends as any).map((friend) => (
                 <GroupParticipant
                   key={friend.uuid}
                   participant={friend}
-                  className="mb-3 box-content cursor-pointer"
+                  // className="mb-3 box-content cursor-pointer"
                 ></GroupParticipant>
               ))
             : null}

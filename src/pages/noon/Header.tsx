@@ -5,7 +5,6 @@ import {
   AvatarBadge,
   Text,
   Button,
-  Link,
   Heading,
 } from '@chakra-ui/react'
 
@@ -19,7 +18,6 @@ import {
 
 import { getLoggedInUser } from '../../store/users'
 import { getSocket } from '../../store/sockets'
-import NextLink from 'next/link'
 import { useCancelPendingCallForConversationMutation } from '../../generated/graphql'
 import { setVideoFrameForConversation } from '../../store/video'
 
@@ -122,8 +120,6 @@ const Header = () => {
             bg="blue.500"
           >
             <Text className="mb-2 mr-3 mt-1 font-black">Call ongoing</Text>
-            {/*{activeConversation?.pendingCallProfile?.uuid ===*/}
-            {/*loggedInUser?.user?.profile?.uuid ? (*/}
 
             <Button bg="red.500" className="mr-2">
               <Heading
@@ -156,14 +152,6 @@ const Header = () => {
               </Heading>
             </Button>
 
-            {/*): null}*/}
-            {/*<NextLink*/}
-            {/*  href="/conferences/[id]"*/}
-
-            {/*  as={`/conferences/${activeConversation.uuid}`}*/}
-            {/*>*/}
-            {/*  <Link>*/}
-
             <Button bg="green.500">
               <Heading
                 fontSize="md"
@@ -185,8 +173,6 @@ const Header = () => {
                 Join
               </Heading>
             </Button>
-            {/*</Link>*/}
-            {/*</NextLink>*/}
           </Flex>
         </Flex>
       ) : null}

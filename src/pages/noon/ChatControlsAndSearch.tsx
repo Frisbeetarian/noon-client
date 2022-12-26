@@ -1,16 +1,14 @@
 import {
-  Button,
   Flex,
   Input,
   InputGroup,
-  InputLeftElement,
   InputRightElement,
   useOutsideClick,
 } from '@chakra-ui/react'
-import { SearchIcon, ArrowUpIcon, PhoneIcon } from '@chakra-ui/icons'
-import React, { useEffect, useRef, useState } from 'react'
+import { SearchIcon, ArrowUpIcon } from '@chakra-ui/icons'
+import React, { RefObject, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux'
-import { getActiveConversee } from '../../store/chat'
+// import { getActiveConversee } from '../../store/chat'
 import SearchController from './SearchController'
 import { getSearchQuery, setSearchQuery } from '../../store/search'
 
@@ -23,14 +21,14 @@ import {
 function ChatControlsAndSearch() {
   const ref = React.useRef()
   const dispatch = useDispatch()
-  const profile = useSelector(getActiveConversee)
+  // const profile = useSelector(getActiveConversee)
 
   const searchQuery = useSelector(getSearchQuery)
   const searchComponentState = useSelector(getSearchComponentState)
   const [searchInput, setSearchInput] = useState(null)
 
   useOutsideClick({
-    ref: ref,
+    ref: (ref as unknown) as RefObject<HTMLElement>,
     handler: () => {
       dispatch(setSearchQuery(null))
       setSearchInput(null)
@@ -48,15 +46,9 @@ function ChatControlsAndSearch() {
     },
   })
 
-  // useEffect(() => {
-  //   // return () => {
-  //   //   effect
-  //   // };
-  // }, [searchComponentState])
-
   return (
     <Flex
-      ref={ref}
+      ref={ref.current}
       className="flex-col border-b px-3 w-full "
       style={{
         position: searchComponentState.containerDisplay,
@@ -85,8 +77,8 @@ function ChatControlsAndSearch() {
           <InputGroup>
             <InputRightElement
               pointerEvents="none"
-              children={<SearchIcon color="gray.300" />}
             />
+            <SearchIcon color="gray.300" />
             <Input
               type="text"
               className="m-0 focus:bg-base-100 bg-transparent outline-0 bg-gray-800 pl-2"
@@ -111,54 +103,16 @@ function ChatControlsAndSearch() {
               }}
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
-                  if (e.target.value !== searchQuery) {
+                  if ((e.target as HTMLInputElement).value !== searchQuery) {
                     dispatch(setSearchQuery(null))
                     setSearchInput(null)
-                    dispatch(setSearchQuery(e.target.value))
-                    setSearchInput(e.target.value)
+                    dispatch(setSearchQuery((e.target as HTMLInputElement).value))
+                    setSearchInput(((e.target as any).value) as React.SetStateAction<null>)
                   }
                 }
               }}
             />
           </InputGroup>
-
-          {/*<input*/}
-          {/*  type="text"*/}
-          {/*  className="m-0 focus:bg-base-100 bg-transparent outline-0 bg-gray-800 pl-2"*/}
-          {/*  placeholder="Search"*/}
-          {/*  onClick={() => {*/}
-          {/*    dispatch(setChatContainerHeight('52.5vh'))*/}
-          {/*    dispatch(*/}
-          {/*      setSearchComponent({*/}
-          {/*        searchActive: true,*/}
-          {/*        containerDisplay: 'relative',*/}
-          {/*        containerHeight: '40vh',*/}
-          {/*        inputPadding: '10px',*/}
-          {/*      })*/}
-          {/*    )*/}
-          {/*  }}*/}
-          {/*  style={{*/}
-          {/*    padding: searchComponentState.inputPadding,*/}
-          {/*    transition: 'all .5s',*/}
-          {/*    position: searchComponentState.containerDisplay,*/}
-          {/*    right: 0,*/}
-          {/*  }}*/}
-          {/*  onKeyPress={(e) => {*/}
-          {/*    if (e.key === 'Enter') {*/}
-          {/*      if (e.target.value !== searchQuery) {*/}
-          {/*        dispatch(setSearchQuery(null))*/}
-          {/*        setSearchInput(null)*/}
-          {/*        dispatch(setSearchQuery(e.target.value))*/}
-          {/*        setSearchInput(e.target.value)*/}
-          {/*      }*/}
-          {/*    }*/}
-          {/*  }}*/}
-          {/*/>*/}
-          {/*{searchComponentState.searchActive ? (*/}
-          {/*  <SearchIcon className="absolute right-5" />*/}
-          {/*) : (*/}
-          {/*  <SearchIcon className="absolute right-5" />*/}
-          {/*)}*/}
         </Flex>
 
         {searchComponentState.searchActive ? (

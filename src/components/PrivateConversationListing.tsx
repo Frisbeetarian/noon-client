@@ -22,14 +22,14 @@ import {
 import { setChatContainerHeight, setSearchComponent } from '../store/ui'
 import { setVideoFrameForConversation } from '../store/video'
 import { useDispatch, useSelector } from 'react-redux'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import { getSocket } from '../store/sockets'
 import { useUnfriendMutation } from '../generated/graphql'
 
 function PrivateConversationListing({ conversation, i }) {
-  const [profile, setProfile] = useState()
+  const [, setProfile] = useState()
 
-  const router = useRouter()
+  // const router = useRouter()
   const dispatch = useDispatch()
 
   const loggedInUser = useSelector(getLoggedInUser)

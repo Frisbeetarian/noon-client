@@ -7,6 +7,6 @@
     "prettier"
   ],
   "rules": {
-
+    "react/display-name": "off"
   }
 }

@@ -5,7 +5,6 @@ import {
   Interval,
   AudioTrack,
   MediaRecorderEvent,
-  Audio,
 } from '../types/recorder'
 import FormData from 'form-data'
 import axios from 'axios'
@@ -29,7 +28,7 @@ const initialState: Recorder = {
 
 export default function useRecorder() {
   const [recorderState, setRecorderState] = useState<Recorder>(initialState)
-  const [recordings, setRecordings] = useState<Audio[]>([])
+  // const [recordings, setRecordings] = useState<Audio[]>([])
 
   const dispatch = useDispatch()
   const socket = useSelector(getSocket)
@@ -104,7 +103,7 @@ export default function useRecorder() {
       recorder.onstop = async () => {
         const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' })
         chunks = []
-        let formData = new FormData()
+        const formData = new FormData()
         formData.append('file', blob, 'file')
         formData.append('conversationUuid', activeConversation.uuid)
         formData.append('senderUuid', loggedInUser.user?.profile?.uuid)
@@ -118,7 +117,7 @@ export default function useRecorder() {
                 headers: {
                   accept: 'application/json',
                   'Accept-Language': 'en-US,en;q=0.8',
-                  'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+                  'Content-Type': `multipart/form-data;`,
                 },
               }
             )
@@ -177,6 +176,7 @@ export default function useRecorder() {
             })
             .catch((error) => {
               //handle error
+              console.log("error on record:", error)
             })
             .finally()
         }

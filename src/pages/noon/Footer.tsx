@@ -6,7 +6,6 @@ import {
   getActiveConversation,
   getActiveConversee,
   setOngoingCall,
-  setPendingCall,
 } from '../../store/chat'
 
 import { setVideoFrameForConversation } from '../../store/video'
@@ -55,10 +54,6 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
         'message-deleted',
         ({
           messageUuid,
-          to,
-          toUsername,
-          from,
-          fromUsername,
           conversationUuid,
         }) => {
           dispatch(

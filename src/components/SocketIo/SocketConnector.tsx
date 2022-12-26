@@ -56,8 +56,8 @@ export default function SocketConnector() {
     socket.on('session', ({ sessionID, userID }) => {
       console.log('session received:', sessionID)
       socket.auth = { sessionID }
-      localStorage.setItem('sessionID', sessionID)
-      socket.userID = userID
+      localStorage.setItem('sessionID', sessionID);
+      (socket as any).userID = userID
     })
 
     socket.on('disconnect', () => {

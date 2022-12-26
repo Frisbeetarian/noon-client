@@ -1,12 +1,9 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { Container } from '@chakra-ui/react'
-import { withUrqlClient } from 'next-urql'
-import { createUrqlClient } from '../../utils/createUrqlClient'
-import Sidebar from './Sidebar'
+import React from 'react'
+// import { useDispatch } from 'react-redux'
+
 
 function Friend() {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
   return <div className=""></div>
 }

@@ -6,7 +6,7 @@ import {
   Textarea,
 } from '@chakra-ui/react'
 import { useField } from 'formik'
-import React, { InputHTMLAttributes } from 'react'
+import React, { InputHTMLAttributes } from "react";
 
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   name: string
@@ -20,10 +20,13 @@ export const InputField: React.FC<InputFieldProps> = ({
   size: _,
   ...props
 }) => {
-  let InputOrTextarea = Input
+  let InputOrTextarea;
 
   if (textarea) {
     InputOrTextarea = Textarea
+  }else {
+    // TextareaHTMLAttributes
+    InputOrTextarea = Input
   }
   const [field, { error }] = useField(props)
 

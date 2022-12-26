@@ -16,7 +16,10 @@ export const Input = (props: InputProps) => {
   return (
     <InputGroup>
       <InputComponent background="white" />
-      <InputRightElement color="gray.500" children={icon} />
+      <InputRightElement color="gray.500"  >
+        {icon}
+      </InputRightElement>
+
     </InputGroup>
   );
 };

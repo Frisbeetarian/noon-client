@@ -5,10 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { ChatIcon } from '@chakra-ui/icons'
 import {
   cancelFriendshipRequestSentOnProfile,
-  setFriendFlagOnProfile,
   setFriendshipRequestSentOnProfile,
-  setHasFriendshipRequestFromLoggedInProfile,
-  unsetHasFriendshipRequestFromLoggedInProfile,
 } from '../../store/profiles'
 
 import {
@@ -16,41 +13,40 @@ import {
   addFriendRequestEntry,
   removeFriendRequestEntry,
   addFriendEntry,
-  removeFriendEntry,
 } from '../../store/users'
 
 import { getSocket } from '../../store/sockets'
 import {
   useAcceptFriendRequestMutation,
   useCancelFriendRequestMutation,
-  useRefuseFriendRequestMutation,
   useSendFriendRequestMutation,
 } from '../../generated/graphql'
 import { addConversation } from '../../store/chat'
 
-interface ProfileProps {
-  uuid: string
-  username: string
-  name: string
-  userId: string
-  updatedAt: Date
-  createdAt: Date
-}
+// interface ProfileProps {
+//   uuid: string
+//   username: string
+//   name: string
+//   userId: string
+//   updatedAt: Date
+//   createdAt: Date
+// }
 
 export default function Profile({ profile }) {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
 
-  const [{ data: acceptFriendRequestResponse }, acceptFriendRequest] =
+  const [, acceptFriendRequest] =
     useAcceptFriendRequestMutation()
-  const [, refuseFriendRequest] = useRefuseFriendRequestMutation()
+
+  // const [, refuseFriendRequest] = useRefuseFriendRequestMutation()
   const [, cancelFriendRequest] = useCancelFriendRequestMutation()
 
-  const [{ fetching: friendRequestFetching }, sendFriendRequest] =
+  const [, sendFriendRequest] =
     useSendFriendRequestMutation()
   const socket = useSelector(getSocket)
   const toast = useToast()
-  const toastIdRef = React.useRef()
+  // const toastIdRef = React.useRef()
 
   return (
     <Flex
@@ -139,12 +135,6 @@ export default function Profile({ profile }) {
                   },
                 })
               )
-
-              // dispatch(
-              //   setFriendFlagOnProfile({
-              //     profileUuid: profile.uuid
-              //   })
-              // )
 
               dispatch(
                 addConversation({

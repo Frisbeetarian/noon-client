@@ -16,14 +16,12 @@ import {
 } from '@chakra-ui/react'
 
 import { withUrqlClient } from 'next-urql'
-import NextLink from 'next/link'
-import { useDisclosure } from '@chakra-ui/hooks'
 
 import React, { useEffect, useState } from 'react'
 import { createUrqlClient } from '../utils/createUrqlClient'
 
-import { useSelector } from 'react-redux'
-import { getLoggedInUser } from '../store/users'
+// import { useSelector } from 'react-redux'
+// import { getLoggedInUser } from '../store/users'
 
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { toErrorMap } from '../utils/toErrorMap'
@@ -32,7 +30,6 @@ import { Form, Formik } from 'formik'
 import {
   useLoginMutation,
   useRegisterMutation,
-  useLogoutMutation,
   useMeQuery,
 } from '../generated/graphql'
 
@@ -58,14 +55,14 @@ const OnboardingPage = () => {
   const [, login] = useLoginMutation()
   const [, register] = useRegisterMutation()
 
-  const loggedInUser = useSelector(getLoggedInUser)
+  // const loggedInUser = useSelector(getLoggedInUser)
   const [showPassword, setShowPassword] = useState(false)
 
   const [showLogin, setLogin] = useState(false)
   const [showRegister, setRegister] = useState(true)
   const [showForgotPassword, setForgotPassword] = useState(false)
 
-  let [{ data, fetching }] = useMeQuery({
+  const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
     requestPolicy: 'network-only',
   })
@@ -239,15 +236,11 @@ const OnboardingPage = () => {
                     console.log('register response: ', response.data)
                     setErrors(toErrorMap(response.data.register.errors))
                   } else if (response.data?.register.user) {
-                    // await establishSocketConnection(values.username)
-                    // worked
-                    console.log('register response: ', response.data)
                     router.replace('/noon')
-                    // router.
                   }
                 }}
               >
-                {({ isSubmitting, errors, touched }) => (
+                {({  }) => (
                   <Form>
                     <Stack spacing={4}>
                       <HStack>
