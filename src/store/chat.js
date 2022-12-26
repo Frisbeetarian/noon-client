@@ -94,7 +94,7 @@ const slice = createSlice({
             )
           }
 
-          // if (conversationObject.call) {
+          // if (conversationObject.call){
           conversationObject.pendingCall = callObject.pendingCall
           conversationObject.ongoingCall = callObject.ongoingCall
           // }
