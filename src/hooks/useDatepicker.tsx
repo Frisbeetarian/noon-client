@@ -4,7 +4,6 @@ export enum FocusedDatepickerItem {
   START_DATE = "startDate",
   END_DATE = "endDate"
 }
-
 export const useDatepicker = () => {
   const [datepickerState, setDatepickerState] = useState({
     startDate: null,
