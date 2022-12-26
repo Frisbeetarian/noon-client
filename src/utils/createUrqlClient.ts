@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { cacheExchange, Resolver, Cache } from '@urql/exchange-graphcache'
+import { cacheExchange, Resolver } from '@urql/exchange-graphcache'
 import {
   dedupExchange,
   Exchange,
@@ -7,22 +6,22 @@ import {
   stringifyVariables,
 } from 'urql'
 // import { multipartFetchExchange } from '@urql/exchange-multipart-fetch';
-import gql from 'graphql-tag'
+// import gql from 'graphql-tag'
 
 import { pipe, tap } from 'wonka'
 import {
   DeletePostMutationVariables,
-  LoginMutation,
+  // LoginMutation,
   LogoutMutation,
   MeDocument,
   MeQuery,
-  RegisterMutation,
-  VoteMutationVariables,
+  // RegisterMutation,
+  // VoteMutationVariables,
 } from '../generated/graphql'
 import { betterUpdateQuery } from './betterUpdateQuery'
 
 import Router from 'next/router'
-import { fieldInfoOfKey } from '@urql/exchange-graphcache/dist/types/store'
+// import { fieldInfoOfKey } from '@urql/exchange-graphcache/dist/types/store'
 import { isServer } from './isServer'
 
 const errorExchange: Exchange =
@@ -40,7 +39,7 @@ const errorExchange: Exchange =
     )
   }
 
-const messagesCursorPagination = (mergeMode = 'after'): Resolver => {
+const messagesCursorPagination = (): Resolver => {
   return (_parent, fieldArgs, cache, info) => {
     const { parentKey: entityKey, fieldName } = info
 
@@ -82,7 +81,7 @@ const messagesCursorPagination = (mergeMode = 'after'): Resolver => {
   }
 }
 
-const eventsCursorPagination = (mergeMode = 'after'): Resolver => {
+const eventsCursorPagination = (): Resolver => {
   return (_parent, fieldArgs, cache, info) => {
     const { parentKey: entityKey, fieldName } = info
 
@@ -177,7 +176,7 @@ const eventsCursorPagination = (mergeMode = 'after'): Resolver => {
   }
 }
 
-const postsCursorPagination = (mergeMode = 'after'): Resolver => {
+const postsCursorPagination = (): Resolver => {
   return (_parent, fieldArgs, cache, info) => {
     const { parentKey: entityKey, fieldName } = info
 
@@ -216,7 +215,7 @@ const postsCursorPagination = (mergeMode = 'after'): Resolver => {
   }
 }
 
-const filteredProfilesPagination = (mergeMode = 'after'): Resolver => {
+const filteredProfilesPagination = (): Resolver => {
   return (_parent, fieldArgs, cache, info) => {
     const { parentKey: entityKey, fieldName } = info
 
@@ -257,58 +256,58 @@ const filteredProfilesPagination = (mergeMode = 'after'): Resolver => {
   }
 }
 
-const CommunitiesResolver = (mergeMode = 'after'): Resolver => {
-  return (_parent, fieldArgs, cache, info) => {
-    const { parentKey: entityKey, fieldName } = info
+// const CommunitiesResolver = (): Resolver => {
+//   return (_parent, fieldArgs, cache, info) => {
+//     const { parentKey: entityKey, fieldName } = info
+//
+//     const allFields = cache.inspectFields(entityKey)
+//     const fieldInfos = allFields.filter((info) => info.fieldName === fieldName)
+//     const size = fieldInfos.length
+//
+//     if (size === 0) {
+//       return undefined
+//     }
+//
+//     const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`
+//     const isItInTheCache = cache.resolve(
+//       cache.resolveFieldByKey(entityKey, fieldKey) as string,
+//       'communities'
+//     )
+//     info.partial = !isItInTheCache
+//
+//     const results: string[] = []
+//     fieldInfos.forEach((fi) => {
+//       const key = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string
+//       const data = cache.resolve(key, 'communities') as string[]
+//
+//       results.push(...data)
+//     })
+//
+//     return {
+//       __typename: 'Communities',
+//       communities: results,
+//     }
+//   }
+// }
 
-    const allFields = cache.inspectFields(entityKey)
-    const fieldInfos = allFields.filter((info) => info.fieldName === fieldName)
-    const size = fieldInfos.length
+// function invalidateAllPosts(cache: Cache) {
+//   const allFields = cache.inspectFields('Query')
+//   const fieldInfos = allFields.filter((info) => info.fieldName === 'posts')
+//   fieldInfos.forEach((fi) => {
+//     cache.invalidate('Query', 'posts', fi.arguments || {})
+//   })
+// }
 
-    if (size === 0) {
-      return undefined
-    }
+// function invalidateAllEvents(cache: Cache) {
+//   const allFields = cache.inspectFields('Query')
+//   const fieldInfos = allFields.filter((info) => info.fieldName === 'events')
+//   fieldInfos.forEach((fi) => {
+//     cache.invalidate('Query', 'events', fi.arguments || {})
+//   })
+// }
 
-    const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`
-    const isItInTheCache = cache.resolve(
-      cache.resolveFieldByKey(entityKey, fieldKey) as string,
-      'communities'
-    )
-    info.partial = !isItInTheCache
-
-    const results: string[] = []
-    fieldInfos.forEach((fi) => {
-      const key = cache.resolveFieldByKey(entityKey, fi.fieldKey) as string
-      const data = cache.resolve(key, 'communities') as string[]
-
-      results.push(...data)
-    })
-
-    return {
-      __typename: 'Communities',
-      communities: results,
-    }
-  }
-}
-
-function invalidateAllPosts(cache: Cache) {
-  const allFields = cache.inspectFields('Query')
-  const fieldInfos = allFields.filter((info) => info.fieldName === 'posts')
-  fieldInfos.forEach((fi) => {
-    cache.invalidate('Query', 'posts', fi.arguments || {})
-  })
-}
-
-function invalidateAllEvents(cache: Cache) {
-  const allFields = cache.inspectFields('Query')
-  const fieldInfos = allFields.filter((info) => info.fieldName === 'events')
-  fieldInfos.forEach((fi) => {
-    cache.invalidate('Query', 'events', fi.arguments || {})
-  })
-}
-
-const transformToDate = (parent, _args, _cache, info) =>
-  new Date(parent[info.fieldName])
+// const transformToDate = (parent, _args, _cache, info) =>
+//   new Date(parent[info.fieldName])
 
 export const createUrqlClient = (ssrExchange: any, ctx: any) => {
   let cookie = ''
@@ -336,16 +335,16 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
         keys: {
           PaginatedPosts: () => null,
           PaginatedEvents: () => null,
-          FilteredProfiles: (data) => data.uuid,
-          User: (data) => data.uuid,
-          Profile: (data) => data.uuid,
-          Friend: (data) => data.uuid,
-          FriendshipRequest: (data) => data.uuid,
-          Search: (data) => data.uuid,
-          Conversation: (data) => data.uuid,
-          Message: (data) => data.uuid,
-          Calls: (data) => data.profileUuid,
-          ConversationToProfile: (data) => data.uuid,
+          FilteredProfiles: (data) => (data.uuid as string),
+          User: (data) => (data.uuid as string),
+          Profile: (data) => (data.uuid as string),
+          Friend: (data) => (data.uuid as string),
+          FriendshipRequest: (data) => (data.uuid as string),
+          Search: (data) => (data.uuid as string),
+          Conversation: (data) => (data.uuid as string),
+          Message: (data) => (data.uuid as string),
+          Calls: (data) => (data.profileUuid as string),
+          ConversationToProfile: (data) => (data.uuid as string),
           PaginatedMessages: () => null,
         },
         resolvers: {
@@ -354,71 +353,68 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
             events: eventsCursorPagination(),
             messages: messagesCursorPagination(),
             eventToProfiles: filteredProfilesPagination(),
-            communities: {
-              description: '00009',
-            },
           },
         },
         updates: {
           Mutation: {
-            deletePost: (_result, args, cache, info) => {
+            deletePost: (_result, args, cache) => {
               cache.invalidate({
                 __typename: 'Post',
                 id: (args as DeletePostMutationVariables).id,
               })
             },
-            vote: (_result, args, cache, info) => {
-              const { postId, value } = args as VoteMutationVariables
-              const data = cache.readFragment(
-                gql`
-                  fragment _ on Post {
-                    id
-                    points
-                    voteStatus
-                  }
-                `,
-                { id: postId } as any
-              )
-
-              if (data) {
-                if (data.voteStatus === value) {
-                  return
-                }
-                const newPoints =
-                  (data.points as number) + (!data.voteStatus ? 1 : 2) * value
-
-                cache.writeFragment(
-                  gql`
-                    fragment __ on Post {
-                      points
-                      voteStatus
-                    }
-                  `,
-                  { id: postId, points: newPoints, voteStatus: value } as any
-                )
-              }
-            },
-            createPost: (_result, args, cache, info) => {
-              invalidateAllPosts(cache)
-              // const allFields = cache.inspectFields('Query')
-              // const fieldInfos = allFields.filter(
-              //   (info) => info.fieldName === 'posts'
-              // )
-              // fieldInfos.forEach((fieldInfo) => {
-              //   console.log('start')
-              //   console.log(cache.inspectFields('Query'))
-              //   cache.invalidate('Query', 'posts', fieldInfo.arguments)
-              //   console.log(cache.inspectFields('Query'))
-              //   console.log('end')
-              // })
-            },
-            createEvent: (_result, args, cache, info) => {
-              invalidateAllEvents(cache)
-            },
-            // createCommunity: (_result, args, cache, info) => {
+            // vote: (_result, args, cache) => {
+            //   const { postId, value } = args as VoteMutationVariables
+            //   const data = cache.readFragment(
+            //     gql`
+            //       fragment _ on Post {
+            //         id
+            //         points
+            //         voteStatus
+            //       }
+            //     `,
+            //     { id: postId } as any
+            //   )
+            //
+            //   if (data) {
+            //     if (data.voteStatus === value) {
+            //       return
+            //     }
+            //     const newPoints =
+            //       (data.points as number) + (!data.voteStatus ? 1 : 2) * value
+            //
+            //     cache.writeFragment(
+            //       gql`
+            //         fragment __ on Post {
+            //           points
+            //           voteStatus
+            //         }
+            //       `,
+            //       { id: postId, points: newPoints, voteStatus: value } as any
+            //     )
+            //   }
+            // },
+            // createPost: (_result, cache) => {
+            //   invalidateAllPosts(cache)
+            //   // const allFields = cache.inspectFields('Query')
+            //   // const fieldInfos = allFields.filter(
+            //   //   (info) => info.fieldName === 'posts'
+            //   // )
+            //   // fieldInfos.forEach((fieldInfo) => {
+            //   //   console.log('start')
+            //   //   console.log(cache.inspectFields('Query'))
+            //   //   cache.invalidate('Query', 'posts', fieldInfo.arguments)
+            //   //   console.log(cache.inspectFields('Query'))
+            //   //   console.log('end')
+            //   // })
+            // },
+            // createEvent: (_result) => {
             //   invalidateAllEvents(cache)
             // },
-            logout: (_result, args, cache, info) => {
+            // createCommunity: (_result) => {
+            //   invalidateAllEvents(cache)
+            // },
+            logout: (_result, _, cache) => {
               betterUpdateQuery<LogoutMutation, MeQuery>(
                 cache,
                 { query: MeDocument },
@@ -426,39 +422,39 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
                 () => ({ me: null })
               )
             },
-            login: (_result, args, cache, info) => {
-              betterUpdateQuery<LoginMutation, MeQuery>(
-                cache,
-                { query: MeDocument },
-                _result,
-                (result, query) => {
-                  if (result.login.errors) {
-                    return query
-                  } else {
-                    return {
-                      me: result.login.user,
-                    }
-                  }
-                }
-              )
-              invalidateAllPosts(cache)
-            },
-            register: (_result, args, cache, info) => {
-              betterUpdateQuery<RegisterMutation, MeQuery>(
-                cache,
-                { query: MeDocument },
-                _result,
-                (result, query) => {
-                  if (result.register.errors) {
-                    return query
-                  } else {
-                    return {
-                      me: result.register.user,
-                    }
-                  }
-                }
-              )
-            },
+            // login: (_result, _, cache) => {
+            //   betterUpdateQuery<LoginMutation, MeQuery>(
+            //     cache,
+            //     { query: MeDocument },
+            //     _result,
+            //     (result, query) => {
+            //       if (result.login.errors) {
+            //         return query
+            //       } else {
+            //         return {
+            //           me: result.login.user,
+            //         }
+            //       }
+            //     }
+            //   )
+            //   invalidateAllPosts(cache)
+            // },
+            // register: (_result, _, cache) => {
+            //   betterUpdateQuery<RegisterMutation, MeQuery>(
+            //     cache,
+            //     { query: MeDocument },
+            //     _result,
+            //     (result, query) => {
+            //       if (result.register.errors) {
+            //         return query
+            //       } else {
+            //         return {
+            //           me: result.register.user,
+            //         }
+            //       }
+            //     }
+            //   )
+            // },
           },
         },
       }),

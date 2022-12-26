@@ -26,7 +26,6 @@ const slice = createSlice({
     setSocket: (sockets, action) => {
       sockets.socket = action.payload.socket
     },
-    showFriendshipRequestToast: (ui, action) => {},
     setChatComponentState: (ui, action) => {
       ui.chatComponent = action.payload
     },

@@ -126,7 +126,6 @@ const CreateGroup = ({}) => {
               <Input
                 name="name"
                 type="text"
-                label="Group name"
                 onChange={formik.handleChange}
                 value={formik.values.name}
               />
@@ -138,7 +137,6 @@ const CreateGroup = ({}) => {
               <Input
                 name="description"
                 type="text"
-                label="Group description"
                 onChange={formik.handleChange}
                 value={formik.values.description}
               />

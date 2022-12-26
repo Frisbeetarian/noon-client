@@ -66,7 +66,7 @@ function GroupConversationListing({ conversation, i }) {
   return (
     <Flex
       key={conversation.uuid}
-      tabindex="0"
+      tabIndex={0}
       className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-amber-100 hover:border-sky-500 focus:outline-none focus:border-sky-700 focus-within:shadow-lg"
       style={{ transition: 'all .25s ' }}
     >

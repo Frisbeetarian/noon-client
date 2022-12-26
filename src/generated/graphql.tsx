@@ -1,4 +1,3 @@
-// @ts-nocheck
 import gql from 'graphql-tag';
 import * as Urql from 'urql';
 export type Maybe<T> = T | null;
@@ -321,11 +320,11 @@ export type MutationUpdateUnreadMessagesForConversationArgs = {
 };
 
 
-export type MutationUploadImageArgs = {
-  file?: Maybe<Scalars['Upload']>;
-  conversationUuid: Scalars['String'];
-  profileUuid: Scalars['String'];
-};
+// export type MutationUploadImageArgs = {
+//   file?: Maybe<Scalars['Upload']>;
+//   conversationUuid: Scalars['String'];
+//   profileUuid: Scalars['String'];
+// };
 
 
 export type MutationSaveGroupMessageArgs = {
@@ -1246,11 +1245,11 @@ export type UpdateUnreadMessagesForConversationMutation = (
   & Pick<Mutation, 'updateUnreadMessagesForConversation'>
 );
 
-export type UploadImageMutationVariables = Exact<{
-  profileUuid: Scalars['String'];
-  conversationUuid: Scalars['String'];
-  file: Scalars['Upload'];
-}>;
+// export type UploadImageMutationVariables = Exact<{
+//   profileUuid: Scalars['String'];
+//   conversationUuid: Scalars['String'];
+//   file: Scalars['Upload'];
+// }>;
 
 
 export type UploadImageMutation = (
@@ -2054,9 +2053,9 @@ export const UploadImageDocument = gql`
 }
     `;
 
-export function useUploadImageMutation() {
-  return Urql.useMutation<UploadImageMutation, UploadImageMutationVariables>(UploadImageDocument);
-};
+// export function useUploadImageMutation() {
+//   return Urql.useMutation<UploadImageMutation, UploadImageMutationVariables>(UploadImageDocument);
+// };
 export const VoteDocument = gql`
     mutation Vote($value: Int!, $postId: Int!) {
   vote(value: $value, postId: $postId)
