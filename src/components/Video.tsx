@@ -7,9 +7,9 @@ import { IJitsiMeetingProps } from '@jitsi/react-sdk/lib/types'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { getLoggedInUser } from '../../store/users'
-import { setVideoFrameForConversation } from '../../store/video'
-import { useCancelPendingCallForConversationMutation } from '../../generated/graphql'
+import { getLoggedInUser } from '../store/users'
+import { setVideoFrameForConversation } from '../store/video'
+import { useCancelPendingCallForConversationMutation } from '../generated/graphql'
 
 
 import {
@@ -17,7 +17,7 @@ import {
   getActiveConversation,
   // getActiveConversee,
   // getShouldPauseCheckHasMore,
-} from '../../store/chat'
+} from '../store/chat'
 
 const JitsiMeeting = dynamic(
   () =>

@@ -6,19 +6,19 @@ import {
   getActiveConversation,
   getActiveConversee,
   setOngoingCall,
-} from '../../store/chat'
+} from '../store/chat'
 
-import { setVideoFrameForConversation } from '../../store/video'
+import { setVideoFrameForConversation } from '../store/video'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { getLoggedInUser } from '../../store/users'
-import { getSocket } from '../../store/sockets'
-import { useSetPendingCallForConversationMutation } from '../../generated/graphql'
+import { getLoggedInUser } from '../store/users'
+import { getSocket } from '../store/sockets'
+import { useSetPendingCallForConversationMutation } from '../generated/graphql'
 
-import RecorderControls from '../../components/AudioRecorder/recorder-controls'
+import RecorderControls from './AudioRecorder/recorder-controls'
 // import useRecorder from '../../components/AudioRecorder/hooks/use-recorder_old'
-import { UseRecorder } from '../../components/AudioRecorder/types/recorder'
-import useRecorder from '../../components/AudioRecorder/hooks/use-recorder'
+import { UseRecorder } from './AudioRecorder/types/recorder'
+import useRecorder from './AudioRecorder/hooks/use-recorder'
 
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const dispatch = useDispatch()

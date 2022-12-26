@@ -10,13 +10,13 @@ import React, { RefObject, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux'
 // import { getActiveConversee } from '../../store/chat'
 import SearchController from './SearchController'
-import { getSearchQuery, setSearchQuery } from '../../store/search'
+import { getSearchQuery, setSearchQuery } from '../store/search'
 
 import {
   setSearchComponent,
   getSearchComponentState,
   setChatContainerHeight,
-} from '../../store/ui'
+} from '../store/ui'
 
 function ChatControlsAndSearch() {
   const ref = React.useRef()

@@ -6,22 +6,22 @@ import { ChatIcon } from '@chakra-ui/icons'
 import {
   cancelFriendshipRequestSentOnProfile,
   setFriendshipRequestSentOnProfile,
-} from '../../store/profiles'
+} from '../store/profiles'
 
 import {
   getLoggedInUser,
   addFriendRequestEntry,
   removeFriendRequestEntry,
   addFriendEntry,
-} from '../../store/users'
+} from '../store/users'
 
-import { getSocket } from '../../store/sockets'
+import { getSocket } from '../store/sockets'
 import {
   useAcceptFriendRequestMutation,
   useCancelFriendRequestMutation,
   useSendFriendRequestMutation,
-} from '../../generated/graphql'
-import { addConversation } from '../../store/chat'
+} from '../generated/graphql'
+import { addConversation } from '../store/chat'
 
 // interface ProfileProps {
 //   uuid: string

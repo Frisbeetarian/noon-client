@@ -15,11 +15,11 @@ import {
   setActiveConversee,
   setPendingCall,
   setShouldPauseCheckHasMore,
-} from '../../store/chat'
+} from '../store/chat'
 
-import { getVideoFrameOpenState } from '../../store/video'
+import { getVideoFrameOpenState } from '../store/video'
 import { useDispatch, useSelector } from 'react-redux'
-import { getSocket } from '../../store/sockets'
+import { getSocket } from '../store/sockets'
 
 import Header from './Header'
 import Messages from './Messages'
@@ -30,16 +30,16 @@ import {
   getLoggedInUser,
   removeFriendEntry,
   removeFriendRequestEntry,
-} from '../../store/users'
+} from '../store/users'
 
 import {
   // useAcceptFriendRequestMutation,
   useSaveMessageMutation,
   useSaveGroupMessageMutation,
   useUpdateUnreadMessagesForConversationMutation,
-} from '../../generated/graphql'
+} from '../generated/graphql'
 
-import { getCreateGroupComponent, getChatContainerHeight } from '../../store/ui'
+import { getCreateGroupComponent, getChatContainerHeight } from '../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 // import { setFriendFlagOnProfile } from '../../store/profiles'

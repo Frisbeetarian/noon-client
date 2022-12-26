@@ -50,7 +50,7 @@ const RegisterSchema = Yup.object().shape({
     .required('Password is required'),
 })
 
-const OnboardingPage = () => {
+const Onboarding = () => {
   const router = useRouter()
   const [, login] = useLoginMutation()
   const [, register] = useRegisterMutation()
@@ -410,4 +410,5 @@ const OnboardingPage = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(OnboardingPage)
+export default withUrqlClient(createUrqlClient, { ssr: true })(Onboarding)
+// export default Onboarding

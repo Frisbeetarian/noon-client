@@ -8,7 +8,7 @@ import { InputField } from '../components/InputField'
 import { useForgotPasswordMutation } from '../generated/graphql'
 import { createUrqlClient } from '../utils/createUrqlClient'
 
-const ForgotPasswordPage = ({}) => {
+const ForgotPassword = ({}) => {
   const [complete, setComplete] = useState(false)
   const [, forgotPassword] = useForgotPasswordMutation()
   return (
@@ -52,4 +52,5 @@ const ForgotPasswordPage = ({}) => {
   )
 }
 
-export default withUrqlClient(createUrqlClient)(ForgotPasswordPage)
+export default withUrqlClient(createUrqlClient, {ssr: true})(ForgotPassword)
+// export default ForgotPassword

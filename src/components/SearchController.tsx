@@ -1,14 +1,14 @@
 import { useSelector } from 'react-redux'
-import { getSearchQuery } from '../../store/search'
+import { getSearchQuery } from '../store/search'
 import {
   useSearchForProfileByUsernameQuery,
-} from '../../generated/graphql'
+} from '../generated/graphql'
 
 import {  Flex } from '@chakra-ui/react'
 import React, { useEffect } from 'react'
 // import Profile from './Profile'
 
-import { getLoggedInUser } from '../../store/users'
+import { getLoggedInUser } from '../store/users'
 // import { addProfiles, getProfiles } from '../../store/profiles'
 
 export default function SearchController() {

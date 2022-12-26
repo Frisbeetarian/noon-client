@@ -19,7 +19,7 @@ import {
   useClearUnreadMessagesForConversationMutation,
   useDeleteMessageMutation,
   useGetMessagesForConversationQuery,
-} from '../../generated/graphql'
+} from '../generated/graphql'
 
 import {
   clearUnreadMessagesForConversationInStore,
@@ -30,13 +30,13 @@ import {
   setShouldPauseCheckHasMore,
   getShouldPauseCheckHasMore,
   deleteMessageInStore,
-} from '../../store/chat'
+} from '../store/chat'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { getLoggedInUser } from '../../store/users'
+import { getLoggedInUser } from '../store/users'
 import ReactAudioPlayer from 'react-audio-player'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { getSocket } from '../../store/sockets'
+import { getSocket } from '../store/sockets'
 
 const Messages = () => {
   const dispatch = useDispatch()

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { withUrqlClient } from 'next-urql'
 import { createUrqlClient } from '../../utils/createUrqlClient'
-import Sidebar from './Sidebar'
+import Sidebar from '../../components/Sidebar'
 
 import {
   useGetConversationForLoggedInUserQuery,
@@ -15,7 +15,7 @@ import { getLoggedInUser, setLoggedInUser } from '../../store/users'
 
 import { setConversations, getConversations } from '../../store/chat'
 
-import Chat from './Chat'
+import Chat from '../../components/Chat'
 
 function Noon() {
   const dispatch = useDispatch()
@@ -64,3 +64,4 @@ function Noon() {
 }
 
 export default withUrqlClient(createUrqlClient, { ssr: true })(Noon)
+// export default Noon

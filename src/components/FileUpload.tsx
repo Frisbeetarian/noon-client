@@ -6,17 +6,17 @@ import { useDropzone } from 'react-dropzone'
 //   useUploadImageMutation,
 // } from '../../generated/graphql'
 
-import { getLoggedInUser } from '../../store/users'
+import { getLoggedInUser } from '../store/users'
 import axios from 'axios'
 
 import FormData from 'form-data'
 import { v4 as uuid } from 'uuid'
-import { getSocket } from '../../store/sockets'
+import { getSocket } from '../store/sockets'
 import {
   addMessageToActiveConversation,
   getActiveConversation,
   getActiveConversee,
-} from '../../store/chat'
+} from '../store/chat'
 
 export const FileUpload = ({ children }) => {
   const dispatch = useDispatch()

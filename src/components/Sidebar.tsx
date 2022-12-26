@@ -1,8 +1,8 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLogoutMutation } from '../../generated/graphql'
+import { useLogoutMutation } from '../generated/graphql'
 
-import { getLoggedInUser } from '../../store/users'
+import { getLoggedInUser } from '../store/users'
 import { SettingsIcon, HamburgerIcon, EditIcon } from '@chakra-ui/icons'
 
 import {
@@ -22,15 +22,15 @@ import {
   setActiveConversationSet,
   setActiveConversee,
   setShouldPauseCheckHasMore,
-} from '../../store/chat'
+} from '../store/chat'
 
-import SocketConnector from '../../components/SocketIo/SocketConnector'
+import SocketConnector from './SocketIo/SocketConnector'
 import { useRouter } from 'next/router'
 
-import { setCreateGroupComponent, setSearchComponent } from '../../store/ui'
+import { setCreateGroupComponent, setSearchComponent } from '../store/ui'
 
-import PrivateConversationListing from '../../components/PrivateConversationListing'
-import GroupConversationListing from '../../components/GroupConversationListing'
+import PrivateConversationListing from './PrivateConversationListing'
+import GroupConversationListing from './GroupConversationListing'
 
 function Sidebar() {
   const router = useRouter()

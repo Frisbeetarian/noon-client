@@ -11,19 +11,19 @@ import { useFormik } from 'formik'
 import {
   addConversation,
   setOngoingCall,
-} from '../../store/chat'
+} from '../store/chat'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { getLoggedInUser } from '../../store/users'
-import { getSocket } from '../../store/sockets'
-import GroupParticipant from '../../components/GroupParticipant'
+import { getLoggedInUser } from '../store/users'
+import { getSocket } from '../store/sockets'
+import GroupParticipant from './GroupParticipant'
 
 import {
   useCreateGroupConversationMutation,
-} from '../../generated/graphql'
+} from '../generated/graphql'
 
-import { clearState, getParticipants } from '../../store/groups'
-import { setCreateGroupComponent } from '../../store/ui'
+import { clearState, getParticipants } from '../store/groups'
+import { setCreateGroupComponent } from '../store/ui'
 
 const CreateGroup = ({}) => {
   const dispatch = useDispatch()

@@ -14,12 +14,12 @@ import {
   getActiveConversation,
   getActiveConversee,
   setPendingCall,
-} from '../../store/chat'
+} from '../store/chat'
 
-import { getLoggedInUser } from '../../store/users'
-import { getSocket } from '../../store/sockets'
-import { useCancelPendingCallForConversationMutation } from '../../generated/graphql'
-import { setVideoFrameForConversation } from '../../store/video'
+import { getLoggedInUser } from '../store/users'
+import { getSocket } from '../store/sockets'
+import { useCancelPendingCallForConversationMutation } from '../generated/graphql'
+import { setVideoFrameForConversation } from '../store/video'
 
 const Header = () => {
   const activeConversee = useSelector(getActiveConversee)

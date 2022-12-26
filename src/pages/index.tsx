@@ -10,7 +10,7 @@ import { useMeQuery } from '../generated/graphql'
 import { useRouter } from 'next/router'
 import { isServer } from '../utils/isServer'
 
-const IndexPage = () => {
+const Index = () => {
   const router = useRouter()
 
   const [{ data, fetching }] = useMeQuery({
@@ -33,4 +33,4 @@ const IndexPage = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(IndexPage)
+export default withUrqlClient(createUrqlClient, { ssr: false })(Index)
