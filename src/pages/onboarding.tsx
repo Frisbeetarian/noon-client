@@ -62,7 +62,7 @@ const Onboarding = () => {
   const [showRegister, setRegister] = useState(true)
   const [showForgotPassword, setForgotPassword] = useState(false)
 
-  const [{ data, fetching }] = useMeQuery({
+  const [{ data }] = useMeQuery({
     pause: isServer(),
     requestPolicy: 'network-only',
   })

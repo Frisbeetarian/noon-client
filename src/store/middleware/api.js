@@ -17,7 +17,7 @@ const api =
 
     try {
       const response = await axios.request({
-        baseURL: 'http://localhost:4020/graphql',
+        baseURL: process.env.NEXT_PUBLIC_API_URL,
         url,
         method,
         data,

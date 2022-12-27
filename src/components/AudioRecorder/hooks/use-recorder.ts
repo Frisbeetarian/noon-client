@@ -111,7 +111,7 @@ export default function useRecorder() {
         if (recorder.stream.active) {
           await axios
             .post(
-              'http://localhost:4020/media_api/upload_audio_recording',
+              process.env.API_URL + 'media_api/upload_audio_recording',
               formData,
               {
                 headers: {
@@ -176,7 +176,7 @@ export default function useRecorder() {
             })
             .catch((error) => {
               //handle error
-              console.log("error on record:", error)
+              console.log('error on record:', error)
             })
             .finally()
         }

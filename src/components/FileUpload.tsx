@@ -39,17 +39,17 @@ export const FileUpload = ({ children }) => {
       formData.append('messageUuid', uuid())
       formData.append('senderUuid', loggedInUser.user?.profile?.uuid)
 
-
       axios
-        .post('http://localhost:4020/media_api/upload_image', formData, {
+        .post(process.env.API_URL + 'media_api/upload_image', formData, {
           headers: {
             accept: 'application/json',
             'Accept-Language': 'en-US,en;q=0.8',
-            'Content-Type': `multipart/form-data; boundary=${(formData as any)._boundary}`,
+            'Content-Type': `multipart/form-data; boundary=${
+              (formData as any)._boundary
+            }`,
           },
         })
         .then(async (response) => {
-
           if (activeConversation.type === 'pm') {
             socket.emit('private-chat-message', {
               content:
@@ -102,12 +102,10 @@ export const FileUpload = ({ children }) => {
               },
             })
           )
-
         })
         .catch((error) => {
           console.log('error:', error)
         })
-
     }
   }, [acceptedFiles])
 
