@@ -80,14 +80,14 @@ function Chat() {
       socket.on(
         'private-chat-message',
         ({
-          from,
-          fromUsername,
-          messageUuid,
-          message,
-          conversationUuid,
-          type,
-          src,
-        }) => {
+           from,
+           fromUsername,
+           messageUuid,
+           message,
+           conversationUuid,
+           type,
+           src,
+         }) => {
           if (!message.trim().length) {
             return
           }
