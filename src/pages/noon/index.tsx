@@ -63,5 +63,4 @@ function Noon() {
   )
 }
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(Noon)
-// export default Noon
+export default withUrqlClient(createUrqlClient, { ssr: true })(Noon)

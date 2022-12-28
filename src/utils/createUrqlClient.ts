@@ -314,8 +314,10 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
 
   if (isServer()) {
     cookie = ctx?.req?.headers?.cookie
+    console.log('cookie server check:', ctx?.req?.headers?.cookie)
   }
 
+  console.log('isServer:', isServer())
   console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL)
   console.log('cookie on platform start:', ctx?.req?.headers?.cookie)
 
@@ -335,16 +337,16 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
         keys: {
           PaginatedPosts: () => null,
           PaginatedEvents: () => null,
-          FilteredProfiles: (data) => (data.uuid as string),
-          User: (data) => (data.uuid as string),
-          Profile: (data) => (data.uuid as string),
-          Friend: (data) => (data.uuid as string),
-          FriendshipRequest: (data) => (data.uuid as string),
-          Search: (data) => (data.uuid as string),
-          Conversation: (data) => (data.uuid as string),
-          Message: (data) => (data.uuid as string),
-          Calls: (data) => (data.profileUuid as string),
-          ConversationToProfile: (data) => (data.uuid as string),
+          FilteredProfiles: (data) => data.uuid as string,
+          User: (data) => data.uuid as string,
+          Profile: (data) => data.uuid as string,
+          Friend: (data) => data.uuid as string,
+          FriendshipRequest: (data) => data.uuid as string,
+          Search: (data) => data.uuid as string,
+          Conversation: (data) => data.uuid as string,
+          Message: (data) => data.uuid as string,
+          Calls: (data) => data.profileUuid as string,
+          ConversationToProfile: (data) => data.uuid as string,
           PaginatedMessages: () => null,
         },
         resolvers: {

@@ -353,5 +353,9 @@ const Onboarding = () => {
   )
 }
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(Onboarding)
+Onboarding.getServerSideProps = async (context) => {
+  console.log('context in server side props', context)
+}
+
+export default withUrqlClient(createUrqlClient, { ssr: true })(Onboarding)
 // export default Onboarding
