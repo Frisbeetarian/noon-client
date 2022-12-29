@@ -253,7 +253,9 @@ function Chat() {
                   className="mr-3"
                   onClick={async () => {
                     const acceptFriendshipResponse = await acceptFriendRequest({
-                      profileUuid: from,
+                      variables: {
+                        profileUuid: from,
+                      },
                     })
 
                     dispatch(
