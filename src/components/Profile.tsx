@@ -36,14 +36,21 @@ export default function Profile({ profile }) {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
 
-  const [, acceptFriendRequest] =
-    useAcceptFriendRequestMutation()
+  const [
+    acceptFriendRequest,
+    // { loading: acceptFriendRequestLoading }
+  ] = useAcceptFriendRequestMutation()
 
   // const [, refuseFriendRequest] = useRefuseFriendRequestMutation()
-  const [, cancelFriendRequest] = useCancelFriendRequestMutation()
+  const [
+    cancelFriendRequest,
+    // { loading: cancelFriendRequestLoading }
+  ] = useCancelFriendRequestMutation()
 
-  const [, sendFriendRequest] =
-    useSendFriendRequestMutation()
+  const [
+    sendFriendRequest,
+    // { loading: sendFriendRequestLoading }
+  ] = useSendFriendRequestMutation()
   const socket = useSelector(getSocket)
   const toast = useToast()
   // const toastIdRef = React.useRef()
@@ -79,8 +86,11 @@ export default function Profile({ profile }) {
             style={{ borderRadius: '0px 5px 5px 0px' }}
             onClick={async () => {
               const cancelFriendRequestResponse = await cancelFriendRequest({
-                profileUuid: profile.uuid,
+                variables: {
+                  profileUuid: profile.uuid,
+                },
               })
+
               dispatch(
                 cancelFriendshipRequestSentOnProfile({
                   profileUuid: profile.uuid,
@@ -117,7 +127,9 @@ export default function Profile({ profile }) {
             variant="ghost"
             onClick={async () => {
               const acceptFriendshipResponse = await acceptFriendRequest({
-                profileUuid: profile.uuid,
+                variables: {
+                  profileUuid: profile.uuid,
+                },
               })
 
               dispatch(
@@ -199,7 +211,9 @@ export default function Profile({ profile }) {
                 )
 
                 await sendFriendRequest({
-                  profileUuid: profile.uuid,
+                  variables: {
+                    profileUuid: profile.uuid,
+                  },
                 })
 
                 socket.emit('send-friend-request', {

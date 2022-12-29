@@ -46,10 +46,15 @@ const Messages = () => {
   const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
   const socket = useSelector(getSocket)
 
-  const [, clearUnreadMessagesForConversation] =
-    useClearUnreadMessagesForConversationMutation()
+  const [
+    clearUnreadMessagesForConversation,
+    // { loading: unreadMessagesLoading },
+  ] = useClearUnreadMessagesForConversationMutation()
 
-  const [, deleteMessage] = useDeleteMessageMutation()
+  const [
+    deleteMessage,
+    // { loading: deleteMessageLoading }
+  ] = useDeleteMessageMutation()
 
   const [variables, setVariables] = useState({
     limit: 20,
@@ -65,18 +70,23 @@ const Messages = () => {
   const [, setShouldCheckHasMorePause] = useState(false)
   const [localMessages, setLocalMessages] = useState([])
 
-  const [{ data }] = useGetMessagesForConversationQuery({
+  /*  const { data, loading } = useMeQuery({
+    pause: isServer(),
+    fetchPolicy: 'network-only',
+  })*/
+
+  const { data } = useGetMessagesForConversationQuery({
     variables,
-    pause: shouldPause,
-    requestPolicy: 'network-only',
+    skip: shouldPause,
+    fetchPolicy: 'network-only',
   })
 
-  let [{ data: hasMoreOnInit }] = useCheckIfConversationHasMoreMessagesQuery({
+  let { data: hasMoreOnInit } = useCheckIfConversationHasMoreMessagesQuery({
     variables: {
       conversationUuid: activeConversation.uuid,
     },
-    pause: shouldPauseCheckHasMore,
-    requestPolicy: 'network-only',
+    skip: shouldPauseCheckHasMore,
+    fetchPolicy: 'network-only',
   })
 
   useEffect(() => {
@@ -104,7 +114,7 @@ const Messages = () => {
       setShouldCheckHasMorePause(true)
       dispatch(setShouldPauseCheckHasMore(true))
       hasMoreOnInit = undefined
-      setLocalMessages(localMessages => [...localMessages])
+      setLocalMessages((localMessages) => [...localMessages])
 
       // updateMyArray( arr => [...arr, `${arr.length}`]);
     }
@@ -137,8 +147,10 @@ const Messages = () => {
         loggedInUser.user.profile.uuid
     ) {
       clearUnreadMessagesForConversation({
-        conversationUuid: activeConversation.uuid,
-        profileUuid: 'fejfnewjnfewjf',
+        variables: {
+          conversationUuid: activeConversation.uuid,
+          profileUuid: 'fejfnewjnfewjf',
+        },
       })
 
       dispatch(clearUnreadMessagesForConversationInStore)
@@ -172,11 +184,13 @@ const Messages = () => {
 
   const deleteMessageHandler = async (item) => {
     const message = await deleteMessage({
-      messageUuid: item.uuid,
-      conversationUuid: activeConversation.uuid,
-      from: loggedInUser.user.profile.uuid,
-      type: item.type,
-      src: item.src,
+      variables: {
+        messageUuid: item.uuid,
+        conversationUuid: activeConversation.uuid,
+        from: loggedInUser.user.profile.uuid,
+        type: item.type,
+        src: item.src,
+      },
     })
 
     console.log('message in update message1:', message)
@@ -219,9 +233,9 @@ const Messages = () => {
         inverse={true}
         hasMore={
           !shouldPauseCheckHasMore
-            ? !!(hasMoreOnInit?.checkIfConversationHasMoreMessages)
-            : !!(data?.getMessagesForConversation)
-            ? !!(data?.getMessagesForConversation.hasMore)
+            ? !!hasMoreOnInit?.checkIfConversationHasMoreMessages
+            : !!data?.getMessagesForConversation
+            ? !!data?.getMessagesForConversation.hasMore
             : true
         }
         loader={

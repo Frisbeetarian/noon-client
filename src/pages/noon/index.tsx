@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { withUrqlClient } from 'next-urql'
-import { createUrqlClient } from '../../utils/createUrqlClient'
 import Sidebar from '../../components/Sidebar'
 
 import {
@@ -16,21 +14,27 @@ import { getLoggedInUser, setLoggedInUser } from '../../store/users'
 import { setConversations, getConversations } from '../../store/chat'
 
 import Chat from '../../components/Chat'
+import { withApollo } from '../../utils/withApollo'
 
 function Noon() {
   const dispatch = useDispatch()
 
-  const [{ data }] = useMeQuery({
-    pause: isServer(),
-    requestPolicy: 'network-only',
+  const {
+    data,
+    // loading: meLoading
+  } = useMeQuery({
+    skip: isServer(),
+    fetchPolicy: 'network-only',
   })
 
   // const [, logout] = useLogoutMutation()
   const loggedInUser = useSelector(getLoggedInUser)
   const conversations = useSelector(getConversations)
 
-  const [{ data: fetchedConversations }] =
-    useGetConversationForLoggedInUserQuery()
+  const {
+    data: fetchedConversations,
+    // loading: getConversationLoading
+  } = useGetConversationForLoggedInUserQuery()
 
   useEffect(() => {
     dispatch(setLoggedInUser({ user: data }))
@@ -63,4 +67,4 @@ function Noon() {
   )
 }
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Noon)
+export default withApollo({ ssr: true })(Noon)

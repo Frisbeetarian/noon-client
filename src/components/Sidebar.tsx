@@ -36,7 +36,10 @@ function Sidebar() {
   const router = useRouter()
   const dispatch = useDispatch()
 
-  const [, logout] = useLogoutMutation()
+  const [
+    logout,
+    // { loading: logoutLoading }
+  ] = useLogoutMutation()
   const loggedInUser = useSelector(getLoggedInUser)
   const getConversationsFromStore = useSelector(getSortedConversations)
 

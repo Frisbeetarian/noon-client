@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import {  Flex} from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 
 import dynamic from 'next/dynamic'
 import { FC } from 'react'
@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
 import { setVideoFrameForConversation } from '../store/video'
 import { useCancelPendingCallForConversationMutation } from '../generated/graphql'
-
 
 import {
   cancelPendingCall,
@@ -27,9 +26,6 @@ const JitsiMeeting = dynamic(
   }
 ) as FC<IJitsiMeetingProps>
 
-
-
-
 const Video = ({ conversationUuid, profile, email }) => {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
@@ -40,22 +36,21 @@ const Video = ({ conversationUuid, profile, email }) => {
   const apiRef = useRef()
   const [logItems, updateLog] = useState<string[]>([])
   const [showNew] = useState(false)
-  const [knockingParticipants, updateKnockingParticipants] = useState<string[]>([])
+  const [knockingParticipants, updateKnockingParticipants] = useState<string[]>(
+    []
+  )
 
-  const [, cancelPendingCallForConversation] =
+  const [cancelPendingCallForConversation] =
     useCancelPendingCallForConversationMutation()
 
   const printEventOutput = (payload) => {
-
     updateLog((items) => [...items, JSON.stringify(payload)])
   }
 
   const handleAudioStatusChange = (payload, feature) => {
     if (payload.muted) {
-
       updateLog((items) => [...items, `${feature} off`])
     } else {
-
       updateLog((items) => [...items, `${feature} on`])
     }
   }
@@ -71,8 +66,10 @@ const Video = ({ conversationUuid, profile, email }) => {
     )
 
     await cancelPendingCallForConversation({
-      conversationUuid: activeConversation.uuid,
-      profileUuid: loggedInUser.user?.profile?.uuid,
+      variables: {
+        conversationUuid: activeConversation.uuid,
+        profileUuid: loggedInUser.user?.profile?.uuid,
+      },
     })
   }
 
@@ -81,9 +78,7 @@ const Video = ({ conversationUuid, profile, email }) => {
       return
     }
 
-    if(apiRef.current)
-      (apiRef.current as any).executeCommand('toggleChat')
-
+    if (apiRef.current) (apiRef.current as any).executeCommand('toggleChat')
 
     updateLog((items) => [
       ...items,
@@ -92,7 +87,6 @@ const Video = ({ conversationUuid, profile, email }) => {
   }
 
   const handleKnockingParticipant = (payload) => {
-
     updateLog((items) => [...items, JSON.stringify(payload)])
 
     updateKnockingParticipants((participants) => [
@@ -103,19 +97,21 @@ const Video = ({ conversationUuid, profile, email }) => {
 
   const resolveKnockingParticipants = (condition) => {
     knockingParticipants.forEach((participant) => {
-      (apiRef.current as any).executeCommand(
+      ;(apiRef.current as any).executeCommand(
         'answerKnockingParticipant',
         (participant as any)?.id,
         condition(participant)
       )
 
       updateKnockingParticipants((participants) =>
-        participants.filter((item) => (item as any).id === (participant as any).id)
+        participants.filter(
+          (item) => (item as any).id === (participant as any).id
+        )
       )
     })
   }
 
-  resolveKnockingParticipants('3');
+  resolveKnockingParticipants('3')
 
   const handleJitsiIFrameRef1 = (iframeRef) => {
     iframeRef.style.background = '#3d3d3d'
@@ -123,30 +119,40 @@ const Video = ({ conversationUuid, profile, email }) => {
   }
 
   const handleApiReady = (apiObj) => {
-      apiRef.current = apiObj
-      (apiRef?.current as any).on('knockingParticipant', handleKnockingParticipant)
-      (apiRef?.current as any).on('audioMuteStatusChanged', (payload) =>
+    apiRef.current = apiObj(apiRef?.current as any)
+      .on(
+        'knockingParticipant',
+        handleKnockingParticipant
+      )(apiRef?.current as any)
+      .on('audioMuteStatusChanged', (payload) =>
         handleAudioStatusChange(payload, 'audio')
-      )
-
-      (apiRef?.current as any).on('videoMuteStatusChanged', (payload) =>
+      )(apiRef?.current as any)
+      .on('videoMuteStatusChanged', (payload) =>
         handleAudioStatusChange(payload, 'video')
-      )
-
-      (apiRef?.current as any).on('raiseHandUpdated', printEventOutput)
-      (apiRef?.current as any).on('titleViewChanged', printEventOutput)
-      (apiRef?.current as any).on('chatUpdated', handleChatUpdates)
-      (apiRef?.current as any).on('knockingParticipant', handleKnockingParticipant)
+      )(apiRef?.current as any)
+      .on(
+        'raiseHandUpdated',
+        printEventOutput
+      )(apiRef?.current as any)
+      .on(
+        'titleViewChanged',
+        printEventOutput
+      )(apiRef?.current as any)
+      .on(
+        'chatUpdated',
+        handleChatUpdates
+      )(apiRef?.current as any)
+      .on('knockingParticipant', handleKnockingParticipant)
   }
-handleApiReady({'ddd': 'ded'})
+  handleApiReady({ ddd: 'ded' })
   const handleReadyToClose = () => {
     /* eslint-disable-next-line no-alert */
     alert('Ready to close...')
   }
-handleReadyToClose()
+  handleReadyToClose()
   const generateRoomName = () =>
     `JitsiMeetRoomNo${Math.random() * 100}-${Date.now()}`
-generateRoomName()
+  generateRoomName()
   // Multiple instances demo
   const renderNewInstance = () => {
     if (!showNew) {

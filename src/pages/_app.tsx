@@ -1,5 +1,6 @@
 import React from 'react'
 import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
+// import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 
 import theme from '../theme'
 import './index.css'

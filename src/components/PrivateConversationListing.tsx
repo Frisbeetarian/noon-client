@@ -36,7 +36,10 @@ function PrivateConversationListing({ conversation, i }) {
   const socket = useSelector(getSocket)
   const activeConversation = useSelector(getActiveConversation)
 
-  const [, unfriend] = useUnfriendMutation()
+  const [
+    unfriend,
+    // { loading: unfriendLoading }
+  ] = useUnfriendMutation()
 
   function setActiveConverseeFunction(profile, conversation) {
     dispatch(
@@ -132,8 +135,10 @@ function PrivateConversationListing({ conversation, i }) {
             icon={<EditIcon />}
             onClick={async () => {
               const unfriendResponse = await unfriend({
-                profileUuid: conversation.conversee.uuid,
-                conversationUuid: conversation.uuid,
+                variables: {
+                  profileUuid: conversation.conversee.uuid,
+                  conversationUuid: conversation.uuid,
+                },
               })
 
               dispatch(

@@ -14,14 +14,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-
-import { withUrqlClient } from 'next-urql'
-
 import React, { useEffect, useState } from 'react'
-import { createUrqlClient } from '../utils/createUrqlClient'
-
-// import { useSelector } from 'react-redux'
-// import { getLoggedInUser } from '../store/users'
 
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { toErrorMap } from '../utils/toErrorMap'
@@ -37,6 +30,7 @@ import { useRouter } from 'next/router'
 import { InputField } from '../components/InputField'
 import * as Yup from 'yup'
 import { isServer } from '../utils/isServer'
+import { withApollo } from '../utils/withApollo'
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -52,8 +46,14 @@ const RegisterSchema = Yup.object().shape({
 
 const Onboarding = () => {
   const router = useRouter()
-  const [, login] = useLoginMutation()
-  const [, register] = useRegisterMutation()
+  const [
+    login,
+    // { loading: loginLoading }
+  ] = useLoginMutation()
+  const [
+    register,
+    // { loading: registerLoading }
+  ] = useRegisterMutation()
 
   // const loggedInUser = useSelector(getLoggedInUser)
   const [showPassword, setShowPassword] = useState(false)
@@ -62,9 +62,9 @@ const Onboarding = () => {
   const [showRegister, setRegister] = useState(true)
   const [showForgotPassword, setForgotPassword] = useState(false)
 
-  const [{ data }] = useMeQuery({
-    pause: isServer(),
-    requestPolicy: 'network-only',
+  const { data } = useMeQuery({
+    skip: isServer(),
+    fetchPolicy: 'network-only',
   })
 
   useEffect(() => {
@@ -101,8 +101,10 @@ const Onboarding = () => {
               initialValues={{ usernameOrEmail: '', password: '' }}
               onSubmit={async (values, { setErrors }) => {
                 const response = await login({
-                  username: values.usernameOrEmail,
-                  password: values.password,
+                  variables: {
+                    username: values.usernameOrEmail,
+                    password: values.password,
+                  },
                 })
 
                 if (response.data?.login.errors) {
@@ -204,7 +206,9 @@ const Onboarding = () => {
               validationSchema={RegisterSchema}
               onSubmit={async (values, { setErrors }) => {
                 console.log(values)
-                const response = await register({ options: values })
+                const response = await register({
+                  variables: { options: values },
+                })
 
                 console.log(
                   'register response: ',
@@ -353,9 +357,4 @@ const Onboarding = () => {
   )
 }
 
-Onboarding.getServerSideProps = async (context) => {
-  console.log('context in server side props', context)
-}
-
-export default withUrqlClient(createUrqlClient, { ssr: true })(Onboarding)
-// export default Onboarding
+export default withApollo({ ssr: true })(Onboarding)

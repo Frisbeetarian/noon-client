@@ -8,7 +8,7 @@ const slice = createSlice({
     list: [],
   },
   reducers: {
-    addProfiles: (profiles, action, loggedInUser) => {
+    addProfiles: (profiles, action) => {
       // let profilesArray = [...action.payload.profiles]
       let profilesArray = []
 

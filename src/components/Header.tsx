@@ -29,8 +29,10 @@ const Header = () => {
   const [online, setOnline] = useState('loading')
   const activeConversation = useSelector(getActiveConversation)
 
-  const [, cancelPendingCallForConversation] =
-    useCancelPendingCallForConversationMutation()
+  const [
+    cancelPendingCallForConversation,
+    // { loading: cancelPendingCallForConversationLoading },
+  ] = useCancelPendingCallForConversationMutation()
 
   useEffect(() => {
     if (activeConversee) {
@@ -108,7 +110,11 @@ const Header = () => {
 
         {activeConversation.type === 'group'
           ? activeConversation.profiles.map((item, index) => {
-              return <Text key={index} className="mr-2">{item.username},</Text>
+              return (
+                <Text key={index} className="mr-2">
+                  {item.username},
+                </Text>
+              )
             })
           : null}
       </Flex>
@@ -133,8 +139,10 @@ const Header = () => {
                   )
 
                   await cancelPendingCallForConversation({
-                    conversationUuid: activeConversation.uuid,
-                    profileUuid: loggedInUser.user?.profile?.uuid,
+                    variables: {
+                      conversationUuid: activeConversation.uuid,
+                      profileUuid: loggedInUser.user?.profile?.uuid,
+                    },
                   })
 
                   activeConversation.calls.map((call) => {

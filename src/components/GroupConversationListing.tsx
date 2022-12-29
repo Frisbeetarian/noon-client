@@ -31,7 +31,10 @@ import { setChatContainerHeight, setSearchComponent } from '../store/ui'
 
 function GroupConversationListing({ conversation, i }) {
   const dispatch = useDispatch()
-  const [, leaveGroup] = useLeaveGroupMutation()
+  const [
+    leaveGroup,
+    // { loading: leaveGroupLoading }
+  ] = useLeaveGroupMutation()
 
   const loggedInUser = useSelector(getLoggedInUser)
   const socket = useSelector(getSocket)
@@ -76,7 +79,6 @@ function GroupConversationListing({ conversation, i }) {
           setActiveGroup(conversation)
         }}
       >
-
         <Avatar key={i} name={conversation.name} size="sm" className="mr-2">
           {conversation.unreadMessages &&
           conversation.unreadMessages !== 0 &&
@@ -104,7 +106,9 @@ function GroupConversationListing({ conversation, i }) {
             icon={<EditIcon />}
             onClick={async () => {
               const leaveGroupResponse = await leaveGroup({
-                groupUuid: conversation.uuid,
+                variables: {
+                  groupUuid: conversation.uuid,
+                },
               })
 
               console.log('leave group response:', leaveGroupResponse)

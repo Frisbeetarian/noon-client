@@ -1,26 +1,16 @@
 import React, { useEffect, useState } from 'react'
 
-import {
-  Box,
-  Button,
-  Flex,
-  Input,
-} from '@chakra-ui/react'
+import { Box, Button, Flex, Input } from '@chakra-ui/react'
 
 import { useFormik } from 'formik'
-import {
-  addConversation,
-  setOngoingCall,
-} from '../store/chat'
+import { addConversation, setOngoingCall } from '../store/chat'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
 import { getSocket } from '../store/sockets'
 import GroupParticipant from './GroupParticipant'
 
-import {
-  useCreateGroupConversationMutation,
-} from '../generated/graphql'
+import { useCreateGroupConversationMutation } from '../generated/graphql'
 
 import { clearState, getParticipants } from '../store/groups'
 import { setCreateGroupComponent } from '../store/ui'
@@ -32,7 +22,10 @@ const CreateGroup = ({}) => {
   const loggedInUser = useSelector(getLoggedInUser)
   const [friends, setFriends] = useState(null)
 
-  const [, createGroupConversation] = useCreateGroupConversationMutation()
+  const [
+    createGroupConversation,
+    // { loading: createGroupConversationLoading }
+  ] = useCreateGroupConversationMutation()
 
   useEffect(() => {
     setFriends(loggedInUser?.user?.friends)
@@ -72,8 +65,10 @@ const CreateGroup = ({}) => {
         participantsToSend.push(loggedInUser.user?.profile?.uuid)
 
         const conversation = await createGroupConversation({
-          input: { ...values, type: 'group' },
-          participants: participantsToSend,
+          variables: {
+            input: { ...values, type: 'group' },
+            participants: participantsToSend,
+          },
         })
 
         dispatch(clearState(null))

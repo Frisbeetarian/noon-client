@@ -6,7 +6,7 @@ export const useGetCommunityFromUrl = () => {
   console.log('int id', intId)
 
   return useCommunityQuery({
-    pause: intId === -1,
+    skip: intId === -1,
     variables: {
       id: intId,
     },

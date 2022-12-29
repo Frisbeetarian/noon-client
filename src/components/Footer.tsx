@@ -28,8 +28,10 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversee = useSelector(getActiveConversee)
 
-  const [, setPendingCallForConversation] =
-    useSetPendingCallForConversationMutation()
+  const [
+    setPendingCallForConversation,
+    // { loading: setPendingCallLoading }
+  ] = useSetPendingCallForConversationMutation()
 
   const { recorderState, ...handlers }: UseRecorder = useRecorder()
 
@@ -50,22 +52,16 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
         }
       )
 
-      socket.on(
-        'message-deleted',
-        ({
-          messageUuid,
-          conversationUuid,
-        }) => {
-          dispatch(
-            deleteMessageInStore({
-              uuid: messageUuid,
-              content: 'Message has been deleted.',
-              deleted: true,
-              conversationUuid: conversationUuid,
-            })
-          )
-        }
-      )
+      socket.on('message-deleted', ({ messageUuid, conversationUuid }) => {
+        dispatch(
+          deleteMessageInStore({
+            uuid: messageUuid,
+            content: 'Message has been deleted.',
+            deleted: true,
+            conversationUuid: conversationUuid,
+          })
+        )
+      })
     }
 
     return () => {
@@ -117,8 +113,10 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
               })
 
               await setPendingCallForConversation({
-                conversationUuid: activeConversation.uuid,
-                profileUuid: profile.uuid,
+                variables: {
+                  conversationUuid: activeConversation.uuid,
+                  profileUuid: profile.uuid,
+                },
               })
             })
           }}
