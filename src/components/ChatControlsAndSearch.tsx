@@ -6,7 +6,7 @@ import {
   useOutsideClick,
 } from '@chakra-ui/react'
 import { SearchIcon, ArrowUpIcon } from '@chakra-ui/icons'
-import React, { RefObject, useState } from "react";
+import React, { RefObject, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 // import { getActiveConversee } from '../../store/chat'
 import SearchController from './SearchController'
@@ -27,24 +27,24 @@ function ChatControlsAndSearch() {
   const searchComponentState = useSelector(getSearchComponentState)
   const [searchInput, setSearchInput] = useState(null)
 
-  useOutsideClick({
-    ref: (ref as unknown) as RefObject<HTMLElement>,
-    handler: () => {
-      dispatch(setSearchQuery(null))
-      setSearchInput(null)
-
-      dispatch(
-        setSearchComponent({
-          searchActive: false,
-          containerDisplay: 'relative',
-          containerHeight: '5vh',
-          inputPadding: '5px',
-        })
-      )
-
-      dispatch(setChatContainerHeight('87.5vh'))
-    },
-  })
+  // useOutsideClick({
+  //   ref: ref as unknown as RefObject<HTMLElement>,
+  //   handler: () => {
+  //     dispatch(setSearchQuery(null))
+  //     setSearchInput(null)
+  //
+  //     dispatch(
+  //       setSearchComponent({
+  //         searchActive: false,
+  //         containerDisplay: 'relative',
+  //         containerHeight: '5vh',
+  //         inputPadding: '5px',
+  //       })
+  //     )
+  //
+  //     dispatch(setChatContainerHeight('87.5vh'))
+  //   },
+  // })
 
   return (
     <Flex
@@ -75,9 +75,7 @@ function ChatControlsAndSearch() {
 
         <Flex className="items-center relative " style={{ flex: '0.3' }}>
           <InputGroup>
-            <InputRightElement
-              pointerEvents="none"
-            />
+            <InputRightElement pointerEvents="none" />
             <SearchIcon color="gray.300" />
             <Input
               type="text"
@@ -106,8 +104,12 @@ function ChatControlsAndSearch() {
                   if ((e.target as HTMLInputElement).value !== searchQuery) {
                     dispatch(setSearchQuery(null))
                     setSearchInput(null)
-                    dispatch(setSearchQuery((e.target as HTMLInputElement).value))
-                    setSearchInput(((e.target as any).value) as React.SetStateAction<null>)
+                    dispatch(
+                      setSearchQuery((e.target as HTMLInputElement).value)
+                    )
+                    setSearchInput(
+                      (e.target as any).value as React.SetStateAction<null>
+                    )
                   }
                 }
               }}

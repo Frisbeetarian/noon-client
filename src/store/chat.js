@@ -94,10 +94,10 @@ const slice = createSlice({
             )
           }
 
-          // if (conversationObject.call){
-          conversationObject.pendingCall = callObject.pendingCall
-          conversationObject.ongoingCall = callObject.ongoingCall
-          // }
+          if (conversationObject.call) {
+            conversationObject.pendingCall = callObject.pendingCall
+            conversationObject.ongoingCall = callObject.ongoingCall
+          }
 
           conversationObject.conversee = converseeObject
           conversationsArray.push(conversationObject)
