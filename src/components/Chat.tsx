@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Flex, useToast } from '@chakra-ui/react'
+import { Button, CloseButton, Flex, useToast } from '@chakra-ui/react'
 import Footer from './Footer'
 
 import {
@@ -33,7 +33,7 @@ import {
 } from '../store/users'
 
 import {
-  // useAcceptFriendRequestMutation,
+  useAcceptFriendRequestMutation,
   useSaveMessageMutation,
   useSaveGroupMessageMutation,
   useUpdateUnreadMessagesForConversationMutation,
@@ -42,7 +42,7 @@ import {
 import { getCreateGroupComponent, getChatContainerHeight } from '../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
-// import { setFriendFlagOnProfile } from '../../store/profiles'
+import { setFriendFlagOnProfile } from '../store/profiles'
 
 import { FileUpload } from './FileUpload'
 import CreateGroup from './CreateGroup'
@@ -71,7 +71,10 @@ function Chat() {
     // { loading: saveGroupLoading }
   ] = useSaveGroupMessageMutation()
 
-  // const [, acceptFriendRequest] = useAcceptFriendRequestMutation()
+  const [
+    acceptFriendRequest,
+    // {loading: acceptFriendRequestLoading}
+  ] = useAcceptFriendRequestMutation()
 
   const [
     updateUnreadMessagesForConversation,
@@ -164,30 +167,30 @@ function Chat() {
             })
           )
 
-          // toast({
-          //   id: from,
-          //   title: `${fromUsername} accepted your friend request.`,
-          //   position: 'bottom-right',
-          //   isClosable: true,
-          //   status: 'success',
-          //   duration: 5000,
-          //   render: () => (
-          //     <Flex direction="column" color="white" p={3} bg="green.500">
-          //       <Flex>
-          //         <p>{fromUsername} accepted your friend request.</p>
-          //
-          //         <CloseButton
-          //           className="sticky top ml-4"
-          //           size="sm"
-          //           onClick={() => {
-          //             toast.close(from)
-          //           }}
-          //           name="close button"
-          //         />
-          //       </Flex>
-          //     </Flex>
-          //   ),
-          // })
+          toast({
+            id: from,
+            title: `${fromUsername} accepted your friend request.`,
+            position: 'bottom-right',
+            isClosable: true,
+            status: 'success',
+            duration: 5000,
+            render: () => (
+              <Flex direction="column" color="white" p={3} bg="green.500">
+                <Flex>
+                  <p>{fromUsername} accepted your friend request.</p>
+
+                  <CloseButton
+                    className="sticky top ml-4"
+                    size="sm"
+                    onClick={() => {
+                      toast.close(from)
+                    }}
+                    name="close button"
+                  />
+                </Flex>
+              </Flex>
+            ),
+          })
         }
       )
 
@@ -223,97 +226,96 @@ function Chat() {
           })
         )
 
-        // toast({
-        //   id: from,
-        //   title: `${fromUsername} sent you a friend request.`,
-        //   position: 'bottom-right',
-        //   isClosable: true,
-        //   status: 'success',
-        //   duration: null,
-        //   render: () => (
-        //     <Flex direction="column" color="white" p={3} bg="green.500">
-        //       <Flex>
-        //         <p>{fromUsername} sent you a friend request.</p>
-        //
-        //         <CloseButton
-        //           className="sticky top ml-4"
-        //           size="sm"
-        //           onClick={() => {
-        //             toast.close(from)
-        //           }}
-        //           name="close button"
-        //         />
-        //       </Flex>
-        //
-        //       <Flex className="justify-end mt-3">
-        //         <Button
-        //           className="mr-3"
-        //           onClick={async () => {
-        //             const acceptFriendshipResponse =
-        //               await acceptFriendRequest({
-        //                 profileUuid: from,
-        //               })
-        //
-        //             dispatch(
-        //               setFriendFlagOnProfile({
-        //                 profileUuid: from,
-        //               })
-        //             )
-        //
-        //             dispatch(
-        //               removeFriendRequestEntry({
-        //                 profileUuid: from,
-        //                 friendRequests: loggedInUser.user?.friendshipRequests,
-        //               })
-        //             )
-        //
-        //             dispatch(
-        //               addFriendEntry({
-        //                 friend: {
-        //                   uuid: from,
-        //                   username: fromUsername,
-        //                 },
-        //               })
-        //             )
-        //
-        //             console.log(
-        //               'accept friend ship response:',
-        //               acceptFriendshipResponse
-        //             )
-        //
-        //             dispatch(
-        //               addConversation({
-        //                 conversation:
-        //                   acceptFriendshipResponse.data?.acceptFriendRequest,
-        //                 loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-        //               })
-        //             )
-        //
-        //             if (acceptFriendshipResponse) {
-        //               socket.emit('friendship-request-accepted', {
-        //                 content:
-        //                   loggedInUser.user?.profile?.username +
-        //                   ' accepted your friend request.',
-        //                 from: loggedInUser.user?.profile?.uuid,
-        //                 fromUsername: loggedInUser.user?.profile?.username,
-        //                 to: from,
-        //                 toUsername: fromUsername,
-        //                 conversation:
-        //                   acceptFriendshipResponse.data?.acceptFriendRequest,
-        //               })
-        //             }
-        //
-        //             toast.close(from)
-        //           }}
-        //         >
-        //           Accept
-        //         </Button>
-        //
-        //         <Button>Reject</Button>
-        //       </Flex>
-        //     </Flex>
-        //   ),
-        // })
+        toast({
+          id: from,
+          title: `${fromUsername} sent you a friend request.`,
+          position: 'bottom-right',
+          isClosable: true,
+          status: 'success',
+          duration: null,
+          render: () => (
+            <Flex direction="column" color="white" p={3} bg="green.500">
+              <Flex>
+                <p>{fromUsername} sent you a friend request.</p>
+
+                <CloseButton
+                  className="sticky top ml-4"
+                  size="sm"
+                  onClick={() => {
+                    toast.close(from)
+                  }}
+                  name="close button"
+                />
+              </Flex>
+
+              <Flex className="justify-end mt-3">
+                <Button
+                  className="mr-3"
+                  onClick={async () => {
+                    const acceptFriendshipResponse = await acceptFriendRequest({
+                      profileUuid: from,
+                    })
+
+                    dispatch(
+                      setFriendFlagOnProfile({
+                        profileUuid: from,
+                      })
+                    )
+
+                    dispatch(
+                      removeFriendRequestEntry({
+                        profileUuid: from,
+                        friendRequests: loggedInUser.user?.friendshipRequests,
+                      })
+                    )
+
+                    dispatch(
+                      addFriendEntry({
+                        friend: {
+                          uuid: from,
+                          username: fromUsername,
+                        },
+                      })
+                    )
+
+                    console.log(
+                      'accept friend ship response:',
+                      acceptFriendshipResponse
+                    )
+
+                    dispatch(
+                      addConversation({
+                        conversation:
+                          acceptFriendshipResponse.data?.acceptFriendRequest,
+                        loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+                      })
+                    )
+
+                    if (acceptFriendshipResponse) {
+                      socket.emit('friendship-request-accepted', {
+                        content:
+                          loggedInUser.user?.profile?.username +
+                          ' accepted your friend request.',
+                        from: loggedInUser.user?.profile?.uuid,
+                        fromUsername: loggedInUser.user?.profile?.username,
+                        to: from,
+                        toUsername: fromUsername,
+                        conversation:
+                          acceptFriendshipResponse.data?.acceptFriendRequest,
+                      })
+                    }
+
+                    toast.close(from)
+                  }}
+                >
+                  Accept
+                </Button>
+
+                <Button>Reject</Button>
+              </Flex>
+            </Flex>
+          ),
+        })
       })
 
       socket.on('unfriend', ({ from, conversationUuid }) => {

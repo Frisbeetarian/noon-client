@@ -5,6 +5,8 @@
 /.pnp
 .pnp.js
 
+/.yarn
+
 # testing
 /coverage
 
@@ -32,3 +34,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+.pnp.loader.mjs
+.pnp.cjs

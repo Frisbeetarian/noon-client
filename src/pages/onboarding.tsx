@@ -351,10 +351,8 @@ const Onboarding = () => {
           </Text>
         </Stack>
       </Flex>
-      {/*)}*/}
-      {/*)}*/}
     </Flex>
   )
 }
 
-export default withApollo({ ssr: true })(Onboarding)
+export default withApollo({ ssr: false })(Onboarding)

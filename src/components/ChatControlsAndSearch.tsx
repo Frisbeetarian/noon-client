@@ -3,10 +3,13 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  useOutsideClick,
+  // useOutsideClick,
 } from '@chakra-ui/react'
 import { SearchIcon, ArrowUpIcon } from '@chakra-ui/icons'
-import React, { RefObject, useState } from 'react'
+import React, {
+  // RefObject,
+  useState,
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 // import { getActiveConversee } from '../../store/chat'
 import SearchController from './SearchController'

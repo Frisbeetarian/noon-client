@@ -43,7 +43,8 @@ function Noon() {
   useEffect(() => {
     if (
       fetchedConversations?.getConversationForLoggedInUser &&
-      conversations === null
+      conversations === null &&
+      loggedInUser?.user?.profile?.uuid
     ) {
       dispatch(
         setConversations({
@@ -53,7 +54,7 @@ function Noon() {
         })
       )
     }
-  }, [fetchedConversations])
+  }, [fetchedConversations, loggedInUser?.user?.profile?.uuid])
 
   return (
     <div className="flex" style={{ overflow: 'hidden' }}>

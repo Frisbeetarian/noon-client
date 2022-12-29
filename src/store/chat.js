@@ -24,7 +24,7 @@ const slice = createSlice({
 
       if (conversationObject.type !== 'group') {
         conversationObject.conversee = conversationObject.profiles?.find(
-          (element) => element.uuid != action.payload.loggedInProfileUuid
+          (element) => element.uuid !== action.payload.loggedInProfileUuid
         )
       }
 
@@ -77,9 +77,12 @@ const slice = createSlice({
           let conversationObject = { ...conversation }
 
           const converseeObject = conversationObject.profiles.find(
-            (element) => element.uuid != action.payload.loggedInProfileUuid
+            (element) => element.uuid !== action.payload.loggedInProfileUuid
           )
 
+          console.log('action.payload.loggedInProfileUuid:', action.payload)
+
+          console.log('conversee object:', converseeObject)
           const callObject = conversationObject.calls?.find(
             (call) => call.profileUuid === action.payload.loggedInProfileUuid
           )
