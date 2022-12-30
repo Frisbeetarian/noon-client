@@ -1,11 +1,16 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, FC } from 'react'
 import { Flex } from '@chakra-ui/react'
-
 import dynamic from 'next/dynamic'
-import { FC } from 'react'
 import { IJitsiMeetingProps } from '@jitsi/react-sdk/lib/types'
-
 import { useDispatch, useSelector } from 'react-redux'
+
+const JitsiMeeting = dynamic(
+  () =>
+    import('@jitsi/react-sdk').then(({ JitsiMeeting }) => JitsiMeeting) as any,
+  {
+    ssr: false,
+  }
+) as FC<IJitsiMeetingProps>
 
 import { getLoggedInUser } from '../store/users'
 import { setVideoFrameForConversation } from '../store/video'
@@ -17,14 +22,6 @@ import {
   // getActiveConversee,
   // getShouldPauseCheckHasMore,
 } from '../store/chat'
-
-const JitsiMeeting = dynamic(
-  () =>
-    import('@jitsi/react-sdk').then(({ JitsiMeeting }) => JitsiMeeting) as any,
-  {
-    ssr: false,
-  }
-) as FC<IJitsiMeetingProps>
 
 const Video = ({ conversationUuid, profile, email }) => {
   const dispatch = useDispatch()
@@ -144,10 +141,9 @@ const Video = ({ conversationUuid, profile, email }) => {
       )(apiRef?.current as any)
       .on('knockingParticipant', handleKnockingParticipant)
   }
-  handleApiReady({ ddd: 'ded' })
+  // handleApiReady({ ddd: 'ded' })
   const handleReadyToClose = () => {
-    /* eslint-disable-next-line no-alert */
-    alert('Ready to close...')
+    // alert('Ready to close...')
   }
   handleReadyToClose()
   const generateRoomName = () =>

@@ -34,7 +34,7 @@ function Noon() {
   const {
     data: fetchedConversations,
     // loading: getConversationLoading
-  } = useGetConversationForLoggedInUserQuery()
+  } = useGetConversationForLoggedInUserQuery({ fetchPolicy: 'network-only' })
 
   useEffect(() => {
     dispatch(setLoggedInUser({ user: data }))

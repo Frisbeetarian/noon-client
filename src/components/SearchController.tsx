@@ -19,6 +19,7 @@ export default function SearchController() {
 
   const { data } = useSearchForProfileByUsernameQuery({
     variables: { username: searchQuery },
+    fetchPolicy: 'network-only',
   })
 
   useEffect(() => {

@@ -99,6 +99,7 @@ export default function useRecorder() {
       recorder.ondataavailable = (e: MediaRecorderEvent) => {
         chunks.push(e.data)
       }
+      console.log('api url:', process.env.NEXT_PUBLIC_URL)
 
       recorder.onstop = async () => {
         const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' })
@@ -111,7 +112,7 @@ export default function useRecorder() {
         if (recorder.stream.active) {
           await axios
             .post(
-              process.env.API_URL + 'media_api/upload_audio_recording',
+              process.env.NEXT_PUBLIC_URL + 'media_api/upload_audio_recording',
               formData,
               {
                 headers: {
