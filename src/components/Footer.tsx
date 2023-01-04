@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import { Flex, Input, Button, Box, Icon } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
+import PubSub from 'pubsub-js'
+
 import {
   deleteMessageInStore,
   getActiveConversation,
@@ -21,6 +23,7 @@ import RecorderControls from './AudioRecorder/recorder-controls'
 import { UseRecorder } from './AudioRecorder/types/recorder'
 import useRecorder from './AudioRecorder/hooks/use-recorder'
 import { ImCancelCircle } from 'react-icons/im'
+import { uploadFile } from '../store/files'
 
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const hiddenFileInput = React.useRef(null)
@@ -78,7 +81,14 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   // to handle the user-selected file
   const handleChange = (event) => {
     const fileUploaded = event.target.files[0]
-    console.log('fileUploaded', fileUploaded)
+
+    PubSub.publish('FILE UPLOAD', { file: fileUploaded })
+    // console.log('fileUploaded', fileUploaded)
+    // dispatch(
+    //   uploadFile({
+    //     file: fileUploaded,
+    //   })
+    // )
     // props.handleFile(fileUploaded)
   }
 

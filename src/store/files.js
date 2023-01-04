@@ -8,7 +8,8 @@ const slice = createSlice({
   },
   reducers: {
     uploadFile: (files, action) => {
-      files.file = action.payload
+      console.log('actio paylo:', action.payload.file)
+      files.file = action.payload.file
     },
   },
 })

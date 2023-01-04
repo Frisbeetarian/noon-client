@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
 import { gql, useApolloClient, useMutation } from '@apollo/client'
+import PubSub from 'pubsub-js'
 
 import { getLoggedInUser } from '../store/users'
 import axios from 'axios'
@@ -15,6 +16,7 @@ import {
   getActiveConversation,
   getActiveConversee,
 } from '../store/chat'
+
 import { useUploadImageMutation } from '../generated/graphql'
 // import { createProxyMiddleware } from 'http-proxy-middleware'
 // const SINGLE_UPLOAD_MUTATION = gql`
@@ -31,7 +33,6 @@ export const FileUpload = ({ children }) => {
   const activeConversation = useSelector(getActiveConversation)
   const profile = useSelector(getActiveConversee)
   const socket = useSelector(getSocket)
-
   // const [singleUploadMutation] = useMutation(SINGLE_UPLOAD_MUTATION)
   // const apolloClient = useApolloClient()
   // const [uploadFileMutation] = useMutation(SINGLE_UPLOAD_MUTATION)
@@ -43,6 +44,7 @@ export const FileUpload = ({ children }) => {
 
   // const [, saveMessage] = useSaveMessageMutation()
   const { acceptedFiles, getRootProps } = useDropzone()
+
   // const [, uploadImage] = useUploadImageMutation()
 
   useEffect(() => {
@@ -50,6 +52,12 @@ export const FileUpload = ({ children }) => {
       // const file = acceptedFiles[0]
     }
 
+    let fileUploadSubscriber = function (msg, data) {
+      console.log('FWEFWEFWEFWEFWEFWEFWEFWE')
+      console.log(msg, data.file)
+      PubSub.unsubscribe(token)
+    }
+    let token = PubSub.subscribe('FILE UPLOAD', fileUploadSubscriber)
     // const file = new Blob([acceptedFiles[0]], { type: 'text/plain' })
     // file.name = `${'ffff'}.txt`
 
