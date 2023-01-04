@@ -98,11 +98,16 @@ function Sidebar() {
               (conversation, i) =>
                 !conversation ? null : (conversation as any).type === 'pm' ? (
                   <PrivateConversationListing
+                    key={i}
                     conversation={conversation}
                     i={i}
                   />
                 ) : (
-                  <GroupConversationListing conversation={conversation} i={i} />
+                  <GroupConversationListing
+                    conversation={conversation}
+                    i={i}
+                    key={i}
+                  />
                 )
             )
           : null}

@@ -19,6 +19,8 @@
     "@graphql-codegen/add": "^3.2.1",
     "@jitsi/react-sdk": "^1.0.2",
     "@reduxjs/toolkit": "^1.8.1",
+    "@typescript-eslint/parser": "^5.47.1",
+    "apollo-upload-client": "^17.0.0",
     "axios": "^1.2.2",
     "daisyui": "^2.17.0",
     "form-data": "^4.0.0",
@@ -26,12 +28,12 @@
     "framer-motion": "^6.5.1",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.5",
+    "http-proxy-middleware": "^2.0.6",
     "isomorphic-unfetch": "^3.1.0",
     "moment": "^2.29.3",
     "next": "13.1.1",
     "next-apollo": "^5.0.8",
     "next-redux-wrapper": "^7.0.5",
-    "next-transpile-modules": "^9.0.0",
     "react": "^18.2.0",
     "react-audio-player": "^0.17.0",
     "react-datepicker": "^4.8.0",
@@ -74,6 +76,5 @@
     "prettier": "^2.3.2",
     "tailwindcss": "^3.0.23",
     "typescript": "^4.3.4"
-  },
-  "packageManager": "yarn@3.3.1"
+  }
 }

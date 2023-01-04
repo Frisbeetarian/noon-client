@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Flex, Input, Button, Box } from '@chakra-ui/react'
+import { Flex, Input, Button, Box, Icon } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
 import {
   deleteMessageInStore,
@@ -10,6 +10,7 @@ import {
 
 import { setVideoFrameForConversation } from '../store/video'
 import { useSelector, useDispatch } from 'react-redux'
+import { ImUpload2 } from 'react-icons/im'
 
 import { getLoggedInUser } from '../store/users'
 import { getSocket } from '../store/sockets'
@@ -19,8 +20,10 @@ import RecorderControls from './AudioRecorder/recorder-controls'
 // import useRecorder from '../../components/AudioRecorder/hooks/use-recorder_old'
 import { UseRecorder } from './AudioRecorder/types/recorder'
 import useRecorder from './AudioRecorder/hooks/use-recorder'
+import { ImCancelCircle } from 'react-icons/im'
 
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
+  const hiddenFileInput = React.useRef(null)
   const dispatch = useDispatch()
   const socket = useSelector(getSocket)
 
@@ -69,6 +72,16 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
     }
   }, [activeConversee])
 
+  const handleClick = (event) => {
+    hiddenFileInput?.current.click()
+  } // Call a function (passed as a prop from the parent component)
+  // to handle the user-selected file
+  const handleChange = (event) => {
+    const fileUploaded = event.target.files[0]
+    console.log('fileUploaded', fileUploaded)
+    // props.handleFile(fileUploaded)
+  }
+
   return (
     <Flex className="bg-white  items-center box-content h-full justify-between">
       <Box className="w-4/6 relative z-10">
@@ -89,6 +102,17 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
       </Box>
 
       <Flex className="w-2/6  justify-end">
+        <Button bg="green.500" onClick={handleClick}>
+          <Icon as={ImUpload2} />
+        </Button>
+
+        <input
+          type="file"
+          ref={hiddenFileInput}
+          onChange={handleChange}
+          style={{ display: 'none' }}
+        />
+
         <RecorderControls recorderState={recorderState} handlers={handlers} />
 
         <Button

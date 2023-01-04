@@ -115,6 +115,7 @@ const Video = ({ conversationUuid, profile, email }) => {
     iframeRef.style.height = '900px'
   }
 
+  // @ts-ignore
   const handleApiReady = (apiObj) => {
     apiRef.current = apiObj(apiRef?.current as any)
       .on(

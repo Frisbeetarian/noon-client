@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import io from 'socket.io-client'
 import { useDispatch, useSelector } from 'react-redux'
-
 import { getLoggedInUser } from '../../store/users'
 import { Box } from '@chakra-ui/react'
 import { setSocket } from '../../store/sockets'
 
-const ENDPOINT = 'http://localhost:4020'
+const ENDPOINT = process.env.NEXT_PUBLIC_URL as string
 const socket = io(ENDPOINT, { autoConnect: false })
 
 export default function SocketConnector() {
@@ -56,8 +55,8 @@ export default function SocketConnector() {
     socket.on('session', ({ sessionID, userID }) => {
       console.log('session received:', sessionID)
       socket.auth = { sessionID }
-      localStorage.setItem('sessionID', sessionID);
-      (socket as any).userID = userID
+      localStorage.setItem('sessionID', sessionID)
+      ;(socket as any).userID = userID
     })
 
     socket.on('disconnect', () => {

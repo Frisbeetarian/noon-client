@@ -7,7 +7,6 @@
     "prettier"
   ],
   "rules": {
-    "no-unused-vars": "off",
     "@typescript-eslint/ban-ts-comment": "off"
   }
 }

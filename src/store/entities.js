@@ -10,6 +10,7 @@ import chatReducer from './chat'
 import searchReducer from './search'
 import groupsReducer from './groups'
 import videoReducer from './video'
+import filesReducer from './files'
 
 export default combineReducers({
   // bugs: bugsReducer,
@@ -23,4 +24,5 @@ export default combineReducers({
   search: searchReducer,
   groups: groupsReducer,
   video: videoReducer,
+  files: filesReducer,
 })
