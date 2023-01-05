@@ -898,7 +898,7 @@ export type UploadImageMutationVariables = Exact<{
 }>;
 
 
-export type UploadImageMutation = { __typename?: 'Mutation', uploadImage: { __typename?: 'Message', uuid: string } };
+export type UploadImageMutation = { __typename?: 'Mutation', uploadImage: { __typename?: 'Message', uuid: string, content: string, type: string, src?: string | null } };
 
 export type VoteMutationVariables = Exact<{
   value: Scalars['Int'];
@@ -2709,6 +2709,9 @@ export const UploadImageDocument = gql`
     file: $file
   ) {
     uuid
+    content
+    type
+    src
   }
 }
     `;

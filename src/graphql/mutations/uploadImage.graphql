@@ -9,5 +9,8 @@ mutation UploadImage(
     file: $file
   ) {
     uuid
+    content
+    type
+    src
   }
 }
