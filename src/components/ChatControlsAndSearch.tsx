@@ -3,6 +3,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Icon,
   // useOutsideClick,
 } from '@chakra-ui/react'
 import { SearchIcon, ArrowUpIcon } from '@chakra-ui/icons'
@@ -78,13 +79,17 @@ function ChatControlsAndSearch() {
 
         <Flex className="items-center relative " style={{ flex: '0.3' }}>
           <InputGroup>
-            <InputRightElement pointerEvents="none" />
-            <SearchIcon color="gray.300" />
+            <InputRightElement
+              children={<SearchIcon color="gray.300" />}
+              pointerEvents="none"
+            />
+
             <Input
               type="text"
               className="m-0 focus:bg-base-100 bg-transparent outline-0 bg-gray-800 pl-2"
               placeholder="Search for profiles..."
               size="md"
+              // rightIcon={<SearchIcon color="gray.300" />}
               onClick={() => {
                 dispatch(setChatContainerHeight('52.5vh'))
                 dispatch(
