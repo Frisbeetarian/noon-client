@@ -110,9 +110,10 @@ const slice = createSlice({
       chat.conversations = conversationsArray
     },
     addMessagesToConversation: (chat, action) => {
-      let conversationUuid = action.payload.conversationUuid
+      const conversationUuid = action.payload.conversationUuid
       let messages = action.payload.messages
-      let loggedInProfileUuid = action.payload.loggedInUser.user?.profile?.uuid
+      const loggedInProfileUuid =
+        action.payload.loggedInUser.user?.profile?.uuid
 
       if (
         chat.activeConversation &&
@@ -136,14 +137,12 @@ const slice = createSlice({
           (a, b) => b.createdAt - a.createdAt
         )
 
-        console.log('sorted messages:', sortedMessages)
+        let conversation = chat.conversations.find(
+          (conversation) => conversation.uuid === conversationUuid
+        )
+
+        conversation.messages = [...sortedMessages]
         chat.activeConversation.messages = sortedMessages
-
-        // const conversationn = chat.conversations.find(
-        //   (conversation) => conversation.uuid === conversationUuid
-        // )
-
-        // conversationn.messages.push(messages)
       }
     },
     addMessageToActiveConversation: (chat, action) => {
