@@ -4,6 +4,7 @@ import { PhoneIcon } from '@chakra-ui/icons'
 import PubSub from 'pubsub-js'
 
 import {
+  addMessageToActiveConversation,
   deleteMessageInStore,
   getActiveConversation,
   getActiveConversee,
@@ -16,7 +17,10 @@ import { ImUpload2 } from 'react-icons/im'
 
 import { getLoggedInUser } from '../store/users'
 import { getSocket } from '../store/sockets'
-import { useSetPendingCallForConversationMutation } from '../generated/graphql'
+import {
+  useSetPendingCallForConversationMutation,
+  useUploadImageMutation,
+} from '../generated/graphql'
 
 import RecorderControls from './AudioRecorder/recorder-controls'
 // import useRecorder from '../../components/AudioRecorder/hooks/use-recorder_old'
@@ -33,6 +37,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const activeConversation = useSelector(getActiveConversation)
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversee = useSelector(getActiveConversee)
+  const [uploadImageMutation] = useUploadImageMutation()
 
   const [
     setPendingCallForConversation,
@@ -77,19 +82,70 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
 
   const handleClick = (event) => {
     hiddenFileInput?.current.click()
-  } // Call a function (passed as a prop from the parent component)
-  // to handle the user-selected file
+  }
   const handleChange = (event) => {
-    const fileUploaded = event.target.files[0]
+    uploadImageMutation({
+      variables: {
+        file: event.target.files[0],
+        conversationUuid: activeConversation.uuid,
+        profileUuid: loggedInUser.user.profile.uuid,
+      },
+    })
+      .then(async (response) => {
+        console.log('response:', response)
+        if (activeConversation.type === 'pm') {
+          socket.emit('private-chat-message', {
+            content:
+              loggedInUser.user?.profile?.username + ' sent you a message.',
+            from: loggedInUser.user?.profile?.uuid,
+            fromUsername: loggedInUser.user?.profile?.username,
+            to: activeConversee.uuid,
+            toUsername: activeConversee.username,
+            messageUuid: response.data?.uploadImage.uuid,
+            message: response.data?.uploadImage.content,
+            type: response.data?.uploadImage.type,
+            src: response.data?.uploadImage.src,
+            conversationUuid: activeConversation.uuid,
+          })
+        } else {
+          activeConversation.profiles.map((conversationProfile) => {
+            if (conversationProfile.uuid !== loggedInUser.user?.profile?.uuid) {
+              socket.emit('private-chat-message', {
+                content:
+                  loggedInUser.user?.profile?.username + ' sent you a message.',
+                from: loggedInUser.user?.profile?.uuid,
+                fromUsername: loggedInUser.user?.profile?.username,
+                to: conversationProfile.uuid,
+                toUsername: conversationProfile.username,
+                messageUuid: response.data?.uploadImage.uuid,
+                message: response.data?.uploadImage.content,
+                type: response.data?.uploadImage.type,
+                src: response.data?.uploadImage.src,
+                conversationUuid: activeConversation.uuid,
+              })
+            }
+          })
+        }
 
-    PubSub.publish('FILE UPLOAD', { file: fileUploaded })
-    // console.log('fileUploaded', fileUploaded)
-    // dispatch(
-    //   uploadFile({
-    //     file: fileUploaded,
-    //   })
-    // )
-    // props.handleFile(fileUploaded)
+        dispatch(
+          addMessageToActiveConversation({
+            uuid: response.data?.uploadImage.uuid,
+            message: response.data?.uploadImage.content,
+            from: 'me',
+            type: response.data?.uploadImage.type,
+            src: response.data?.uploadImage.src,
+            conversationUuid: activeConversation.uuid,
+            deleted: false,
+            sender: {
+              uuid: loggedInUser?.user?.profile?.uuid,
+              username: loggedInUser?.user?.profile?.username,
+            },
+          })
+        )
+      })
+      .catch((error) => {
+        console.log('error:', error)
+      })
   }
 
   return (
@@ -121,6 +177,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
           ref={hiddenFileInput}
           onChange={handleChange}
           style={{ display: 'none' }}
+          accept=".jpeg, .jpg, .png, .doc, .docx, .pdf"
         />
 
         <RecorderControls recorderState={recorderState} handlers={handlers} />

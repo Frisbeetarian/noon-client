@@ -222,11 +222,13 @@ const Messages = () => {
     <Flex
       id="scrollableDiv"
       overflowY="auto"
+      overflowX="hidden"
       flexDirection="column-reverse"
-      className="w-full top-0 py-3 px-5 relative"
+      className="w-full top-0 py-3 px-5 relative overflow-x-hidden"
       style={{ height: '80vh' }}
     >
       <InfiniteScroll
+        className="overflow-x-hidden"
         dataLength={activeConversation.messages}
         next={fetchMoreMessage}
         style={{ display: 'flex', flexDirection: 'column-reverse' }}
@@ -247,7 +249,7 @@ const Messages = () => {
           ? activeConversation.messages.map((item, index) => {
               if (item.from === 'me') {
                 return (
-                  <Flex key={index} w="100%" justify="flex-end">
+                  <Flex key={index} className=" justify-end">
                     {item.type === 'text' ? (
                       <Flex
                         bg="black"
@@ -258,7 +260,7 @@ const Messages = () => {
                         pr={!item.deleted ? '0' : '3'}
                         pl="3"
                         py="2"
-                        className="relative"
+                        className="relative   bg-red-500"
                       >
                         <Text className="">
                           {!item.deleted ? (
@@ -300,22 +302,12 @@ const Messages = () => {
                                 </MenuItem>
                               </MenuList>
                             </Portal>
-
-                            {/*<MenuList>*/}
-                            {/*  <MenuItem*/}
-                            {/*    onClick={async () => {*/}
-                            {/*      await deleteMessageHandler(item)*/}
-                            {/*    }}*/}
-                            {/*  >*/}
-                            {/*    Unsend message*/}
-                            {/*  </MenuItem>*/}
-                            {/*</MenuList>*/}
                           </Menu>
                         ) : null}
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex
-                        className="justify-end relative"
+                        className=" relative  "
                         boxSize={!item.deleted ? 'sm' : ''}
                         bg={!item.deleted ? '' : 'black'}
                         minW={!item.deleted ? '100px' : ''}
@@ -324,7 +316,13 @@ const Messages = () => {
                         p={!item.deleted ? '0' : '3'}
                       >
                         {!item.deleted ? (
-                          <Image src={item.src} alt={item.content} />
+                          <Flex className="justify-end">
+                            <Image
+                              boxSize="cover"
+                              src={item.src}
+                              alt={item.content}
+                            />
+                          </Flex>
                         ) : (
                           <Text>
                             <i>{item.content}</i>
@@ -332,7 +330,7 @@ const Messages = () => {
                         )}
 
                         {!item.deleted ? (
-                          <div className="absolute  rounded border-black">
+                          <div className="absolute right-0 rounded border-black  z-50">
                             <Menu>
                               <MenuButton
                                 as={IconButton}
@@ -345,15 +343,17 @@ const Messages = () => {
                                 my={0}
                               />
 
-                              <MenuList>
-                                <MenuItem
-                                  onClick={async () => {
-                                    await deleteMessageHandler(item)
-                                  }}
-                                >
-                                  Unsend message
-                                </MenuItem>
-                              </MenuList>
+                              <Portal>
+                                <MenuList maxW="100px">
+                                  <MenuItem
+                                    onClick={async () => {
+                                      await deleteMessageHandler(item)
+                                    }}
+                                  >
+                                    Unsend message
+                                  </MenuItem>
+                                </MenuList>
+                              </Portal>
                             </Menu>
                           </div>
                         ) : null}
@@ -388,15 +388,17 @@ const Messages = () => {
                               my={0}
                             />
 
-                            <MenuList>
-                              <MenuItem
-                                onClick={async () => {
-                                  await deleteMessageHandler(item)
-                                }}
-                              >
-                                Unsend message
-                              </MenuItem>
-                            </MenuList>
+                            <Portal>
+                              <MenuList>
+                                <MenuItem
+                                  onClick={async () => {
+                                    await deleteMessageHandler(item)
+                                  }}
+                                >
+                                  Unsend message
+                                </MenuItem>
+                              </MenuList>
+                            </Portal>
                           </Menu>
                         ) : null}
                       </Flex>
@@ -426,7 +428,7 @@ const Messages = () => {
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex
-                        className="justify-end relative"
+                        className=" relative"
                         boxSize={!item.deleted ? 'sm' : ''}
                         bg={!item.deleted ? '' : 'black'}
                         minW={!item.deleted ? '100px' : ''}
@@ -435,7 +437,13 @@ const Messages = () => {
                         p={!item.deleted ? '0' : '3'}
                       >
                         {!item.deleted ? (
-                          <Image src={item.src} alt={item.content} />
+                          <Flex className="justify-start">
+                            <Image
+                              boxSize="fill"
+                              src={item.src}
+                              alt={item.content}
+                            />
+                          </Flex>
                         ) : (
                           <Text>
                             <i>{item.content}</i>
@@ -497,15 +505,17 @@ const Messages = () => {
                               my={0}
                             />
 
-                            <MenuList>
-                              <MenuItem
-                                onClick={async () => {
-                                  await deleteMessageHandler(item)
-                                }}
-                              >
-                                Unsend message
-                              </MenuItem>
-                            </MenuList>
+                            <Portal>
+                              <MenuList>
+                                <MenuItem
+                                  onClick={async () => {
+                                    await deleteMessageHandler(item)
+                                  }}
+                                >
+                                  Unsend message
+                                </MenuItem>
+                              </MenuList>
+                            </Portal>
                           </Menu>
                         ) : null}
                       </Flex>
@@ -541,15 +551,17 @@ const Messages = () => {
                                 my={0}
                               />
 
-                              <MenuList>
-                                <MenuItem
-                                  onClick={async () => {
-                                    deleteMessageHandler(item)
-                                  }}
-                                >
-                                  Unsend message
-                                </MenuItem>
-                              </MenuList>
+                              <Portal>
+                                <MenuList>
+                                  <MenuItem
+                                    onClick={async () => {
+                                      deleteMessageHandler(item)
+                                    }}
+                                  >
+                                    Unsend message
+                                  </MenuItem>
+                                </MenuList>
+                              </Portal>
                             </Menu>
                           </div>
                         ) : null}
@@ -586,15 +598,17 @@ const Messages = () => {
                               mx={0}
                               my={0}
                             />
-                            <MenuList>
-                              <MenuItem
-                                onClick={async () => {
-                                  deleteMessageHandler(item)
-                                }}
-                              >
-                                Unsend message
-                              </MenuItem>
-                            </MenuList>
+                            <Portal>
+                              <MenuList>
+                                <MenuItem
+                                  onClick={async () => {
+                                    deleteMessageHandler(item)
+                                  }}
+                                >
+                                  Unsend message
+                                </MenuItem>
+                              </MenuList>
+                            </Portal>
                           </Menu>
                         ) : null}
                       </Flex>
@@ -633,7 +647,9 @@ const Messages = () => {
                         p={!item.deleted ? '0' : '3'}
                       >
                         {!item.deleted ? (
-                          <Image src={item.src} alt={item.content} />
+                          <Flex className="bg-red-500">
+                            <Image src={item.src} alt={item.content} />
+                          </Flex>
                         ) : (
                           <Text>
                             <i>{item.content}</i>
