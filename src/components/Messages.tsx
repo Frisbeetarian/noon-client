@@ -111,22 +111,35 @@ const Messages = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(
+        'ENTERED DATA:',
+        data?.getMessagesForConversation?.messages[0]
+      )
+      console.log('ENTERED DATA')
       setShouldCheckHasMorePause(true)
-      dispatch(setShouldPauseCheckHasMore(true))
-      hasMoreOnInit = undefined
-      setLocalMessages((localMessages) => [...localMessages])
+      hasMoreOnInit = null
+
+      setLocalMessages((prevState) => {
+        return [...prevState, ...data.getMessagesForConversation.messages]
+      })
+
+      // data.getMessagesForConversation.messages.map((message) => {
+      //
+      // })
 
       // updateMyArray( arr => [...arr, `${arr.length}`]);
     }
 
     return () => {
       setShouldCheckHasMorePause(false)
-      setLocalMessages([])
+      // setLocalMessages([])
     }
   }, [data])
 
   // TODO check how to initialize data
   useEffect(() => {
+    console.log('LOCAL MESSAGES:', localMessages)
+
     if (localMessages.length !== 0) {
       dispatch(
         addMessagesToConversation({
@@ -135,6 +148,8 @@ const Messages = () => {
           loggedInUser,
         })
       )
+
+      dispatch(setShouldPauseCheckHasMore(true))
     } else {
     }
   }, [localMessages])
@@ -222,22 +237,20 @@ const Messages = () => {
     <Flex
       id="scrollableDiv"
       overflowY="auto"
-      overflowX="hidden"
       flexDirection="column-reverse"
       className="w-full top-0 py-3 px-5 relative overflow-x-hidden"
       style={{ height: '80vh' }}
     >
       <InfiniteScroll
-        className="overflow-x-hidden"
         dataLength={activeConversation.messages}
         next={fetchMoreMessage}
         style={{ display: 'flex', flexDirection: 'column-reverse' }}
         inverse={true}
         hasMore={
           !shouldPauseCheckHasMore
-            ? !!hasMoreOnInit?.checkIfConversationHasMoreMessages
-            : !!data?.getMessagesForConversation
-            ? !!data?.getMessagesForConversation.hasMore
+            ? hasMoreOnInit?.checkIfConversationHasMoreMessages
+            : data?.getMessagesForConversation
+            ? data?.getMessagesForConversation.hasMore
             : true
         }
         loader={

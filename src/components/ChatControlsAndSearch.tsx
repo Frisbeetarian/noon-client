@@ -80,7 +80,7 @@ function ChatControlsAndSearch() {
         <Flex className="items-center relative " style={{ flex: '0.3' }}>
           <InputGroup>
             <InputRightElement
-              children={<SearchIcon color="gray.300" />}
+              children={<SearchIcon color="green.500" />}
               pointerEvents="none"
             />
 
