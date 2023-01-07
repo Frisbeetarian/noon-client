@@ -130,10 +130,10 @@ export default function useRecorder() {
                   fromUsername: loggedInUser.user?.profile?.username,
                   to: activeConversee.uuid,
                   toUsername: activeConversee.username,
-                  messageUuid: response.data?.uploadVoiceRecordingMutation.uuid,
-                  message: response.data?.uploadVoiceRecordingMutation.content,
-                  type: response.data?.uploadVoiceRecordingMutation.type,
-                  src: response.data?.uploadVoiceRecordingMutation.src,
+                  messageUuid: response.data?.uploadVoiceRecording.uuid,
+                  message: response.data?.uploadVoiceRecording.content,
+                  type: response.data?.uploadVoiceRecording.type,
+                  src: response.data?.uploadVoiceRecording.src,
                   conversationUuid: activeConversation.uuid,
                 })
               } else {
@@ -150,12 +150,10 @@ export default function useRecorder() {
                       fromUsername: loggedInUser.user?.profile?.username,
                       to: conversationProfile.uuid,
                       toUsername: conversationProfile.username,
-                      messageUuid:
-                        response.data?.uploadVoiceRecordingMutation.uuid,
-                      message:
-                        response.data?.uploadVoiceRecordingMutation.content,
-                      type: response.data?.uploadVoiceRecordingMutation.type,
-                      src: response.data?.uploadVoiceRecordingMutation.src,
+                      messageUuid: response.data?.uploadVoiceRecording.uuid,
+                      message: response.data?.uploadVoiceRecording.content,
+                      type: response.data?.uploadVoiceRecording.type,
+                      src: response.data?.uploadVoiceRecording.src,
                       conversationUuid: activeConversation.uuid,
                     })
                   }
@@ -164,11 +162,11 @@ export default function useRecorder() {
 
               dispatch(
                 addMessageToActiveConversation({
-                  uuid: response.data?.uploadVoiceRecordingMutation.uuid,
-                  message: response.data?.uploadVoiceRecordingMutation.content,
+                  uuid: response.data?.uploadVoiceRecording.uuid,
+                  message: response.data?.uploadVoiceRecording.content,
                   from: 'me',
-                  type: response.data?.uploadVoiceRecordingMutation.type,
-                  src: response.data?.uploadVoiceRecordingMutation.src,
+                  type: response.data?.uploadVoiceRecording.type,
+                  src: response.data?.uploadVoiceRecording.src,
                   conversationUuid: activeConversation.uuid,
                   deleted: false,
                   sender: {
