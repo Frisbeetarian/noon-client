@@ -13,7 +13,6 @@ import {
 } from '@chakra-ui/react'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
-
 import {
   useCheckIfConversationHasMoreMessagesQuery,
   useClearUnreadMessagesForConversationMutation,
@@ -115,6 +114,7 @@ const Messages = () => {
         'ENTERED DATA:',
         data?.getMessagesForConversation?.messages[0]
       )
+
       console.log('ENTERED DATA')
       setShouldCheckHasMorePause(true)
       hasMoreOnInit = null
@@ -132,7 +132,7 @@ const Messages = () => {
 
     return () => {
       setShouldCheckHasMorePause(false)
-      // setLocalMessages([])
+      setLocalMessages([])
     }
   }, [data])
 
@@ -150,7 +150,6 @@ const Messages = () => {
       )
 
       dispatch(setShouldPauseCheckHasMore(true))
-    } else {
     }
   }, [localMessages])
 
@@ -248,9 +247,9 @@ const Messages = () => {
         inverse={true}
         hasMore={
           !shouldPauseCheckHasMore
-            ? hasMoreOnInit?.checkIfConversationHasMoreMessages
-            : data?.getMessagesForConversation
-            ? data?.getMessagesForConversation.hasMore
+            ? !!hasMoreOnInit?.checkIfConversationHasMoreMessages
+            : !!data?.getMessagesForConversation
+            ? !!data?.getMessagesForConversation.hasMore
             : true
         }
         loader={
@@ -320,7 +319,7 @@ const Messages = () => {
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex
-                        className=" relative  "
+                        className="relative"
                         boxSize={!item.deleted ? 'sm' : ''}
                         bg={!item.deleted ? '' : 'black'}
                         minW={!item.deleted ? '100px' : ''}
@@ -343,7 +342,7 @@ const Messages = () => {
                         )}
 
                         {!item.deleted ? (
-                          <div className="absolute right-0 rounded border-black  z-50">
+                          <div className="absolute right-0 rounded border-black z-50">
                             <Menu>
                               <MenuButton
                                 as={IconButton}

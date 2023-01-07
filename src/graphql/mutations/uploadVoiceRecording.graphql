@@ -1,0 +1,16 @@
+mutation UploadVoiceRecording(
+  $profileUuid: String!
+  $conversationUuid: String!
+  $file: Upload!
+) {
+  uploadVoiceRecording(
+    profileUuid: $profileUuid
+    conversationUuid: $conversationUuid
+    file: $file
+  ) {
+    uuid
+    content
+    type
+    src
+  }
+}

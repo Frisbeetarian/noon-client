@@ -191,6 +191,7 @@ export type Mutation = {
   updatePost?: Maybe<Post>;
   updateUnreadMessagesForConversation: Scalars['Boolean'];
   uploadImage: Message;
+  uploadVoiceRecording: Message;
   vote: Scalars['Boolean'];
 };
 
@@ -342,6 +343,13 @@ export type MutationUpdateUnreadMessagesForConversationArgs = {
 
 
 export type MutationUploadImageArgs = {
+  conversationUuid: Scalars['String'];
+  file?: InputMaybe<Scalars['Upload']>;
+  profileUuid: Scalars['String'];
+};
+
+
+export type MutationUploadVoiceRecordingArgs = {
   conversationUuid: Scalars['String'];
   file?: InputMaybe<Scalars['Upload']>;
   profileUuid: Scalars['String'];
@@ -899,6 +907,15 @@ export type UploadImageMutationVariables = Exact<{
 
 
 export type UploadImageMutation = { __typename?: 'Mutation', uploadImage: { __typename?: 'Message', uuid: string, content: string, type: string, src?: string | null } };
+
+export type UploadVoiceRecordingMutationVariables = Exact<{
+  profileUuid: Scalars['String'];
+  conversationUuid: Scalars['String'];
+  file: Scalars['Upload'];
+}>;
+
+
+export type UploadVoiceRecordingMutation = { __typename?: 'Mutation', uploadVoiceRecording: { __typename?: 'Message', uuid: string, content: string, type: string, src?: string | null } };
 
 export type VoteMutationVariables = Exact<{
   value: Scalars['Int'];
@@ -2743,6 +2760,48 @@ export function useUploadImageMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UploadImageMutationHookResult = ReturnType<typeof useUploadImageMutation>;
 export type UploadImageMutationResult = Apollo.MutationResult<UploadImageMutation>;
 export type UploadImageMutationOptions = Apollo.BaseMutationOptions<UploadImageMutation, UploadImageMutationVariables>;
+export const UploadVoiceRecordingDocument = gql`
+    mutation UploadVoiceRecording($profileUuid: String!, $conversationUuid: String!, $file: Upload!) {
+  uploadVoiceRecording(
+    profileUuid: $profileUuid
+    conversationUuid: $conversationUuid
+    file: $file
+  ) {
+    uuid
+    content
+    type
+    src
+  }
+}
+    `;
+export type UploadVoiceRecordingMutationFn = Apollo.MutationFunction<UploadVoiceRecordingMutation, UploadVoiceRecordingMutationVariables>;
+
+/**
+ * __useUploadVoiceRecordingMutation__
+ *
+ * To run a mutation, you first call `useUploadVoiceRecordingMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadVoiceRecordingMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadVoiceRecordingMutation, { data, loading, error }] = useUploadVoiceRecordingMutation({
+ *   variables: {
+ *      profileUuid: // value for 'profileUuid'
+ *      conversationUuid: // value for 'conversationUuid'
+ *      file: // value for 'file'
+ *   },
+ * });
+ */
+export function useUploadVoiceRecordingMutation(baseOptions?: Apollo.MutationHookOptions<UploadVoiceRecordingMutation, UploadVoiceRecordingMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UploadVoiceRecordingMutation, UploadVoiceRecordingMutationVariables>(UploadVoiceRecordingDocument, options);
+      }
+export type UploadVoiceRecordingMutationHookResult = ReturnType<typeof useUploadVoiceRecordingMutation>;
+export type UploadVoiceRecordingMutationResult = Apollo.MutationResult<UploadVoiceRecordingMutation>;
+export type UploadVoiceRecordingMutationOptions = Apollo.BaseMutationOptions<UploadVoiceRecordingMutation, UploadVoiceRecordingMutationVariables>;
 export const VoteDocument = gql`
     mutation Vote($value: Int!, $postId: Int!) {
   vote(value: $value, postId: $postId)
