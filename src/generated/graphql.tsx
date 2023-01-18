@@ -593,20 +593,6 @@ export type ClearUnreadMessagesForConversationMutationVariables = Exact<{
 
 export type ClearUnreadMessagesForConversationMutation = { __typename?: 'Mutation', clearUnreadMessagesForConversation: boolean };
 
-export type CreateCommunityMutationVariables = Exact<{
-  input: CommunityInput;
-}>;
-
-
-export type CreateCommunityMutation = { __typename?: 'Mutation', createCommunity: { __typename?: 'Community', id: number, title: string, description: string, privacy: string, timezone: string, startDate?: any | null, endDate?: any | null, createdAt: string, updatedAt: string } };
-
-export type CreateEventMutationVariables = Exact<{
-  input: EventInput;
-}>;
-
-
-export type CreateEventMutation = { __typename?: 'Mutation', createEvent: { __typename?: 'Event', id: number, title: string, description: string, privacy: string, timezone: string, startDate?: any | null, endDate?: any | null, createdAt: string, updatedAt: string } };
-
 export type CreateGroupConversationMutationVariables = Exact<{
   input: GroupInput;
   participants: Array<Scalars['String']> | Scalars['String'];
@@ -649,17 +635,11 @@ export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: 
 
 export type CallsSnippetFragment = { __typename?: 'ConversationToProfile', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean };
 
-export type CommunitySnippetFragment = { __typename?: 'Community', id: number, title: string, description: string, privacy: string, timezone: string, startDate?: any | null, endDate?: any | null, createdAt: string, updatedAt: string, creator: { __typename?: 'User', uuid: string, username: string } };
-
 export type ConversationProfileSnippetFragment = { __typename?: 'Profile', uuid: string, username: string };
 
 export type ConversationSnippetFragment = { __typename?: 'Conversation', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, updatedAt: string, createdAt: string, hasMore: boolean, type: string, name?: string | null, description?: string | null, profiles: Array<{ __typename?: 'Profile', uuid: string, username: string }>, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, sender: { __typename?: 'Profile', uuid: string, username: string } }>, calls: Array<{ __typename?: 'ConversationToProfile', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean }>, pendingCallProfile?: { __typename?: 'Profile', uuid: string, username: string } | null };
 
 export type ConversationToProfileSnippetFragment = { __typename?: 'ConversationToProfile', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, profile: Array<{ __typename?: 'Profile', uuid: string, username: string }> };
-
-export type EventSnippetFragment = { __typename?: 'Event', id: number, title: string, description: string, privacy: string, timezone: string, startDate?: any | null, endDate?: any | null, createdAt: string, updatedAt: string, creator: { __typename?: 'User', uuid: string, username: string } };
-
-export type EventToProfileSnippetFragment = { __typename?: 'EventToProfile', id: number };
 
 export type FriendSnippetFragment = { __typename?: 'Friend', uuid: string, username: string };
 
@@ -678,20 +658,6 @@ export type RegularProfileFragment = { __typename?: 'Profile', uuid: string, use
 export type RegularUserFragment = { __typename?: 'User', uuid: string, username: string, email: string, profile: { __typename?: 'Profile', uuid: string, username: string } };
 
 export type RegularUserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', uuid: string, username: string, email: string, profile: { __typename?: 'Profile', uuid: string, username: string } } | null };
-
-export type JoinCommunityMutationVariables = Exact<{
-  communityId: Scalars['Int'];
-}>;
-
-
-export type JoinCommunityMutation = { __typename?: 'Mutation', joinCommunity: boolean };
-
-export type JoinEventMutationVariables = Exact<{
-  eventId: Scalars['Int'];
-}>;
-
-
-export type JoinEventMutation = { __typename?: 'Mutation', joinEvent: { __typename?: 'Event', timezone: string } };
 
 export type LeaveGroupMutationVariables = Exact<{
   groupUuid: Scalars['String'];
@@ -719,47 +685,6 @@ export type CheckIfConversationHasMoreMessagesQueryVariables = Exact<{
 
 
 export type CheckIfConversationHasMoreMessagesQuery = { __typename?: 'Query', checkIfConversationHasMoreMessages: boolean };
-
-export type CommunitiesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CommunitiesQuery = { __typename?: 'Query', communities: Array<{ __typename?: 'Community', id: number, title: string, description: string, privacy: string, timezone: string, startDate?: any | null, endDate?: any | null, createdAt: string, updatedAt: string, creator: { __typename?: 'User', uuid: string, username: string } }> };
-
-export type CommunityQueryVariables = Exact<{
-  id: Scalars['Int'];
-}>;
-
-
-export type CommunityQuery = { __typename?: 'Query', community?: { __typename?: 'Community', id: number, username: string, title: string, description: string, privacy: string, timezone: string, startDate?: any | null, endDate?: any | null, createdAt: string, updatedAt: string, creator: { __typename?: 'User', uuid: string, username: string } } | null };
-
-export type EventQueryVariables = Exact<{
-  id: Scalars['Int'];
-}>;
-
-
-export type EventQuery = { __typename?: 'Query', event?: { __typename?: 'Event', id: number, username: string, title: string, description: string, privacy: string, timezone: string, startDate?: any | null, endDate?: any | null, createdAt: string, updatedAt: string, creator: { __typename?: 'User', uuid: string, username: string } } | null };
-
-export type EventsQueryVariables = Exact<{
-  limit: Scalars['Int'];
-  cursor?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type EventsQuery = { __typename?: 'Query', events: { __typename?: 'PaginatedEvents', hasMore: boolean, events: Array<{ __typename?: 'Event', id: number, title: string, description: string, privacy: string, timezone: string, startDate?: any | null, endDate?: any | null, createdAt: string, updatedAt: string, creator: { __typename?: 'User', uuid: string, username: string } }> } };
-
-export type GetCommunitiesParticipantsQueryVariables = Exact<{
-  communitiesIds: Array<Scalars['Int']> | Scalars['Int'];
-}>;
-
-
-export type GetCommunitiesParticipantsQuery = { __typename?: 'Query', getCommunitiesParticipants: Array<{ __typename?: 'CommunityParticipant', id: number, profileId: number, communityId: number, participantUsername: string }> };
-
-export type GetCommunityParticipantsQueryVariables = Exact<{
-  id: Scalars['Int'];
-}>;
-
-
-export type GetCommunityParticipantsQuery = { __typename?: 'Query', getCommunityParticipants: Array<{ __typename?: 'CommunityParticipant', id: number, profileId: number, participantUsername: string }> };
 
 export type GetConversationForLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -925,23 +850,6 @@ export type VoteMutationVariables = Exact<{
 
 export type VoteMutation = { __typename?: 'Mutation', vote: boolean };
 
-export const CommunitySnippetFragmentDoc = gql`
-    fragment CommunitySnippet on Community {
-  id
-  title
-  description
-  privacy
-  timezone
-  startDate
-  endDate
-  createdAt
-  updatedAt
-  creator {
-    uuid
-    username
-  }
-}
-    `;
 export const ConversationProfileSnippetFragmentDoc = gql`
     fragment ConversationProfileSnippet on Profile {
   uuid
@@ -1008,28 +916,6 @@ export const ConversationToProfileSnippetFragmentDoc = gql`
   }
 }
     ${ConversationProfileSnippetFragmentDoc}`;
-export const EventSnippetFragmentDoc = gql`
-    fragment EventSnippet on Event {
-  id
-  title
-  description
-  privacy
-  timezone
-  startDate
-  endDate
-  createdAt
-  updatedAt
-  creator {
-    uuid
-    username
-  }
-}
-    `;
-export const EventToProfileSnippetFragmentDoc = gql`
-    fragment EventToProfileSnippet on EventToProfile {
-  id
-}
-    `;
 export const PostSnippetFragmentDoc = gql`
     fragment PostSnippet on Post {
   id
@@ -1316,88 +1202,6 @@ export function useClearUnreadMessagesForConversationMutation(baseOptions?: Apol
 export type ClearUnreadMessagesForConversationMutationHookResult = ReturnType<typeof useClearUnreadMessagesForConversationMutation>;
 export type ClearUnreadMessagesForConversationMutationResult = Apollo.MutationResult<ClearUnreadMessagesForConversationMutation>;
 export type ClearUnreadMessagesForConversationMutationOptions = Apollo.BaseMutationOptions<ClearUnreadMessagesForConversationMutation, ClearUnreadMessagesForConversationMutationVariables>;
-export const CreateCommunityDocument = gql`
-    mutation CreateCommunity($input: CommunityInput!) {
-  createCommunity(input: $input) {
-    id
-    title
-    description
-    privacy
-    timezone
-    startDate
-    endDate
-    createdAt
-    updatedAt
-  }
-}
-    `;
-export type CreateCommunityMutationFn = Apollo.MutationFunction<CreateCommunityMutation, CreateCommunityMutationVariables>;
-
-/**
- * __useCreateCommunityMutation__
- *
- * To run a mutation, you first call `useCreateCommunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateCommunityMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createCommunityMutation, { data, loading, error }] = useCreateCommunityMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateCommunityMutation(baseOptions?: Apollo.MutationHookOptions<CreateCommunityMutation, CreateCommunityMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateCommunityMutation, CreateCommunityMutationVariables>(CreateCommunityDocument, options);
-      }
-export type CreateCommunityMutationHookResult = ReturnType<typeof useCreateCommunityMutation>;
-export type CreateCommunityMutationResult = Apollo.MutationResult<CreateCommunityMutation>;
-export type CreateCommunityMutationOptions = Apollo.BaseMutationOptions<CreateCommunityMutation, CreateCommunityMutationVariables>;
-export const CreateEventDocument = gql`
-    mutation CreateEvent($input: EventInput!) {
-  createEvent(input: $input) {
-    id
-    title
-    description
-    privacy
-    timezone
-    startDate
-    endDate
-    createdAt
-    updatedAt
-  }
-}
-    `;
-export type CreateEventMutationFn = Apollo.MutationFunction<CreateEventMutation, CreateEventMutationVariables>;
-
-/**
- * __useCreateEventMutation__
- *
- * To run a mutation, you first call `useCreateEventMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateEventMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createEventMutation, { data, loading, error }] = useCreateEventMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateEventMutation(baseOptions?: Apollo.MutationHookOptions<CreateEventMutation, CreateEventMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateEventMutation, CreateEventMutationVariables>(CreateEventDocument, options);
-      }
-export type CreateEventMutationHookResult = ReturnType<typeof useCreateEventMutation>;
-export type CreateEventMutationResult = Apollo.MutationResult<CreateEventMutation>;
-export type CreateEventMutationOptions = Apollo.BaseMutationOptions<CreateEventMutation, CreateEventMutationVariables>;
 export const CreateGroupConversationDocument = gql`
     mutation CreateGroupConversation($input: GroupInput!, $participants: [String!]!) {
   createGroupConversation(input: $input, participants: $participants) {
@@ -1578,70 +1382,6 @@ export function useForgotPasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type ForgotPasswordMutationHookResult = ReturnType<typeof useForgotPasswordMutation>;
 export type ForgotPasswordMutationResult = Apollo.MutationResult<ForgotPasswordMutation>;
 export type ForgotPasswordMutationOptions = Apollo.BaseMutationOptions<ForgotPasswordMutation, ForgotPasswordMutationVariables>;
-export const JoinCommunityDocument = gql`
-    mutation JoinCommunity($communityId: Int!) {
-  joinCommunity(communityId: $communityId)
-}
-    `;
-export type JoinCommunityMutationFn = Apollo.MutationFunction<JoinCommunityMutation, JoinCommunityMutationVariables>;
-
-/**
- * __useJoinCommunityMutation__
- *
- * To run a mutation, you first call `useJoinCommunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useJoinCommunityMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [joinCommunityMutation, { data, loading, error }] = useJoinCommunityMutation({
- *   variables: {
- *      communityId: // value for 'communityId'
- *   },
- * });
- */
-export function useJoinCommunityMutation(baseOptions?: Apollo.MutationHookOptions<JoinCommunityMutation, JoinCommunityMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<JoinCommunityMutation, JoinCommunityMutationVariables>(JoinCommunityDocument, options);
-      }
-export type JoinCommunityMutationHookResult = ReturnType<typeof useJoinCommunityMutation>;
-export type JoinCommunityMutationResult = Apollo.MutationResult<JoinCommunityMutation>;
-export type JoinCommunityMutationOptions = Apollo.BaseMutationOptions<JoinCommunityMutation, JoinCommunityMutationVariables>;
-export const JoinEventDocument = gql`
-    mutation JoinEvent($eventId: Int!) {
-  joinEvent(eventId: $eventId) {
-    timezone
-  }
-}
-    `;
-export type JoinEventMutationFn = Apollo.MutationFunction<JoinEventMutation, JoinEventMutationVariables>;
-
-/**
- * __useJoinEventMutation__
- *
- * To run a mutation, you first call `useJoinEventMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useJoinEventMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [joinEventMutation, { data, loading, error }] = useJoinEventMutation({
- *   variables: {
- *      eventId: // value for 'eventId'
- *   },
- * });
- */
-export function useJoinEventMutation(baseOptions?: Apollo.MutationHookOptions<JoinEventMutation, JoinEventMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<JoinEventMutation, JoinEventMutationVariables>(JoinEventDocument, options);
-      }
-export type JoinEventMutationHookResult = ReturnType<typeof useJoinEventMutation>;
-export type JoinEventMutationResult = Apollo.MutationResult<JoinEventMutation>;
-export type JoinEventMutationOptions = Apollo.BaseMutationOptions<JoinEventMutation, JoinEventMutationVariables>;
 export const LeaveGroupDocument = gql`
     mutation LeaveGroup($groupUuid: String!) {
   leaveGroup(groupUuid: $groupUuid)
@@ -1770,250 +1510,6 @@ export function useCheckIfConversationHasMoreMessagesLazyQuery(baseOptions?: Apo
 export type CheckIfConversationHasMoreMessagesQueryHookResult = ReturnType<typeof useCheckIfConversationHasMoreMessagesQuery>;
 export type CheckIfConversationHasMoreMessagesLazyQueryHookResult = ReturnType<typeof useCheckIfConversationHasMoreMessagesLazyQuery>;
 export type CheckIfConversationHasMoreMessagesQueryResult = Apollo.QueryResult<CheckIfConversationHasMoreMessagesQuery, CheckIfConversationHasMoreMessagesQueryVariables>;
-export const CommunitiesDocument = gql`
-    query Communities {
-  communities {
-    ...CommunitySnippet
-  }
-}
-    ${CommunitySnippetFragmentDoc}`;
-
-/**
- * __useCommunitiesQuery__
- *
- * To run a query within a React component, call `useCommunitiesQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunitiesQuery({
- *   variables: {
- *   },
- * });
- */
-export function useCommunitiesQuery(baseOptions?: Apollo.QueryHookOptions<CommunitiesQuery, CommunitiesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CommunitiesQuery, CommunitiesQueryVariables>(CommunitiesDocument, options);
-      }
-export function useCommunitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CommunitiesQuery, CommunitiesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CommunitiesQuery, CommunitiesQueryVariables>(CommunitiesDocument, options);
-        }
-export type CommunitiesQueryHookResult = ReturnType<typeof useCommunitiesQuery>;
-export type CommunitiesLazyQueryHookResult = ReturnType<typeof useCommunitiesLazyQuery>;
-export type CommunitiesQueryResult = Apollo.QueryResult<CommunitiesQuery, CommunitiesQueryVariables>;
-export const CommunityDocument = gql`
-    query Community($id: Int!) {
-  community(id: $id) {
-    id
-    username
-    title
-    description
-    privacy
-    timezone
-    startDate
-    endDate
-    createdAt
-    updatedAt
-    creator {
-      uuid
-      username
-    }
-  }
-}
-    `;
-
-/**
- * __useCommunityQuery__
- *
- * To run a query within a React component, call `useCommunityQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunityQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useCommunityQuery(baseOptions: Apollo.QueryHookOptions<CommunityQuery, CommunityQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CommunityQuery, CommunityQueryVariables>(CommunityDocument, options);
-      }
-export function useCommunityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CommunityQuery, CommunityQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CommunityQuery, CommunityQueryVariables>(CommunityDocument, options);
-        }
-export type CommunityQueryHookResult = ReturnType<typeof useCommunityQuery>;
-export type CommunityLazyQueryHookResult = ReturnType<typeof useCommunityLazyQuery>;
-export type CommunityQueryResult = Apollo.QueryResult<CommunityQuery, CommunityQueryVariables>;
-export const EventDocument = gql`
-    query Event($id: Int!) {
-  event(id: $id) {
-    id
-    username
-    title
-    description
-    privacy
-    timezone
-    startDate
-    endDate
-    createdAt
-    updatedAt
-    creator {
-      uuid
-      username
-    }
-  }
-}
-    `;
-
-/**
- * __useEventQuery__
- *
- * To run a query within a React component, call `useEventQuery` and pass it any options that fit your needs.
- * When your component renders, `useEventQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEventQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useEventQuery(baseOptions: Apollo.QueryHookOptions<EventQuery, EventQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<EventQuery, EventQueryVariables>(EventDocument, options);
-      }
-export function useEventLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventQuery, EventQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<EventQuery, EventQueryVariables>(EventDocument, options);
-        }
-export type EventQueryHookResult = ReturnType<typeof useEventQuery>;
-export type EventLazyQueryHookResult = ReturnType<typeof useEventLazyQuery>;
-export type EventQueryResult = Apollo.QueryResult<EventQuery, EventQueryVariables>;
-export const EventsDocument = gql`
-    query Events($limit: Int!, $cursor: String) {
-  events(cursor: $cursor, limit: $limit) {
-    hasMore
-    events {
-      ...EventSnippet
-    }
-  }
-}
-    ${EventSnippetFragmentDoc}`;
-
-/**
- * __useEventsQuery__
- *
- * To run a query within a React component, call `useEventsQuery` and pass it any options that fit your needs.
- * When your component renders, `useEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useEventsQuery({
- *   variables: {
- *      limit: // value for 'limit'
- *      cursor: // value for 'cursor'
- *   },
- * });
- */
-export function useEventsQuery(baseOptions: Apollo.QueryHookOptions<EventsQuery, EventsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<EventsQuery, EventsQueryVariables>(EventsDocument, options);
-      }
-export function useEventsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EventsQuery, EventsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<EventsQuery, EventsQueryVariables>(EventsDocument, options);
-        }
-export type EventsQueryHookResult = ReturnType<typeof useEventsQuery>;
-export type EventsLazyQueryHookResult = ReturnType<typeof useEventsLazyQuery>;
-export type EventsQueryResult = Apollo.QueryResult<EventsQuery, EventsQueryVariables>;
-export const GetCommunitiesParticipantsDocument = gql`
-    query GetCommunitiesParticipants($communitiesIds: [Int!]!) {
-  getCommunitiesParticipants(communitiesIds: $communitiesIds) {
-    id
-    profileId
-    communityId
-    participantUsername
-  }
-}
-    `;
-
-/**
- * __useGetCommunitiesParticipantsQuery__
- *
- * To run a query within a React component, call `useGetCommunitiesParticipantsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCommunitiesParticipantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCommunitiesParticipantsQuery({
- *   variables: {
- *      communitiesIds: // value for 'communitiesIds'
- *   },
- * });
- */
-export function useGetCommunitiesParticipantsQuery(baseOptions: Apollo.QueryHookOptions<GetCommunitiesParticipantsQuery, GetCommunitiesParticipantsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCommunitiesParticipantsQuery, GetCommunitiesParticipantsQueryVariables>(GetCommunitiesParticipantsDocument, options);
-      }
-export function useGetCommunitiesParticipantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommunitiesParticipantsQuery, GetCommunitiesParticipantsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCommunitiesParticipantsQuery, GetCommunitiesParticipantsQueryVariables>(GetCommunitiesParticipantsDocument, options);
-        }
-export type GetCommunitiesParticipantsQueryHookResult = ReturnType<typeof useGetCommunitiesParticipantsQuery>;
-export type GetCommunitiesParticipantsLazyQueryHookResult = ReturnType<typeof useGetCommunitiesParticipantsLazyQuery>;
-export type GetCommunitiesParticipantsQueryResult = Apollo.QueryResult<GetCommunitiesParticipantsQuery, GetCommunitiesParticipantsQueryVariables>;
-export const GetCommunityParticipantsDocument = gql`
-    query GetCommunityParticipants($id: Int!) {
-  getCommunityParticipants(id: $id) {
-    id
-    profileId
-    participantUsername
-  }
-}
-    `;
-
-/**
- * __useGetCommunityParticipantsQuery__
- *
- * To run a query within a React component, call `useGetCommunityParticipantsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCommunityParticipantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCommunityParticipantsQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetCommunityParticipantsQuery(baseOptions: Apollo.QueryHookOptions<GetCommunityParticipantsQuery, GetCommunityParticipantsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCommunityParticipantsQuery, GetCommunityParticipantsQueryVariables>(GetCommunityParticipantsDocument, options);
-      }
-export function useGetCommunityParticipantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommunityParticipantsQuery, GetCommunityParticipantsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCommunityParticipantsQuery, GetCommunityParticipantsQueryVariables>(GetCommunityParticipantsDocument, options);
-        }
-export type GetCommunityParticipantsQueryHookResult = ReturnType<typeof useGetCommunityParticipantsQuery>;
-export type GetCommunityParticipantsLazyQueryHookResult = ReturnType<typeof useGetCommunityParticipantsLazyQuery>;
-export type GetCommunityParticipantsQueryResult = Apollo.QueryResult<GetCommunityParticipantsQuery, GetCommunityParticipantsQueryVariables>;
 export const GetConversationForLoggedInUserDocument = gql`
     query GetConversationForLoggedInUser {
   getConversationForLoggedInUser {

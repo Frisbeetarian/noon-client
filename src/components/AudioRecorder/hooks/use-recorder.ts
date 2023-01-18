@@ -6,8 +6,6 @@ import {
   AudioTrack,
   MediaRecorderEvent,
 } from '../types/recorder'
-import FormData from 'form-data'
-import axios from 'axios'
 import {
   addMessageToActiveConversation,
   getActiveConversation,
@@ -93,7 +91,7 @@ export default function useRecorder() {
 
   useEffect(() => {
     const recorder = recorderState.mediaRecorder
-    let chunks: Blob[] = []
+    const chunks: Blob[] = []
 
     if (recorder && recorder.state === 'inactive') {
       recorder.start()

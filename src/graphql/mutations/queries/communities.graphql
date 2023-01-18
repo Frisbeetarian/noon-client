@@ -1,5 +1,0 @@
-query Communities {
-  communities {
-      ...CommunitySnippet
-  }
-}

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../media-microservice/.idea/media-microservice.iml" filepath="$PROJECT_DIR$/../media-microservice/.idea/media-microservice.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/reddit-clone-web.iml" filepath="$PROJECT_DIR$/.idea/reddit-clone-web.iml" />
     </modules>
   </component>

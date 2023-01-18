@@ -50,6 +50,7 @@ const Onboarding = () => {
     login,
     // { loading: loginLoading }
   ] = useLoginMutation()
+
   const [
     register,
     // { loading: registerLoading }
@@ -57,7 +58,6 @@ const Onboarding = () => {
 
   // const loggedInUser = useSelector(getLoggedInUser)
   const [showPassword, setShowPassword] = useState(false)
-
   const [showLogin, setLogin] = useState(false)
   const [showRegister, setRegister] = useState(true)
   const [showForgotPassword, setForgotPassword] = useState(false)

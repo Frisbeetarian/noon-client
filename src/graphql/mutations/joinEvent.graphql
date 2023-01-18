@@ -1,5 +1,0 @@
-mutation JoinEvent($eventId: Int!) {
-    joinEvent(eventId: $eventId) {
-        timezone
-    }
-}

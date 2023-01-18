@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Flex, Input, Button, Box, Icon } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
-import PubSub from 'pubsub-js'
+// import PubSub from 'pubsub-js'
 
 import {
   addMessageToActiveConversation,
@@ -26,8 +26,8 @@ import RecorderControls from './AudioRecorder/recorder-controls'
 // import useRecorder from '../../components/AudioRecorder/hooks/use-recorder_old'
 import { UseRecorder } from './AudioRecorder/types/recorder'
 import useRecorder from './AudioRecorder/hooks/use-recorder'
-import { ImCancelCircle } from 'react-icons/im'
-import { uploadFile } from '../store/files'
+// import { ImCancelCircle } from 'react-icons/im'
+// import { uploadFile } from '../store/files'
 
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const hiddenFileInput = React.useRef(null)
@@ -80,8 +80,8 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
     }
   }, [activeConversee])
 
-  const handleClick = (event) => {
-    hiddenFileInput?.current.click()
+  const handleClick = () => {
+    ;(hiddenFileInput?.current as any).click()
   }
   const handleChange = (event) => {
     uploadImageMutation({

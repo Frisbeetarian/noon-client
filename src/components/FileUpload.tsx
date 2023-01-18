@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
-import { useApolloClient } from '@apollo/client'
+// import { useApolloClient } from '@apollo/client'
 import { getLoggedInUser } from '../store/users'
 import { getSocket } from '../store/sockets'
 

@@ -14,6 +14,7 @@ import {
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
+  // PaginatedMessages,
   useCheckIfConversationHasMoreMessagesQuery,
   useClearUnreadMessagesForConversationMutation,
   useDeleteMessageMutation,
@@ -36,6 +37,7 @@ import { getLoggedInUser } from '../store/users'
 import ReactAudioPlayer from 'react-audio-player'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSocket } from '../store/sockets'
+import { Message } from '../../gql-types'
 
 const Messages = () => {
   const dispatch = useDispatch()
@@ -67,7 +69,7 @@ const Messages = () => {
 
   const [shouldPause, setShouldPause] = useState(true)
   const [, setShouldCheckHasMorePause] = useState(false)
-  const [localMessages, setLocalMessages] = useState([])
+  const [localMessages, setLocalMessages] = useState<Message[]>([])
 
   /*  const { data, loading } = useMeQuery({
     pause: isServer(),
@@ -117,8 +119,9 @@ const Messages = () => {
 
       console.log('ENTERED DATA')
       setShouldCheckHasMorePause(true)
-      hasMoreOnInit = null
+      hasMoreOnInit = undefined
 
+      // @ts-ignore
       setLocalMessages((prevState) => {
         return [...prevState, ...data.getMessagesForConversation.messages]
       })

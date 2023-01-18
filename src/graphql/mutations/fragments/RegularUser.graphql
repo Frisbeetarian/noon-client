@@ -7,3 +7,4 @@ fragment RegularUser on User {
     username
   }
 }
+

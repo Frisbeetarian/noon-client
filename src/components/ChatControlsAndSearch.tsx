@@ -3,7 +3,6 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Icon,
   // useOutsideClick,
 } from '@chakra-ui/react'
 import { SearchIcon, ArrowUpIcon } from '@chakra-ui/icons'

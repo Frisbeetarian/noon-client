@@ -39,7 +39,6 @@ const slice = createSlice({
       // }
 
       // conversationObject.ongoingCall = false
-
       chat.conversations.push(conversationObject)
     },
     removeConversation: (chat, action) => {
@@ -246,7 +245,6 @@ const slice = createSlice({
       })
     },
     setActiveConversee: (chat, action) => {
-      // console.log('set active conversee uuid:', action.payload)
       chat.activeConversee = action.payload
     },
     clearUnreadMessagesForConversationInStore: (chat, action) => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLogoutMutation } from '../generated/graphql'
 
@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react'
 
 import {
-  getActiveConversation,
+  // getActiveConversation,
   getSortedConversations,
   setActiveConversation,
   setActiveConversationSet,
@@ -43,7 +43,7 @@ function Sidebar() {
   ] = useLogoutMutation()
   const loggedInUser = useSelector(getLoggedInUser)
   const getConversationsFromStore = useSelector(getSortedConversations)
-  const activeConversation = useSelector(getActiveConversation)
+  // const activeConversation = useSelector(getActiveConversation)
 
   return (
     <div
