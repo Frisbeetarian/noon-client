@@ -19,7 +19,11 @@ import {
   setActiveConversee,
   setShouldPauseCheckHasMore,
 } from '../store/chat'
-import { setChatContainerHeight, setSearchComponent } from '../store/ui'
+import {
+  setChatContainerHeight,
+  setConversationOpen,
+  setSearchComponent,
+} from '../store/ui'
 import { setVideoFrameForConversation } from '../store/video'
 import { useDispatch, useSelector } from 'react-redux'
 // import { useRouter } from 'next/router'
@@ -86,6 +90,7 @@ function PrivateConversationListing({ conversation, i }) {
       )
     }
 
+    dispatch(setConversationOpen(true))
     dispatch(setChatContainerHeight('87.5vh'))
   }
 

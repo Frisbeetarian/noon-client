@@ -39,7 +39,12 @@ import {
   useUpdateUnreadMessagesForConversationMutation,
 } from '../generated/graphql'
 
-import { getCreateGroupComponent, getChatContainerHeight } from '../store/ui'
+import {
+  getCreateGroupComponent,
+  getChatContainerHeight,
+  getIsMobile,
+  getIsConversationOpen,
+} from '../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 import { setFriendFlagOnProfile } from '../store/profiles'
@@ -52,6 +57,8 @@ function Chat() {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
   const isCreateGroupOpen = useSelector(getCreateGroupComponent)
+  const isMobile = useSelector(getIsMobile)
+  const isConversationOpen = useSelector(getIsConversationOpen)
 
   const [inputMessage, setInputMessage] = useState('')
   const socket = useSelector(getSocket)
@@ -492,8 +499,12 @@ function Chat() {
 
   return (
     <Flex
-      className="flex-col bg-gray-700 text-white box-content relative"
-      style={{ flex: '0.75', height: '100vh', overflow: 'hidden' }}
+      className={'flex-col bg-gray-700 text-white box-content relative z-50'}
+      style={{
+        flex: isMobile ? '1' : '0.75',
+        height: '100vh',
+        overflow: 'hidden',
+      }}
     >
       <ChatControlsAndSearch />
 

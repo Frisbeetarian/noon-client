@@ -17,7 +17,8 @@ import { setConversations, getConversations } from '../../store/chat'
 import Chat from '../../components/Chat'
 import { withApollo } from '../../utils/withApollo'
 import { useRouter } from 'next/router'
-import { getIsMobile } from '../../store/ui'
+import { getIsConversationOpen } from '../../store/ui'
+// import { getIsMobile } from '../../store/ui'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -29,7 +30,8 @@ function Noon() {
   const router = useRouter()
   const dispatch = useDispatch()
   const [mounted, setMounted] = useState(false)
-  const isMobile = useSelector(getIsMobile)
+  // const isMobile = useSelector(getIsMobile)
+  const isConversationOpen = useSelector(getIsConversationOpen)
 
   useEffect(() => setMounted(true), [])
 
@@ -93,7 +95,8 @@ function Noon() {
       {mounted && loggedInUser.user?.profile ? (
         <>
           <Sidebar />
-          {!isMobile && <Chat />}
+          {isConversationOpen && <Chat />}
+          {/*{!isMobile && <Chat />}*/}
         </>
       ) : null}
     </div>

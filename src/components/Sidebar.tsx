@@ -28,7 +28,12 @@ import {
 import SocketConnector from './SocketIo/SocketConnector'
 import { useRouter } from 'next/router'
 
-import { setCreateGroupComponent, setSearchComponent } from '../store/ui'
+import {
+  getIsConversationOpen,
+  getIsMobile,
+  setCreateGroupComponent,
+  setSearchComponent,
+} from '../store/ui'
 
 import PrivateConversationListing from './PrivateConversationListing'
 import GroupConversationListing from './GroupConversationListing'
@@ -36,25 +41,35 @@ import GroupConversationListing from './GroupConversationListing'
 function Sidebar() {
   const router = useRouter()
   const dispatch = useDispatch()
+  const isMobile = useSelector(getIsMobile)
 
   const [
     logout,
     // { loading: logoutLoading }
   ] = useLogoutMutation()
   const loggedInUser = useSelector(getLoggedInUser)
+  const isConversationOpen = useSelector(getIsConversationOpen)
   const getConversationsFromStore = useSelector(getSortedConversations)
   // const activeConversation = useSelector(getActiveConversation)
 
   return (
     <div
-      className="flex flex-col bg-neutral text-white box-content scroll-auto"
-      style={{ flex: '0.25', height: '100vh' }}
+      className={
+        isMobile && isConversationOpen
+          ? 'absolute z-0'
+          : 'flex flex-col bg-neutral text-white box-content scroll-auto relative'
+      }
+      style={
+        isMobile
+          ? { flex: '1', height: '100vh', zIndex: '50' }
+          : { flex: '0.25', height: '100vh' }
+      }
     >
       <Flex
         className="items-center justify-between border-b"
         style={{ flex: '0.05' }}
       >
-        <Heading className="w-full px-4">Noon</Heading>
+        <Heading className="w-full px-4 py-4 md:py-0">Noon</Heading>
 
         <Menu>
           <MenuButton
@@ -103,11 +118,6 @@ function Sidebar() {
                     key={i}
                     conversation={conversation}
                     i={i}
-                    // style={
-                    //   activeConversation.uuid === conversation.uuid ?? {
-                    //     backgroundColor: 'red',
-                    //   }
-                    // }
                   />
                 ) : (
                   <GroupConversationListing
@@ -121,7 +131,7 @@ function Sidebar() {
       </Flex>
 
       <Flex
-        className="flex justify-between items-center border-t box-content"
+        className="flex justify-between items-center border-t box-content py-4 md:py-0 px-4 md:px-0"
         style={{ flex: '0.075' }}
       >
         <Flex className="items-center px-2 ">

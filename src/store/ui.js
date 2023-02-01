@@ -13,6 +13,7 @@ const slice = createSlice({
     createGroupComponentOpen: false,
     chatContainerHeight: '87.5vh',
     isMobile: false,
+    isConversationOpen: false,
     search: {
       searchActive: false,
       containerDisplay: 'relative',
@@ -24,6 +25,9 @@ const slice = createSlice({
   reducers: {
     setIsMobile: (ui, action) => {
       ui.isMobile = action.payload
+    },
+    setConversationOpen: (ui, action) => {
+      ui.isConversationOpen = action.payload
     },
     setChatComponentState: (ui, action) => {
       ui.chatComponent = action.payload
@@ -68,10 +72,16 @@ export const getIsMobile = createSelector(
   (ui) => ui.isMobile
 )
 
+export const getIsConversationOpen = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.isConversationOpen
+)
+
 export const {
   showFriendshipRequestToast,
   setChatComponentState,
   setIsMobile,
+  setConversationOpen,
   setCreateGroupComponent,
   setSearchComponent,
   setChatContainerHeight,

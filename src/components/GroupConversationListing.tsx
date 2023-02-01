@@ -27,7 +27,11 @@ import { getLoggedInUser } from '../store/users'
 import { getSocket } from '../store/sockets'
 
 import { useLeaveGroupMutation } from '../generated/graphql'
-import { setChatContainerHeight, setSearchComponent } from '../store/ui'
+import {
+  setChatContainerHeight,
+  setConversationOpen,
+  setSearchComponent,
+} from '../store/ui'
 
 function GroupConversationListing({ conversation, i }) {
   const dispatch = useDispatch()
@@ -57,6 +61,7 @@ function GroupConversationListing({ conversation, i }) {
     )
 
     dispatch(setChatContainerHeight('87.5vh'))
+    dispatch(setConversationOpen(true))
 
     dispatch(
       setActiveGroupInStore({
