@@ -63,6 +63,11 @@ export const getChatContainerHeight = createSelector(
   (ui) => ui.chatContainerHeight
 )
 
+export const getIsMobile = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.isMobile
+)
+
 export const {
   showFriendshipRequestToast,
   setChatComponentState,
