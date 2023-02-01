@@ -25,7 +25,7 @@ export const FileUpload = ({ children }) => {
     if (acceptedFiles.length !== 0) {
       uploadImageMutation({
         variables: {
-          file: acceptedFiles[0],
+          file: acceptedFiles[0] as any,
           conversationUuid: activeConversation.uuid,
           profileUuid: loggedInUser.user.profile.uuid,
         },
