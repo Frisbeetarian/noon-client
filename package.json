@@ -28,6 +28,7 @@
     "framer-motion": "^6.5.1",
     "graphql": "^16.6.0",
     "graphql-tag": "^2.12.5",
+    "graphql-upload-minimal": "^1.5.4",
     "http-proxy-middleware": "^2.0.6",
     "isomorphic-unfetch": "^3.1.0",
     "moment": "^2.29.3",

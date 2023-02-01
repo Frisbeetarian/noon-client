@@ -145,6 +145,7 @@ function PrivateConversationListing({ conversation, i }) {
 
         <MenuList>
           <MenuItem
+            className="bg-gray-800"
             icon={<EditIcon />}
             onClick={async () => {
               const unfriendResponse = await unfriend({

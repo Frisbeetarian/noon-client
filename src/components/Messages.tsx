@@ -309,8 +309,7 @@ const Messages = () => {
                             <Portal>
                               <MenuList>
                                 <MenuItem
-                                  className="text-white"
-                                  color="white"
+                                  className="text-red-500 bg-gray-500"
                                   onClick={async () => {
                                     await deleteMessageHandler(item)
                                   }}

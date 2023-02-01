@@ -148,6 +148,7 @@ function Sidebar() {
 
             <MenuList>
               <MenuItem
+                className="bg-gray-800"
                 onClick={async () => {
                   await logout()
                   await router.push('/')

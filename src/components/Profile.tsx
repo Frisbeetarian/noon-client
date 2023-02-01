@@ -124,7 +124,7 @@ export default function Profile({ profile }) {
         <Flex className="justify-end mt-3">
           <Button
             className="mr-3 bg-green-500"
-            variant="ghost"
+            variant="green"
             onClick={async () => {
               const acceptFriendshipResponse = await acceptFriendRequest({
                 variables: {
@@ -193,6 +193,8 @@ export default function Profile({ profile }) {
             </Flex>
           ) : (
             <Button
+              variant="green"
+              className="bg-green-800"
               onClick={async () => {
                 dispatch(
                   setFriendshipRequestSentOnProfile({

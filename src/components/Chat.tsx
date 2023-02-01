@@ -493,7 +493,9 @@ function Chat() {
 
   return (
     <Flex
-      className={'flex-col bg-gray-700 text-white box-content relative z-50'}
+      className={
+        'flex-col bg-gray-700 text-white box-content relative z-50 md:z-0'
+      }
       style={{
         flex: isMobile ? '1' : '0.75',
         height: '100vh',

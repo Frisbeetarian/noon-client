@@ -116,6 +116,7 @@ function GroupConversationListing({ conversation, i }) {
 
         <MenuList>
           <MenuItem
+            className="bg-gray-800"
             icon={<EditIcon />}
             onClick={async () => {
               const leaveGroupResponse = await leaveGroup({
@@ -123,8 +124,6 @@ function GroupConversationListing({ conversation, i }) {
                   groupUuid: conversation.uuid,
                 },
               })
-
-              console.log('leave group response:', leaveGroupResponse)
 
               dispatch(
                 removeConversation({
