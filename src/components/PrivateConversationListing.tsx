@@ -20,6 +20,7 @@ import {
   setShouldPauseCheckHasMore,
 } from '../store/chat'
 import {
+  getIsMobile,
   setChatContainerHeight,
   setConversationOpen,
   setSearchComponent,
@@ -39,7 +40,7 @@ function PrivateConversationListing({ conversation, i }) {
   const loggedInUser = useSelector(getLoggedInUser)
   const socket = useSelector(getSocket)
   const activeConversation = useSelector(getActiveConversation)
-
+  const isMobile = useSelector(getIsMobile)
   const [
     unfriend,
     // { loading: unfriendLoading }
@@ -91,7 +92,7 @@ function PrivateConversationListing({ conversation, i }) {
     }
 
     dispatch(setConversationOpen(true))
-    dispatch(setChatContainerHeight('87.5vh'))
+    dispatch(setChatContainerHeight(isMobile ? '82.5vh' : '87.5vh'))
   }
 
   return (

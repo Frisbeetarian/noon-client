@@ -19,12 +19,15 @@ import {
   setSearchComponent,
   getSearchComponentState,
   setChatContainerHeight,
+  getIsMobile,
+  setConversationOpen,
 } from '../store/ui'
 
 function ChatControlsAndSearch() {
   const ref = React.useRef()
   const dispatch = useDispatch()
   // const profile = useSelector(getActiveConversee)
+  const isMobile = useSelector(getIsMobile)
 
   const searchQuery = useSelector(getSearchQuery)
   const searchComponentState = useSelector(getSearchComponentState)
@@ -52,7 +55,7 @@ function ChatControlsAndSearch() {
   return (
     <Flex
       ref={ref.current}
-      className="flex-col border-b px-3 w-full "
+      className="flex-col border-b px-3 w-full py-10 md:py-0"
       style={{
         position: searchComponentState.containerDisplay,
         height: searchComponentState.containerHeight,
@@ -61,6 +64,15 @@ function ChatControlsAndSearch() {
       }}
     >
       <Flex className="px-3 justify-center h-full w-full">
+        <div
+          className="flex items-center justify-center cursor-pointer"
+          onClick={() => {
+            dispatch(setConversationOpen(false))
+          }}
+        >
+          {isMobile && `<`}
+        </div>
+
         <Flex
           className="flex-col items-start justify-start"
           style={{ flex: '0.7' }}
