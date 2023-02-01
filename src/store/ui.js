@@ -1,12 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
 import { useSelector } from 'react-redux'
-
 import { getSocket } from './sockets'
 import { useState } from 'react'
-// import { createAsyncThunk } from '@reduxjs/toolkit/src/createAsyncThunk'
+
 let lastId = 0
-// const socket = (state) => state.sockets.socket
 
 const slice = createSlice({
   name: 'ui',
@@ -14,6 +12,7 @@ const slice = createSlice({
     chatComponent: 'closed',
     createGroupComponentOpen: false,
     chatContainerHeight: '87.5vh',
+    isMobile: false,
     search: {
       searchActive: false,
       containerDisplay: 'relative',
@@ -23,8 +22,8 @@ const slice = createSlice({
     },
   },
   reducers: {
-    setSocket: (sockets, action) => {
-      sockets.socket = action.payload.socket
+    setIsMobile: (ui, action) => {
+      ui.isMobile = action.payload
     },
     setChatComponentState: (ui, action) => {
       ui.chatComponent = action.payload
@@ -40,24 +39,9 @@ const slice = createSlice({
       ui.search.containerDisplay = action.payload.containerDisplay
       ui.search.containerHeight = action.payload.containerHeight
       ui.search.inputPadding = action.payload.inputPadding
-      // ui.search.searchInput = action.payload.searchInput
-
-      // let [searchActive, setSearchActive] = useState(false)
-      // let [containerHeight, setContainerHeight] = useState('5vh')
-      // let [containerDisplay, setContainerDisplay] = useState('relative')
-      // let [inputPadding, setInputPadding] = useState('5px')
-      // let [searchInput, setSearchInput] = useState(null)
     },
   },
 })
-
-// export const socket = createAsyncThunk(
-//   'sockets/socket',
-//   async (_, thunkAPI) => {
-//     const state = thunkAPI.getState()
-//     console.log('GLOBAL STATE:', state)
-//   }
-// )
 
 export const getChatComponentState = createSelector(
   (state) => state.entities.ui,

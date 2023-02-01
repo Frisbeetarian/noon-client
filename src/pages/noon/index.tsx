@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import Head from 'next/head'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Sidebar from '../../components/Sidebar'
 
@@ -15,9 +16,22 @@ import { setConversations, getConversations } from '../../store/chat'
 
 import Chat from '../../components/Chat'
 import { withApollo } from '../../utils/withApollo'
+import { useRouter } from 'next/router'
 
 function Noon() {
+  const router = useRouter()
   const dispatch = useDispatch()
+  const [mounted, setMounted] = useState(false)
+  const [isMobile, setIsMobile] = useState(true)
+
+  const meta = {
+    title: 'Noon – Open source, secure, free communication platform.',
+    description: `Noon – Open source, secure, free communication platform.`,
+    image: 'https://muhammad.me/static/images/muhammad-banner.png',
+    type: 'website',
+  }
+
+  useEffect(() => setMounted(true), [])
 
   const {
     data,
@@ -56,12 +70,58 @@ function Noon() {
     }
   }, [fetchedConversations, loggedInUser?.user?.profile?.uuid])
 
+  useEffect(() => {
+    if (window.innerWidth <= 1000) {
+      setIsMobile(true)
+    } else {
+      setIsMobile(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('resize', (e) => {
+      if (window.innerWidth <= 1000) {
+        setIsMobile(true)
+      } else {
+        setIsMobile(false)
+      }
+    })
+
+    return () => {
+      window.removeEventListener('resize', (e) => {
+        if (window.innerWidth <= 1000) {
+          setIsMobile(true)
+        } else {
+          setIsMobile(false)
+        }
+      })
+    }
+  })
+
+  if (!mounted) return null
+
   return (
     <div className="flex" style={{ overflow: 'hidden' }}>
-      {loggedInUser.user?.profile ? (
+      <Head>
+        <title>{meta.title}</title>
+        <meta name="robots" content="follow, index" />
+        <meta content={meta.description} name="description" />
+        <meta
+          property="og:url"
+          content={`https://muhammadsh.io${router.asPath}`}
+        />
+        <link rel="canonical" href={`https://muhammad.me${router.asPath}`} />
+        <meta property="og:type" content={meta.type} />
+        <meta property="og:site_name" content="Muhammad Sulayman Haydar" />
+        <meta property="og:description" content={meta.description} />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:image" content={meta.image} />
+      </Head>
+
+      {mounted && loggedInUser.user?.profile ? (
         <>
           <Sidebar />
-          <Chat />
+          {!isMobile && <Chat />}
         </>
       ) : null}
     </div>
