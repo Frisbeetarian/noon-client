@@ -7,6 +7,8 @@ import { useMeQuery } from '../generated/graphql'
 import { useRouter } from 'next/router'
 import { isServer } from '../utils/isServer'
 import { withApollo } from '../utils/withApollo'
+import { useDispatch } from 'react-redux'
+import { setIsMobile } from '../store/ui'
 
 const Index = () => {
   const router = useRouter()

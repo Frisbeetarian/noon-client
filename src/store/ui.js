@@ -71,6 +71,7 @@ export const getIsMobile = createSelector(
 export const {
   showFriendshipRequestToast,
   setChatComponentState,
+  setIsMobile,
   setCreateGroupComponent,
   setSearchComponent,
   setChatContainerHeight,

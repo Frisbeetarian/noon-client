@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
 // import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 
@@ -8,8 +8,39 @@ import { wrapper } from '../store/store'
 
 import '../components/SocketIo/Messages.css'
 import '../components/AudioRecorder/recorder-controls/styles.css'
+import { setIsMobile } from '../store/ui'
+import { useDispatch } from 'react-redux'
 
 function MyApp({ Component, pageProps }) {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (window.innerWidth <= 1000) {
+      dispatch(setIsMobile(true))
+    } else {
+      dispatch(setIsMobile(false))
+    }
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 1000) {
+        dispatch(setIsMobile(true))
+      } else {
+        dispatch(setIsMobile(false))
+      }
+    })
+
+    return () => {
+      window.removeEventListener('resize', () => {
+        if (window.innerWidth <= 1000) {
+          dispatch(setIsMobile(true))
+        } else {
+          dispatch(setIsMobile(false))
+        }
+      })
+    }
+  })
   return (
     <React.StrictMode>
       <ChakraProvider resetCSS theme={theme}>

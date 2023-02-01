@@ -17,19 +17,19 @@ import { setConversations, getConversations } from '../../store/chat'
 import Chat from '../../components/Chat'
 import { withApollo } from '../../utils/withApollo'
 import { useRouter } from 'next/router'
+import { getIsMobile } from '../../store/ui'
 
+const meta = {
+  title: 'Noon – Open source, secure, free communication platform.',
+  description: `Noon – Open source, secure, free communication platform.`,
+  image: 'https://muhammad.me/static/images/muhammad-banner.png',
+  type: 'website',
+}
 function Noon() {
   const router = useRouter()
   const dispatch = useDispatch()
   const [mounted, setMounted] = useState(false)
-  const [isMobile, setIsMobile] = useState(true)
-
-  const meta = {
-    title: 'Noon – Open source, secure, free communication platform.',
-    description: `Noon – Open source, secure, free communication platform.`,
-    image: 'https://muhammad.me/static/images/muhammad-banner.png',
-    type: 'website',
-  }
+  const isMobile = useSelector(getIsMobile)
 
   useEffect(() => setMounted(true), [])
 
@@ -69,34 +69,6 @@ function Noon() {
       )
     }
   }, [fetchedConversations, loggedInUser?.user?.profile?.uuid])
-
-  useEffect(() => {
-    if (window.innerWidth <= 1000) {
-      setIsMobile(true)
-    } else {
-      setIsMobile(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    window.addEventListener('resize', (e) => {
-      if (window.innerWidth <= 1000) {
-        setIsMobile(true)
-      } else {
-        setIsMobile(false)
-      }
-    })
-
-    return () => {
-      window.removeEventListener('resize', (e) => {
-        if (window.innerWidth <= 1000) {
-          setIsMobile(true)
-        } else {
-          setIsMobile(false)
-        }
-      })
-    }
-  })
 
   if (!mounted) return null
 
