@@ -43,7 +43,6 @@ import {
   getCreateGroupComponent,
   getChatContainerHeight,
   getIsMobile,
-  getIsConversationOpen,
 } from '../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
@@ -58,7 +57,6 @@ function Chat() {
   const loggedInUser = useSelector(getLoggedInUser)
   const isCreateGroupOpen = useSelector(getCreateGroupComponent)
   const isMobile = useSelector(getIsMobile)
-  const isConversationOpen = useSelector(getIsConversationOpen)
 
   const [inputMessage, setInputMessage] = useState('')
   const socket = useSelector(getSocket)
@@ -336,8 +334,6 @@ function Chat() {
         )
 
         dispatch(removeConversation({ conversationUuid }))
-        console.log('active conversation:', activeConversation)
-        console.log('conversation uuid:', conversationUuid)
 
         if (
           activeConversation &&
@@ -351,8 +347,6 @@ function Chat() {
       })
 
       socket.on('invited-to-group', ({ conversation }) => {
-        console.log('invited to group received:', conversation)
-
         dispatch(
           addConversation({
             conversation,

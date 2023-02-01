@@ -38,6 +38,7 @@ import ReactAudioPlayer from 'react-audio-player'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSocket } from '../store/sockets'
 import { Message } from '../../gql-types'
+import { getIsMobile } from '../store/ui'
 
 const Messages = () => {
   const dispatch = useDispatch()
@@ -46,6 +47,7 @@ const Messages = () => {
   const activeConversee = useSelector(getActiveConversee)
   const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
   const socket = useSelector(getSocket)
+  const isMobile = useSelector(getIsMobile)
 
   const [
     clearUnreadMessagesForConversation,
@@ -241,7 +243,7 @@ const Messages = () => {
       overflowY="auto"
       flexDirection="column-reverse"
       className="w-full top-0 py-3 px-5 relative overflow-x-hidden"
-      style={{ height: '80vh' }}
+      style={isMobile ? { height: '72.5vh' } : { height: '80vh' }}
     >
       <InfiniteScroll
         dataLength={activeConversation.messages}

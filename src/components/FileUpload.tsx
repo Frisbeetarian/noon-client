@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
-// import { useApolloClient } from '@apollo/client'
 import { getLoggedInUser } from '../store/users'
 import { getSocket } from '../store/sockets'
 
@@ -19,13 +18,11 @@ export const FileUpload = ({ children }) => {
   const profile = useSelector(getActiveConversee)
   const socket = useSelector(getSocket)
   const [uploadImageMutation] = useUploadImageMutation()
-  // const apolloClient = useApolloClient()
 
   const { acceptedFiles, getRootProps } = useDropzone()
 
   useEffect(() => {
     if (acceptedFiles.length !== 0) {
-      console.log('ACCEPTED FILES')
       uploadImageMutation({
         variables: {
           file: acceptedFiles[0],
@@ -34,7 +31,6 @@ export const FileUpload = ({ children }) => {
         },
       })
         .then(async (response) => {
-          console.log('response:', response)
           if (activeConversation.type === 'pm') {
             socket.emit('private-chat-message', {
               content:
