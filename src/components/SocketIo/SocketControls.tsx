@@ -124,11 +124,65 @@ function SocketControls() {
           ),
         })
       })
+
+      socket.on(
+        'friendship-request-accepted',
+        ({ from, fromUsername, conversation }) => {
+          dispatch(
+            removeFriendRequestEntry({
+              profileUuid: from,
+              friendRequests: loggedInUser.user?.friendshipRequests,
+            })
+          )
+
+          dispatch(
+            addFriendEntry({
+              friend: {
+                uuid: from,
+                username: fromUsername,
+              },
+            })
+          )
+
+          dispatch(
+            addConversation({
+              conversation: conversation,
+              loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+            })
+          )
+
+          toast({
+            id: from,
+            title: `${fromUsername} accepted your friend request.`,
+            position: 'bottom-right',
+            isClosable: true,
+            status: 'success',
+            duration: 5000,
+            render: () => (
+              <Flex direction="column" color="white" p={3} bg="green.500">
+                <Flex>
+                  <p>{fromUsername} accepted your friend request.</p>
+
+                  <CloseButton
+                    className="sticky top ml-4"
+                    size="sm"
+                    onClick={() => {
+                      toast.close(from)
+                    }}
+                    name="close button"
+                  />
+                </Flex>
+              </Flex>
+            ),
+          })
+        }
+      )
     }
 
     return () => {
       if (socket) {
         socket.off('send-friend-request')
+        socket.off('friendship-request-accepted')
       }
     }
   }, [socket])

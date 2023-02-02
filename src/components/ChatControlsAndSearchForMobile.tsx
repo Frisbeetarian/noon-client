@@ -82,7 +82,7 @@ function ChatControlsAndSearchForMobile() {
                 position: searchComponentState.containerDisplay,
                 right: 0,
               }}
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.keyCode === 13 || e.key === '13') {
                   if ((e.target as HTMLInputElement).value !== searchQuery) {
                     dispatch(setSearchQuery(null))
