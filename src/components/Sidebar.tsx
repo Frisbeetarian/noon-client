@@ -3,13 +3,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useLogoutMutation } from '../generated/graphql'
 
 import { getLoggedInUser } from '../store/users'
-import { SettingsIcon, HamburgerIcon, EditIcon } from '@chakra-ui/icons'
+import {
+  SettingsIcon,
+  HamburgerIcon,
+  EditIcon,
+  SearchIcon,
+} from '@chakra-ui/icons'
 
 import {
   Avatar,
   Flex,
   Heading,
   IconButton,
+  InputRightElement,
   Menu,
   MenuButton,
   MenuItem,
@@ -31,17 +37,21 @@ import { useRouter } from 'next/router'
 import {
   getIsConversationOpen,
   getIsMobile,
+  getSearchComponentState,
+  setChatContainerHeight,
   setCreateGroupComponent,
   setSearchComponent,
 } from '../store/ui'
 
 import PrivateConversationListing from './PrivateConversationListing'
 import GroupConversationListing from './GroupConversationListing'
+import ChatControlsAndSearchForMobile from './ChatControlsAndSearchForMobile'
 
 function Sidebar() {
   const router = useRouter()
   const dispatch = useDispatch()
   const isMobile = useSelector(getIsMobile)
+  const searchComponentState = useSelector(getSearchComponentState)
 
   const [
     logout,
@@ -66,44 +76,70 @@ function Sidebar() {
       }
     >
       <Flex
-        className="items-center justify-between border-b"
+        className="items-center flex-col md:flex-row justify-between border-b"
         style={{ flex: '0.05' }}
       >
-        <Heading className="w-full px-4 py-4 md:py-0">Noon</Heading>
+        <Flex className="w-full items-center">
+          <Heading className="w-full px-4 py-4 md:py-0">Noon</Heading>
 
-        <Menu>
-          <MenuButton
-            as={IconButton}
-            aria-label="Options"
-            icon={<HamburgerIcon />}
-            variant="outline"
-            className="mr-3"
+          <IconButton
+            bg="transparent"
+            className="mr-4 cursor-pointer"
+            children={<SearchIcon color="green.500" />}
+            aria-label="search icon"
+            onClick={() => {
+              dispatch(setChatContainerHeight('52.5vh'))
+              dispatch(
+                setSearchComponent({
+                  searchActive: true,
+                  containerDisplay: 'relative',
+                  containerHeight: '40vh',
+                  inputPadding: '10px',
+                })
+              )
+            }}
           />
 
-          <MenuList>
-            <MenuItem
-              icon={<EditIcon />}
-              onClick={async () => {
-                dispatch(setActiveConversationSet(false))
-                dispatch(setActiveConversee(null))
-                dispatch(setActiveConversation(null))
-                dispatch(setShouldPauseCheckHasMore(false))
-                dispatch(setCreateGroupComponent(true))
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              aria-label="Options"
+              icon={<HamburgerIcon />}
+              variant="outline"
+              className="mr-3"
+            />
 
-                dispatch(
-                  setSearchComponent({
-                    searchActive: false,
-                    containerDisplay: 'relative',
-                    containerHeight: '5vh',
-                    inputPadding: '5px',
-                  })
-                )
-              }}
-            >
-              Create group
-            </MenuItem>
-          </MenuList>
-        </Menu>
+            <MenuList>
+              <MenuItem
+                icon={<EditIcon />}
+                onClick={async () => {
+                  dispatch(setActiveConversationSet(false))
+                  dispatch(setActiveConversee(null))
+                  dispatch(setActiveConversation(null))
+                  dispatch(setShouldPauseCheckHasMore(false))
+                  dispatch(setCreateGroupComponent(true))
+
+                  dispatch(
+                    setSearchComponent({
+                      searchActive: false,
+                      containerDisplay: 'relative',
+                      containerHeight: '5vh',
+                      inputPadding: '5px',
+                    })
+                  )
+                }}
+              >
+                Create group
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
+
+        {isMobile && searchComponentState.searchActive ? (
+          <Flex className="w-full ">
+            <ChatControlsAndSearchForMobile />
+          </Flex>
+        ) : null}
       </Flex>
 
       <Flex
