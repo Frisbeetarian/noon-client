@@ -5,3 +5,8 @@
 html {
     overflow: hidden !important;
 }
+
+.chat-container {
+    height: calc(var(--vh, 1vh) * 100);
+    /*margin-top: 50px;*/
+}

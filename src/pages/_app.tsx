@@ -15,6 +15,9 @@ function MyApp({ Component, pageProps }) {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    const vh = window.innerHeight * 0.01
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+
     if (window.innerWidth <= 1000) {
       dispatch(setIsMobile(true))
     } else {
@@ -24,6 +27,9 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     window.addEventListener('resize', () => {
+      const vh = window.innerHeight * 0.01
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
+
       if (window.innerWidth <= 1000) {
         dispatch(setIsMobile(true))
       } else {

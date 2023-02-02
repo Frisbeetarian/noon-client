@@ -26,6 +26,7 @@ import RecorderControls from './AudioRecorder/recorder-controls'
 // import useRecorder from '../../components/AudioRecorder/hooks/use-recorder_old'
 import { UseRecorder } from './AudioRecorder/types/recorder'
 import useRecorder from './AudioRecorder/hooks/use-recorder'
+import { getIsMobile } from '../store/ui'
 // import { ImCancelCircle } from 'react-icons/im'
 // import { uploadFile } from '../store/files'
 
@@ -33,6 +34,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const hiddenFileInput = React.useRef(null)
   const dispatch = useDispatch()
   const socket = useSelector(getSocket)
+  const isMobile = useSelector(getIsMobile)
 
   const activeConversation = useSelector(getActiveConversation)
   const loggedInUser = useSelector(getLoggedInUser)
@@ -149,13 +151,15 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   }
 
   return (
-    <Flex className="bg-white  items-center box-content h-full justify-between">
-      <Box className="w-4/6 relative z-10">
+    <Flex className="bg-white items-center box-content h-full  justify-between">
+      <Box className="w-1/2 md:w-3/6 relative z-10">
         <Input
-          className="py-2 box-content text-black"
+          size={isMobile ? 'xd' : 'md'}
+          className="py-2 box-content text-black w-3/4"
           placeholder="Type message..."
           border="none"
           borderRadius="none"
+          pl={isMobile ? '2' : '4'}
           outline={0}
           onKeyPress={(e) => {
             if (e.key === 'Enter') {
@@ -167,69 +171,81 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
         />
       </Box>
 
-      <Flex className="w-2/6  justify-end">
-        <Button bg="green.500" onClick={handleClick}>
-          <Icon as={ImUpload2} />
-        </Button>
+      <Flex className="w-1/2 md:w-2/6 justify-end ">
+        <Box className="xs:w-1/4 flex items-center justify-end mr-1 md:mr-2">
+          <Button
+            size={isMobile ? 'sm' : 'md'}
+            bg="green.500"
+            onClick={handleClick}
+          >
+            <Icon as={ImUpload2} />
+          </Button>
 
-        <input
-          type="file"
-          ref={hiddenFileInput}
-          onChange={handleChange}
-          style={{ display: 'none' }}
-          accept=".jpeg, .jpg, .png, .doc, .docx, .pdf"
-        />
+          <input
+            type="file"
+            ref={hiddenFileInput}
+            onChange={handleChange}
+            style={{ display: 'none' }}
+            accept=".jpeg, .jpg, .png, .doc, .docx, .pdf"
+          />
+        </Box>
 
-        <RecorderControls recorderState={recorderState} handlers={handlers} />
+        <Box className="xs:w-1/4 flex items-center justify-end mr-1 md:mr-2">
+          <RecorderControls recorderState={recorderState} handlers={handlers} />
+        </Box>
 
-        <Button
-          className="mr-2"
-          bg="green.500"
-          title="Start call"
-          _hover={{
-            bg: 'black',
-            color: 'black',
-            border: '1px solid black',
-          }}
-          onClick={async () => {
-            dispatch(setVideoFrameForConversation(true))
+        <Box className="flex items-center justify-center xs:w-1/4 mr-1 md:mr-2">
+          <Button
+            size={isMobile ? 'sm' : 'md'}
+            bg="green.500"
+            title="Start call"
+            _hover={{
+              bg: 'black',
+              color: 'black',
+              border: '1px solid black',
+            }}
+            onClick={async () => {
+              dispatch(setVideoFrameForConversation(true))
 
-            activeConversation.profiles.map(async (profile) => {
-              socket.emit('set-pending-call-for-conversation', {
-                from: loggedInUser.user?.profile?.uuid,
-                fromUsername: loggedInUser.user?.profile?.username,
-                to: profile.uuid,
-                toUsername: profile.username,
-                conversationUuid: activeConversation.uuid,
-              })
-
-              await setPendingCallForConversation({
-                variables: {
+              activeConversation.profiles.map(async (profile) => {
+                socket.emit('set-pending-call-for-conversation', {
+                  from: loggedInUser.user?.profile?.uuid,
+                  fromUsername: loggedInUser.user?.profile?.username,
+                  to: profile.uuid,
+                  toUsername: profile.username,
                   conversationUuid: activeConversation.uuid,
-                  profileUuid: profile.uuid,
-                },
-              })
-            })
-          }}
-        >
-          <PhoneIcon className="" color="white" />
-        </Button>
+                })
 
-        <Button
-          bg="black"
-          color="white"
-          title="Send message"
-          className="mr-3"
-          _hover={{
-            bg: 'white',
-            color: 'black',
-            border: '1px solid black',
-          }}
-          disabled={inputMessage.trim().length <= 0}
-          onClick={handleSendMessage}
-        >
-          Send
-        </Button>
+                await setPendingCallForConversation({
+                  variables: {
+                    conversationUuid: activeConversation.uuid,
+                    profileUuid: profile.uuid,
+                  },
+                })
+              })
+            }}
+          >
+            <PhoneIcon className="" color="white" />
+          </Button>
+        </Box>
+
+        <Box className="flex items-center justify-end xs:w-1/4 mr-1 md:mr-2 md:w-1/6  ">
+          <Button
+            size={isMobile ? 'sm' : 'md'}
+            bg="black"
+            color="white"
+            title="Send message"
+            _hover={{
+              bg: 'white',
+              color: 'black',
+              border: '1px solid black',
+            }}
+            disabled={inputMessage.trim().length <= 0}
+            onClick={handleSendMessage}
+          >
+            Send
+          </Button>
+        </Box>
       </Flex>
     </Flex>
   )
