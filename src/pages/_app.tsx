@@ -47,6 +47,7 @@ function MyApp({ Component, pageProps }) {
       })
     }
   })
+
   return (
     <React.StrictMode>
       <ChakraProvider resetCSS theme={theme}>

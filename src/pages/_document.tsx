@@ -39,7 +39,7 @@ export default class Document extends NextDocument {
             name="msapplication-config"
           />
           <meta
-            content="eZSdmzAXlLkKhNJzfgwDqWORghxnJ8qR9_CHdAh5-xw"
+            content="vnMaHDjyCuf7dKrZrYXWZNwaVrwQthzJLqhaTw5pLjU"
             name="google-site-verification"
           />
           <meta

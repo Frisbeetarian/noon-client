@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLogoutMutation } from '../generated/graphql'
 
@@ -52,6 +52,7 @@ function Sidebar() {
   const dispatch = useDispatch()
   const isMobile = useSelector(getIsMobile)
   const searchComponentState = useSelector(getSearchComponentState)
+  const [innerHeight, setInnerHeight] = useState(0)
 
   const [
     logout,
@@ -62,6 +63,20 @@ function Sidebar() {
   const getConversationsFromStore = useSelector(getSortedConversations)
   // const activeConversation = useSelector(getActiveConversation)
 
+  useEffect(() => {
+    setInnerHeight(window.innerHeight)
+  }, [])
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      setInnerHeight(window.innerHeight)
+    })
+
+    return () => {
+      window.removeEventListener('resize', () => {})
+    }
+  })
+
   return (
     <div
       className={
@@ -71,8 +86,8 @@ function Sidebar() {
       }
       style={
         isMobile
-          ? { flex: '1', height: '100vh', zIndex: '50' }
-          : { flex: '0.25', height: '100vh' }
+          ? { flex: '1', height: innerHeight, zIndex: '50' }
+          : { flex: '0.25', height: innerHeight }
       }
     >
       <Flex
@@ -170,7 +185,7 @@ function Sidebar() {
         className="flex justify-between items-center border-t box-content py-4 md:py-0 px-4 md:px-0"
         style={{ flex: '0.075' }}
       >
-        <Flex className="items-center px-2 ">
+        <Flex className="items-center px-2">
           <Avatar size="md" />
           <p className="ml-2 text-md">{loggedInUser.user?.profile?.username}</p>
           <SocketConnector />
@@ -184,6 +199,7 @@ function Sidebar() {
 
             <MenuList>
               <MenuItem
+                bg="bg-gray-800"
                 className="bg-gray-800"
                 onClick={async () => {
                   await logout()

@@ -18,12 +18,13 @@ import Chat from '../../components/Chat'
 import { withApollo } from '../../utils/withApollo'
 import { useRouter } from 'next/router'
 import { getIsConversationOpen, getIsMobile } from '../../store/ui'
+import SocketControls from '../../components/SocketIo/SocketControls'
 // import { getIsMobile } from '../../store/ui'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
   description: `Noon – Open source, secure, free communication platform.`,
-  image: 'https://muhammad.me/static/images/muhammad-banner.png',
+  image: 'https://noon.tube/static/images/muhammad-banner.png',
   type: 'website',
 }
 function Noon() {
@@ -80,13 +81,10 @@ function Noon() {
         <title>{meta.title}</title>
         <meta name="robots" content="follow, index" />
         <meta content={meta.description} name="description" />
-        <meta
-          property="og:url"
-          content={`https://muhammadsh.io${router.asPath}`}
-        />
-        <link rel="canonical" href={`https://muhammad.me${router.asPath}`} />
+        <meta property="og:url" content={`https://noon.tube${router.asPath}`} />
+        <link rel="canonical" href={`https://noon.tube${router.asPath}`} />
         <meta property="og:type" content={meta.type} />
-        <meta property="og:site_name" content="Muhammad Sulayman Haydar" />
+        <meta property="og:site_name" content="Noon" />
         <meta property="og:description" content={meta.description} />
         <meta property="og:title" content={meta.title} />
         <meta property="og:image" content={meta.image} />
@@ -97,7 +95,7 @@ function Noon() {
           <Sidebar />
           {!isMobile && <Chat />}
           {isMobile && isConversationOpen && <Chat />}
-          {/*{!isMobile && <Chat />}*/}
+          {!isMobile && <SocketControls />}
         </>
       ) : null}
     </div>

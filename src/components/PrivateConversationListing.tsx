@@ -146,6 +146,7 @@ function PrivateConversationListing({ conversation, i }) {
         <MenuList>
           <MenuItem
             className="bg-gray-800"
+            bg="bg-gray-800"
             icon={<EditIcon />}
             onClick={async () => {
               const unfriendResponse = await unfriend({
@@ -189,7 +190,13 @@ function PrivateConversationListing({ conversation, i }) {
             Unfriend
           </MenuItem>
 
-          <MenuItem icon={<EditIcon />}>Block</MenuItem>
+          <MenuItem
+            bg="bg-gray-800"
+            className="bg-gray-800"
+            icon={<EditIcon />}
+          >
+            Block
+          </MenuItem>
         </MenuList>
       </Menu>
     </Flex>
