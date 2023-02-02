@@ -4,8 +4,6 @@ import { useSearchForProfileByUsernameQuery } from '../generated/graphql'
 
 import { Flex } from '@chakra-ui/react'
 import React, { useEffect } from 'react'
-// import Profile from './Profile'
-
 import { getLoggedInUser } from '../store/users'
 import { addProfiles, getProfiles } from '../store/profiles'
 import Profile from './Profile'

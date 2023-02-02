@@ -89,10 +89,6 @@ function Chat() {
 
   useEffect(() => {
     if (socket) {
-      socket.on('message-deleted-confirmed', () => {
-        alert('delete message confirmed received')
-      })
-
       socket.on(
         'private-chat-message',
         ({
@@ -283,11 +279,6 @@ function Chat() {
                           username: fromUsername,
                         },
                       })
-                    )
-
-                    console.log(
-                      'accept friend ship response:',
-                      acceptFriendshipResponse
                     )
 
                     dispatch(

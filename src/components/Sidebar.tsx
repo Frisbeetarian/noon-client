@@ -15,7 +15,6 @@ import {
   Flex,
   Heading,
   IconButton,
-  InputRightElement,
   Menu,
   MenuButton,
   MenuItem,
@@ -46,6 +45,7 @@ import {
 import PrivateConversationListing from './PrivateConversationListing'
 import GroupConversationListing from './GroupConversationListing'
 import ChatControlsAndSearchForMobile from './ChatControlsAndSearchForMobile'
+import SocketControls from './SocketIo/SocketControls'
 
 function Sidebar() {
   const router = useRouter()
@@ -198,6 +198,8 @@ function Sidebar() {
         </Flex>
       </Flex>
       {/*</div>*/}
+
+      {isMobile && <SocketControls />}
     </div>
   )
 }
