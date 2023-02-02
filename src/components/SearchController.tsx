@@ -42,8 +42,6 @@ export default function SearchController() {
     }
   }, [data?.searchForProfileByUsername, loggedInUser])
 
-  console.log('search results:', data?.searchForProfileByUsername)
-
   return (
     <Flex className="w-full">
       {profilesFromStore

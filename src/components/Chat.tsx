@@ -494,7 +494,7 @@ function Chat() {
   return (
     <Flex
       className={
-        'flex-col bg-gray-700 text-white box-content relative z-50 md:z-0 chat-container'
+        'flex-col bg-gray-700 text-white box-content relative z-50 md:z-0 chat-container justify-center'
       }
       style={{
         flex: isMobile ? '1' : '0.75',
@@ -515,7 +515,7 @@ function Chat() {
 
       {activeConversation && activeConversation.type === 'group' ? (
         <Flex
-          className="flex-col p-0 box-content"
+          className="flex-col p-0 box-content  "
           style={{ height: chatContainerHeight, transition: 'all .5s' }}
         >
           <Header></Header>
@@ -536,7 +536,7 @@ function Chat() {
 
       {profile && activeConversation && activeConversation.type === 'pm' ? (
         <Flex
-          className="flex-col p-0 box-content"
+          className="flex-col p-0 box-content "
           style={{ height: chatContainerHeight, transition: 'all .5s' }}
         >
           <Header></Header>

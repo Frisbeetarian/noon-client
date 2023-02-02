@@ -55,7 +55,7 @@ function ChatControlsAndSearch() {
   return (
     <Flex
       ref={ref.current}
-      className="flex-col border-b px-3 w-full py-10 md:py-0"
+      className="flex-col border-b px-3 w-full py-5 md:py-0 "
       style={{
         position: searchComponentState.containerDisplay,
         height: searchComponentState.containerHeight,
@@ -63,78 +63,83 @@ function ChatControlsAndSearch() {
         marginTop: '+0.5px',
       }}
     >
-      <Flex className="px-3 justify-center h-full w-full">
+      <Flex className=" px-3 justify-start items-center h-full w-full ">
         <div
-          className="flex items-center justify-center cursor-pointer"
+          className="flex items-center h-3 w-3 cursor-pointer w-1/4 "
           onClick={() => {
             dispatch(setConversationOpen(false))
           }}
         >
           {isMobile && `<`}
         </div>
+        {!isMobile && (
+          <>
+            <Flex
+              className="flex-col items-start justify-start"
+              style={{ flex: '0.7' }}
+            >
+              {searchComponentState.searchActive ? (
+                <p className="text-xl mt-4 mb-10">Search Results</p>
+              ) : null}
 
-        <Flex
-          className="flex-col items-start justify-start"
-          style={{ flex: '0.7' }}
-        >
-          {searchComponentState.searchActive ? (
-            <p className="text-xl mt-4 mb-10">Search Results</p>
-          ) : null}
-
-          {searchInput && searchComponentState.searchActive ? (
-            <Flex className="w-full" style={{ flex: '1' }}>
-              <SearchController />
+              {searchInput && searchComponentState.searchActive ? (
+                <Flex className="w-full" style={{ flex: '1' }}>
+                  <SearchController />
+                </Flex>
+              ) : null}
             </Flex>
-          ) : null}
-        </Flex>
 
-        <Flex className="items-center relative " style={{ flex: '0.3' }}>
-          <InputGroup>
-            <InputRightElement
-              children={<SearchIcon color="green.500" />}
-              pointerEvents="none"
-            />
+            <Flex className="items-center relative " style={{ flex: '0.3' }}>
+              <InputGroup>
+                <InputRightElement
+                  children={<SearchIcon color="green.500" />}
+                  pointerEvents="none"
+                />
 
-            <Input
-              type="text"
-              className="m-0 focus:bg-base-100 bg-transparent outline-0 bg-gray-800 pl-2"
-              placeholder="Search for profiles..."
-              size="md"
-              // rightIcon={<SearchIcon color="gray.300" />}
-              onClick={() => {
-                dispatch(setChatContainerHeight('52.5vh'))
-                dispatch(
-                  setSearchComponent({
-                    searchActive: true,
-                    containerDisplay: 'relative',
-                    containerHeight: '40vh',
-                    inputPadding: '10px',
-                  })
-                )
-              }}
-              style={{
-                padding: searchComponentState.inputPadding,
-                transition: 'all .5s',
-                position: searchComponentState.containerDisplay,
-                right: 0,
-              }}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  if ((e.target as HTMLInputElement).value !== searchQuery) {
-                    dispatch(setSearchQuery(null))
-                    setSearchInput(null)
+                <Input
+                  type="text"
+                  className="m-0 focus:bg-base-100 bg-transparent outline-0 bg-gray-800 pl-2"
+                  placeholder="Search for profiles..."
+                  size="md"
+                  // rightIcon={<SearchIcon color="gray.300" />}
+                  onClick={() => {
+                    dispatch(setChatContainerHeight('52.5vh'))
                     dispatch(
-                      setSearchQuery((e.target as HTMLInputElement).value)
+                      setSearchComponent({
+                        searchActive: true,
+                        containerDisplay: 'relative',
+                        containerHeight: '40vh',
+                        inputPadding: '10px',
+                      })
                     )
-                    setSearchInput(
-                      (e.target as any).value as React.SetStateAction<null>
-                    )
-                  }
-                }
-              }}
-            />
-          </InputGroup>
-        </Flex>
+                  }}
+                  style={{
+                    padding: searchComponentState.inputPadding,
+                    transition: 'all .5s',
+                    position: searchComponentState.containerDisplay,
+                    right: 0,
+                  }}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      if (
+                        (e.target as HTMLInputElement).value !== searchQuery
+                      ) {
+                        dispatch(setSearchQuery(null))
+                        setSearchInput(null)
+                        dispatch(
+                          setSearchQuery((e.target as HTMLInputElement).value)
+                        )
+                        setSearchInput(
+                          (e.target as any).value as React.SetStateAction<null>
+                        )
+                      }
+                    }
+                  }}
+                />
+              </InputGroup>
+            </Flex>
+          </>
+        )}
 
         {searchComponentState.searchActive ? (
           <ArrowUpIcon
