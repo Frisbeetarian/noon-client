@@ -39,30 +39,34 @@ function ChatControlsAndSearch() {
   // })
 
   return (
-    <Flex className="flex-col border-b px-3 w-full h-full md:py-0">
-      <Flex className="px-3 md:h-full w-full items-center justify-start md:justify-center relative ">
-        {searchActive && <SearchSidebar />}
+    <Flex
+      className={
+        isMobile
+          ? 'justify-between items-center px-3 w-full md:py-0  h-1/2'
+          : 'justify-end items-center px-3 w-full md:py-0  h-1/2'
+      }
+    >
+      {searchActive && <SearchSidebar />}
 
-        <SearchIcon
-          className=" p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer"
+      {isMobile && (
+        <ArrowLeftIcon
+          className=" p-1    m-4 text-xl cursor-pointer "
           onClick={() => {
-            dispatch(
-              setSearchComponent({
-                searchActive: true,
-              })
-            )
+            dispatch(setConversationOpen(false))
           }}
         />
+      )}
 
-        {isMobile && (
-          <ArrowLeftIcon
-            className=" p-1 absolute top-0 left-0 m-4 text-xl cursor-pointer "
-            onClick={() => {
-              dispatch(setConversationOpen(false))
-            }}
-          />
-        )}
-      </Flex>
+      <SearchIcon
+        className=" p-1   m-4 text-2xl cursor-pointer "
+        onClick={() => {
+          dispatch(
+            setSearchComponent({
+              searchActive: true,
+            })
+          )
+        }}
+      />
     </Flex>
   )
 }

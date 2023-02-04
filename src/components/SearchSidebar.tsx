@@ -13,9 +13,11 @@ import {
   setChatContainerHeight,
   setSearchComponent,
 } from '../store/ui'
+
 import SearchController from './SearchController'
 import { SearchIcon } from '@chakra-ui/icons'
 import { getSearchQuery, setSearchQuery } from '../store/search'
+
 // import { getIsSearchActive } from '../store/ui'
 // import { useSelector } from 'react-redux'
 
