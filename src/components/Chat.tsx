@@ -24,8 +24,9 @@ import {
 
 import {
   getCreateGroupComponent,
-  getChatContainerHeight,
+  // getChatContainerHeight,
   getIsMobile,
+  // getIsSearchActive,
 } from '../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
@@ -46,13 +47,16 @@ function Chat() {
 
   const activeConversation = useSelector(getActiveConversation)
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
-  const chatContainerHeight = useSelector(getChatContainerHeight)
+  // const chatContainerHeight = useSelector(getChatContainerHeight)
+  // const searchActive = useSelector(getIsSearchActive)
 
   const profile = useSelector(getActiveConversee)
+
   const [
     saveMessage,
     // { loading: saveMessageLoading }
   ] = useSaveMessageMutation()
+
   const [
     saveGroupMessage,
     // { loading: saveGroupLoading }
@@ -68,7 +72,9 @@ function Chat() {
     })
 
     return () => {
-      window.removeEventListener('resize', () => {})
+      window.removeEventListener('resize', () => {
+        console.log('removed')
+      })
     }
   })
 
@@ -181,12 +187,20 @@ function Chat() {
         overflow: 'hidden',
       }}
     >
-      <ChatControlsAndSearch />
+      <div
+        className="flex items-center justify-center border-b box-content"
+        style={{ height: isMobile ? '10vh' : '5vh' }}
+      >
+        <ChatControlsAndSearch />
+      </div>
 
       {isCreateGroupOpen ? (
         <Flex
           className="flex-col p-0 box-content"
-          style={{ height: chatContainerHeight, transition: 'all .5s' }}
+          style={{
+            height: isMobile ? '77.5vh' : '90vh',
+            transition: 'all .5s',
+          }}
         >
           <CreateGroup />
         </Flex>
@@ -194,10 +208,13 @@ function Chat() {
 
       {activeConversation && activeConversation.type === 'group' ? (
         <Flex
-          className="flex-col p-0 box-content  "
-          style={{ height: chatContainerHeight, transition: 'all .5s' }}
+          className="flex-col p-0 box-content"
+          style={{
+            height: isMobile ? '77.5vh' : '90vh',
+            transition: 'all .5s',
+          }}
         >
-          <Header></Header>
+          {!isMobile && <Header></Header>}
 
           {videoFrameOpenState !== true ? (
             <FileUpload>
@@ -216,9 +233,12 @@ function Chat() {
       {profile && activeConversation && activeConversation.type === 'pm' ? (
         <Flex
           className="flex-col p-0 box-content"
-          style={{ height: chatContainerHeight, transition: 'all .5s' }}
+          style={{
+            height: isMobile ? '77.5vh' : '90vh',
+            transition: 'all .5s',
+          }}
         >
-          <Header></Header>
+          {!isMobile && <Header></Header>}
 
           {videoFrameOpenState !== true ? (
             <FileUpload>
@@ -238,8 +258,8 @@ function Chat() {
         <Flex
           w="100%"
           flexDir="column"
-          className="justify-center"
-          style={{ height: '7.5vh' }}
+          className="justify-center box-content"
+          style={{ height: isMobile ? '12.5vh' : '7.5vh' }}
         >
           {activeConversation.type === 'pm' ? (
             <Footer

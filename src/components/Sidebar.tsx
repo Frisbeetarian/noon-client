@@ -73,7 +73,9 @@ function Sidebar() {
     })
 
     return () => {
-      window.removeEventListener('resize', () => {})
+      window.removeEventListener('resize', () => {
+        console.log('removed')
+      })
     }
   })
 
@@ -81,7 +83,7 @@ function Sidebar() {
     <div
       className={
         isMobile && isConversationOpen
-          ? 'absolute z-0'
+          ? 'absolute z-0 opacity-0'
           : 'flex flex-col bg-neutral text-white box-content scroll-auto relative'
       }
       style={
@@ -97,23 +99,25 @@ function Sidebar() {
         <Flex className="w-full items-center">
           <Heading className="w-full px-4 py-4 md:py-0">Noon</Heading>
 
-          <IconButton
-            bg="transparent"
-            className="mr-4 cursor-pointer"
-            children={<SearchIcon color="green.500" />}
-            aria-label="search icon"
-            onClick={() => {
-              dispatch(setChatContainerHeight('52.5vh'))
-              dispatch(
-                setSearchComponent({
-                  searchActive: true,
-                  containerDisplay: 'relative',
-                  containerHeight: '40vh',
-                  inputPadding: '10px',
-                })
-              )
-            }}
-          />
+          {isMobile && (
+            <IconButton
+              bg="transparent"
+              className="mr-4 cursor-pointer"
+              children={<SearchIcon color="green.500" />}
+              aria-label="search icon"
+              onClick={() => {
+                dispatch(setChatContainerHeight('52.5vh'))
+                dispatch(
+                  setSearchComponent({
+                    searchActive: true,
+                    containerDisplay: 'relative',
+                    containerHeight: '40vh',
+                    inputPadding: '10px',
+                  })
+                )
+              }}
+            />
+          )}
 
           <Menu>
             <MenuButton

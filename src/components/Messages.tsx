@@ -9,7 +9,6 @@ import {
   MenuItem,
   MenuList,
   IconButton,
-  Portal,
 } from '@chakra-ui/react'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
@@ -241,14 +240,19 @@ const Messages = () => {
     <Flex
       id="scrollableDiv"
       overflowY="auto"
+      overflowX="hidden"
       flexDirection="column-reverse"
-      className="w-full top-0 py-3 px-5 relative overflow-x-hidden"
-      style={isMobile ? { height: '72.5vh' } : { height: '80vh' }}
+      className="w-full top-0 py-3 px-2 md:px-4 relative overflow-x-hidden"
+      style={isMobile ? { height: '77.5vh' } : { height: '77.5vh' }}
     >
       <InfiniteScroll
         dataLength={activeConversation.messages}
         next={fetchMoreMessage}
-        style={{ display: 'flex', flexDirection: 'column-reverse' }}
+        style={{
+          display: 'flex',
+          flexDirection: 'column-reverse',
+          overflowX: 'hidden',
+        }}
         inverse={true}
         hasMore={
           !shouldPauseCheckHasMore
@@ -277,7 +281,7 @@ const Messages = () => {
                         pr={!item.deleted ? '0' : '3'}
                         pl="3"
                         py="2"
-                        className="relative   bg-red-500"
+                        className="relative justify-between   "
                       >
                         <Text className="">
                           {!item.deleted ? (
@@ -290,34 +294,25 @@ const Messages = () => {
                         {!item.deleted ? (
                           <Menu>
                             <MenuButton
-                              className=""
-                              boxSize="1rem"
+                              className="-mt-3"
                               as={IconButton}
                               aria-label="Options"
                               icon={<ChevronDownIcon />}
                               variant="none"
-                              mr="0"
-                              ml="0"
-                              pr="0"
-                              pl="0"
-                              px={0}
-                              py={0}
-                              mx={0}
-                              my={0}
                             />
 
-                            <Portal>
-                              <MenuList>
-                                <MenuItem
-                                  className="text-red-500 bg-gray-500"
-                                  onClick={async () => {
-                                    await deleteMessageHandler(item)
-                                  }}
-                                >
-                                  Unsend message
-                                </MenuItem>
-                              </MenuList>
-                            </Portal>
+                            {/*<Portal>*/}
+                            <MenuList>
+                              <MenuItem
+                                className="text-red-500 bg-gray-500"
+                                onClick={async () => {
+                                  await deleteMessageHandler(item)
+                                }}
+                              >
+                                Unsend message
+                              </MenuItem>
+                            </MenuList>
+                            {/*</Portal>*/}
                           </Menu>
                         ) : null}
                       </Flex>
@@ -349,27 +344,24 @@ const Messages = () => {
                           <div className="absolute right-0 rounded border-black z-50">
                             <Menu>
                               <MenuButton
+                                className="-mt-3"
                                 as={IconButton}
                                 aria-label="Options"
                                 icon={<ChevronDownIcon />}
                                 variant="none"
-                                px={0}
-                                py={0}
-                                mx={0}
-                                my={0}
                               />
 
-                              <Portal>
-                                <MenuList maxW="100px">
-                                  <MenuItem
-                                    onClick={async () => {
-                                      await deleteMessageHandler(item)
-                                    }}
-                                  >
-                                    Unsend message
-                                  </MenuItem>
-                                </MenuList>
-                              </Portal>
+                              {/*<Portal>*/}
+                              <MenuList maxW="100px">
+                                <MenuItem
+                                  onClick={async () => {
+                                    await deleteMessageHandler(item)
+                                  }}
+                                >
+                                  Unsend message
+                                </MenuItem>
+                              </MenuList>
+                              {/*</Portal>*/}
                             </Menu>
                           </div>
                         ) : null}
@@ -394,27 +386,24 @@ const Messages = () => {
                         {!item.deleted ? (
                           <Menu>
                             <MenuButton
+                              className="-mt-3"
                               as={IconButton}
                               aria-label="Options"
                               icon={<ChevronDownIcon />}
                               variant="none"
-                              px={0}
-                              py={0}
-                              mx={0}
-                              my={0}
                             />
 
-                            <Portal>
-                              <MenuList>
-                                <MenuItem
-                                  onClick={async () => {
-                                    await deleteMessageHandler(item)
-                                  }}
-                                >
-                                  Unsend message
-                                </MenuItem>
-                              </MenuList>
-                            </Portal>
+                            {/*<Portal>*/}
+                            <MenuList>
+                              <MenuItem
+                                onClick={async () => {
+                                  await deleteMessageHandler(item)
+                                }}
+                              >
+                                Unsend message
+                              </MenuItem>
+                            </MenuList>
+                            {/*</Portal>*/}
                           </Menu>
                         ) : null}
                       </Flex>
@@ -511,27 +500,24 @@ const Messages = () => {
                         {!item.deleted ? (
                           <Menu>
                             <MenuButton
+                              className="-mt-3"
                               as={IconButton}
                               aria-label="Options"
                               icon={<ChevronDownIcon />}
                               variant="none"
-                              px={0}
-                              py={0}
-                              mx={0}
-                              my={0}
                             />
 
-                            <Portal>
-                              <MenuList>
-                                <MenuItem
-                                  onClick={async () => {
-                                    await deleteMessageHandler(item)
-                                  }}
-                                >
-                                  Unsend message
-                                </MenuItem>
-                              </MenuList>
-                            </Portal>
+                            {/*<Portal>*/}
+                            <MenuList>
+                              <MenuItem
+                                onClick={async () => {
+                                  await deleteMessageHandler(item)
+                                }}
+                              >
+                                Unsend message
+                              </MenuItem>
+                            </MenuList>
+                            {/*</Portal>*/}
                           </Menu>
                         ) : null}
                       </Flex>
@@ -557,27 +543,24 @@ const Messages = () => {
                           <div className="absolute rounded border-black">
                             <Menu>
                               <MenuButton
+                                className="-mt-3"
                                 as={IconButton}
                                 aria-label="Options"
                                 icon={<ChevronDownIcon />}
                                 variant="none"
-                                px={0}
-                                py={0}
-                                mx={0}
-                                my={0}
                               />
 
-                              <Portal>
-                                <MenuList>
-                                  <MenuItem
-                                    onClick={async () => {
-                                      deleteMessageHandler(item)
-                                    }}
-                                  >
-                                    Unsend message
-                                  </MenuItem>
-                                </MenuList>
-                              </Portal>
+                              {/*<Portal>*/}
+                              <MenuList>
+                                <MenuItem
+                                  onClick={async () => {
+                                    deleteMessageHandler(item)
+                                  }}
+                                >
+                                  Unsend message
+                                </MenuItem>
+                              </MenuList>
+                              {/*</Portal>*/}
                             </Menu>
                           </div>
                         ) : null}
@@ -605,26 +588,24 @@ const Messages = () => {
                         {!item.deleted ? (
                           <Menu>
                             <MenuButton
+                              className="-mt-3"
                               as={IconButton}
                               aria-label="Options"
                               icon={<ChevronDownIcon />}
                               variant="none"
-                              px={0}
-                              py={0}
-                              mx={0}
-                              my={0}
                             />
-                            <Portal>
-                              <MenuList>
-                                <MenuItem
-                                  onClick={async () => {
-                                    deleteMessageHandler(item)
-                                  }}
-                                >
-                                  Unsend message
-                                </MenuItem>
-                              </MenuList>
-                            </Portal>
+
+                            {/*<Portal>*/}
+                            <MenuList>
+                              <MenuItem
+                                onClick={async () => {
+                                  deleteMessageHandler(item)
+                                }}
+                              >
+                                Unsend message
+                              </MenuItem>
+                            </MenuList>
+                            {/*</Portal>*/}
                           </Menu>
                         ) : null}
                       </Flex>
@@ -663,7 +644,7 @@ const Messages = () => {
                         p={!item.deleted ? '0' : '3'}
                       >
                         {!item.deleted ? (
-                          <Flex className="bg-red-500">
+                          <Flex className="">
                             <Image src={item.src} alt={item.content} />
                           </Flex>
                         ) : (
