@@ -83,7 +83,7 @@ function Sidebar() {
     <div
       className={
         isMobile && isConversationOpen
-          ? 'absolute z-0'
+          ? 'absolute z-0 opacity-0'
           : 'flex flex-col bg-neutral text-white box-content scroll-auto relative'
       }
       style={

@@ -47,7 +47,7 @@ function Chat() {
 
   const activeConversation = useSelector(getActiveConversation)
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
-  const chatContainerHeight = useSelector(getChatContainerHeight)
+  // const chatContainerHeight = useSelector(getChatContainerHeight)
   // const searchActive = useSelector(getIsSearchActive)
 
   const profile = useSelector(getActiveConversee)
@@ -188,8 +188,8 @@ function Chat() {
       }}
     >
       <div
-        className="flex items-center justify-center border-b"
-        style={{ height: isMobile ? '10vh' : '5vh', marginTop: '2px' }}
+        className="flex items-center justify-center border-b box-content"
+        style={{ height: isMobile ? '10vh' : '5vh' }}
       >
         <ChatControlsAndSearch />
       </div>
@@ -197,7 +197,7 @@ function Chat() {
       {isCreateGroupOpen ? (
         <Flex
           className="flex-col p-0 box-content"
-          style={{ height: chatContainerHeight, transition: 'all .5s' }}
+          style={{ height: isMobile ? '80vh' : '90vh', transition: 'all .5s' }}
         >
           <CreateGroup />
         </Flex>
@@ -208,7 +208,7 @@ function Chat() {
           className="flex-col p-0 box-content"
           style={{ height: isMobile ? '80vh' : '90vh', transition: 'all .5s' }}
         >
-          <Header></Header>
+          {!isMobile && <Header></Header>}
 
           {videoFrameOpenState !== true ? (
             <FileUpload>
@@ -249,7 +249,7 @@ function Chat() {
         <Flex
           w="100%"
           flexDir="column"
-          className="justify-center"
+          className="justify-center box-content"
           style={{ height: isMobile ? '10vh' : '7.5vh' }}
         >
           {activeConversation.type === 'pm' ? (

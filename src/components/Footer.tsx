@@ -154,6 +154,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
     <Flex className="bg-white items-center box-content h-full  justify-between">
       <Box className="w-1/2 md:w-3/6 relative z-10">
         <Input
+          type="text"
           size={isMobile ? 'xd' : 'md'}
           className="py-2 box-content text-black w-3/4"
           placeholder="Type message..."

@@ -94,7 +94,7 @@ const Header = () => {
         </Avatar>
 
         <Flex
-          flexDirection={isMobile ? 'row' : 'column'}
+          flexDirection={isMobile ? 'column' : 'column'}
           mx="3"
           my="5"
           justify="center"
@@ -110,7 +110,7 @@ const Header = () => {
               {online === 'true' ? (
                 'Online'
               ) : (
-                <span className="opacity-0">f</span>
+                <span className="text-yellow-500">Offline</span>
               )}
             </Text>
           ) : null}
