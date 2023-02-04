@@ -113,12 +113,6 @@ const Messages = () => {
 
   useEffect(() => {
     if (data) {
-      console.log(
-        'ENTERED DATA:',
-        data?.getMessagesForConversation?.messages[0]
-      )
-
-      console.log('ENTERED DATA')
       setShouldCheckHasMorePause(true)
       hasMoreOnInit = undefined
 
@@ -126,12 +120,6 @@ const Messages = () => {
       setLocalMessages((prevState) => {
         return [...prevState, ...data.getMessagesForConversation.messages]
       })
-
-      // data.getMessagesForConversation.messages.map((message) => {
-      //
-      // })
-
-      // updateMyArray( arr => [...arr, `${arr.length}`]);
     }
 
     return () => {
@@ -142,8 +130,6 @@ const Messages = () => {
 
   // TODO check how to initialize data
   useEffect(() => {
-    console.log('LOCAL MESSAGES:', localMessages)
-
     if (localMessages.length !== 0) {
       dispatch(
         addMessagesToConversation({
@@ -211,8 +197,6 @@ const Messages = () => {
       },
     })
 
-    console.log('message in update message1:', message)
-
     dispatch(
       deleteMessageInStore({
         uuid: message.data?.deleteMessage.uuid,
@@ -242,7 +226,7 @@ const Messages = () => {
       overflowY="auto"
       overflowX="hidden"
       flexDirection="column-reverse"
-      className="w-full top-0 py-3 px-2 md:px-4 relative overflow-x-hidden"
+      className="w-full top-0  px-2 md:px-4 relative overflow-x-hidden"
       style={isMobile ? { height: '77.5vh' } : { height: '77.5vh' }}
     >
       <InfiniteScroll

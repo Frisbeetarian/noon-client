@@ -77,7 +77,7 @@ export default function CreateGroupSidebar() {
   }, [])
 
   return (
-    <div className="create-group-sidebar bg-gray-800 w-10/12 md:w-3/4">
+    <div className="create-group-sidebar bg-gray-800 w-10/12 md:w-3/4 xl:w-2/5">
       <h1 className="text-xl mb-10">Create Group</h1>
 
       <Flex className="flex-col md:flex-row items-center md:items-start ">
@@ -155,7 +155,7 @@ export default function CreateGroupSidebar() {
                     <FormControl id="name" isRequired>
                       <InputField
                         name="name"
-                        placeholder="name"
+                        placeholder="Name"
                         label="Group name"
                       />
                     </FormControl>
@@ -165,7 +165,7 @@ export default function CreateGroupSidebar() {
                 <FormControl id="description" className="pl-1" isRequired>
                   <InputField
                     name="description"
-                    placeholder="description"
+                    placeholder="Description"
                     label="Group description"
                   />
                 </FormControl>

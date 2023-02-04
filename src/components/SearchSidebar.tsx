@@ -40,7 +40,7 @@ export default function SearchSidebar() {
   const searchQuery = useSelector(getSearchQuery)
 
   return (
-    <div className="search-sidebar bg-gray-800">
+    <div className="search-sidebar bg-gray-800 md:w-3/4 xl:w-2/5">
       <>
         <Flex
           className="flex-col items-start justify-start"
