@@ -243,7 +243,7 @@ const Messages = () => {
       overflowX="hidden"
       flexDirection="column-reverse"
       className="w-full top-0 py-3 px-2 md:px-4 relative overflow-x-hidden"
-      style={isMobile ? { height: '80vh' } : { height: '80vh' }}
+      style={isMobile ? { height: '77.5vh' } : { height: '77.5vh' }}
     >
       <InfiniteScroll
         dataLength={activeConversation.messages}

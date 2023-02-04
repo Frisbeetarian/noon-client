@@ -24,7 +24,7 @@ import {
 
 import {
   getCreateGroupComponent,
-  getChatContainerHeight,
+  // getChatContainerHeight,
   getIsMobile,
   // getIsSearchActive,
 } from '../store/ui'
@@ -197,7 +197,10 @@ function Chat() {
       {isCreateGroupOpen ? (
         <Flex
           className="flex-col p-0 box-content"
-          style={{ height: isMobile ? '80vh' : '90vh', transition: 'all .5s' }}
+          style={{
+            height: isMobile ? '77.5vh' : '90vh',
+            transition: 'all .5s',
+          }}
         >
           <CreateGroup />
         </Flex>
@@ -206,7 +209,10 @@ function Chat() {
       {activeConversation && activeConversation.type === 'group' ? (
         <Flex
           className="flex-col p-0 box-content"
-          style={{ height: isMobile ? '80vh' : '90vh', transition: 'all .5s' }}
+          style={{
+            height: isMobile ? '77.5vh' : '90vh',
+            transition: 'all .5s',
+          }}
         >
           {!isMobile && <Header></Header>}
 
@@ -227,7 +233,10 @@ function Chat() {
       {profile && activeConversation && activeConversation.type === 'pm' ? (
         <Flex
           className="flex-col p-0 box-content"
-          style={{ height: isMobile ? '80vh' : '90vh', transition: 'all .5s' }}
+          style={{
+            height: isMobile ? '77.5vh' : '90vh',
+            transition: 'all .5s',
+          }}
         >
           {!isMobile && <Header></Header>}
 
@@ -250,7 +259,7 @@ function Chat() {
           w="100%"
           flexDir="column"
           className="justify-center box-content"
-          style={{ height: isMobile ? '10vh' : '7.5vh' }}
+          style={{ height: isMobile ? '12.5vh' : '7.5vh' }}
         >
           {activeConversation.type === 'pm' ? (
             <Footer
