@@ -44,11 +44,11 @@ const Header = () => {
       })
 
       // TODO check why session is returning undefined
-      // socket.on('check-friend-connection', ({ session }) => {
-      //   if (session.connected === true) {
-      //     setOnline('true')
-      //   }
-      // })
+      socket.on('check-friend-connection', ({ session }) => {
+        if (session.connected === true) {
+          setOnline('true')
+        }
+      })
 
       socket.on('friend-connected', ({ uuid }) => {
         console.log('friend connected:', uuid)

@@ -187,7 +187,12 @@ function Chat() {
         overflow: 'hidden',
       }}
     >
-      {!isMobile ? <ChatControlsAndSearch /> : null}
+      <div
+        className=""
+        style={{ height: isMobile ? '7.5vh' : '5vh', marginTop: '2px' }}
+      >
+        <ChatControlsAndSearch />
+      </div>
 
       {isCreateGroupOpen ? (
         <Flex
@@ -222,7 +227,7 @@ function Chat() {
       {profile && activeConversation && activeConversation.type === 'pm' ? (
         <Flex
           className="flex-col p-0 box-content"
-          style={{ height: chatContainerHeight, transition: 'all .5s' }}
+          style={{ height: isMobile ? '85vh' : '90vh', transition: 'all .5s' }}
         >
           <Header></Header>
 

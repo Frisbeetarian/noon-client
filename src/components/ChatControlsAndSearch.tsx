@@ -5,7 +5,12 @@ import {
   InputRightElement,
   // useOutsideClick,
 } from '@chakra-ui/react'
-import { SearchIcon, ArrowUpIcon } from '@chakra-ui/icons'
+import {
+  SearchIcon,
+  ArrowUpIcon,
+  ArrowRightIcon,
+  ArrowLeftIcon,
+} from '@chakra-ui/icons'
 import React, {
   // RefObject,
   useState,
@@ -21,11 +26,12 @@ import {
   setChatContainerHeight,
   getIsMobile,
   setConversationOpen,
+  getIsSearchActive,
 } from '../store/ui'
 import SearchSidebar from './SearchSidebar'
+import { IoOpen, MdOpenInBrowser } from 'react-icons/all'
 
 function ChatControlsAndSearch() {
-  const ref = React.useRef()
   const dispatch = useDispatch()
   // const profile = useSelector(getActiveConversee)
   const isMobile = useSelector(getIsMobile)
@@ -33,6 +39,7 @@ function ChatControlsAndSearch() {
   const searchQuery = useSelector(getSearchQuery)
   const searchComponentState = useSelector(getSearchComponentState)
   const [searchInput, setSearchInput] = useState(null)
+  const searchActive = useSelector(getIsSearchActive)
 
   // useOutsideClick({
   //   ref: ref as unknown as RefObject<HTMLElement>,
@@ -54,18 +61,30 @@ function ChatControlsAndSearch() {
   // })
 
   return (
-    <Flex
-      ref={ref.current}
-      className="flex-col border-b px-3 w-full md:py-0"
-      style={{
-        position: searchComponentState.containerDisplay,
-        height: !isMobile ? searchComponentState.containerHeight : null,
-        transition: 'all .5s',
-        marginTop: '+0.5px',
-      }}
-    >
-      <Flex className="px-3 md:h-full w-full items-center justify-start md:justify-center relative">
-        <SearchSidebar />
+    <Flex className="flex-col border-b px-3 w-full h-full md:py-0">
+      <Flex className="px-3 md:h-full w-full items-center justify-start md:justify-center relative ">
+        {searchActive && <SearchSidebar />}
+
+        <SearchIcon
+          className=" p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer"
+          onClick={() => {
+            dispatch(
+              setSearchComponent({
+                searchActive: true,
+              })
+            )
+          }}
+        />
+
+        {isMobile && (
+          <ArrowLeftIcon
+            className=" p-1 absolute top-0 left-0 m-4 text-xl cursor-pointer "
+            onClick={() => {
+              dispatch(setConversationOpen(false))
+            }}
+          />
+        )}
+
         {/*<div*/}
         {/*  className="flex items-center cursor-pointer h-[7.5vh]"*/}
         {/*  onClick={() => {*/}
