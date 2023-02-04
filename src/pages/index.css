@@ -22,6 +22,7 @@ html {
     top:0;
     right: -12px;
     transition: opacity 300ms ease, transform 300ms ease;
+    min-width: 40vw;
 }
 
 .create-group-sidebar {
@@ -35,5 +36,5 @@ html {
     top:0;
     right: -12px;
     transition: opacity 300ms ease, transform 300ms ease;
-    min-width: 30vw;
+    min-width: 40vw;
 }
