@@ -23,3 +23,17 @@ html {
     right: -12px;
     transition: opacity 300ms ease, transform 300ms ease;
 }
+
+.create-group-sidebar {
+    position: absolute;
+    padding: 0 28px 0 28px;
+    margin: 0;
+    padding-top: 24px;
+    height: 100vh;
+    z-index: 1000;
+    opacity: 1;
+    top:0;
+    right: -12px;
+    transition: opacity 300ms ease, transform 300ms ease;
+    min-width: 30vw;
+}

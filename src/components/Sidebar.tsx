@@ -40,6 +40,7 @@ import {
   setChatContainerHeight,
   setCreateGroupComponent,
   setSearchComponent,
+  toggleCreateGroupActive,
 } from '../store/ui'
 
 import PrivateConversationListing from './PrivateConversationListing'
@@ -132,20 +133,22 @@ function Sidebar() {
               <MenuItem
                 icon={<EditIcon />}
                 onClick={async () => {
-                  dispatch(setActiveConversationSet(false))
-                  dispatch(setActiveConversee(null))
-                  dispatch(setActiveConversation(null))
-                  dispatch(setShouldPauseCheckHasMore(false))
-                  dispatch(setCreateGroupComponent(true))
+                  // dispatch(setActiveConversationSet(false))
+                  // dispatch(setActiveConversee(null))
+                  // dispatch(setActiveConversation(null))
+                  // dispatch(setShouldPauseCheckHasMore(false))
+                  // dispatch(setCreateGroupComponent(true))
+                  //
+                  // dispatch(
+                  //   setSearchComponent({
+                  //     searchActive: false,
+                  //     containerDisplay: 'relative',
+                  //     containerHeight: '5vh',
+                  //     inputPadding: '5px',
+                  //   })
+                  // )
 
-                  dispatch(
-                    setSearchComponent({
-                      searchActive: false,
-                      containerDisplay: 'relative',
-                      containerHeight: '5vh',
-                      inputPadding: '5px',
-                    })
-                  )
+                  dispatch(toggleCreateGroupActive(true))
                 }}
               >
                 Create group

@@ -118,16 +118,10 @@ export default function SearchSidebar() {
             dispatch(
               setSearchComponent({
                 searchActive: false,
-                containerDisplay: 'relative',
-                containerHeight: '5vh',
-                inputPadding: '5px',
               })
             )
-
-            dispatch(setChatContainerHeight('87.5vh'))
           }}
         />
-        {/*) : null}*/}
       </>
     </div>
   )

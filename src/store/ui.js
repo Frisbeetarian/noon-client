@@ -20,10 +20,16 @@ const slice = createSlice({
       containerHeight: '5vh',
       inputPadding: '5px',
     },
+    createGroup: {
+      active: false,
+    },
   },
   reducers: {
     setIsMobile: (ui, action) => {
       ui.isMobile = action.payload
+    },
+    toggleCreateGroupActive: (ui, action) => {
+      ui.createGroup.active = action.payload
     },
     setConversationOpen: (ui, action) => {
       ui.isConversationOpen = action.payload
@@ -81,6 +87,11 @@ export const getIsSearchActive = createSelector(
   (ui) => ui.search.searchActive
 )
 
+export const getCreateGroupActive = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.createGroup.active
+)
+
 export const {
   showFriendshipRequestToast,
   setChatComponentState,
@@ -89,6 +100,7 @@ export const {
   setCreateGroupComponent,
   setSearchComponent,
   setChatContainerHeight,
+  toggleCreateGroupActive,
 } = slice.actions
 
 export default slice.reducer

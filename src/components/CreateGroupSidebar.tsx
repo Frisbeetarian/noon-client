@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Box, Button, CloseButton, Flex, Input } from '@chakra-ui/react'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { setCreateGroupComponent } from '../store/ui'
+import {
+  setCreateGroupComponent,
+  setSearchComponent,
+  toggleCreateGroupActive,
+} from '../store/ui'
 
 import GroupParticipant from './GroupParticipant'
 import { getSocket } from '../store/sockets'
@@ -11,8 +15,9 @@ import { getLoggedInUser } from '../store/users'
 import { useCreateGroupConversationMutation } from '../generated/graphql'
 import { addConversation, setOngoingCall } from '../store/chat'
 import { useFormik } from 'formik'
+import { setSearchQuery } from '../store/search'
 
-export default function SearchSidebar() {
+export default function CreateGroupSidebar() {
   const dispatch = useDispatch()
   const socket = useSelector(getSocket)
   const participants = useSelector(getParticipants)
@@ -93,26 +98,17 @@ export default function SearchSidebar() {
   })
 
   return (
-    <div className="search-sidebar bg-gray-800">
-      <Flex className="w-full justify-between">
-        <p className="mb-5">Create Group</p>
-        <Button
-          className="mr-8"
-          onClick={() => {
-            dispatch(setCreateGroupComponent(false))
-          }}
-        >
-          X
-        </Button>
-      </Flex>
+    <div className="search-sidebar bg-gray-800 w-10/12 md:w-3/4">
+      <h1 className="text-xl mb-10">Create Group</h1>
 
-      <Flex>
+      <Flex className="">
         <form className="flex w-2/4" onSubmit={formik.handleSubmit}>
-          <Flex className="mr-5" direction="column">
+          <Flex className="mr-5 w-3/4" direction="column">
             <Box>
-              <label>Group name</label>
+              <label className="">Group name</label>
 
               <Input
+                className="mt-2"
                 name="name"
                 type="text"
                 onChange={formik.handleChange}
@@ -124,6 +120,7 @@ export default function SearchSidebar() {
               <label>Group description</label>
 
               <Input
+                className="mt-2"
                 name="description"
                 type="text"
                 onChange={formik.handleChange}
@@ -132,11 +129,11 @@ export default function SearchSidebar() {
             </Box>
 
             <Button
-              // isLoading={isSubmitting}
+              ml="auto"
               mt={4}
               type="submit"
               colorScheme="teal"
-              className="box-content"
+              className="box-content w-2/5"
             >
               create group
             </Button>
@@ -156,6 +153,13 @@ export default function SearchSidebar() {
               ))
             : null}
         </Flex>
+
+        <CloseButton
+          className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer"
+          onClick={() => {
+            dispatch(toggleCreateGroupActive(false))
+          }}
+        />
       </Flex>
     </div>
   )

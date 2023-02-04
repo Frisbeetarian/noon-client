@@ -17,8 +17,13 @@ import { setConversations, getConversations } from '../../store/chat'
 import Chat from '../../components/Chat'
 import { withApollo } from '../../utils/withApollo'
 import { useRouter } from 'next/router'
-import { getIsConversationOpen, getIsMobile } from '../../store/ui'
+import {
+  getCreateGroupActive,
+  getIsConversationOpen,
+  getIsMobile,
+} from '../../store/ui'
 import SocketControls from '../../components/SocketIo/SocketControls'
+import CreateGroupSidebar from '../../components/CreateGroupSidebar'
 // import { getIsMobile } from '../../store/ui'
 
 const meta = {
@@ -33,6 +38,7 @@ function Noon() {
   const [mounted, setMounted] = useState(false)
   const isMobile = useSelector(getIsMobile)
   const isConversationOpen = useSelector(getIsConversationOpen)
+  const createGroupActive = useSelector(getCreateGroupActive)
 
   useEffect(() => setMounted(true), [])
 
@@ -96,6 +102,7 @@ function Noon() {
           {!isMobile && <Chat />}
           {isMobile && isConversationOpen && <Chat />}
           {!isMobile && <SocketControls />}
+          {createGroupActive && <CreateGroupSidebar />}
         </>
       ) : null}
     </div>
