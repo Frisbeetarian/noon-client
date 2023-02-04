@@ -242,8 +242,8 @@ const Messages = () => {
       id="scrollableDiv"
       overflowY="auto"
       flexDirection="column-reverse"
-      className="w-full top-0 py-3 px-5 relative overflow-x-hidden"
-      style={isMobile ? { height: '72.5vh' } : { height: '80vh' }}
+      className="w-full top-0 py-3 px-1 relative overflow-x-hidden"
+      style={isMobile ? { height: '69.5vh' } : { height: '80vh' }}
     >
       <InfiniteScroll
         dataLength={activeConversation.messages}

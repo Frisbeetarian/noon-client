@@ -20,6 +20,7 @@ import { getLoggedInUser } from '../store/users'
 import { getSocket } from '../store/sockets'
 import { useCancelPendingCallForConversationMutation } from '../generated/graphql'
 import { setVideoFrameForConversation } from '../store/video'
+import { getIsMobile } from '../store/ui'
 
 const Header = () => {
   const activeConversee = useSelector(getActiveConversee)
@@ -28,6 +29,7 @@ const Header = () => {
   const socket = useSelector(getSocket)
   const [online, setOnline] = useState('loading')
   const activeConversation = useSelector(getActiveConversation)
+  const isMobile = useSelector(getIsMobile)
 
   const [
     cancelPendingCallForConversation,
@@ -74,9 +76,9 @@ const Header = () => {
 
   return (
     <Flex w="100%" className="items-center justify-between">
-      <Flex className="items-center px-3">
+      <Flex className="items-center px-1 md:px-3">
         <Avatar
-          size="md"
+          size={isMobile ? 'sm' : 'md'}
           name={
             activeConversation.type === 'pm'
               ? activeConversee.username
@@ -85,13 +87,18 @@ const Header = () => {
         >
           {activeConversation.type === 'pm' ? (
             <AvatarBadge
-              boxSize="1.25em"
+              boxSize={isMobile ? '1.1em' : '1.25em'}
               bg={online !== 'true' ? 'yellow.500' : 'green.500'}
             />
           ) : null}
         </Avatar>
 
-        <Flex flexDirection="column" mx="3" my="5" justify="center">
+        <Flex
+          flexDirection={isMobile ? 'row' : 'column'}
+          mx="3"
+          my="5"
+          justify="center"
+        >
           <Text fontSize="lg" fontWeight="bold">
             {activeConversation.type === 'pm'
               ? activeConversee.username

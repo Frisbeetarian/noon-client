@@ -13,6 +13,7 @@ import {
   getIsSearchActive,
 } from '../store/ui'
 import SearchSidebar from './SearchSidebar'
+import Header from './Header'
 
 function ChatControlsAndSearch() {
   const dispatch = useDispatch()
@@ -49,12 +50,15 @@ function ChatControlsAndSearch() {
       {searchActive && <SearchSidebar />}
 
       {isMobile && (
-        <ArrowLeftIcon
-          className=" p-1    m-4 text-xl cursor-pointer "
-          onClick={() => {
-            dispatch(setConversationOpen(false))
-          }}
-        />
+        <Flex className="items-center">
+          <ArrowLeftIcon
+            className=" p-1 m-4 text-xl cursor-pointer "
+            onClick={() => {
+              dispatch(setConversationOpen(false))
+            }}
+          />
+          <Header></Header>
+        </Flex>
       )}
 
       <SearchIcon

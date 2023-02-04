@@ -229,7 +229,7 @@ function Chat() {
           className="flex-col p-0 box-content"
           style={{ height: isMobile ? '80vh' : '90vh', transition: 'all .5s' }}
         >
-          <Header></Header>
+          {!isMobile && <Header></Header>}
 
           {videoFrameOpenState !== true ? (
             <FileUpload>
