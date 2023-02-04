@@ -11,7 +11,7 @@ const GroupParticipant = ({ participant }) => {
 
   return (
     <Flex
-      className="p-2 cursor:pointer items-center justify-between border-b hover:text-green-500 text-white cursor-pointer"
+      className="p-2 py-4 md:py-2 cursor:pointer items-center justify-between border-b hover:text-green-500 text-white cursor-pointer"
       style={{ backgroundColor: participantsColor }}
       onClick={() => {
         if (participantsColor === '') {

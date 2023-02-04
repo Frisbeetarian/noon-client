@@ -24,10 +24,6 @@ import {
 import {
   // getActiveConversation,
   getSortedConversations,
-  setActiveConversation,
-  setActiveConversationSet,
-  setActiveConversee,
-  setShouldPauseCheckHasMore,
 } from '../store/chat'
 
 import SocketConnector from './SocketIo/SocketConnector'
@@ -38,7 +34,6 @@ import {
   getIsMobile,
   getSearchComponentState,
   setChatContainerHeight,
-  setCreateGroupComponent,
   setSearchComponent,
   toggleCreateGroupActive,
 } from '../store/ui'

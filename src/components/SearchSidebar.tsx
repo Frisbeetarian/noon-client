@@ -8,11 +8,7 @@ import {
 } from '@chakra-ui/react'
 
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  getSearchComponentState,
-  setChatContainerHeight,
-  setSearchComponent,
-} from '../store/ui'
+import { getSearchComponentState, setSearchComponent } from '../store/ui'
 
 import SearchController from './SearchController'
 import { SearchIcon } from '@chakra-ui/icons'

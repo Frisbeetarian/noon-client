@@ -11,7 +11,11 @@ import {
 } from '@chakra-ui/react'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { setCreateGroupComponent, toggleCreateGroupActive } from '../store/ui'
+import {
+  getIsMobile,
+  setCreateGroupComponent,
+  toggleCreateGroupActive,
+} from '../store/ui'
 
 import GroupParticipant from './GroupParticipant'
 import { getSocket } from '../store/sockets'
@@ -40,6 +44,7 @@ export default function CreateGroupSidebar() {
   const [friends, setFriends] = useState(null)
   const [zeroFriendsError, setZeroFriendsError] = useState(false)
   const toast = useToast()
+  const isMobile = useSelector(getIsMobile)
 
   const [
     createGroupConversation,
@@ -72,10 +77,10 @@ export default function CreateGroupSidebar() {
   }, [])
 
   return (
-    <div className="search-sidebar bg-gray-800 w-10/12 md:w-3/4">
+    <div className="create-group-sidebar bg-gray-800 w-10/12 md:w-3/4">
       <h1 className="text-xl mb-10">Create Group</h1>
 
-      <Flex className="">
+      <Flex className="flex-col md:flex-row items-center md:items-start ">
         <Formik
           initialValues={{ name: '', description: '' }}
           validationSchema={createGroupSchema}
@@ -139,9 +144,13 @@ export default function CreateGroupSidebar() {
           }}
         >
           {({}) => (
-            <Form className="flex w-2/4">
+            <Form className="flex w-full md:w-2/4">
               <Stack spacing={4}>
-                <HStack>
+                <p className="text-gray-500 underline text-lg md:text-md">
+                  Group details
+                </p>
+
+                <HStack className="pl-1">
                   <Box>
                     <FormControl id="name" isRequired>
                       <InputField
@@ -153,13 +162,37 @@ export default function CreateGroupSidebar() {
                   </Box>
                 </HStack>
 
-                <FormControl id="description" isRequired>
+                <FormControl id="description" className="pl-1" isRequired>
                   <InputField
                     name="description"
                     placeholder="description"
                     label="Group description"
                   />
                 </FormControl>
+
+                {isMobile && (
+                  <Flex className="flex-col pt-5 text-black w-full md:w-2/4 box-content">
+                    <p className="text-gray-500 underline text-lg md:text-md">
+                      Add friends
+                    </p>
+
+                    {friends
+                      ? (friends as any).map((friend) => (
+                          <GroupParticipant
+                            key={friend.uuid}
+                            participant={friend}
+                            // className="mb-3 box-content cursor-pointer"
+                          ></GroupParticipant>
+                        ))
+                      : null}
+
+                    {zeroFriendsError && (
+                      <p className="text-red-500 ml-auto text-sm mt-2">
+                        You must add at least one friend to the group.
+                      </p>
+                    )}
+                  </Flex>
+                )}
 
                 <Stack spacing={10} pt={2}>
                   <Button
@@ -181,26 +214,29 @@ export default function CreateGroupSidebar() {
           )}
         </Formik>
 
-        <Flex className="flex-col text-black w-2/4 box-content">
-          <p className="text-white">Add friends</p>
-
-          {friends
-            ? (friends as any).map((friend) => (
-                <GroupParticipant
-                  key={friend.uuid}
-                  participant={friend}
-                  // className="mb-3 box-content cursor-pointer"
-                ></GroupParticipant>
-              ))
-            : null}
-
-          {zeroFriendsError && (
-            <p className="text-red-500 ml-auto text-sm mt-2">
-              You must add at least one friend to the group.
+        {!isMobile && (
+          <Flex className="flex-col text-black w-2/4 box-content">
+            <p className="text-gray-500 underline text-lg md:text-md">
+              Add friends
             </p>
-          )}
-        </Flex>
 
+            {friends
+              ? (friends as any).map((friend) => (
+                  <GroupParticipant
+                    key={friend.uuid}
+                    participant={friend}
+                    // className="mb-3 box-content cursor-pointer"
+                  ></GroupParticipant>
+                ))
+              : null}
+
+            {zeroFriendsError && (
+              <p className="text-red-500 ml-auto text-sm mt-2">
+                You must add at least one friend to the group.
+              </p>
+            )}
+          </Flex>
+        )}
         <CloseButton
           className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer"
           onClick={() => {

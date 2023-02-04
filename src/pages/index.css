@@ -34,7 +34,7 @@ html {
     z-index: 1000;
     opacity: 1;
     top:0;
-    right: -12px;
+    right: 0;
     transition: opacity 300ms ease, transform 300ms ease;
     min-width: 40vw;
 }
