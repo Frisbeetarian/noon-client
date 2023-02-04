@@ -7,6 +7,20 @@ html {
 }
 
 .chat-container {
-    height: calc(var(--vh, 1vh) * 100);
+    /*height: calc(var(--vh, 1vh) * 100);*/
     /*margin-top: 50px;*/
+}
+
+.search-sidebar {
+    position: absolute;
+    padding: 0 28px 0 28px;
+    margin: 0;
+    padding-top: 24px;
+    width: 45vw;
+    height: 100vh;
+    z-index: 1000;
+    opacity: 1;
+    top:0;
+    right: -12px;
+    transition: opacity 300ms ease, transform 300ms ease;
 }

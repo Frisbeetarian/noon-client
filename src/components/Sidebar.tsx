@@ -73,7 +73,9 @@ function Sidebar() {
     })
 
     return () => {
-      window.removeEventListener('resize', () => {})
+      window.removeEventListener('resize', () => {
+        console.log('removed')
+      })
     }
   })
 

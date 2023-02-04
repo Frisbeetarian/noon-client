@@ -22,6 +22,7 @@ import {
   getIsMobile,
   setConversationOpen,
 } from '../store/ui'
+import SearchSidebar from './SearchSidebar'
 
 function ChatControlsAndSearch() {
   const ref = React.useRef()
@@ -55,7 +56,7 @@ function ChatControlsAndSearch() {
   return (
     <Flex
       ref={ref.current}
-      className="flex-col border-b px-3 w-full py-7 md:py-0"
+      className="flex-col border-b px-3 w-full md:py-0"
       style={{
         position: searchComponentState.containerDisplay,
         height: !isMobile ? searchComponentState.containerHeight : null,
@@ -63,104 +64,105 @@ function ChatControlsAndSearch() {
         marginTop: '+0.5px',
       }}
     >
-      <Flex className="px-3 md:h-full w-full items-center  justify-start md:justify-center">
-        <div
-          className="flex items-center cursor-pointer "
-          onClick={() => {
-            dispatch(setConversationOpen(false))
-          }}
-        >
-          {isMobile && `<`}
-        </div>
+      <Flex className="px-3 md:h-full w-full items-center justify-start md:justify-center relative">
+        <SearchSidebar />
+        {/*<div*/}
+        {/*  className="flex items-center cursor-pointer h-[7.5vh]"*/}
+        {/*  onClick={() => {*/}
+        {/*    dispatch(setConversationOpen(false))*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  {isMobile && `<`}*/}
+        {/*</div>*/}
 
-        {!isMobile && (
-          <>
-            <Flex
-              className="flex-col items-start justify-start"
-              style={{ flex: '0.7' }}
-            >
-              {searchComponentState.searchActive ? (
-                <p className="text-xl mt-4 mb-10">Search Results</p>
-              ) : null}
+        {/*{!isMobile && (*/}
+        {/*  <>*/}
+        {/*    <Flex*/}
+        {/*      className="flex-col items-start justify-start"*/}
+        {/*      style={{ flex: '0.7' }}*/}
+        {/*    >*/}
+        {/*      {searchComponentState.searchActive ? (*/}
+        {/*        <p className="text-xl mt-4 mb-10">Search Results</p>*/}
+        {/*      ) : null}*/}
 
-              {searchInput && searchComponentState.searchActive ? (
-                <Flex className="w-full" style={{ flex: '1' }}>
-                  <SearchController />
-                </Flex>
-              ) : null}
-            </Flex>
-            <Flex className="items-center relative" style={{ flex: '0.3' }}>
-              <InputGroup>
-                <InputRightElement
-                  children={<SearchIcon color="green.500" />}
-                  pointerEvents="none"
-                />
+        {/*      {searchInput && searchComponentState.searchActive ? (*/}
+        {/*        <Flex className="w-full" style={{ flex: '1' }}>*/}
+        {/*          <SearchController />*/}
+        {/*        </Flex>*/}
+        {/*      ) : null}*/}
+        {/*    </Flex>*/}
+        {/*    <Flex className="items-center relative" style={{ flex: '0.3' }}>*/}
+        {/*      <InputGroup>*/}
+        {/*        <InputRightElement*/}
+        {/*          children={<SearchIcon color="green.500" />}*/}
+        {/*          pointerEvents="none"*/}
+        {/*        />*/}
 
-                <Input
-                  type="text"
-                  className="m-0 focus:bg-base-100 bg-transparent outline-0 bg-gray-800 pl-2"
-                  placeholder="Search for profiles..."
-                  size="md"
-                  // rightIcon={<SearchIcon color="gray.300" />}
-                  onClick={() => {
-                    dispatch(setChatContainerHeight('52.5vh'))
-                    dispatch(
-                      setSearchComponent({
-                        searchActive: true,
-                        containerDisplay: 'relative',
-                        containerHeight: '40vh',
-                        inputPadding: '10px',
-                      })
-                    )
-                  }}
-                  style={{
-                    padding: searchComponentState.inputPadding,
-                    transition: 'all .5s',
-                    position: searchComponentState.containerDisplay,
-                    right: 0,
-                  }}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      if (
-                        (e.target as HTMLInputElement).value !== searchQuery
-                      ) {
-                        dispatch(setSearchQuery(null))
-                        setSearchInput(null)
-                        dispatch(
-                          setSearchQuery((e.target as HTMLInputElement).value)
-                        )
-                        setSearchInput(
-                          (e.target as any).value as React.SetStateAction<null>
-                        )
-                      }
-                    }
-                  }}
-                />
-              </InputGroup>
-            </Flex>
+        {/*        <Input*/}
+        {/*          type="text"*/}
+        {/*          className="m-0 focus:bg-base-100 bg-transparent outline-0 bg-gray-800 pl-2"*/}
+        {/*          placeholder="Search for profiles..."*/}
+        {/*          size="md"*/}
+        {/*          // rightIcon={<SearchIcon color="gray.300" />}*/}
+        {/*          onClick={() => {*/}
+        {/*            dispatch(setChatContainerHeight('52.5vh'))*/}
+        {/*            dispatch(*/}
+        {/*              setSearchComponent({*/}
+        {/*                searchActive: true,*/}
+        {/*                containerDisplay: 'relative',*/}
+        {/*                containerHeight: '40vh',*/}
+        {/*                inputPadding: '10px',*/}
+        {/*              })*/}
+        {/*            )*/}
+        {/*          }}*/}
+        {/*          style={{*/}
+        {/*            padding: searchComponentState.inputPadding,*/}
+        {/*            transition: 'all .5s',*/}
+        {/*            position: searchComponentState.containerDisplay,*/}
+        {/*            right: 0,*/}
+        {/*          }}*/}
+        {/*          onKeyPress={(e) => {*/}
+        {/*            if (e.key === 'Enter') {*/}
+        {/*              if (*/}
+        {/*                (e.target as HTMLInputElement).value !== searchQuery*/}
+        {/*              ) {*/}
+        {/*                dispatch(setSearchQuery(null))*/}
+        {/*                setSearchInput(null)*/}
+        {/*                dispatch(*/}
+        {/*                  setSearchQuery((e.target as HTMLInputElement).value)*/}
+        {/*                )*/}
+        {/*                setSearchInput(*/}
+        {/*                  (e.target as any).value as React.SetStateAction<null>*/}
+        {/*                )*/}
+        {/*              }*/}
+        {/*            }*/}
+        {/*          }}*/}
+        {/*        />*/}
+        {/*      </InputGroup>*/}
+        {/*    </Flex>*/}
 
-            {searchComponentState.searchActive ? (
-              <ArrowUpIcon
-                className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer"
-                onClick={() => {
-                  dispatch(setSearchQuery(null))
-                  setSearchInput(null)
+        {/*    {searchComponentState.searchActive ? (*/}
+        {/*      <ArrowUpIcon*/}
+        {/*        className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer"*/}
+        {/*        onClick={() => {*/}
+        {/*          dispatch(setSearchQuery(null))*/}
+        {/*          setSearchInput(null)*/}
 
-                  dispatch(
-                    setSearchComponent({
-                      searchActive: false,
-                      containerDisplay: 'relative',
-                      containerHeight: '5vh',
-                      inputPadding: '5px',
-                    })
-                  )
+        {/*          dispatch(*/}
+        {/*            setSearchComponent({*/}
+        {/*              searchActive: false,*/}
+        {/*              containerDisplay: 'relative',*/}
+        {/*              containerHeight: '5vh',*/}
+        {/*              inputPadding: '5px',*/}
+        {/*            })*/}
+        {/*          )*/}
 
-                  dispatch(setChatContainerHeight('87.5vh'))
-                }}
-              />
-            ) : null}
-          </>
-        )}
+        {/*          dispatch(setChatContainerHeight('87.5vh'))*/}
+        {/*        }}*/}
+        {/*      />*/}
+        {/*    ) : null}*/}
+        {/*  </>*/}
+        {/*)}*/}
       </Flex>
     </Flex>
   )

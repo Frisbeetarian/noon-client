@@ -19,7 +19,6 @@ const slice = createSlice({
       containerDisplay: 'relative',
       containerHeight: '5vh',
       inputPadding: '5px',
-      // searchInput: null,
     },
   },
   reducers: {
@@ -75,6 +74,11 @@ export const getIsMobile = createSelector(
 export const getIsConversationOpen = createSelector(
   (state) => state.entities.ui,
   (ui) => ui.isConversationOpen
+)
+
+export const getIsSearchActive = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.search.searchActive
 )
 
 export const {

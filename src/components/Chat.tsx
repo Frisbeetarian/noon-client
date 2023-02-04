@@ -26,6 +26,7 @@ import {
   getCreateGroupComponent,
   getChatContainerHeight,
   getIsMobile,
+  // getIsSearchActive,
 } from '../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
@@ -47,12 +48,15 @@ function Chat() {
   const activeConversation = useSelector(getActiveConversation)
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
   const chatContainerHeight = useSelector(getChatContainerHeight)
+  // const searchActive = useSelector(getIsSearchActive)
 
   const profile = useSelector(getActiveConversee)
+
   const [
     saveMessage,
     // { loading: saveMessageLoading }
   ] = useSaveMessageMutation()
+
   const [
     saveGroupMessage,
     // { loading: saveGroupLoading }
@@ -68,7 +72,9 @@ function Chat() {
     })
 
     return () => {
-      window.removeEventListener('resize', () => {})
+      window.removeEventListener('resize', () => {
+        console.log('removed')
+      })
     }
   })
 
@@ -181,7 +187,7 @@ function Chat() {
         overflow: 'hidden',
       }}
     >
-      <ChatControlsAndSearch />
+      {!isMobile ? <ChatControlsAndSearch /> : null}
 
       {isCreateGroupOpen ? (
         <Flex
@@ -194,7 +200,7 @@ function Chat() {
 
       {activeConversation && activeConversation.type === 'group' ? (
         <Flex
-          className="flex-col p-0 box-content  "
+          className="flex-col p-0 box-content"
           style={{ height: chatContainerHeight, transition: 'all .5s' }}
         >
           <Header></Header>
