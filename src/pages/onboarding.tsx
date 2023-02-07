@@ -24,10 +24,6 @@ const Onboarding = () => {
     getShowForgotPasswordComponent
   )
 
-  // const [showLogin] = useState(false)
-  // const [showRegister] = useState(true)
-  // const [showForgotPassword] = useState(false)
-
   const { data } = useMeQuery({
     skip: isServer(),
     fetchPolicy: 'network-only',
@@ -37,9 +33,6 @@ const Onboarding = () => {
     if (data?.me?.username) {
       router.replace('/noon')
     }
-    // else {
-    //   // router.replace('/noon')
-    // }
   }, [data])
 
   return (

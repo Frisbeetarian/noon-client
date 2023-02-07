@@ -27,14 +27,14 @@ import {
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
-    .min(3, 'Too Short!')
-    .max(50, 'Too Long!')
+    .min(3, 'Username is too short.')
+    .max(50, 'Username is too long.')
     .required('Username is required'),
-  email: Yup.string().email('Invalid email').required('Email is required'),
+  email: Yup.string().email('Invalid email').required('Email is required.'),
   password: Yup.string()
-    .min(4, 'Password is too short')
-    .max(120, 'Password is too long')
-    .required('Password is required'),
+    .min(4, 'Password is too short.')
+    .max(120, 'Password is too long.')
+    .required('Password is required.'),
 })
 
 function Register() {
@@ -117,8 +117,8 @@ function Register() {
 
                 <Stack spacing={10} pt={2}>
                   <Button
+                    className="w-1/2 ml-auto "
                     type="submit"
-                    loadingText="Submitting"
                     size="lg"
                     bg={'green.400'}
                     color={'white'}

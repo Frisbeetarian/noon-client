@@ -23,13 +23,13 @@ import { useDispatch } from 'react-redux'
 
 const LoginSchema = Yup.object().shape({
   usernameOrEmail: Yup.string()
-    .min(3, 'Too Short!')
-    .max(50, 'Too Long!')
-    .required('Username or email required'),
+    .min(3, 'Username is too short.')
+    .max(50, 'Username is too long.')
+    .required('Username or email required.'),
   password: Yup.string()
-    .min(4, 'Password is too short')
-    .max(120, 'Password is too long')
-    .required('Password is required'),
+    .min(4, 'Password is too short.')
+    .max(120, 'Password is too long.')
+    .required('Password is required.'),
 })
 
 function Login() {
@@ -40,6 +40,7 @@ function Login() {
     login,
     // { loading: loginLoading }
   ] = useLoginMutation()
+
   return (
     <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
       <Stack align={'center'}>
@@ -123,18 +124,21 @@ function Login() {
                     </Link>
                   </Stack>
 
-                  <Button
-                    size="lg"
-                    bg={'green.400'}
-                    color={'white'}
-                    _hover={{
-                      bg: 'green.900',
-                    }}
-                    type="submit"
-                    isLoading={isSubmitting}
-                  >
-                    Login
-                  </Button>
+                  <Stack>
+                    <Button
+                      className="w-1/2 ml-auto"
+                      size="lg"
+                      bg={'green.400'}
+                      color={'white'}
+                      _hover={{
+                        bg: 'green.900',
+                      }}
+                      type="submit"
+                      isLoading={isSubmitting}
+                    >
+                      Login
+                    </Button>
+                  </Stack>
                 </Stack>
               </Stack>
             </Form>

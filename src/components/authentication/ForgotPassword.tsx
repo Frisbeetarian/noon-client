@@ -49,13 +49,15 @@ function ForgotPassword() {
 
       <Stack spacing={6}>
         <Button
-          bg={'blue.400'}
+          className="w-1/2 ml-auto"
+          size="lg"
+          bg={'green.400'}
           color={'white'}
           _hover={{
-            bg: 'blue.500',
+            bg: 'green.900',
           }}
         >
-          Request Reset
+          Request reset
         </Button>
       </Stack>
 
