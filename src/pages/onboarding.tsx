@@ -210,20 +210,14 @@ const Onboarding = () => {
                   variables: { options: values },
                 })
 
-                console.log(
-                  'register response: ',
-                  response.data?.register.errors
-                )
-
                 if (response.data?.register.errors) {
-                  console.log('register response: ', response.data)
                   setErrors(toErrorMap(response.data.register.errors))
                 } else if (response.data?.register.user) {
                   router.replace('/noon')
                 }
               }}
             >
-              {({}) => (
+              {({ isSubmitting }) => (
                 <Form>
                   <Stack spacing={4}>
                     <HStack>
@@ -276,6 +270,7 @@ const Onboarding = () => {
                         _hover={{
                           bg: 'green.900',
                         }}
+                        isLoading={isSubmitting}
                       >
                         Register
                       </Button>
