@@ -42,10 +42,7 @@ function Noon() {
 
   useEffect(() => setMounted(true), [])
 
-  const {
-    data,
-    // loading: meLoading
-  } = useMeQuery({
+  const { data, loading: meLoading } = useMeQuery({
     skip: isServer(),
     fetchPolicy: 'network-only',
   })
@@ -60,14 +57,16 @@ function Noon() {
   } = useGetConversationForLoggedInUserQuery({ fetchPolicy: 'network-only' })
 
   useEffect(() => {
-    dispatch(setLoggedInUser({ user: data }))
-  }, [data?.me?.username])
+    if (!meLoading) {
+      if (!data?.me?.username) {
+        router.replace('/')
+      } else {
+        dispatch(setLoggedInUser({ user: data }))
+      }
+    }
+  }, [meLoading, data?.me?.username])
 
   useEffect(() => {
-    if (!loggedInUser?.user?.profile?.uuid) {
-      router.replace('/')
-    }
-
     if (
       fetchedConversations?.getConversationForLoggedInUser &&
       conversations === null &&
