@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormLabel,
   Heading,
   Link,
   Stack,
@@ -79,23 +80,26 @@ function Login() {
             <Form>
               <Stack spacing={4} className="text-white">
                 <FormControl id="email" isRequired>
-                  {/*<FormLabel>Email address</FormLabel>*/}
+                  <FormLabel>Username</FormLabel>
                   <InputField
-                    placeholder="Username or email"
+                    placeholder="Username"
                     name="usernameOrEmail"
-                    label="Username or Email"
+                    label=""
                   />
                 </FormControl>
 
                 <FormControl id="password" isRequired>
+                  <FormLabel>Password</FormLabel>
+
                   <InputField
                     name="password"
-                    label="Password"
+                    placeholder="Password"
+                    label=""
                     type="password"
                   />
                 </FormControl>
 
-                <Stack spacing={10}>
+                <Stack spacing={0} className="">
                   <Stack
                     direction={{ base: 'column', sm: 'row' }}
                     align={'start'}
@@ -111,23 +115,24 @@ function Login() {
                         Remember me
                       </label>
                     </FormControl>
-
-                    <Link
-                      color={'blue.400'}
-                      onClick={() => {
-                        dispatch(setShowForgotPasswordComponent(true))
-                        dispatch(setShowLoginComponent(false))
-                        dispatch(setShowRegisterComponent(false))
-                      }}
-                    >
-                      Forgot password?
-                    </Link>
                   </Stack>
+
+                  <Link
+                    className="pt-1"
+                    color={'blue.400'}
+                    onClick={() => {
+                      dispatch(setShowForgotPasswordComponent(true))
+                      dispatch(setShowLoginComponent(false))
+                      dispatch(setShowRegisterComponent(false))
+                    }}
+                  >
+                    Forgot password?
+                  </Link>
 
                   <Stack>
                     <Button
-                      className="w-1/2 ml-auto"
-                      size="lg"
+                      className="w-1/2 ml-auto mt-5"
+                      size="md"
                       bg={'green.400'}
                       color={'white'}
                       _hover={{

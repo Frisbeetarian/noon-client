@@ -78,10 +78,12 @@ function Register() {
                 <HStack>
                   <Box>
                     <FormControl id="username" isRequired>
+                      <FormLabel>Username</FormLabel>
+
                       <InputField
                         name="username"
-                        placeholder="username"
-                        label="Username"
+                        placeholder="Username"
+                        label=""
                       />
                     </FormControl>
                   </Box>
@@ -89,16 +91,22 @@ function Register() {
 
                 <FormControl id="email" isRequired>
                   <FormLabel>Email address</FormLabel>
-                  <InputField name="email" placeholder="" label="" />
+
+                  <InputField
+                    name="email"
+                    placeholder="Email address"
+                    label=""
+                  />
                 </FormControl>
 
                 <FormControl id="password" isRequired>
-                  <FormLabel>Password</FormLabel>
-                  <InputGroup>
+                  <FormLabel className="">Password</FormLabel>
+
+                  <InputGroup m={0} p={0} className="">
                     <InputField
                       name="password"
                       type={showPassword ? 'text' : 'password'}
-                      placeholder=""
+                      placeholder="Password"
                       label=""
                     />
 
@@ -119,7 +127,7 @@ function Register() {
                   <Button
                     className="w-1/2 ml-auto "
                     type="submit"
-                    size="lg"
+                    size="md"
                     bg={'green.400'}
                     color={'white'}
                     _hover={{
