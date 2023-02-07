@@ -44,7 +44,7 @@ function Login() {
 
   return (
     <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-      <Stack align={'center'}>
+      <Stack align={'start'}>
         <Heading fontSize={'4xl'}>Login to your account</Heading>
       </Stack>
 

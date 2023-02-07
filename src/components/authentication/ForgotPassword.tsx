@@ -4,7 +4,6 @@ import {
   Button,
   FormControl,
   Heading,
-  Input,
   Stack,
   FormLabel,
   Box,
@@ -32,94 +31,87 @@ function ForgotPassword() {
   const dispatch = useDispatch()
 
   return (
-    <Formik
-      initialValues={{ email: '' }}
-      validationSchema={ForgotPasswordSchema}
-      onSubmit={async (values) => {
-        await forgotPassword({ variables: values })
-        setComplete(true)
-      }}
-    >
-      {({ isSubmitting }) =>
-        complete ? (
-          <Flex className="flex-col">
-            <Box>You should get an email with a reset link shortly.</Box>
+    <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+      <Stack align={'start'}>
+        <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
+          Forgot your password?
+        </Heading>
+      </Stack>
 
-            <Text
-              className="text-lg text-green-100 cursor-pointer mt-10"
-              onClick={() => {
-                dispatch(setShowLoginComponent(true))
-                dispatch(setShowRegisterComponent(false))
-                dispatch(setShowForgotPasswordComponent(false))
-              }}
-            >
-              Back
-            </Text>
-          </Flex>
-        ) : (
-          <Form>
-            <Stack
-              spacing={4}
-              w={'full'}
-              maxW={'md'}
-              rounded={'xl'}
-              boxShadow={'lg'}
-              p={6}
-              my={12}
-              className="bg-black"
-            >
-              <Heading lineHeight={1.1} fontSize={{ base: '2xl', md: '3xl' }}>
-                Forgot your password?
-              </Heading>
-
-              <Text
-                fontSize={{ base: 'sm', sm: 'md' }}
-                // color={useColorModeValue('gray.800', 'gray.400')}
-              >
-                You&apos;ll get an email with a reset link.
-              </Text>
-
-              <FormControl id="email" isRequired>
-                <FormLabel>Email address</FormLabel>
-
-                <InputField
-                  placeholder="your-email@example.com"
-                  name="email"
-                  label=""
-                />
-              </FormControl>
-
-              <Stack spacing={6}>
-                <Button
-                  type="submit"
-                  className="w-1/2 ml-auto"
-                  size="md"
-                  bg={'green.400'}
-                  color={'white'}
-                  _hover={{
-                    bg: 'green.900',
-                  }}
-                  isLoading={isSubmitting}
+      <Box boxShadow={'lg'} p={8} className="border bg-black">
+        <Formik
+          initialValues={{ email: '' }}
+          validationSchema={ForgotPasswordSchema}
+          onSubmit={async (values) => {
+            await forgotPassword({ variables: values })
+            setComplete(true)
+          }}
+        >
+          {({ isSubmitting }) =>
+            complete ? (
+              <Flex className="flex-col">
+                <Box>You should get an email with a reset link shortly.</Box>
+              </Flex>
+            ) : (
+              <Form>
+                <Stack
+                  spacing={4}
+                  w={'full'}
+                  maxW={'md'}
+                  rounded={'xl'}
+                  boxShadow={'lg'}
+                  className="bg-black"
                 >
-                  Request reset
-                </Button>
-              </Stack>
+                  <Text
+                    fontSize={{ base: 'sm', sm: 'md' }}
+                    // color={useColorModeValue('gray.800', 'gray.400')}
+                  >
+                    You&apos;ll get an email with a reset link.
+                  </Text>
 
-              <Text
-                className="text-lg text-green-100 cursor-pointer"
-                onClick={() => {
-                  dispatch(setShowLoginComponent(true))
-                  dispatch(setShowRegisterComponent(false))
-                  dispatch(setShowForgotPasswordComponent(false))
-                }}
-              >
-                Back
-              </Text>
-            </Stack>
-          </Form>
-        )
-      }
-    </Formik>
+                  <FormControl id="email" isRequired>
+                    <FormLabel>Email address</FormLabel>
+
+                    <InputField
+                      placeholder="your-email@example.com"
+                      name="email"
+                      label=""
+                    />
+                  </FormControl>
+
+                  <Stack spacing={6}>
+                    <Button
+                      type="submit"
+                      className="w-1/2 ml-auto"
+                      size="md"
+                      bg={'green.400'}
+                      color={'white'}
+                      _hover={{
+                        bg: 'green.900',
+                      }}
+                      isLoading={isSubmitting}
+                    >
+                      Request reset
+                    </Button>
+                  </Stack>
+                </Stack>
+              </Form>
+            )
+          }
+        </Formik>
+      </Box>
+
+      <Text
+        className="text-lg text-green-100 cursor-pointer"
+        onClick={() => {
+          dispatch(setShowLoginComponent(true))
+          dispatch(setShowRegisterComponent(false))
+          dispatch(setShowForgotPasswordComponent(false))
+        }}
+      >
+        Back
+      </Text>
+    </Stack>
   )
 }
 
