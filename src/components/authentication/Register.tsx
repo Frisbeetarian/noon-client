@@ -18,6 +18,12 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import * as Yup from 'yup'
 import { useRegisterMutation } from '../../generated/graphql'
 import { useRouter } from 'next/router'
+import { useDispatch } from 'react-redux'
+import {
+  setShowForgotPasswordComponent,
+  setShowLoginComponent,
+  setShowRegisterComponent,
+} from '../../store/ui'
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -33,6 +39,8 @@ const RegisterSchema = Yup.object().shape({
 
 function Register() {
   const router = useRouter()
+  const dispatch = useDispatch()
+
   const [showPassword, setShowPassword] = useState(false)
 
   const [
@@ -133,6 +141,9 @@ function Register() {
         onClick={() => {
           // setLogin(true)
           // setRegister(false)
+          dispatch(setShowLoginComponent(true))
+          dispatch(setShowRegisterComponent(false))
+          dispatch(setShowForgotPasswordComponent(false))
         }}
       >
         Login?

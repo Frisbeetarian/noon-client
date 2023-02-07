@@ -14,6 +14,12 @@ import { InputField } from '../InputField'
 import * as Yup from 'yup'
 import { useRouter } from 'next/router'
 import { useLoginMutation } from '../../generated/graphql'
+import {
+  setShowForgotPasswordComponent,
+  setShowLoginComponent,
+  setShowRegisterComponent,
+} from '../../store/ui'
+import { useDispatch } from 'react-redux'
 
 const LoginSchema = Yup.object().shape({
   usernameOrEmail: Yup.string()
@@ -28,6 +34,8 @@ const LoginSchema = Yup.object().shape({
 
 function Login() {
   const router = useRouter()
+  const dispatch = useDispatch()
+
   const [
     login,
     // { loading: loginLoading }
@@ -106,9 +114,9 @@ function Login() {
                     <Link
                       color={'blue.400'}
                       onClick={() => {
-                        // setLogin(false)
-                        // setRegister(false)
-                        // setForgotPassword(true)
+                        dispatch(setShowForgotPasswordComponent(true))
+                        dispatch(setShowLoginComponent(false))
+                        dispatch(setShowRegisterComponent(false))
                       }}
                     >
                       Forgot password?
@@ -137,8 +145,9 @@ function Login() {
       <Text
         className="text-lg text-green-100 cursor-pointer"
         onClick={() => {
-          // setRegister(true)
-          // setLogin(false)
+          dispatch(setShowRegisterComponent(true))
+          dispatch(setShowLoginComponent(false))
+          dispatch(setShowForgotPasswordComponent(false))
         }}
       >
         Register?

@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import { useMeQuery } from '../generated/graphql'
 
@@ -9,14 +9,24 @@ import { withApollo } from '../utils/withApollo'
 import Register from '../components/authentication/Register'
 import Login from '../components/authentication/Login'
 import ForgotPassword from '../components/authentication/ForgotPassword'
+import { useSelector } from 'react-redux'
+import {
+  getShowForgotPasswordComponent,
+  getShowLoginComponent,
+  getShowRegisterComponent,
+} from '../store/ui'
 
 const Onboarding = () => {
   const router = useRouter()
+  const showRegisterComponent = useSelector(getShowRegisterComponent)
+  const showLoginComponent = useSelector(getShowLoginComponent)
+  const showForgotPasswordComponent = useSelector(
+    getShowForgotPasswordComponent
+  )
 
-  // const loggedInUser = useSelector(getLoggedInUser)
-  const [showLogin] = useState(false)
-  const [showRegister] = useState(true)
-  const [showForgotPassword] = useState(false)
+  // const [showLogin] = useState(false)
+  // const [showRegister] = useState(true)
+  // const [showForgotPassword] = useState(false)
 
   const { data } = useMeQuery({
     skip: isServer(),
@@ -37,10 +47,10 @@ const Onboarding = () => {
       <p className="fixed top-12 text-5xl">NOON</p>
 
       <Flex minH={'100%'} align={'center'} justify={'center'}>
-        {showRegister && <Register />}
-        {showLogin && <Login />}
+        {showRegisterComponent && <Register />}
+        {showLoginComponent && <Login />}
 
-        {showForgotPassword && <ForgotPassword />}
+        {showForgotPasswordComponent && <ForgotPassword />}
       </Flex>
     </Flex>
   )

@@ -7,8 +7,16 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react'
+import {
+  setShowForgotPasswordComponent,
+  setShowLoginComponent,
+  setShowRegisterComponent,
+} from '../../store/ui'
+import { useDispatch } from 'react-redux'
 
 function ForgotPassword() {
+  const dispatch = useDispatch()
+
   return (
     <Stack
       spacing={4}
@@ -54,9 +62,9 @@ function ForgotPassword() {
       <Text
         className="text-lg text-green-100 cursor-pointer"
         onClick={() => {
-          // setLogin(true)
-          // setRegister(false)
-          // setForgotPassword(false)
+          dispatch(setShowLoginComponent(true))
+          dispatch(setShowRegisterComponent(false))
+          dispatch(setShowForgotPasswordComponent(false))
         }}
       >
         Back
