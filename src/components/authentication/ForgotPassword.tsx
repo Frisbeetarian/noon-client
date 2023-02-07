@@ -18,6 +18,11 @@ import {
 } from '../../store/ui'
 import { useDispatch } from 'react-redux'
 import { useForgotPasswordMutation } from '../../generated/graphql'
+import * as Yup from 'yup'
+
+const ForgotPasswordSchema = Yup.object().shape({
+  email: Yup.string().email('Invalid email').required('Email is required.'),
+})
 
 function ForgotPassword() {
   const [complete, setComplete] = useState(false)
@@ -27,6 +32,7 @@ function ForgotPassword() {
   return (
     <Formik
       initialValues={{ email: '' }}
+      validationSchema={ForgotPasswordSchema}
       onSubmit={async (values) => {
         await forgotPassword({ variables: values })
         setComplete(true)
