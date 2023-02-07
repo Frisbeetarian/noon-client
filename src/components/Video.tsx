@@ -22,11 +22,14 @@ import {
   // getActiveConversee,
   // getShouldPauseCheckHasMore,
 } from '../store/chat'
+import { getIsMobile } from '../store/ui'
 
 const Video = ({ conversationUuid, profile, email }) => {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
+  const isMobile = useSelector(getIsMobile)
+
   // const activeConversee = useSelector(getActiveConversee)
   // const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
 
@@ -146,10 +149,13 @@ const Video = ({ conversationUuid, profile, email }) => {
   const handleReadyToClose = () => {
     // alert('Ready to close...')
   }
+
   handleReadyToClose()
+
   const generateRoomName = () =>
     `JitsiMeetRoomNo${Math.random() * 100}-${Date.now()}`
   generateRoomName()
+
   // Multiple instances demo
   const renderNewInstance = () => {
     if (!showNew) {
@@ -207,7 +213,7 @@ const Video = ({ conversationUuid, profile, email }) => {
       // overflowY="auto"
       flexDirection="column-reverse"
       className="w-full top-0 py-3 px-5 relative"
-      style={{ height: '80vh' }}
+      style={{ height: isMobile ? '75vh' : '80vh' }}
     >
       <JitsiMeeting
         domain={'noon-vid.com/'}

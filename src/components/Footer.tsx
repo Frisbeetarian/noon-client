@@ -230,7 +230,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
           </Button>
         </Box>
 
-        <Box className="flex items-center justify-end xs:w-1/4 mr-1 md:mr-2 md:w-1/6  ">
+        <Box className="glowy flex items-center justify-end xs:w-1/4 mr-1 md:mr-2 md:w-1/6  ">
           <Button
             size={isMobile ? 'sm' : 'md'}
             bg="black"

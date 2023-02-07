@@ -6,8 +6,10 @@ import {
   removeFriendEntry,
   removeFriendRequestEntry,
 } from '../../store/users'
+
 import { Button, CloseButton, Flex, useToast } from '@chakra-ui/react'
 import { setFriendFlagOnProfile } from '../../store/profiles'
+
 import {
   addConversation,
   addMessageToActiveConversation,
@@ -21,8 +23,10 @@ import {
   setPendingCall,
   setShouldPauseCheckHasMore,
 } from '../../store/chat'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { getSocket } from '../../store/sockets'
+
 import {
   useAcceptFriendRequestMutation,
   useUpdateUnreadMessagesForConversationMutation,
@@ -62,8 +66,8 @@ function SocketControls() {
           if (!message.trim().length) {
             return
           }
-          const data = message
 
+          const data = message
           if (
             activeConversationSet === false ||
             conversationUuid !== activeConversation.uuid
@@ -253,9 +257,7 @@ function SocketControls() {
           })
         )
 
-        // toast.closeAll()
         toast.close(from)
-
         toast({
           id: from,
           title: `${fromUsername} has cancelled the friend request.`,
