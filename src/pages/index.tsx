@@ -17,10 +17,12 @@ const Index = () => {
   })
 
   useEffect(() => {
-    if (data?.me?.username) {
-      router.replace('/noon')
-    } else {
-      router.replace('/onboarding')
+    if (!loading) {
+      if (data?.me?.username) {
+        router.replace('/noon')
+      } else {
+        router.replace('/onboarding')
+      }
     }
   }, [data])
 
