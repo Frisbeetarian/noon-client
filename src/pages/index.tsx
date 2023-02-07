@@ -24,7 +24,7 @@ const Index = () => {
         router.replace('/onboarding')
       }
     }
-  }, [data])
+  }, [data, loading])
 
   return (
     <Flex className="flex-col justify-center items-center bg-black text-white h-screen">
