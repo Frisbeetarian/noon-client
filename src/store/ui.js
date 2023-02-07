@@ -20,11 +20,25 @@ const slice = createSlice({
       containerHeight: '5vh',
       inputPadding: '5px',
     },
+    authentication: {
+      showRegisterComponent: true,
+      showLoginComponent: false,
+      showForgotPasswordComponent: false,
+    },
     createGroup: {
       active: false,
     },
   },
   reducers: {
+    setShowRegisterComponent: (ui, action) => {
+      ui.authentication.showRegisterComponent = action.payload
+    },
+    setShowLoginComponent: (ui, action) => {
+      ui.authentication.showLoginComponent = action.payload
+    },
+    setShowForgotPasswordComponent: (ui, action) => {
+      ui.authentication.showForgotPasswordComponent = action.payload
+    },
     setIsMobile: (ui, action) => {
       ui.isMobile = action.payload
     },
@@ -92,7 +106,25 @@ export const getCreateGroupActive = createSelector(
   (ui) => ui.createGroup.active
 )
 
+export const getShowRegisterComponent = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.authentication.showRegisterComponent
+)
+
+export const getShowLoginComponent = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.authentication.showLoginComponent
+)
+
+export const getShowForgotPasswordComponent = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.authentication.showForgotPasswordComponent
+)
+
 export const {
+  setShowRegisterComponent,
+  setShowLoginComponent,
+  setShowForgotPasswordComponent,
   showFriendshipRequestToast,
   setChatComponentState,
   setIsMobile,

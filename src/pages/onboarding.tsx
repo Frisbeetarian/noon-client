@@ -1,4 +1,4 @@
-import { Flex, Stack } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 
 import { useMeQuery } from '../generated/graphql'
