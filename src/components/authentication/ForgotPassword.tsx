@@ -8,6 +8,7 @@ import {
   Stack,
   FormLabel,
   Box,
+  Flex,
 } from '@chakra-ui/react'
 import { Formik, Form } from 'formik'
 
@@ -19,6 +20,7 @@ import {
 import { useDispatch } from 'react-redux'
 import { useForgotPasswordMutation } from '../../generated/graphql'
 import * as Yup from 'yup'
+import { InputField } from '../InputField'
 
 const ForgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required.'),
@@ -40,10 +42,20 @@ function ForgotPassword() {
     >
       {({ isSubmitting }) =>
         complete ? (
-          <Box>
-            You should receive a password reset link in your mail address
-            shortly.
-          </Box>
+          <Flex className="flex-col">
+            <Box>You should get an email with a reset link shortly.</Box>
+
+            <Text
+              className="text-lg text-green-100 cursor-pointer mt-10"
+              onClick={() => {
+                dispatch(setShowLoginComponent(true))
+                dispatch(setShowRegisterComponent(false))
+                dispatch(setShowForgotPasswordComponent(false))
+              }}
+            >
+              Back
+            </Text>
+          </Flex>
         ) : (
           <Form>
             <Stack
@@ -64,17 +76,16 @@ function ForgotPassword() {
                 fontSize={{ base: 'sm', sm: 'md' }}
                 // color={useColorModeValue('gray.800', 'gray.400')}
               >
-                You&apos;ll get an email with a reset link
+                You&apos;ll get an email with a reset link.
               </Text>
 
               <FormControl id="email" isRequired>
                 <FormLabel>Email address</FormLabel>
 
-                <Input
+                <InputField
                   placeholder="your-email@example.com"
-                  _placeholder={{ color: 'gray.500' }}
-                  type="email"
                   name="email"
+                  label=""
                 />
               </FormControl>
 

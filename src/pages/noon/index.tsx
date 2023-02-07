@@ -64,6 +64,10 @@ function Noon() {
   }, [data?.me?.username])
 
   useEffect(() => {
+    if (!loggedInUser?.user?.profile?.uuid) {
+      router.replace('/')
+    }
+
     if (
       fetchedConversations?.getConversationForLoggedInUser &&
       conversations === null &&

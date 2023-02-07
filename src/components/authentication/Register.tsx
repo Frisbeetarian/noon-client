@@ -149,6 +149,7 @@ function Register() {
         onClick={() => {
           // setLogin(true)
           // setRegister(false)
+          // router.push('/login', undefined, { shallow: true })
           dispatch(setShowLoginComponent(true))
           dispatch(setShowRegisterComponent(false))
           dispatch(setShowForgotPasswordComponent(false))
