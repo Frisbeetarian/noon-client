@@ -13,44 +13,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
-  DateTime: any;
   /** The `Upload` scalar type represents a file upload. */
   Upload: import('graphql-upload-minimal').FileUpload;
-};
-
-export type Community = {
-  __typename?: 'Community';
-  createdAt: Scalars['String'];
-  creator: User;
-  creatorId: Scalars['String'];
-  description: Scalars['String'];
-  endDate?: Maybe<Scalars['DateTime']>;
-  id: Scalars['Int'];
-  participants: Profile;
-  privacy: Scalars['String'];
-  startDate?: Maybe<Scalars['DateTime']>;
-  timezone: Scalars['String'];
-  title: Scalars['String'];
-  updatedAt: Scalars['String'];
-  username: Scalars['String'];
-};
-
-export type CommunityInput = {
-  description: Scalars['String'];
-  endDate?: InputMaybe<Scalars['DateTime']>;
-  privacy: Scalars['String'];
-  startDate?: InputMaybe<Scalars['DateTime']>;
-  timezone: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type CommunityParticipant = {
-  __typename?: 'CommunityParticipant';
-  communityId: Scalars['Float'];
-  id: Scalars['Int'];
-  participantUsername: Scalars['String'];
-  profileId: Scalars['Float'];
 };
 
 export type Conversation = {
@@ -86,42 +50,6 @@ export type ConversationToProfile = {
   unreadMessages: Scalars['Float'];
   updatedAt: Scalars['String'];
   uuid: Scalars['String'];
-};
-
-export type Event = {
-  __typename?: 'Event';
-  createdAt: Scalars['String'];
-  creator: User;
-  creatorId: Scalars['String'];
-  description: Scalars['String'];
-  endDate?: Maybe<Scalars['DateTime']>;
-  eventToProfiles: EventToProfile;
-  id: Scalars['Int'];
-  privacy: Scalars['String'];
-  startDate?: Maybe<Scalars['DateTime']>;
-  timezone: Scalars['String'];
-  title: Scalars['String'];
-  updatedAt: Scalars['String'];
-  username: Scalars['String'];
-};
-
-export type EventInput = {
-  description: Scalars['String'];
-  endDate?: InputMaybe<Scalars['DateTime']>;
-  privacy: Scalars['String'];
-  startDate?: InputMaybe<Scalars['DateTime']>;
-  timezone: Scalars['String'];
-  title: Scalars['String'];
-};
-
-export type EventToProfile = {
-  __typename?: 'EventToProfile';
-  event: Event;
-  eventId: Scalars['Float'];
-  id: Scalars['Float'];
-  participantUsername: Scalars['String'];
-  profile: Profile;
-  profileId: Scalars['Float'];
 };
 
 export type FieldError = {
@@ -169,15 +97,11 @@ export type Mutation = {
   cancelPendingCallForConversation: Scalars['Boolean'];
   changePassword: UserResponse;
   clearUnreadMessagesForConversation: Scalars['Boolean'];
-  createCommunity: Community;
-  createEvent: Event;
   createGroupConversation: Conversation;
   createPost: Post;
   deleteMessage: Message;
   deletePost: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
-  joinCommunity: Scalars['Boolean'];
-  joinEvent: Event;
   leaveGroup: Scalars['Boolean'];
   login: UserResponse;
   logout: Scalars['Boolean'];
@@ -224,16 +148,6 @@ export type MutationClearUnreadMessagesForConversationArgs = {
 };
 
 
-export type MutationCreateCommunityArgs = {
-  input: CommunityInput;
-};
-
-
-export type MutationCreateEventArgs = {
-  input: EventInput;
-};
-
-
 export type MutationCreateGroupConversationArgs = {
   input: GroupInput;
   participants: Array<Scalars['String']>;
@@ -264,16 +178,6 @@ export type MutationForgotPasswordArgs = {
 };
 
 
-export type MutationJoinCommunityArgs = {
-  communityId: Scalars['Int'];
-};
-
-
-export type MutationJoinEventArgs = {
-  eventId: Scalars['Int'];
-};
-
-
 export type MutationLeaveGroupArgs = {
   groupUuid: Scalars['String'];
 };
@@ -281,6 +185,7 @@ export type MutationLeaveGroupArgs = {
 
 export type MutationLoginArgs = {
   password: Scalars['String'];
+  rememberMe: Scalars['Boolean'];
   username: Scalars['String'];
 };
 
@@ -361,12 +266,6 @@ export type MutationVoteArgs = {
   value: Scalars['Int'];
 };
 
-export type PaginatedEvents = {
-  __typename?: 'PaginatedEvents';
-  events: Array<Event>;
-  hasMore: Scalars['Boolean'];
-};
-
 export type PaginatedMessages = {
   __typename?: 'PaginatedMessages';
   hasMore: Scalars['Boolean'];
@@ -412,12 +311,6 @@ export type Profile = {
 export type Query = {
   __typename?: 'Query';
   checkIfConversationHasMoreMessages: Scalars['Boolean'];
-  communities: Array<Community>;
-  community?: Maybe<Community>;
-  event?: Maybe<Event>;
-  events: PaginatedEvents;
-  getCommunitiesParticipants: Array<CommunityParticipant>;
-  getCommunityParticipants: Array<CommunityParticipant>;
   getConversationForLoggedInUser?: Maybe<Array<Conversation>>;
   getConversationProfileForLoggedInUser?: Maybe<ConversationToProfile>;
   getConversationsByProfileUuid?: Maybe<Conversation>;
@@ -436,32 +329,6 @@ export type Query = {
 
 export type QueryCheckIfConversationHasMoreMessagesArgs = {
   conversationUuid: Scalars['String'];
-};
-
-
-export type QueryCommunityArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type QueryEventArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type QueryEventsArgs = {
-  cursor?: InputMaybe<Scalars['String']>;
-  limit: Scalars['Int'];
-};
-
-
-export type QueryGetCommunitiesParticipantsArgs = {
-  communitiesIds: Array<Scalars['Int']>;
-};
-
-
-export type QueryGetCommunityParticipantsArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -669,6 +536,7 @@ export type LeaveGroupMutation = { __typename?: 'Mutation', leaveGroup: boolean 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
+  rememberMe: Scalars['Boolean'];
 }>;
 
 
@@ -1414,8 +1282,8 @@ export type LeaveGroupMutationHookResult = ReturnType<typeof useLeaveGroupMutati
 export type LeaveGroupMutationResult = Apollo.MutationResult<LeaveGroupMutation>;
 export type LeaveGroupMutationOptions = Apollo.BaseMutationOptions<LeaveGroupMutation, LeaveGroupMutationVariables>;
 export const LoginDocument = gql`
-    mutation Login($username: String!, $password: String!) {
-  login(username: $username, password: $password) {
+    mutation Login($username: String!, $password: String!, $rememberMe: Boolean!) {
+  login(username: $username, password: $password, rememberMe: $rememberMe) {
     ...RegularUserResponse
   }
 }
@@ -1437,6 +1305,7 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  *   variables: {
  *      username: // value for 'username'
  *      password: // value for 'password'
+ *      rememberMe: // value for 'rememberMe'
  *   },
  * });
  */

@@ -18,7 +18,7 @@ import React, { useEffect, useState } from 'react'
 
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { toErrorMap } from '../utils/toErrorMap'
-import { Form, Formik } from 'formik'
+import { Field, Form, Formik } from 'formik'
 
 import {
   useLoginMutation,
@@ -38,6 +38,17 @@ const RegisterSchema = Yup.object().shape({
     .max(50, 'Too Long!')
     .required('Username is required'),
   email: Yup.string().email('Invalid email').required('Email is required'),
+  password: Yup.string()
+    .min(4, 'Password is too short')
+    .max(120, 'Password is too long')
+    .required('Password is required'),
+})
+
+const LoginSchema = Yup.object().shape({
+  usernameOrEmail: Yup.string()
+    .min(3, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Username or email required'),
   password: Yup.string()
     .min(4, 'Password is too short')
     .max(120, 'Password is too long')
@@ -98,12 +109,18 @@ const Onboarding = () => {
 
           <Box boxShadow={'lg'} p={8} className="border bg-black">
             <Formik
-              initialValues={{ usernameOrEmail: '', password: '' }}
+              initialValues={{
+                usernameOrEmail: '',
+                password: '',
+                rememberMe: false,
+              }}
+              validationSchema={LoginSchema}
               onSubmit={async (values, { setErrors }) => {
                 const response = await login({
                   variables: {
                     username: values.usernameOrEmail,
                     password: values.password,
+                    rememberMe: values.rememberMe,
                   },
                 })
 
@@ -121,15 +138,16 @@ const Onboarding = () => {
               {({ isSubmitting }) => (
                 <Form>
                   <Stack spacing={4} className="text-white">
-                    <FormControl id="email">
+                    <FormControl id="email" isRequired>
                       {/*<FormLabel>Email address</FormLabel>*/}
                       <InputField
+                        placeholder="Username or email"
                         name="usernameOrEmail"
                         label="Username or Email"
                       />
                     </FormControl>
 
-                    <FormControl id="password">
+                    <FormControl id="password" isRequired>
                       <InputField
                         name="password"
                         label="Password"
@@ -143,7 +161,17 @@ const Onboarding = () => {
                         align={'start'}
                         justify={'space-between'}
                       >
-                        <Checkbox>Remember me</Checkbox>
+                        <FormControl id="rememberMe" className="cursor-pointer">
+                          <label className="cursor-pointer">
+                            <Field
+                              type="checkbox"
+                              name="rememberMe"
+                              className="mr-2 "
+                            />
+                            Remember me
+                          </label>
+                        </FormControl>
+
                         <Link
                           color={'blue.400'}
                           onClick={() => {
