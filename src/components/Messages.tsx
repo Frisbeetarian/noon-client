@@ -36,8 +36,8 @@ import { getLoggedInUser } from '../store/users'
 import ReactAudioPlayer from 'react-audio-player'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSocket } from '../store/sockets'
-import { Message } from '../../gql-types'
 import { getIsMobile } from '../store/ui'
+import { Message } from '../utils/types'
 
 const Messages = () => {
   const dispatch = useDispatch()
