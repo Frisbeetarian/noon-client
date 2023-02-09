@@ -1,26 +1,66 @@
-import { createSlice, current } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
-import { useSelector } from 'react-redux'
-import { getSocket } from './sockets'
 import { uuid } from 'uuidv4'
+import { Conversation, Message, ProfileInMessage } from '../utils/types'
+
+interface ChatState {
+  conversations: Conversation[] | null | undefined
+  activeConversee: null
+  activeConversation: Conversation | null | undefined
+  conversationsThatHaveUnreadMessagesForProfile: string[]
+  activeConversationSet: boolean
+  shouldPauseCheckHasMore: boolean
+}
+
+interface ConversationPayload {
+  conversation: Conversation
+  conversationsToSend: Conversation[] | null | undefined
+  loggedInProfileUuid: string
+  conversationUuid: string
+  participantUuid: string
+}
+
+interface MessagesPayload {
+  messages: Message[]
+  conversationUuid: string
+  loggedInProfileUuid: string
+}
+
+interface MessagePayload {
+  uuid: string
+  message: string
+  from: 'me' | 'other'
+  type: string
+  src: string
+  conversationUuid: string
+  deleted: boolean
+  sender: ProfileInMessage
+  loggedInProfileUuid: string
+}
+
+// interface ConversationUuidPayload {
+//   conversationUuid: string
+//   participantUuid: string
+// }
+
+const initialState: ChatState = {
+  conversations: null,
+  activeConversee: null,
+  activeConversation: null,
+  conversationsThatHaveUnreadMessagesForProfile: [],
+  activeConversationSet: false,
+  shouldPauseCheckHasMore: false,
+}
 
 const slice = createSlice({
   name: 'chat',
-  initialState: {
-    conversations: null,
-    activeConversee: null,
-    activeConversation: null,
-    conversationsThatHaveUnreadMessagesForProfile: [],
-    activeConversationSet: false,
-    shouldPauseCheckHasMore: false,
-  },
+  initialState,
   reducers: {
-    setActiveConversationSet: (chat, action) => {
+    setActiveConversationSet: (chat, action: PayloadAction<boolean>) => {
       chat.activeConversationSet = action.payload
     },
-    addConversation: (chat, action) => {
+    addConversation: (chat, action: PayloadAction<ConversationPayload>) => {
       let conversationObject = { ...action.payload.conversation }
-      console.log('conversation object:', conversationObject)
 
       if (conversationObject.type !== 'group') {
         conversationObject.conversee = conversationObject.profiles?.find(
@@ -39,80 +79,84 @@ const slice = createSlice({
       // }
 
       // conversationObject.ongoingCall = false
-      chat.conversations.push(conversationObject)
+      chat.conversations?.push(conversationObject)
     },
-    removeConversation: (chat, action) => {
-      chat.conversations = chat.conversations.filter(
+    removeConversation: (chat, action: PayloadAction<ConversationPayload>) => {
+      chat.conversations = chat.conversations?.filter(
         (conversation) => conversation.uuid != action.payload.conversationUuid
       )
     },
-    removeParticipantFromGroup: (chat, action) => {
-      const conversation = chat.conversations.find(
+    removeParticipantFromGroup: (
+      chat,
+      action: PayloadAction<ConversationPayload>
+    ) => {
+      const conversation = chat.conversations?.find(
         (conversation) => conversation.uuid === action.payload.conversationUuid
       )
 
-      const profiles = [...conversation.profiles]
-      profiles.splice(profiles.indexOf(action.payload.participantUuid), 1)
-      conversation.profiles = profiles
+      if (conversation) {
+        const profiles = [...conversation.profiles]
+        profiles.splice(profiles.indexOf(action.payload.participantUuid), 1)
+        conversation.profiles = profiles
 
-      if (
-        chat.activeConversation &&
-        chat.activeConversation.uuid === action.payload.conversationUuid
-      ) {
-        let activeConversationProfiles = [...chat.activeConversation.profiles]
+        if (
+          chat.activeConversation &&
+          chat.activeConversation.uuid === action.payload.conversationUuid
+        ) {
+          let activeConversationProfiles = [...chat.activeConversation.profiles]
 
-        activeConversationProfiles = activeConversationProfiles.filter(
-          (profile) => profile.uuid != action.payload.participantUuid
-        )
+          activeConversationProfiles = activeConversationProfiles.filter(
+            (profile) => profile.uuid != action.payload.participantUuid
+          )
 
-        chat.activeConversation.profiles = activeConversationProfiles
+          chat.activeConversation.profiles = activeConversationProfiles
+        }
       }
     },
-    setConversations: (chat, action) => {
-      const conversationsArray = []
+    setConversations: (chat, action: PayloadAction<ConversationPayload>) => {
+      const conversationsArray: Conversation[] = []
 
-      Promise.all(
-        action.payload.conversationsToSend.map((conversation) => {
-          let conversationObject = { ...conversation }
+      // Promise.all(
+      action.payload.conversationsToSend?.map((conversation) => {
+        let conversationObject = { ...conversation }
 
-          const converseeObject = conversationObject.profiles.find(
-            (element) => element.uuid !== action.payload.loggedInProfileUuid
+        const converseeObject = conversationObject.profiles.find(
+          (element) => element.uuid !== action.payload.loggedInProfileUuid
+        )
+
+        const callObject = conversationObject.calls?.find(
+          (call) => call.profileUuid === action.payload.loggedInProfileUuid
+        )
+
+        if (
+          conversation.unreadMessages !== 0 &&
+          conversation.profileThatHasUnreadMessages ===
+            action.payload.loggedInProfileUuid
+        ) {
+          chat.conversationsThatHaveUnreadMessagesForProfile.push(
+            conversation.uuid
           )
+        }
 
-          console.log('action.payload.loggedInProfileUuid:', action.payload)
+        if (conversationObject.calls && callObject) {
+          conversationObject.pendingCall = callObject.pendingCall
+          conversationObject.ongoingCall = callObject.ongoingCall
+        }
 
-          console.log('conversee object:', converseeObject)
-          const callObject = conversationObject.calls?.find(
-            (call) => call.profileUuid === action.payload.loggedInProfileUuid
-          )
-
-          if (
-            conversation.unreadMessages !== 0 &&
-            conversation.profileThatHasUnreadMessages ===
-              action.payload.loggedInProfileUuid
-          ) {
-            chat.conversationsThatHaveUnreadMessagesForProfile.push(
-              conversation.uuid
-            )
-          }
-
-          if (conversationObject.call) {
-            conversationObject.pendingCall = callObject.pendingCall
-            conversationObject.ongoingCall = callObject.ongoingCall
-          }
-
-          conversationObject.conversee = converseeObject
-          conversationsArray.push(conversationObject)
-        })
-      )
+        conversationObject.conversee = converseeObject
+        conversationsArray.push(conversationObject)
+      })
+      // )
 
       chat.conversations = conversationsArray
     },
-    addMessagesToConversation: (chat, action) => {
+    addMessagesToConversation: (
+      chat,
+      action: PayloadAction<MessagesPayload>
+    ) => {
       const conversationUuid = action.payload.conversationUuid
       let messages = action.payload.messages
-      const loggedInProfileUuid =
-        action.payload.loggedInUser.user?.profile?.uuid
+      const loggedInProfileUuid = action.payload.loggedInProfileUuid
 
       if (
         chat.activeConversation &&
@@ -136,20 +180,21 @@ const slice = createSlice({
           (a, b) => b.createdAt - a.createdAt
         )
 
-        let conversation = chat.conversations.find(
+        let conversation = chat.conversations?.find(
           (conversation) => conversation.uuid === conversationUuid
         )
 
-        conversation.messages = [...sortedMessages]
-        chat.activeConversation.messages = sortedMessages
+        if (conversation) {
+          conversation.messages = [...sortedMessages]
+          chat.activeConversation.messages = sortedMessages
+        }
       }
     },
-    addMessageToActiveConversation: (chat, action) => {
+    addMessageToActiveConversation: (
+      chat,
+      action: PayloadAction<MessagePayload>
+    ) => {
       let conversationUuid = action.payload.conversationUuid
-
-      console.log('chat active converastion:', chat.activeConversation)
-      console.log('payload.conversationUuid:', action.payload.conversationUuid)
-      console.log('action.payload:', action.payload)
 
       if (
         chat.activeConversation &&
@@ -158,8 +203,10 @@ const slice = createSlice({
         chat.activeConversation.messages.unshift({
           uuid: action.payload.uuid,
           content: action.payload.message,
-          updatedAt: new Date().getTime(),
-          createdAt: new Date().getTime(),
+          // updatedAt: new Date().getTime(),
+          // createdAt: new Date().getTime(),
+          updatedAt: new Date(),
+          createdAt: new Date(),
           from: action.payload.from,
           type: action.payload.type,
           src: action.payload.src,
@@ -170,79 +217,60 @@ const slice = createSlice({
           },
         })
 
-        const conversationn = chat.conversations.find(
+        const conversationn = chat.conversations?.find(
           (conversation) => conversation.uuid === conversationUuid
         )
-
-        conversationn.messages.unshift({
-          uuid: action.payload.uuid,
-          content: action.payload.message,
-          // updatedAt: action.payload.updatedAt,
-          // createdAt: action.payload.createdAt,
-          updatedAt: new Date().getTime(),
-          createdAt: new Date().getTime(),
-          type: action.payload.type,
-          src: action.payload.src,
-          deleted: action.payload.deleted,
-          sender: {
-            uuid: action.payload.sender?.uuid,
-            username: action.payload.sender?.username,
-          },
-        })
-      } else {
-        const conversationn = chat.conversations.find(
-          (conversation) => conversation.uuid === conversationUuid
-        )
-
-        conversationn.unreadMessages = conversationn.unreadMessages + 1
-        conversationn.profileThatHasUnreadMessages =
-          action.payload.loggedInProfile.uuid
-
-        if (
-          chat.conversationsThatHaveUnreadMessagesForProfile[
-            conversationUuid
-          ] == undefined
-        ) {
-          chat.conversationsThatHaveUnreadMessagesForProfile.push(
-            conversationUuid
-          )
+        if (conversationn) {
+          conversationn.messages.unshift({
+            uuid: action.payload.uuid,
+            content: action.payload.message,
+            updatedAt: new Date(),
+            createdAt: new Date(),
+            from: action.payload.from,
+            type: action.payload.type,
+            src: action.payload.src,
+            deleted: action.payload.deleted,
+            sender: {
+              uuid: action.payload.sender?.uuid,
+              username: action.payload.sender?.username,
+            },
+          })
         }
+      } else {
+        const conversationn = chat.conversations?.find(
+          (conversation) => conversation.uuid === conversationUuid
+        )
+        if (conversationn) {
+          conversationn.unreadMessages = conversationn.unreadMessages + 1
+          conversationn.profileThatHasUnreadMessages =
+            action.payload.loggedInProfileUuid
 
-        conversationn.messages.unshift({
-          uuid: action.payload.uuid,
-          content: action.payload.message,
-          updatedAt: new Date().getTime(),
-          createdAt: new Date().getTime(),
-          from: action.payload.from,
-          type: action.payload.type,
-          src: action.payload.src,
-          deleted: action.payload.deleted,
-          sender: {
-            uuid: action.payload.sender?.uuid,
-            username: action.payload.sender?.username,
-          },
-        })
+          if (
+            chat.conversationsThatHaveUnreadMessagesForProfile[
+              conversationUuid
+            ] == undefined
+          ) {
+            chat.conversationsThatHaveUnreadMessagesForProfile.push(
+              conversationUuid
+            )
+          }
+
+          conversationn.messages.unshift({
+            uuid: action.payload.uuid,
+            content: action.payload.message,
+            updatedAt: new Date(),
+            createdAt: new Date(),
+            from: action.payload.from,
+            type: action.payload.type,
+            src: action.payload.src,
+            deleted: action.payload.deleted,
+            sender: {
+              uuid: action.payload.sender?.uuid,
+              username: action.payload.sender?.username,
+            },
+          })
+        }
       }
-    },
-    addMessageToConversationByConversationUuid: (chat, action) => {
-      let conversationUuid = action.payload.conversationUuid
-      let message = action.payload.message
-
-      const conversationn = chat.conversations.find(
-        (conversation) => conversation.uuid === conversationUuid
-      )
-
-      conversationn.messages.push({
-        uuid: uuid(),
-        content: action.payload.message,
-        updatedAt: new Date(),
-        createdAt: new Date(),
-        from: action.payload.from,
-        sender: {
-          uuid: action.payload.loggedInUser.uuid,
-          username: action.payload.loggedInUser.username,
-        },
-      })
     },
     setActiveConversee: (chat, action) => {
       chat.activeConversee = action.payload
@@ -522,7 +550,6 @@ export const {
   setActiveConversation,
   addMessageToActiveConversation,
   addMessagesToConversation,
-  addMessageToConversationByConversationUuid,
   clearUnreadMessagesForConversationInStore,
   setActiveConversationSet,
   setOngoingCall,

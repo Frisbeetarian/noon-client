@@ -94,7 +94,6 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
       },
     })
       .then(async (response) => {
-        console.log('response:', response)
         if (activeConversation.type === 'pm') {
           socket.emit('private-chat-message', {
             content:

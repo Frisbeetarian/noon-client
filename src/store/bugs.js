@@ -16,7 +16,6 @@ const slice = createSlice({
   reducers: {
     bugsRequested: (bugs, action) => {
       bugs.loading = true
-      console.log('FEWFWEGFWEGEWGWE')
     },
     bugsRequestFailed: (bugs, action) => {
       bugs.loading = false

@@ -50,17 +50,20 @@ export type FriendshipRequest = {
 export type Conversation = {
   uuid: string
   unreadMessages: number
-  profileThatHasUnreadMessages: Profile
-  updatedAt: Date
-  createdAt: Date
+  profileThatHasUnreadMessages: string
   profiles: ProfileInConversation[]
   messages: Message[]
   hasMore: boolean
   calls: Call[]
+  pendingCall: boolean
+  ongoingCall: boolean
   type: string
   name: string
   description: string
   pendingCallProfile: ProfileInConversation
+  conversee: ProfileInConversation | null | undefined
+  updatedAt: Date
+  createdAt: Date
 }
 
 export type Message = {
@@ -72,6 +75,7 @@ export type Message = {
   src: string
   deleted: boolean
   sender: ProfileInMessage
+  from: 'me' | 'other'
 }
 
 export type Call = {

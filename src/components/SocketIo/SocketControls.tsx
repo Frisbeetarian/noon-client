@@ -85,9 +85,9 @@ function SocketControls() {
               uuid: messageUuid,
               message: data,
               sender: { uuid: from, username: fromUsername },
-              from: 'computer',
+              from: 'other',
               conversationUuid,
-              loggedInProfile: loggedInUser.user?.profile,
+              loggedInProfileUuid: loggedInUser.user?.profile.uuid,
               type,
               src,
             })

@@ -135,7 +135,7 @@ const Messages = () => {
         addMessagesToConversation({
           conversationUuid: activeConversation.uuid,
           messages: localMessages,
-          loggedInUser,
+          loggedInProfileUuid: loggedInUser.user.profile.uuid,
         })
       )
 
