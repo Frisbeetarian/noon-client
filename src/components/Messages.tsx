@@ -199,9 +199,9 @@ const Messages = () => {
 
     dispatch(
       deleteMessageInStore({
-        uuid: message.data?.deleteMessage.uuid,
-        content: message.data?.deleteMessage.content,
-        deleted: message.data?.deleteMessage.deleted,
+        uuid: message.data?.deleteMessage.uuid as string,
+        content: message.data?.deleteMessage.content as string,
+        deleted: message.data?.deleteMessage.deleted as boolean,
         conversationUuid: activeConversation.uuid,
       })
     )
