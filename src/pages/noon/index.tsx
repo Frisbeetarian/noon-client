@@ -61,7 +61,7 @@ function Noon() {
       if (!data?.me?.username) {
         router.replace('/')
       } else {
-        dispatch(setLoggedInUser({ user: data }))
+        dispatch(setLoggedInUser(data.me))
       }
     }
   }, [meLoading, data?.me?.username])

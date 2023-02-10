@@ -118,3 +118,9 @@ export type acceptFriendRequest = {
   calls: Call[]
   pendingCallProfile: ProfileInUser | null
 }
+
+export type FriendRequest = {
+  uuid: string
+  username: string
+  reverse: boolean
+}

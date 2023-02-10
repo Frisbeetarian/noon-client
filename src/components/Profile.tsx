@@ -204,11 +204,9 @@ export default function Profile({ profile }) {
 
                 dispatch(
                   addFriendRequestEntry({
-                    friendRequest: {
-                      uuid: profile.uuid,
-                      username: profile.username,
-                      reverse: false,
-                    },
+                    uuid: profile.uuid,
+                    username: profile.username,
+                    reverse: false,
                   })
                 )
 

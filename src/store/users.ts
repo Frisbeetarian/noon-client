@@ -1,62 +1,73 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
-let lastId = 0
+import { Friend, FriendRequest, User } from '../utils/types'
+
+interface UsersState {
+  user: User | {} | null | undefined
+}
+
+interface RemoveFriendEntryPayload {
+  profileUuid: string
+  friends: Friend[]
+}
+
+interface RemoveFriendRequestEntryPayload {
+  profileUuid: string
+  friendRequests: FriendRequest[]
+}
+
+const initialState: UsersState = {
+  user: {},
+}
 
 const slice = createSlice({
   name: 'users',
-  initialState: {
-    user: {},
-  },
+  initialState,
   reducers: {
-    userAdded: (users, action) => {
-      users.push({
-        id: ++lastId,
-        name: action.payload.name,
-        bugsAssigned: [],
-      })
-    },
-    assignBugToUser: (users, action) => {
-      const { bugId, userId } = action.payload
-      const index = users.findIndex((user) => user.id === userId)
-      users[index].bugsAssigned.push(bugId)
-    },
-    setLoggedInUser: (users, action) => {
+    setLoggedInUser: (users, action: PayloadAction<User>) => {
       // console.log('retrieved user: ', action.payload)
-      if (action.payload.user?.me) {
-        users.user = action.payload.user.me
+      if (action.payload) {
+        users.user = action.payload
       }
     },
-    addFriendRequestEntry: (users, action) => {
+    addFriendRequestEntry: (users, action: PayloadAction<FriendRequest>) => {
       let userObject = { ...users.user }
-      userObject.friendshipRequests.push(action.payload.friendRequest)
+
+      userObject.friendshipRequests?.push(action.payload)
     },
-    removeFriendRequestEntry: (users, action) => {
+    removeFriendRequestEntry: (
+      users,
+      action: PayloadAction<RemoveFriendRequestEntryPayload>
+    ) => {
       let friendRequests
 
       friendRequests = action.payload.friendRequests.filter(
         (FREntry) => FREntry.uuid != action.payload.profileUuid
       )
 
-      console.log('friend request entries:', friendRequests)
-      users.user.friendshipRequests = friendRequests
+      let userObject = { ...users.user }
+      userObject.friendshipRequests?.push(friendRequests)
     },
-    addFriendEntry: (users, action) => {
+    addFriendEntry: (users, action: PayloadAction<Friend>) => {
       try {
         let userObject = { ...users.user }
-        console.log('add friend entry:', action.payload.friend)
-        userObject.friends.push(action.payload.friend)
+        userObject.friends?.push(action.payload)
       } catch (e) {
         console.log('error:', e)
       }
     },
-    removeFriendEntry: (users, action) => {
+    removeFriendEntry: (
+      users,
+      action: PayloadAction<RemoveFriendEntryPayload>
+    ) => {
       let friends
 
       friends = action.payload.friends.filter(
         (FREntry) => FREntry.uuid != action.payload.profileUuid
       )
 
-      users.user.friends = friends
+      let userObject = { ...users.user }
+      userObject.friends?.push(friends)
     },
   },
 })
@@ -85,23 +96,10 @@ export const getBugsAssignedToUser = (state, action) => {
     // const fef = [...bugsForUser, bug];
   }
 
-  // for(const bugId in user[0].bugsAssigned){
-  //     const bug = state.entities.bugs.filter(bug => bug.id === bugId);
-  //
-  //     return [...bugsForUser, bug];
-  // }
-  /*    user[0].bugsAssigned.map(bugId => {
-        const bug = state.entities.bugs.filter(bug => bug.id === bugId);
-
-        return [...bugsForUser, bug];
-    })*/
-
   return bugsForUser
 }
 
 export const {
-  userAdded,
-  assignBugToUser,
   setLoggedInUser,
   addFriendRequestEntry,
   removeFriendRequestEntry,

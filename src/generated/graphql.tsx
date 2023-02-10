@@ -453,7 +453,7 @@ export type ChangePasswordMutationVariables = Exact<{
 }>;
 
 
-export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', uuid: string, username: string, email: string, profile: { __typename?: 'Profile', uuid: string, username: string } } | null } };
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', uuid: string, username: string, email: string, updatedAt: string, createdAt: string, profile: { __typename?: 'Profile', uuid: string, username: string } } | null } };
 
 export type ClearUnreadMessagesForConversationMutationVariables = Exact<{
   conversationUuid: Scalars['String'];
@@ -525,9 +525,9 @@ export type RegularErrorFragment = { __typename?: 'FieldError', field: string, m
 
 export type RegularProfileFragment = { __typename?: 'Profile', uuid: string, username: string };
 
-export type RegularUserFragment = { __typename?: 'User', uuid: string, username: string, email: string, profile: { __typename?: 'Profile', uuid: string, username: string } };
+export type RegularUserFragment = { __typename?: 'User', uuid: string, username: string, email: string, updatedAt: string, createdAt: string, profile: { __typename?: 'Profile', uuid: string, username: string } };
 
-export type RegularUserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', uuid: string, username: string, email: string, profile: { __typename?: 'Profile', uuid: string, username: string } } | null };
+export type RegularUserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', uuid: string, username: string, email: string, updatedAt: string, createdAt: string, profile: { __typename?: 'Profile', uuid: string, username: string } } | null };
 
 export type LeaveGroupMutationVariables = Exact<{
   groupUuid: Scalars['String'];
@@ -543,7 +543,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', uuid: string, username: string, email: string, profile: { __typename?: 'Profile', uuid: string, username: string } } | null } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', uuid: string, username: string, email: string, updatedAt: string, createdAt: string, profile: { __typename?: 'Profile', uuid: string, username: string } } | null } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -598,7 +598,7 @@ export type GetProfilesQuery = { __typename?: 'Query', getProfiles: Array<{ __ty
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', uuid: string, username: string, email: string, friends: Array<{ __typename?: 'Friend', uuid: string, username: string }>, friendshipRequests: Array<{ __typename?: 'FriendshipRequest', uuid: string, username: string, reverse: boolean }>, profile: { __typename?: 'Profile', uuid: string, username: string } } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', uuid: string, username: string, email: string, updatedAt: string, createdAt: string, friends: Array<{ __typename?: 'Friend', uuid: string, username: string }>, friendshipRequests: Array<{ __typename?: 'FriendshipRequest', uuid: string, username: string, reverse: boolean }>, profile: { __typename?: 'Profile', uuid: string, username: string } } | null };
 
 export type PostQueryVariables = Exact<{
   id: Scalars['Int'];
@@ -641,7 +641,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', uuid: string, username: string, email: string, profile: { __typename?: 'Profile', uuid: string, username: string } } | null } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', uuid: string, username: string, email: string, updatedAt: string, createdAt: string, profile: { __typename?: 'Profile', uuid: string, username: string } } | null } };
 
 export type SaveGroupMessageMutationVariables = Exact<{
   message: Scalars['String'];
@@ -850,6 +850,8 @@ export const RegularUserFragmentDoc = gql`
   uuid
   username
   email
+  updatedAt
+  createdAt
   profile {
     uuid
     username

@@ -98,11 +98,9 @@ function SocketControls() {
       socket.on('send-friend-request', ({ from, fromUsername }) => {
         dispatch(
           addFriendRequestEntry({
-            friendRequest: {
-              uuid: from,
-              username: fromUsername,
-              reverse: true,
-            },
+            uuid: from,
+            username: fromUsername,
+            reverse: true,
           })
         )
 
@@ -154,10 +152,8 @@ function SocketControls() {
 
                     dispatch(
                       addFriendEntry({
-                        friend: {
-                          uuid: from,
-                          username: fromUsername,
-                        },
+                        uuid: from,
+                        username: fromUsername,
                       })
                     )
 
