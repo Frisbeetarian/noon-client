@@ -1,6 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
-let lastId = 0
+
+import { Profile } from '../utils/types'
+
+interface addProfilesPayload {
+  profiles: Profile[]
+  // loggedInUser:
+}
 
 const slice = createSlice({
   name: 'profiles',

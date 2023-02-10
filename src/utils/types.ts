@@ -3,6 +3,8 @@ export type User = {
   username: string
   email: string
   profile: ProfileInUser
+  friendshipRequests: FriendshipRequest[]
+  friends: Friend[]
 }
 
 export type UserResponse = {

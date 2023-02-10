@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react'
 import { Flex, Input, Button, Box, Icon } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
-// import PubSub from 'pubsub-js'
+
+import { useSelector, useDispatch } from 'react-redux'
+import { ImUpload2 } from 'react-icons/im'
 
 import {
   addMessageToActiveConversation,
@@ -12,8 +14,12 @@ import {
 } from '../store/chat'
 
 import { setVideoFrameForConversation } from '../store/video'
-import { useSelector, useDispatch } from 'react-redux'
-import { ImUpload2 } from 'react-icons/im'
+
+import RecorderControls from './AudioRecorder/recorder-controls'
+import { UseRecorder } from './AudioRecorder/types/recorder'
+import useRecorder from './AudioRecorder/hooks/use-recorder'
+
+import { getIsMobile } from '../store/ui'
 
 import { getLoggedInUser } from '../store/users'
 import { getSocket } from '../store/sockets'
@@ -21,14 +27,6 @@ import {
   useSetPendingCallForConversationMutation,
   useUploadImageMutation,
 } from '../generated/graphql'
-
-import RecorderControls from './AudioRecorder/recorder-controls'
-// import useRecorder from '../../components/AudioRecorder/hooks/use-recorder_old'
-import { UseRecorder } from './AudioRecorder/types/recorder'
-import useRecorder from './AudioRecorder/hooks/use-recorder'
-import { getIsMobile } from '../store/ui'
-// import { ImCancelCircle } from 'react-icons/im'
-// import { uploadFile } from '../store/files'
 
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const hiddenFileInput = React.useRef(null)
