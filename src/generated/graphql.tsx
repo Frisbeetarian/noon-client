@@ -382,6 +382,9 @@ export type QuerySearchForProfileByUuidArgs = {
 export type Search = {
   __typename?: 'Search';
   createdAt: Scalars['String'];
+  hasFriendshipRequestFromLoggedInProfile: Scalars['Boolean'];
+  hasSentFriendshipRequestToProfile: Scalars['Boolean'];
+  isAFriend: Scalars['Boolean'];
   name: Scalars['String'];
   updatedAt: Scalars['String'];
   userId: Scalars['String'];
@@ -617,7 +620,7 @@ export type SearchForProfileByUsernameQueryVariables = Exact<{
 }>;
 
 
-export type SearchForProfileByUsernameQuery = { __typename?: 'Query', searchForProfileByUsername?: Array<{ __typename?: 'Search', uuid: string, username: string, name: string, userId: string, updatedAt: string, createdAt: string }> | null };
+export type SearchForProfileByUsernameQuery = { __typename?: 'Query', searchForProfileByUsername?: Array<{ __typename?: 'Search', uuid: string, username: string, name: string, userId: string, updatedAt: string, createdAt: string, isAFriend: boolean, hasFriendshipRequestFromLoggedInProfile: boolean, hasSentFriendshipRequestToProfile: boolean }> | null };
 
 export type SearchForProfileByUuidQueryVariables = Exact<{
   profileUuid: Scalars['String'];
@@ -1731,6 +1734,9 @@ export const SearchForProfileByUsernameDocument = gql`
     userId
     updatedAt
     createdAt
+    isAFriend
+    hasFriendshipRequestFromLoggedInProfile
+    hasSentFriendshipRequestToProfile
   }
 }
     `;

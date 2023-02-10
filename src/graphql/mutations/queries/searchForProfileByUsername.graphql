@@ -6,5 +6,8 @@ query SearchForProfileByUsername($username: String!) {
         userId
         updatedAt
         createdAt
+        isAFriend
+        hasFriendshipRequestFromLoggedInProfile
+        hasSentFriendshipRequestToProfile
     }
 }

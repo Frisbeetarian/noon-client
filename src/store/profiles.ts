@@ -1,40 +1,57 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
 
-import { Profile } from '../utils/types'
+import { User } from '../utils/types'
 
-interface addProfilesPayload {
-  profiles: Profile[]
-  // loggedInUser:
+interface ProfilesState {
+  list: ProfilePayload[] | null
+}
+
+interface AddProfilesPayload {
+  profiles: ProfilePayload[] | null | undefined
+  loggedInUser: User
+}
+
+interface ProfilePayload {
+  uuid: string
+  username: string
+  userId: string
+  name: string
+  isAFriend: boolean
+  hasFriendshipRequestFromLoggedInProfile: boolean
+  hasSentFriendshipRequestToProfile: boolean
+  updatedAt: string
+  createdAt: string
+}
+
+const initialState: ProfilesState = {
+  list: [],
 }
 
 const slice = createSlice({
   name: 'profiles',
-  initialState: {
-    list: [],
-  },
+  initialState,
   reducers: {
-    addProfiles: (profiles, action) => {
+    addProfiles: (profiles, action: PayloadAction<AddProfilesPayload>) => {
       // let profilesArray = [...action.payload.profiles]
-      let profilesArray = []
+      let profilesArray: ProfilePayload[] = []
 
       if (action.payload.profiles == null) {
         profiles.list = null
       } else {
         action.payload.profiles = action.payload.profiles.filter(
-          (profile) =>
-            profile.uuid != action.payload.loggedInUser.user.profile.uuid
+          (profile) => profile.uuid != action.payload.loggedInUser.profile.uuid
         )
 
         action.payload.profiles.map((profile) => {
           let profileObject = { ...profile }
 
-          const friendsCheck = action.payload.loggedInUser.user.friends.find(
+          const friendsCheck = action.payload.loggedInUser.friends.find(
             (element) => element.uuid == profileObject.uuid
           )
 
           const friendshipRequestCheck =
-            action.payload.loggedInUser.user.friendshipRequests.find(
+            action.payload.loggedInUser.friendshipRequests.find(
               (element) => element.uuid == profileObject.uuid
             )
 
@@ -53,7 +70,6 @@ const slice = createSlice({
           //   profileObject.hasFriendshipRequestFromLoggedInProfile = true
           // }
 
-          console.log('PROFILE OBJECT:', profileObject)
           profilesArray.push(profileObject)
         })
 
