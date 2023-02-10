@@ -1,11 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
 
+interface FilesState {
+  file: null
+}
+
+const initialState: FilesState = {
+  file: null,
+}
+
 const slice = createSlice({
   name: 'files',
-  initialState: {
-    file: null,
-  },
+  initialState,
   reducers: {
     uploadFile: (files, action) => {
       files.file = action.payload.file

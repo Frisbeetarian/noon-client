@@ -1,30 +1,30 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
 
-let lastId = 0
+interface GroupsState {
+  groups: null
+  groupBeingCreated: null
+  participants: String[]
+}
+
+const initialState: GroupsState = {
+  groups: null,
+  groupBeingCreated: null,
+  participants: [],
+}
 
 const slice = createSlice({
   name: 'groups',
-  initialState: {
-    groups: null,
-    groupBeingCreated: null,
-    participants: [],
-  },
+  initialState,
   reducers: {
-    createGroup: (groups, action) => {
-      groups.push({
-        id: ++lastId,
-        name: action.payload.name,
-      })
-    },
-    clearState: (groups, action) => {
+    clearState: (groups) => {
       groups.participants = []
       groups.groupBeingCreated = null
     },
-    addParticipants: (groups, action) => {
+    addParticipants: (groups, action: PayloadAction<string>) => {
       groups.participants.push(action.payload)
     },
-    removeParticipants: (groups, action) => {
+    removeParticipants: (groups, action: PayloadAction<string>) => {
       const temp = [...groups.participants]
       temp.splice(temp.indexOf(action.payload), 1)
       groups.participants = temp
