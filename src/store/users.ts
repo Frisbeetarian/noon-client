@@ -83,21 +83,21 @@ export const getLoggedInUser = createSelector(
   (user) => user
 )
 
-export const getBugsAssignedToUser = (state, action) => {
-  const user = state.entities.users.filter((user) => user.id === action.id)
-  const bugsForUser = []
-
-  for (let index = 0; index <= user[0].bugsAssigned.length - 1; index++) {
-    const bug = state.entities.bugs.filter(
-      (bug) => bug.id === user[0].bugsAssigned[index]
-    )
-
-    bugsForUser.push(bug)
-    // const fef = [...bugsForUser, bug];
-  }
-
-  return bugsForUser
-}
+// export const getBugsAssignedToUser = (state, action) => {
+//   const user = state.entities.users.filter((user) => user.id === action.id)
+//   const bugsForUser = []
+//
+//   // for (let index = 0; index <= user[0].bugsAssigned.length - 1; index++) {
+//     // const bug = state.entities.bugs.filter(
+//     //   (bug) => bug.id === user[0].bugsAssigned[index]
+//     // )
+//
+//     // bugsForUser.push(bug)
+//     // const fef = [...bugsForUser, bug];
+//   // }
+//
+//   return bugsForUser
+// }
 
 export const {
   setLoggedInUser,

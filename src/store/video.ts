@@ -1,15 +1,19 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
 
-let lastId = 0
+interface VideoState {
+  videoFrameOpen: boolean
+}
+
+const initialState: VideoState = {
+  videoFrameOpen: false,
+}
 
 const slice = createSlice({
   name: 'groups',
-  initialState: {
-    videoFrameOpen: false,
-  },
+  initialState,
   reducers: {
-    setVideoFrameForConversation: (video, action) => {
+    setVideoFrameForConversation: (video, action: PayloadAction<boolean>) => {
       video.videoFrameOpen = action.payload
     },
   },
