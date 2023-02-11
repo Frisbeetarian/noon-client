@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
-import { Conversation, Message, Profile } from '../generated/graphql'
+import { Conversation, Message, Profile, Sender } from '../generated/graphql'
 
 // import { Conversation, Message, Profile } from '../utils/types'
 
@@ -8,6 +8,9 @@ interface ChatState {
   conversations: Conversation[] | null | undefined
   activeConversee: Profile | null
   activeConversation: Conversation | null | undefined
+  conversationController: {
+    conversee: Sender | null | undefined
+  }
   conversationsThatHaveUnreadMessagesForProfile: string[]
   activeConversationSet: boolean
   shouldPauseCheckHasMore: boolean
@@ -63,9 +66,12 @@ interface DeleteMessagePayload {
 }
 
 const initialState: ChatState = {
-  conversations: null,
+  conversations: [],
   activeConversee: null,
   activeConversation: null,
+  conversationController: {
+    conversee: null,
+  },
   conversationsThatHaveUnreadMessagesForProfile: [],
   activeConversationSet: false,
   shouldPauseCheckHasMore: false,
@@ -82,9 +88,10 @@ const slice = createSlice({
       let conversationObject = { ...action.payload.conversation }
 
       if (conversationObject.type !== 'group') {
-        conversationObject.conversee = conversationObject.profiles?.find(
-          (element) => element.uuid !== action.payload.loggedInProfileUuid
-        )
+        chat.conversationController.conversee =
+          conversationObject.profiles?.find(
+            (element) => element.uuid !== action.payload.loggedInProfileUuid
+          )
       }
 
       // if (
@@ -98,7 +105,7 @@ const slice = createSlice({
       // }
 
       // conversationObject.ongoingCall = false
-      chat.conversations?.push(conversationObject)
+      chat.conversations?.push(action.payload.conversation)
     },
     removeConversation: (
       chat,

@@ -161,6 +161,7 @@ export default function Profile({ profile }) {
                   profile,
                   conversation:
                     acceptFriendshipResponse.data?.acceptFriendRequest,
+                  socket,
                 })
               }
               // if (toastIdRef.current) {
