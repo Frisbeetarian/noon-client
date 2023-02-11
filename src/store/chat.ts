@@ -396,9 +396,18 @@ const slice = createSlice({
         chat.activeConversation = conversationObject
       }
     },
-    setOngoingCall: (chat, action: PayloadAction<boolean>) => {
+    setOngoingCall: (
+      chat,
+      action: PayloadAction<{
+        uuid: string
+        initiator: {
+          uuid: string
+          username: string
+        }
+      }>
+    ) => {
       let activeConversationObject = { ...chat.activeConversation }
-      activeConversationObject.ongoingCall = action.payload
+      activeConversationObject.ongoingCall = true
 
       if (chat.activeConversation) {
         chat.activeConversation = { ...activeConversationObject }
