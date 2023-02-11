@@ -1,12 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
+import { Conversation, Message, Profile } from '../generated/graphql'
 
-import {
-  Conversation,
-  Message,
-  Profile,
-  ProfileInMessage,
-} from '../utils/types'
+// import { Conversation, Message, Profile } from '../utils/types'
 
 interface ChatState {
   conversations: Conversation[] | null | undefined
@@ -18,7 +14,7 @@ interface ChatState {
 }
 
 interface ConversationPayload {
-  conversation?: Conversation | null | undefined
+  conversation?: Conversation | undefined
   conversationsToSend?: Conversation[] | null | undefined
   loggedInProfileUuid?: string | null | undefined
   conversationUuid?: string | null | undefined
@@ -31,19 +27,19 @@ interface MessagesPayload {
   loggedInProfileUuid: string
 }
 
-interface MessagePayload {
-  uuid: string
-  message: string
-  from: 'me' | 'other' | null
-  type: string
-  src: string
-  conversationUuid: string
-  deleted?: boolean
-  sender: ProfileInMessage
-  loggedInProfileUuid: string
-  updatedAt: string
-  createdAt: string
-}
+// interface MessagePayload {
+//   uuid: string
+//   message: string
+//   from: 'me' | 'other' | null
+//   type: string
+//   src: string
+//   conversationUuid: string
+//   deleted?: boolean
+//   sender: ProfileInMessage
+//   loggedInProfileUuid: string
+//   updatedAt: string
+//   createdAt: string
+// }
 
 interface PendingCallPayload {
   profileUuid: string
@@ -104,7 +100,10 @@ const slice = createSlice({
       // conversationObject.ongoingCall = false
       chat.conversations?.push(conversationObject)
     },
-    removeConversation: (chat, action: PayloadAction<ConversationPayload>) => {
+    removeConversation: (
+      chat,
+      action: PayloadAction<{ conversationUuid: string }>
+    ) => {
       chat.conversations = chat.conversations?.filter(
         (conversation) => conversation.uuid != action.payload.conversationUuid
       )

@@ -17,11 +17,17 @@ export type Scalars = {
   Upload: import('graphql-upload-minimal').FileUpload;
 };
 
+export type Call = {
+  __typename?: 'Call';
+  ongoingCall: Scalars['Boolean'];
+  pendingCall: Scalars['Boolean'];
+  profileUsername: Scalars['String'];
+  profileUuid: Scalars['String'];
+};
+
 export type Conversation = {
   __typename?: 'Conversation';
-  calls: Array<ConversationToProfile>;
-  conversationToProfiles: Array<ConversationToProfile>;
-  conversations: Array<ConversationToProfile>;
+  calls: Array<Call>;
   createdAt: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   hasMore: Scalars['Boolean'];
@@ -29,9 +35,9 @@ export type Conversation = {
   name?: Maybe<Scalars['String']>;
   ongoingCall: Scalars['Boolean'];
   pendingCall: Scalars['Boolean'];
-  pendingCallProfile?: Maybe<Profile>;
+  pendingCallProfile?: Maybe<Sender>;
   profileThatHasUnreadMessages: Scalars['String'];
-  profiles: Array<Profile>;
+  profiles: Array<Sender>;
   type: Scalars['String'];
   unreadMessages: Scalars['Float'];
   updatedAt: Scalars['String'];
@@ -86,7 +92,7 @@ export type Message = {
   createdAt: Scalars['String'];
   deleted: Scalars['Boolean'];
   from: Scalars['String'];
-  sender: Profile;
+  sender: Sender;
   src?: Maybe<Scalars['String']>;
   type: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -302,6 +308,7 @@ export type PostInput = {
 
 export type Profile = {
   __typename?: 'Profile';
+  calls: Array<Call>;
   createdAt: Scalars['String'];
   friends: Array<Friend>;
   friendshipRequests: Array<FriendshipRequest>;
@@ -395,6 +402,12 @@ export type Search = {
   uuid: Scalars['String'];
 };
 
+export type Sender = {
+  __typename?: 'Sender';
+  username: Scalars['String'];
+  uuid: Scalars['String'];
+};
+
 export type User = {
   __typename?: 'User';
   createdAt: Scalars['String'];
@@ -433,7 +446,7 @@ export type AcceptFriendRequestMutationVariables = Exact<{
 }>;
 
 
-export type AcceptFriendRequestMutation = { __typename?: 'Mutation', acceptFriendRequest: { __typename?: 'Conversation', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, updatedAt: string, createdAt: string, hasMore: boolean, pendingCall: boolean, ongoingCall: boolean, type: string, name?: string | null, description?: string | null, profiles: Array<{ __typename?: 'Profile', uuid: string, username: string }>, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, sender: { __typename?: 'Profile', uuid: string, username: string } }>, calls: Array<{ __typename?: 'ConversationToProfile', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean }>, pendingCallProfile?: { __typename?: 'Profile', uuid: string, username: string } | null } };
+export type AcceptFriendRequestMutation = { __typename?: 'Mutation', acceptFriendRequest: { __typename?: 'Conversation', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, updatedAt: string, createdAt: string, hasMore: boolean, pendingCall: boolean, ongoingCall: boolean, type: string, name?: string | null, description?: string | null, profiles: Array<{ __typename?: 'Sender', uuid: string, username: string }>, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, conversationUuid: string, sender: { __typename?: 'Sender', uuid: string, username: string } }>, calls: Array<{ __typename?: 'Call', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean }>, pendingCallProfile?: { __typename?: 'Sender', uuid: string, username: string } | null } };
 
 export type CancelFriendRequestMutationVariables = Exact<{
   profileUuid: Scalars['String'];
@@ -472,7 +485,7 @@ export type CreateGroupConversationMutationVariables = Exact<{
 }>;
 
 
-export type CreateGroupConversationMutation = { __typename?: 'Mutation', createGroupConversation: { __typename?: 'Conversation', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, updatedAt: string, createdAt: string, hasMore: boolean, pendingCall: boolean, ongoingCall: boolean, type: string, name?: string | null, description?: string | null, profiles: Array<{ __typename?: 'Profile', uuid: string, username: string }>, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, sender: { __typename?: 'Profile', uuid: string, username: string } }>, calls: Array<{ __typename?: 'ConversationToProfile', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean }>, pendingCallProfile?: { __typename?: 'Profile', uuid: string, username: string } | null } };
+export type CreateGroupConversationMutation = { __typename?: 'Mutation', createGroupConversation: { __typename?: 'Conversation', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, updatedAt: string, createdAt: string, hasMore: boolean, pendingCall: boolean, ongoingCall: boolean, type: string, name?: string | null, description?: string | null, profiles: Array<{ __typename?: 'Sender', uuid: string, username: string }>, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, conversationUuid: string, sender: { __typename?: 'Sender', uuid: string, username: string } }>, calls: Array<{ __typename?: 'Call', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean }>, pendingCallProfile?: { __typename?: 'Sender', uuid: string, username: string } | null } };
 
 export type CreatePostMutationVariables = Exact<{
   input: PostInput;
@@ -506,11 +519,11 @@ export type ForgotPasswordMutationVariables = Exact<{
 
 export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: boolean };
 
-export type CallsSnippetFragment = { __typename?: 'ConversationToProfile', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean };
+export type CallsSnippetFragment = { __typename?: 'Call', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean };
 
-export type ConversationProfileSnippetFragment = { __typename?: 'Profile', uuid: string, username: string };
+export type ConversationProfileSnippetFragment = { __typename?: 'Sender', uuid: string, username: string };
 
-export type ConversationSnippetFragment = { __typename?: 'Conversation', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, updatedAt: string, createdAt: string, hasMore: boolean, pendingCall: boolean, ongoingCall: boolean, type: string, name?: string | null, description?: string | null, profiles: Array<{ __typename?: 'Profile', uuid: string, username: string }>, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, sender: { __typename?: 'Profile', uuid: string, username: string } }>, calls: Array<{ __typename?: 'ConversationToProfile', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean }>, pendingCallProfile?: { __typename?: 'Profile', uuid: string, username: string } | null };
+export type ConversationSnippetFragment = { __typename?: 'Conversation', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, updatedAt: string, createdAt: string, hasMore: boolean, pendingCall: boolean, ongoingCall: boolean, type: string, name?: string | null, description?: string | null, profiles: Array<{ __typename?: 'Sender', uuid: string, username: string }>, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, conversationUuid: string, sender: { __typename?: 'Sender', uuid: string, username: string } }>, calls: Array<{ __typename?: 'Call', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean }>, pendingCallProfile?: { __typename?: 'Sender', uuid: string, username: string } | null };
 
 export type ConversationToProfileSnippetFragment = { __typename?: 'ConversationToProfile', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, profile: Array<{ __typename?: 'Profile', uuid: string, username: string }> };
 
@@ -518,7 +531,7 @@ export type FriendSnippetFragment = { __typename?: 'Friend', uuid: string, usern
 
 export type FriendshipRequestSnippetFragment = { __typename?: 'FriendshipRequest', uuid: string, username: string, reverse: boolean };
 
-export type MessageSnippetFragment = { __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, sender: { __typename?: 'Profile', uuid: string, username: string } };
+export type MessageSnippetFragment = { __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, conversationUuid: string, sender: { __typename?: 'Sender', uuid: string, username: string } };
 
 export type PostSnippetFragment = { __typename?: 'Post', id: number, title: string, text: string, points: number, createdAt: string, updatedAt: string, textSnippet: string, voteStatus?: number | null, creator: { __typename?: 'User', uuid: string, username: string } };
 
@@ -563,7 +576,7 @@ export type CheckIfConversationHasMoreMessagesQuery = { __typename?: 'Query', ch
 export type GetConversationForLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetConversationForLoggedInUserQuery = { __typename?: 'Query', getConversationForLoggedInUser?: Array<{ __typename?: 'Conversation', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, updatedAt: string, createdAt: string, hasMore: boolean, pendingCall: boolean, ongoingCall: boolean, type: string, name?: string | null, description?: string | null, profiles: Array<{ __typename?: 'Profile', uuid: string, username: string }>, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, sender: { __typename?: 'Profile', uuid: string, username: string } }>, calls: Array<{ __typename?: 'ConversationToProfile', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean }>, pendingCallProfile?: { __typename?: 'Profile', uuid: string, username: string } | null }> | null };
+export type GetConversationForLoggedInUserQuery = { __typename?: 'Query', getConversationForLoggedInUser?: Array<{ __typename?: 'Conversation', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, updatedAt: string, createdAt: string, hasMore: boolean, pendingCall: boolean, ongoingCall: boolean, type: string, name?: string | null, description?: string | null, profiles: Array<{ __typename?: 'Sender', uuid: string, username: string }>, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, conversationUuid: string, sender: { __typename?: 'Sender', uuid: string, username: string } }>, calls: Array<{ __typename?: 'Call', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean }>, pendingCallProfile?: { __typename?: 'Sender', uuid: string, username: string } | null }> | null };
 
 export type GetConversationProfileForLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -575,7 +588,7 @@ export type GetConversationsByProfileUuidQueryVariables = Exact<{
 }>;
 
 
-export type GetConversationsByProfileUuidQuery = { __typename?: 'Query', getConversationsByProfileUuid?: { __typename?: 'Conversation', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, updatedAt: string, createdAt: string, hasMore: boolean, pendingCall: boolean, ongoingCall: boolean, type: string, name?: string | null, description?: string | null, profiles: Array<{ __typename?: 'Profile', uuid: string, username: string }>, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, sender: { __typename?: 'Profile', uuid: string, username: string } }>, calls: Array<{ __typename?: 'ConversationToProfile', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean }>, pendingCallProfile?: { __typename?: 'Profile', uuid: string, username: string } | null } | null };
+export type GetConversationsByProfileUuidQuery = { __typename?: 'Query', getConversationsByProfileUuid?: { __typename?: 'Conversation', uuid: string, unreadMessages: number, profileThatHasUnreadMessages: string, updatedAt: string, createdAt: string, hasMore: boolean, pendingCall: boolean, ongoingCall: boolean, type: string, name?: string | null, description?: string | null, profiles: Array<{ __typename?: 'Sender', uuid: string, username: string }>, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, conversationUuid: string, sender: { __typename?: 'Sender', uuid: string, username: string } }>, calls: Array<{ __typename?: 'Call', profileUuid: string, profileUsername: string, pendingCall: boolean, ongoingCall: boolean }>, pendingCallProfile?: { __typename?: 'Sender', uuid: string, username: string } | null } | null };
 
 export type GetMessagesForConversationQueryVariables = Exact<{
   conversationUuid: Scalars['String'];
@@ -584,7 +597,7 @@ export type GetMessagesForConversationQueryVariables = Exact<{
 }>;
 
 
-export type GetMessagesForConversationQuery = { __typename?: 'Query', getMessagesForConversation: { __typename?: 'PaginatedMessages', hasMore: boolean, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, sender: { __typename?: 'Profile', uuid: string, username: string } }> } };
+export type GetMessagesForConversationQuery = { __typename?: 'Query', getMessagesForConversation: { __typename?: 'PaginatedMessages', hasMore: boolean, messages: Array<{ __typename?: 'Message', uuid: string, content: string, updatedAt: string, createdAt: string, type: string, src?: string | null, deleted: boolean, from: string, conversationUuid: string, sender: { __typename?: 'Sender', uuid: string, username: string } }> } };
 
 export type GetProfileByUserIdQueryVariables = Exact<{
   userId: Scalars['Int'];
@@ -725,7 +738,7 @@ export type VoteMutationVariables = Exact<{
 export type VoteMutation = { __typename?: 'Mutation', vote: boolean };
 
 export const ConversationProfileSnippetFragmentDoc = gql`
-    fragment ConversationProfileSnippet on Profile {
+    fragment ConversationProfileSnippet on Sender {
   uuid
   username
 }
@@ -740,6 +753,7 @@ export const MessageSnippetFragmentDoc = gql`
   src
   deleted
   from
+  conversationUuid
   sender {
     uuid
     username
@@ -747,7 +761,7 @@ export const MessageSnippetFragmentDoc = gql`
 }
     `;
 export const CallsSnippetFragmentDoc = gql`
-    fragment CallsSnippet on ConversationToProfile {
+    fragment CallsSnippet on Call {
   profileUuid
   profileUsername
   pendingCall
@@ -777,7 +791,8 @@ export const ConversationSnippetFragmentDoc = gql`
   name
   description
   pendingCallProfile {
-    ...ConversationProfileSnippet
+    uuid
+    username
   }
 }
     ${ConversationProfileSnippetFragmentDoc}
@@ -789,10 +804,11 @@ export const ConversationToProfileSnippetFragmentDoc = gql`
   unreadMessages
   profileThatHasUnreadMessages
   profile {
-    ...ConversationProfileSnippet
+    uuid
+    username
   }
 }
-    ${ConversationProfileSnippetFragmentDoc}`;
+    `;
 export const PostSnippetFragmentDoc = gql`
     fragment PostSnippet on Post {
   id
