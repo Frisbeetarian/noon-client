@@ -30,19 +30,10 @@ interface MessagesPayload {
   loggedInProfileUuid: string
 }
 
-// interface MessagePayload {
-//   uuid: string
-//   message: string
-//   from: 'me' | 'other' | null
-//   type: string
-//   src: string
-//   conversationUuid: string
-//   deleted?: boolean
-//   sender: ProfileInMessage
-//   loggedInProfileUuid: string
-//   updatedAt: string
-//   createdAt: string
-// }
+interface MessagePayload {
+  message: Message
+  loggedInProfileUuid: string
+}
 
 interface PendingCallPayload {
   profileUuid: string
@@ -174,7 +165,8 @@ const slice = createSlice({
           conversationObject.ongoingCall = callObject.ongoingCall
         }
 
-        conversationObject.conversee = converseeObject
+        // conversationObject.conversee = converseeObject
+        chat.conversationController.conversee = converseeObject
         conversationsArray.push(conversationObject)
       })
       // )
@@ -225,26 +217,27 @@ const slice = createSlice({
       chat,
       action: PayloadAction<MessagePayload>
     ) => {
-      let conversationUuid = action.payload.conversationUuid
+      let conversationUuid = action.payload.message.conversationUuid
 
       if (
         chat.activeConversation &&
         chat.activeConversation.uuid === conversationUuid
       ) {
         chat.activeConversation.messages.unshift({
-          uuid: action.payload.uuid,
-          content: action.payload.message,
+          uuid: action.payload.message.uuid,
+          content: action.payload.message.content,
+          conversationUuid: action.payload.message.conversationUuid,
           // updatedAt: new Date().getTime(),
           // createdAt: new Date().getTime(),
-          updatedAt: new Date(),
-          createdAt: new Date(),
-          from: action.payload.from,
-          type: action.payload.type,
-          src: action.payload.src,
-          deleted: action.payload.deleted,
+          updatedAt: action.payload.message.updatedAt,
+          createdAt: action.payload.message.createdAt,
+          from: action.payload.message.from,
+          type: action.payload.message.type,
+          src: action.payload.message.src,
+          deleted: action.payload.message.deleted,
           sender: {
-            uuid: action.payload.sender?.uuid,
-            username: action.payload.sender?.username,
+            uuid: action.payload.message.sender?.uuid,
+            username: action.payload.message.sender?.username,
           },
         })
 
@@ -253,17 +246,18 @@ const slice = createSlice({
         )
         if (conversationn) {
           conversationn.messages.unshift({
-            uuid: action.payload.uuid,
-            content: action.payload.message,
-            updatedAt: new Date(),
-            createdAt: new Date(),
-            from: action.payload.from,
-            type: action.payload.type,
-            src: action.payload.src,
-            deleted: action.payload.deleted,
+            uuid: action.payload.message.uuid,
+            content: action.payload.message.content,
+            conversationUuid: action.payload.message.conversationUuid,
+            updatedAt: new Date().toString(),
+            createdAt: new Date().toString(),
+            from: action.payload.message.from,
+            type: action.payload.message.type,
+            src: action.payload.message.src,
+            deleted: action.payload.message.deleted,
             sender: {
-              uuid: action.payload.sender?.uuid,
-              username: action.payload.sender?.username,
+              uuid: action.payload.message.sender?.uuid,
+              username: action.payload.message.sender?.username,
             },
           })
         }
@@ -287,17 +281,18 @@ const slice = createSlice({
           }
 
           conversationn.messages.unshift({
-            uuid: action.payload.uuid,
-            content: action.payload.message,
-            updatedAt: new Date(),
-            createdAt: new Date(),
-            from: action.payload.from,
-            type: action.payload.type,
-            src: action.payload.src,
-            deleted: action.payload.deleted,
+            uuid: action.payload.message.uuid,
+            content: action.payload.message.content,
+            conversationUuid: action.payload.message.conversationUuid,
+            updatedAt: action.payload.message.updatedAt,
+            createdAt: action.payload.message.createdAt,
+            from: action.payload.message.from,
+            type: action.payload.message.type,
+            src: action.payload.message.src,
+            deleted: action.payload.message.deleted,
             sender: {
-              uuid: action.payload.sender?.uuid,
-              username: action.payload.sender?.username,
+              uuid: action.payload.message.sender?.uuid,
+              username: action.payload.message.sender?.username,
             },
           })
         }

@@ -128,17 +128,22 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
 
         dispatch(
           addMessageToActiveConversation({
-            uuid: response.data?.uploadImage.uuid,
-            message: response.data?.uploadImage.content,
-            from: 'me',
-            type: response.data?.uploadImage.type,
-            src: response.data?.uploadImage.src,
-            conversationUuid: activeConversation.uuid,
-            deleted: false,
-            sender: {
-              uuid: loggedInUser?.user?.profile?.uuid,
-              username: loggedInUser?.user?.profile?.username,
+            message: {
+              uuid: response.data?.uploadImage.uuid as string,
+              content: response.data?.uploadImage.content as string,
+              from: 'me',
+              type: response.data?.uploadImage.type as string,
+              src: response.data?.uploadImage.src,
+              conversationUuid: activeConversation.uuid,
+              deleted: false,
+              sender: {
+                uuid: loggedInUser?.user?.profile?.uuid,
+                username: loggedInUser?.user?.profile?.username,
+              },
+              updatedAt: new Date().toString(),
+              createdAt: new Date().toString(),
             },
+            loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
           })
         )
       })
