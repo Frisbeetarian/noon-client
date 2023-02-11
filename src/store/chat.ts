@@ -351,7 +351,7 @@ const slice = createSlice({
       )
 
       let callInConversationStack = conversationFromStack?.calls.find(
-        (call) => call.profileUuid === action.payload.loggedInProfileUuid
+        (call) => call.profileUuid === action.payload?.loggedInProfileUuid
       )
 
       // let callInActiveConversation = conversationObject.calls.find(
@@ -361,7 +361,7 @@ const slice = createSlice({
       conversationObject.pendingCall = callInConversationStack?.pendingCall
       if (conversationFromStack) {
         conversationFromStack.unreadMessages = 0
-        conversationFromStack.profileThatHasUnreadMessages = []
+        conversationFromStack.profileThatHasUnreadMessages = null
         conversationFromStack.ongoingCall = false
       }
 
@@ -374,7 +374,7 @@ const slice = createSlice({
           let messageObject = { ...message }
 
           messageObject.from =
-            messageObject.sender.uuid === action.payload.loggedInProfileUuid
+            messageObject.sender.uuid === action.payload?.loggedInProfileUuid
               ? 'me'
               : 'other'
 
@@ -432,7 +432,7 @@ const slice = createSlice({
 
       if (conversationFromStack) {
         conversationFromStack.unreadMessages = 0
-        conversationFromStack.profileThatHasUnreadMessages = []
+        conversationFromStack.profileThatHasUnreadMessages = null
         conversationFromStack.ongoingCall = false
       }
 
