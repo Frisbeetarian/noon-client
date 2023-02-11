@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 import { Friend, FriendRequest, User } from '../utils/types'
 
 interface UsersState {
-  user: User | {} | null | undefined
+  user: User | Record<string, never> | null | undefined
 }
 
 interface RemoveFriendEntryPayload {
@@ -31,7 +31,7 @@ const slice = createSlice({
       }
     },
     addFriendRequestEntry: (users, action: PayloadAction<FriendRequest>) => {
-      let userObject = { ...users.user }
+      const userObject = { ...users.user }
 
       userObject.friendshipRequests?.push(action.payload)
     },
@@ -39,18 +39,16 @@ const slice = createSlice({
       users,
       action: PayloadAction<RemoveFriendRequestEntryPayload>
     ) => {
-      let friendRequests
-
-      friendRequests = action.payload.friendRequests.filter(
+      const friendRequests = action.payload.friendRequests.filter(
         (FREntry) => FREntry.uuid != action.payload.profileUuid
       )
 
-      let userObject = { ...users.user }
+      const userObject = { ...users.user }
       userObject.friendshipRequests?.push(friendRequests)
     },
     addFriendEntry: (users, action: PayloadAction<Friend>) => {
       try {
-        let userObject = { ...users.user }
+        const userObject = { ...users.user }
         userObject.friends?.push(action.payload)
       } catch (e) {
         console.log('error:', e)
@@ -60,13 +58,11 @@ const slice = createSlice({
       users,
       action: PayloadAction<RemoveFriendEntryPayload>
     ) => {
-      let friends
-
-      friends = action.payload.friends.filter(
+      const friends = action.payload.friends.filter(
         (FREntry) => FREntry.uuid != action.payload.profileUuid
       )
 
-      let userObject = { ...users.user }
+      const userObject = { ...users.user }
       userObject.friends?.push(friends)
     },
   },

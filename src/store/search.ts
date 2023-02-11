@@ -37,13 +37,13 @@ const slice = createSlice({
       search.query = action.payload
     },
     setProfiles: (search, action: PayloadAction<AddProfilesPayload>) => {
-      let profilesArray: ProfilePayload[] = []
+      const profilesArray: ProfilePayload[] = []
 
       if (action.payload.profiles == null) {
         search.profiles = null
       } else {
         action.payload.profiles.map((profile) => {
-          let profileObject = { ...profile }
+          const profileObject = { ...profile }
 
           const friendsCheck = action.payload.loggedInUser.friends.find(
             (element) => element.uuid == profileObject.uuid

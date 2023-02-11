@@ -4,7 +4,7 @@ import { createSelector } from 'reselect'
 interface GroupsState {
   groups: null
   groupBeingCreated: null
-  participants: String[]
+  participants: string[]
 }
 
 const initialState: GroupsState = {

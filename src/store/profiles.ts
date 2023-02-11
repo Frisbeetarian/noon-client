@@ -33,7 +33,7 @@ const slice = createSlice({
   reducers: {
     addProfiles: (profiles, action: PayloadAction<AddProfilesPayload>) => {
       // let profilesArray = [...action.payload.profiles]
-      let profilesArray: ProfilePayload[] = []
+      const profilesArray: ProfilePayload[] = []
 
       if (action.payload.profiles == null) {
         profiles.list = null
@@ -43,7 +43,7 @@ const slice = createSlice({
         )
 
         action.payload.profiles.map((profile) => {
-          let profileObject = { ...profile }
+          const profileObject = { ...profile }
 
           const friendsCheck = action.payload.loggedInUser.friends.find(
             (element) => element.uuid == profileObject.uuid
@@ -76,7 +76,7 @@ const slice = createSlice({
       }
     },
     setFriendshipRequestSentOnProfile: (profiles, action) => {
-      let profile = profiles.list?.find(
+      const profile = profiles.list?.find(
         (profile) => profile.uuid == action.payload.profileUuid
       )
 
@@ -85,7 +85,7 @@ const slice = createSlice({
       }
     },
     cancelFriendshipRequestSentOnProfile: (profiles, action) => {
-      let profile = profiles.list?.find(
+      const profile = profiles.list?.find(
         (profile) => profile.uuid == action.payload.profileUuid
       )
 
@@ -94,7 +94,7 @@ const slice = createSlice({
       }
     },
     setHasFriendshipRequestFromLoggedInProfile: (profiles, action) => {
-      let profile = profiles.list?.find(
+      const profile = profiles.list?.find(
         (profile) => profile.uuid == action.payload.profileUuid
       )
       if (profile) {
@@ -102,7 +102,7 @@ const slice = createSlice({
       }
     },
     unsetHasFriendshipRequestFromLoggedInProfile: (profiles, action) => {
-      let profile = profiles.list?.find(
+      const profile = profiles.list?.find(
         (profile) => profile.uuid == action.payload.profileUuid
       )
       if (profile) {
@@ -111,7 +111,7 @@ const slice = createSlice({
     },
     setFriendFlagOnProfile: (profiles, action) => {
       if (profiles.list !== null && profiles.list?.length !== 0) {
-        let profile = profiles.list.find(
+        const profile = profiles.list.find(
           (profile) => profile.uuid == action.payload.profileUuid
         )
 
@@ -123,7 +123,7 @@ const slice = createSlice({
       }
     },
     unsetFriendFlagOnProfile: (profiles, action) => {
-      let profile = profiles.list?.find(
+      const profile = profiles.list?.find(
         (profile) => profile.uuid == action.payload.profileUuid
       )
 
