@@ -42,6 +42,5 @@ export const getParticipants = createSelector(
   (groups) => groups.participants
 )
 
-export const { createGroup, addParticipants, removeParticipants, clearState } =
-  slice.actions
+export const { addParticipants, removeParticipants, clearState } = slice.actions
 export default slice.reducer

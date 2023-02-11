@@ -22,6 +22,7 @@ import {
   useSendFriendRequestMutation,
 } from '../generated/graphql'
 import { addConversation } from '../store/chat'
+import { emitFriendshipRequestAccepted } from '../utils/SocketEmits'
 
 // interface ProfileProps {
 //   uuid: string
@@ -141,10 +142,8 @@ export default function Profile({ profile }) {
 
               dispatch(
                 addFriendEntry({
-                  friend: {
-                    uuid: profile.uuid,
-                    username: profile.username,
-                  },
+                  uuid: profile.uuid,
+                  username: profile.username,
                 })
               )
 
@@ -155,16 +154,11 @@ export default function Profile({ profile }) {
                   loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
                 })
               )
-              //
+
               if (acceptFriendshipResponse) {
-                socket.emit('friendship-request-accepted', {
-                  content:
-                    loggedInUser.user?.profile?.username +
-                    ' accepted your friend request.',
-                  from: loggedInUser.user?.profile?.uuid,
-                  fromUsername: loggedInUser.user?.profile?.username,
-                  to: profile.uuid,
-                  toUsername: profile.username,
+                emitFriendshipRequestAccepted({
+                  loggedInUser,
+                  profile,
                   conversation:
                     acceptFriendshipResponse.data?.acceptFriendRequest,
                 })

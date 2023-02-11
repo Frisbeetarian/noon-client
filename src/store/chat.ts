@@ -18,11 +18,11 @@ interface ChatState {
 }
 
 interface ConversationPayload {
-  conversation: Conversation
-  conversationsToSend: Conversation[] | null | undefined
-  loggedInProfileUuid: string
-  conversationUuid: string
-  participantUuid: string
+  conversation?: Conversation | null | undefined
+  conversationsToSend?: Conversation[] | null | undefined
+  loggedInProfileUuid?: string | null | undefined
+  conversationUuid?: string | null | undefined
+  participantUuid?: string | null | undefined
 }
 
 interface MessagesPayload {
@@ -34,13 +34,15 @@ interface MessagesPayload {
 interface MessagePayload {
   uuid: string
   message: string
-  from: 'me' | 'other'
+  from: 'me' | 'other' | null
   type: string
   src: string
   conversationUuid: string
-  deleted: boolean
+  deleted?: boolean
   sender: ProfileInMessage
   loggedInProfileUuid: string
+  updatedAt: string
+  createdAt: string
 }
 
 interface PendingCallPayload {
@@ -49,7 +51,7 @@ interface PendingCallPayload {
   pendingCall: boolean
   ongoingCall: boolean
   conversationUuid: string
-  fromJoin: boolean
+  fromJoin?: boolean
 }
 
 interface CancelPendingCallPayload {
@@ -111,13 +113,15 @@ const slice = createSlice({
       chat,
       action: PayloadAction<ConversationPayload>
     ) => {
+      const participantUuid = action.payload.participantUuid
+
       const conversation = chat.conversations?.find(
         (conversation) => conversation.uuid === action.payload.conversationUuid
       )
 
       if (conversation) {
         const profiles = [...conversation.profiles]
-        profiles.splice(profiles.indexOf(action.payload.participantUuid), 1)
+        profiles.splice(profiles.indexOf(participantUuid), 1)
         conversation.profiles = profiles
 
         if (
@@ -293,7 +297,7 @@ const slice = createSlice({
         }
       }
     },
-    setActiveConversee: (chat, action: PayloadAction<Profile>) => {
+    setActiveConversee: (chat, action: PayloadAction<Profile | null>) => {
       chat.activeConversee = action.payload
     },
     clearUnreadMessagesForConversationInStore: (chat) => {
@@ -316,7 +320,7 @@ const slice = createSlice({
     },
     setActiveConversation: (
       chat,
-      action: PayloadAction<ConversationPayload>
+      action: PayloadAction<ConversationPayload | null>
     ) => {
       if (action.payload === null) {
         chat.activeConversation = null
@@ -324,7 +328,7 @@ const slice = createSlice({
       }
 
       let index = chat.conversationsThatHaveUnreadMessagesForProfile.indexOf(
-        action.payload.conversation.uuid
+        action.payload.conversation?.uuid as string
       )
 
       if (index > -1) {
@@ -360,12 +364,12 @@ const slice = createSlice({
         conversationFromStack.ongoingCall = false
       }
 
-      if (!action.payload.conversation.messages) {
+      if (!action.payload.conversation?.messages) {
         conversationObject.messages = []
       } else {
         let messagesArray: Message[] = []
 
-        action.payload.conversation.messages.map((message) => {
+        action.payload.conversation?.messages.map((message) => {
           let messageObject = { ...message }
 
           messageObject.from =
@@ -387,14 +391,17 @@ const slice = createSlice({
         chat['activeConversation'] = null
       }
 
-      chat.activeConversation = conversationObject
+      if (chat.activeConversation) {
+        chat.activeConversation = conversationObject
+      }
     },
     setOngoingCall: (chat, action: PayloadAction<boolean>) => {
       let activeConversationObject = { ...chat.activeConversation }
       activeConversationObject.ongoingCall = action.payload
 
-      if (chat.activeConversation)
+      if (chat.activeConversation) {
         chat.activeConversation = { ...activeConversationObject }
+      }
     },
     setActiveGroupInStore: (
       chat,
@@ -419,12 +426,12 @@ const slice = createSlice({
         conversationFromStack.ongoingCall = false
       }
 
-      if (!action.payload.conversation.messages) {
+      if (!action.payload.conversation?.messages) {
         conversationObject.messages = []
       } else {
         let messagesArray: Message[] = []
 
-        action.payload.conversation.messages.map((message) => {
+        action.payload.conversation?.messages.map((message) => {
           let messageObject = { ...message }
 
           messageObject.from =
@@ -446,7 +453,9 @@ const slice = createSlice({
         chat['activeConversation'] = null
       }
 
-      chat.activeConversation = conversationObject
+      if (chat.activeConversation) {
+        chat.activeConversation = conversationObject
+      }
     },
     setPendingCall: (chat, action: PayloadAction<PendingCallPayload>) => {
       try {

@@ -204,10 +204,8 @@ function SocketControls() {
 
           dispatch(
             addFriendEntry({
-              friend: {
-                uuid: from,
-                username: fromUsername,
-              },
+              uuid: from,
+              username: fromUsername,
             })
           )
 
@@ -294,14 +292,23 @@ function SocketControls() {
         )
       })
 
-      socket.on('left-group', ({ fromUuid, conversationUuid }) => {
-        dispatch(
-          removeParticipantFromGroup({
-            conversationUuid,
-            participantUuid: fromUuid,
-          })
-        )
-      })
+      socket.on(
+        'left-group',
+        ({
+          fromUuid,
+          conversationUuid,
+        }: {
+          fromUuid: string
+          conversationUuid: string
+        }) => {
+          dispatch(
+            removeParticipantFromGroup({
+              conversationUuid: conversationUuid,
+              participantUuid: fromUuid,
+            })
+          )
+        }
+      )
 
       socket.on(
         'set-pending-call-for-conversation',

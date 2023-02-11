@@ -63,7 +63,6 @@ export type Conversation = {
   name: string
   description: string
   pendingCallProfile: ProfileInConversation
-  conversee: ProfileInConversation | null | undefined
   updatedAt: Date
   createdAt: Date
 }
@@ -77,7 +76,7 @@ export type Message = {
   src: string
   deleted: boolean
   sender: ProfileInMessage
-  from: 'me' | 'other'
+  from: 'me' | 'other' | null
 }
 
 export type Call = {
