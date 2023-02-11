@@ -82,14 +82,20 @@ function SocketControls() {
 
           dispatch(
             addMessageToActiveConversation({
-              uuid: messageUuid,
-              message: data,
-              sender: { uuid: from, username: fromUsername },
-              from: 'other',
-              conversationUuid,
+              message: {
+                uuid: messageUuid,
+                content: data,
+                sender: { uuid: from, username: fromUsername },
+                from: 'other',
+                conversationUuid,
+                type,
+                src,
+                //TODO get deleted from payload
+                deleted: false,
+                updatedAt: new Date().toString(),
+                createdAt: new Date().toString(),
+              },
               loggedInProfileUuid: loggedInUser.user?.profile.uuid,
-              type,
-              src,
             })
           )
         }

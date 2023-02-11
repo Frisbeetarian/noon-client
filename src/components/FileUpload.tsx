@@ -11,6 +11,7 @@ import {
 } from '../store/chat'
 
 import { useUploadImageMutation } from '../generated/graphql'
+import { emitPrivateChatMessage } from '../utils/SocketEmits'
 export const FileUpload = ({ children }) => {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
@@ -32,55 +33,62 @@ export const FileUpload = ({ children }) => {
       })
         .then(async (response) => {
           if (activeConversation.type === 'pm') {
-            socket.emit('private-chat-message', {
-              content:
-                loggedInUser.user?.profile?.username + ' sent you a message.',
-              from: loggedInUser.user?.profile?.uuid,
-              fromUsername: loggedInUser.user?.profile?.username,
-              to: profile.uuid,
-              toUsername: profile.username,
-              messageUuid: response.data?.uploadImage.uuid,
-              message: response.data?.uploadImage.content,
-              type: response.data?.uploadImage.type,
-              src: response.data?.uploadImage.src,
-              conversationUuid: activeConversation.uuid,
+            emitPrivateChatMessage({
+              loggedInUser,
+              profile,
+              response,
+              activeConversation,
+              socket,
             })
           } else {
             activeConversation.profiles.map((conversationProfile) => {
               if (
                 conversationProfile.uuid !== loggedInUser.user?.profile?.uuid
               ) {
-                socket.emit('private-chat-message', {
-                  content:
-                    loggedInUser.user?.profile?.username +
-                    ' sent you a message.',
-                  from: loggedInUser.user?.profile?.uuid,
-                  fromUsername: loggedInUser.user?.profile?.username,
-                  to: conversationProfile.uuid,
-                  toUsername: conversationProfile.username,
-                  messageUuid: response.data?.uploadImage.uuid,
-                  message: response.data?.uploadImage.content,
-                  type: response.data?.uploadImage.type,
-                  src: response.data?.uploadImage.src,
-                  conversationUuid: activeConversation.uuid,
+                emitPrivateChatMessage({
+                  loggedInUser,
+                  profile: conversationProfile,
+                  response,
+                  activeConversation,
+                  socket,
                 })
+
+                // socket.emit('private-chat-message', {
+                //   content:
+                //     loggedInUser.user?.profile?.username +
+                //     ' sent you a message.',
+                //   from: loggedInUser.user?.profile?.uuid,
+                //   fromUsername: loggedInUser.user?.profile?.username,
+                //   to: conversationProfile.uuid,
+                //   toUsername: conversationProfile.username,
+                //   messageUuid: response.data?.uploadImage.uuid,
+                //   message: response.data?.uploadImage.content,
+                //   type: response.data?.uploadImage.type,
+                //   src: response.data?.uploadImage.src,
+                //   conversationUuid: activeConversation.uuid,
+                // })
               }
             })
           }
 
           dispatch(
             addMessageToActiveConversation({
-              uuid: response.data?.uploadImage.uuid,
-              message: response.data?.uploadImage.content,
-              from: 'me',
-              type: response.data?.uploadImage.type,
-              src: response.data?.uploadImage.src,
-              conversationUuid: activeConversation.uuid,
-              deleted: false,
-              sender: {
-                uuid: loggedInUser?.user?.profile?.uuid,
-                username: loggedInUser?.user?.profile?.username,
+              message: {
+                uuid: response.data?.uploadImage.uuid as string,
+                content: response.data?.uploadImage.content as string,
+                from: 'me',
+                type: response.data?.uploadImage.type as string,
+                src: response.data?.uploadImage.src,
+                conversationUuid: activeConversation.uuid,
+                deleted: false,
+                updatedAt: new Date().toString(),
+                createdAt: new Date().toString(),
+                sender: {
+                  uuid: loggedInUser?.user?.profile?.uuid,
+                  username: loggedInUser?.user?.profile?.username,
+                },
               },
+              loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
             })
           )
         })

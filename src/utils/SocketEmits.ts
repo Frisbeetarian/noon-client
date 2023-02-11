@@ -8,6 +8,14 @@ interface FriendshipRequestAccepted {
   socket: Socket
 }
 
+interface PrivateChatMessage {
+  loggedInUser: User
+  profile: Profile
+  response: any
+  activeConversation: Conversation
+  socket: Socket
+}
+
 export function emitFriendshipRequestAccepted({
   loggedInUser,
   profile,
@@ -21,5 +29,26 @@ export function emitFriendshipRequestAccepted({
     to: profile.uuid,
     toUsername: profile.username,
     conversation,
+  })
+}
+
+export function emitPrivateChatMessage({
+  loggedInUser,
+  profile,
+  response,
+  activeConversation,
+  socket,
+}: PrivateChatMessage) {
+  socket.emit('private-chat-message', {
+    content: loggedInUser.profile?.username + ' sent you a message.',
+    from: loggedInUser.profile?.uuid,
+    fromUsername: loggedInUser.profile?.username,
+    to: profile.uuid,
+    toUsername: profile.username,
+    messageUuid: response.data?.uploadImage.uuid,
+    message: response.data?.uploadImage.content,
+    type: response.data?.uploadImage.type,
+    src: response.data?.uploadImage.src,
+    conversationUuid: activeConversation.uuid,
   })
 }

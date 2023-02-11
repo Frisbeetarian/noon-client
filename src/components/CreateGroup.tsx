@@ -71,7 +71,7 @@ const CreateGroup = ({}) => {
           },
         })
 
-        dispatch(clearState(null))
+        dispatch(clearState())
 
         socket.emit('group-created', {
           fromUuid: loggedInUser.user?.profile?.uuid,
