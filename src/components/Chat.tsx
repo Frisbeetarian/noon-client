@@ -134,7 +134,10 @@ function Chat() {
           from: 'me',
           type: 'text',
           src: '',
+          deleted: false,
           conversationUuid: activeConversation.uuid,
+          updatedAt: new Date().toString(),
+          createdAt: new Date().toString(),
         },
         loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
       })
@@ -192,6 +195,7 @@ function Chat() {
           from: 'me',
           type: 'text',
           src: '',
+          deleted: false,
           conversationUuid: activeConversation.uuid,
           updatedAt: new Date().toString(),
           createdAt: new Date().toString(),

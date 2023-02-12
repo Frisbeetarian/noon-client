@@ -75,7 +75,10 @@ const slice = createSlice({
     setActiveConversationSet: (chat, action: PayloadAction<boolean>) => {
       chat.activeConversationSet = action.payload
     },
-    addConversation: (chat, action: PayloadAction<ConversationPayload>) => {
+    addConversation: function (
+      chat,
+      action: PayloadAction<ConversationPayload>
+    ) {
       const conversationObject = { ...action.payload.conversation }
 
       if (conversationObject.type !== 'group') {
@@ -96,7 +99,8 @@ const slice = createSlice({
       // }
 
       // conversationObject.ongoingCall = false
-      chat.conversations?.push(action.payload.conversation)
+      if (conversationObject)
+        chat.conversations?.push(<Conversation>conversationObject)
     },
     removeConversation: (
       chat,
@@ -118,6 +122,7 @@ const slice = createSlice({
 
       if (conversation) {
         const profiles = [...conversation.profiles]
+        // @ts-ignore
         profiles.splice(profiles.indexOf(participantUuid), 1)
         conversation.profiles = profiles
 
@@ -200,7 +205,7 @@ const slice = createSlice({
         )
 
         const sortedMessages = tempMessages.sort(
-          (a, b) => b.createdAt - a.createdAt
+          (a, b) => (b.createdAt as any) - (a.createdAt as any)
         )
 
         const conversation = chat.conversations?.find(
@@ -306,7 +311,7 @@ const slice = createSlice({
 
       if (conversation) {
         conversation.unreadMessages = 0
-        conversation.profileThatHasUnreadMessages = []
+        conversation.profileThatHasUnreadMessages = null
       }
     },
     setActiveConversationHasMoreMessages: (
@@ -382,7 +387,7 @@ const slice = createSlice({
         })
 
         const sortedMessage = messagesArray.sort(
-          (a, b) => b.createdAt - a.createdAt
+          (a, b) => (b.createdAt as any) - (a.createdAt as any)
         )
 
         conversationObject.messages = [...sortedMessage]
@@ -393,24 +398,24 @@ const slice = createSlice({
       }
 
       if (chat.activeConversation) {
-        chat.activeConversation = conversationObject
+        chat.activeConversation = <Conversation>conversationObject
       }
     },
     setOngoingCall: (
-      chat,
-      action: PayloadAction<{
-        uuid: string
-        initiator: {
-          uuid: string
-          username: string
-        }
-      }>
+      chat
+      // action: PayloadAction<{
+      //   uuid: string
+      //   initiator: {
+      //     uuid: string
+      //     username: string
+      //   }
+      // }>
     ) => {
       const activeConversationObject = { ...chat.activeConversation }
       activeConversationObject.ongoingCall = true
 
       if (chat.activeConversation) {
-        chat.activeConversation = { ...activeConversationObject }
+        chat.activeConversation = <Conversation>{ ...activeConversationObject }
       }
     },
     setActiveGroupInStore: (
@@ -445,7 +450,7 @@ const slice = createSlice({
           const messageObject = { ...message }
 
           messageObject.from =
-            messageObject.sender.uuid == action.payload.loggedInProfileUuid
+            messageObject.sender.uuid == action.payload?.loggedInProfileUuid
               ? 'me'
               : 'other'
 
@@ -453,7 +458,7 @@ const slice = createSlice({
         })
 
         const sortedMessage = messagesArray.sort(
-          (a, b) => b.createdAt - a.createdAt
+          (a, b) => (b.createdAt as any) - (a.createdAt as any)
         )
 
         conversationObject.messages = [...sortedMessage]
@@ -464,7 +469,7 @@ const slice = createSlice({
       }
 
       if (chat.activeConversation) {
-        chat.activeConversation = conversationObject
+        chat.activeConversation = <Conversation>conversationObject
       }
     },
     setPendingCall: (chat, action: PayloadAction<PendingCallPayload>) => {
