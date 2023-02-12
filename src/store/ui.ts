@@ -14,9 +14,9 @@ interface UIState {
 
 interface UISearchState {
   searchActive: boolean
-  containerDisplay: string
-  containerHeight: string
-  inputPadding: string
+  containerDisplay?: string
+  containerHeight?: string
+  inputPadding?: string
 }
 
 interface UIAuthenticationState {
