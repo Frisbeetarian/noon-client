@@ -1,10 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
-import {
-  Friend,
-  FriendshipRequestSnippetFragment,
-  User,
-} from '../generated/graphql'
+import { Friend, User } from '../generated/graphql'
 import { FriendRequest } from '../utils/types'
 
 interface UsersState {

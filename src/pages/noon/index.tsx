@@ -7,6 +7,7 @@ import {
   useGetConversationForLoggedInUserQuery,
   // useLogoutMutation,
   useMeQuery,
+  User,
 } from '../../generated/graphql'
 
 import { isServer } from '../../utils/isServer'
@@ -61,7 +62,7 @@ function Noon() {
       if (!data?.me?.username) {
         router.replace('/')
       } else {
-        dispatch(setLoggedInUser(data.me))
+        dispatch(setLoggedInUser(data.me as User))
       }
     }
   }, [meLoading, data?.me?.username])
