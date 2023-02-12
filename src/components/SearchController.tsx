@@ -25,7 +25,7 @@ export default function SearchController() {
       dispatch(
         addProfiles({
           profiles: data?.searchForProfileByUsername,
-          loggedInUser,
+          loggedInUser: loggedInUser.user,
         })
       )
     }
@@ -34,7 +34,7 @@ export default function SearchController() {
       dispatch(
         addProfiles({
           profiles: null,
-          loggedInUser,
+          loggedInUser: loggedInUser.user,
         })
       )
     }

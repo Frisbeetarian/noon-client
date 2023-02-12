@@ -46,7 +46,7 @@ import SocketControls from './SocketIo/SocketControls'
 function Sidebar() {
   const router = useRouter()
   const dispatch = useDispatch()
-  const isMobile = useSelector(getIsMobile)
+  const isMobile: number = useSelector(getIsMobile)
   const searchComponentState = useSelector(getSearchComponentState)
   const [innerHeight, setInnerHeight] = useState(0)
 

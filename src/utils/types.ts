@@ -3,6 +3,8 @@ export type User = {
   username: string
   email: string
   profile: ProfileInUser
+  friendshipRequests: FriendshipRequest[]
+  friends: Friend[]
 }
 
 export type UserResponse = {
@@ -50,17 +52,19 @@ export type FriendshipRequest = {
 export type Conversation = {
   uuid: string
   unreadMessages: number
-  profileThatHasUnreadMessages: Profile
-  updatedAt: Date
-  createdAt: Date
+  profileThatHasUnreadMessages: string | []
   profiles: ProfileInConversation[]
   messages: Message[]
   hasMore: boolean
   calls: Call[]
+  pendingCall: boolean | null | undefined
+  ongoingCall: boolean | null | undefined
   type: string
   name: string
   description: string
   pendingCallProfile: ProfileInConversation
+  updatedAt: Date
+  createdAt: Date
 }
 
 export type Message = {
@@ -72,6 +76,7 @@ export type Message = {
   src: string
   deleted: boolean
   sender: ProfileInMessage
+  from: 'me' | 'other' | null
 }
 
 export type Call = {
@@ -111,4 +116,10 @@ export type acceptFriendRequest = {
   messages: Message[]
   calls: Call[]
   pendingCallProfile: ProfileInUser | null
+}
+
+export type FriendRequest = {
+  uuid: string
+  username: string
+  reverse: boolean
 }

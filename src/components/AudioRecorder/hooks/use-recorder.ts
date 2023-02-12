@@ -6,15 +6,18 @@ import {
   AudioTrack,
   MediaRecorderEvent,
 } from '../types/recorder'
+
 import {
   addMessageToActiveConversation,
   getActiveConversation,
   getActiveConversee,
 } from '../../../store/chat'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { getSocket } from '../../../store/sockets'
 import { getLoggedInUser } from '../../../store/users'
 import { useUploadVoiceRecordingMutation } from '../../../generated/graphql'
+import { emitPrivateChatMessage } from '../../../utils/SocketEmits'
 
 const initialState: Recorder = {
   recordingMinutes: 0,
@@ -113,57 +116,78 @@ export default function useRecorder() {
           })
             .then(async (response) => {
               if (activeConversation.type === 'pm') {
-                socket.emit('private-chat-message', {
-                  content:
-                    loggedInUser.user?.profile?.username +
-                    ' sent you a message.',
-                  from: loggedInUser.user?.profile?.uuid,
-                  fromUsername: loggedInUser.user?.profile?.username,
-                  to: activeConversee.uuid,
-                  toUsername: activeConversee.username,
-                  messageUuid: response.data?.uploadVoiceRecording.uuid,
-                  message: response.data?.uploadVoiceRecording.content,
-                  type: response.data?.uploadVoiceRecording.type,
-                  src: response.data?.uploadVoiceRecording.src,
-                  conversationUuid: activeConversation.uuid,
+                emitPrivateChatMessage({
+                  loggedInUser,
+                  profile: activeConversee,
+                  response,
+                  activeConversation,
+                  socket,
                 })
+
+                // socket.emit('private-chat-message', {
+                //   content:
+                //     loggedInUser.user?.profile?.username +
+                //     ' sent you a message.',
+                //   from: loggedInUser.user?.profile?.uuid,
+                //   fromUsername: loggedInUser.user?.profile?.username,
+                //   to: activeConversee.uuid,
+                //   toUsername: activeConversee.username,
+                //   messageUuid: response.data?.uploadVoiceRecording.uuid,
+                //   message: response.data?.uploadVoiceRecording.content,
+                //   type: response.data?.uploadVoiceRecording.type,
+                //   src: response.data?.uploadVoiceRecording.src,
+                //   conversationUuid: activeConversation.uuid,
+                // })
               } else {
                 activeConversation.profiles.map((conversationProfile) => {
                   if (
                     conversationProfile.uuid !==
                     loggedInUser.user?.profile?.uuid
                   ) {
-                    socket.emit('private-chat-message', {
-                      content:
-                        loggedInUser.user?.profile?.username +
-                        ' sent you a message.',
-                      from: loggedInUser.user?.profile?.uuid,
-                      fromUsername: loggedInUser.user?.profile?.username,
-                      to: conversationProfile.uuid,
-                      toUsername: conversationProfile.username,
-                      messageUuid: response.data?.uploadVoiceRecording.uuid,
-                      message: response.data?.uploadVoiceRecording.content,
-                      type: response.data?.uploadVoiceRecording.type,
-                      src: response.data?.uploadVoiceRecording.src,
-                      conversationUuid: activeConversation.uuid,
+                    emitPrivateChatMessage({
+                      loggedInUser,
+                      profile: conversationProfile,
+                      response,
+                      activeConversation,
+                      socket,
                     })
+                    // socket.emit('private-chat-message', {
+                    //   content:
+                    //     loggedInUser.user?.profile?.username +
+                    //     ' sent you a message.',
+                    //   from: loggedInUser.user?.profile?.uuid,
+                    //   fromUsername: loggedInUser.user?.profile?.username,
+                    //   to: conversationProfile.uuid,
+                    //   toUsername: conversationProfile.username,
+                    //   messageUuid: response.data?.uploadVoiceRecording.uuid,
+                    //   message: response.data?.uploadVoiceRecording.content,
+                    //   type: response.data?.uploadVoiceRecording.type,
+                    //   src: response.data?.uploadVoiceRecording.src,
+                    //   conversationUuid: activeConversation.uuid,
+                    // })
                   }
                 })
               }
 
               dispatch(
                 addMessageToActiveConversation({
-                  uuid: response.data?.uploadVoiceRecording.uuid,
-                  message: response.data?.uploadVoiceRecording.content,
-                  from: 'me',
-                  type: response.data?.uploadVoiceRecording.type,
-                  src: response.data?.uploadVoiceRecording.src,
-                  conversationUuid: activeConversation.uuid,
-                  deleted: false,
-                  sender: {
-                    uuid: loggedInUser?.user?.profile?.uuid,
-                    username: loggedInUser?.user?.profile?.username,
+                  message: {
+                    uuid: response.data?.uploadVoiceRecording.uuid as string,
+                    content: response.data?.uploadVoiceRecording
+                      .content as string,
+                    from: 'me',
+                    type: response.data?.uploadVoiceRecording.type as string,
+                    src: response.data?.uploadVoiceRecording.src,
+                    conversationUuid: activeConversation.uuid,
+                    deleted: false,
+                    sender: {
+                      uuid: loggedInUser?.user?.profile?.uuid,
+                      username: loggedInUser?.user?.profile?.username,
+                    },
+                    updatedAt: new Date().toString(),
+                    createdAt: new Date().toString(),
                   },
+                  loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
                 })
               )
             })

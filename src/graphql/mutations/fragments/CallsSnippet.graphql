@@ -1,4 +1,4 @@
-fragment CallsSnippet on ConversationToProfile {
+fragment CallsSnippet on Call {
     profileUuid
     profileUsername
     pendingCall

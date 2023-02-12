@@ -31,20 +31,18 @@ const CreateGroup = ({}) => {
     setFriends(loggedInUser?.user?.friends)
 
     if (socket) {
-      socket.on(
-        'set-ongoing-call-for-conversation',
-        ({ from, fromUsername }) => {
-          dispatch(
-            setOngoingCall({
-              uuid: '',
-              initiator: {
-                uuid: from,
-                username: fromUsername,
-              },
-            })
-          )
-        }
-      )
+      socket.on('set-ongoing-call-for-conversation', () => {
+        dispatch(
+          setOngoingCall()
+          // {
+          //     uuid: '',
+          //     initiator: {
+          //       uuid: from,
+          //       username: fromUsername,
+          //     },
+          //   }
+        )
+      })
     }
 
     return () => {
@@ -71,7 +69,7 @@ const CreateGroup = ({}) => {
           },
         })
 
-        dispatch(clearState(null))
+        dispatch(clearState())
 
         socket.emit('group-created', {
           fromUuid: loggedInUser.user?.profile?.uuid,

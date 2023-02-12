@@ -34,6 +34,7 @@ import ChatControlsAndSearch from './ChatControlsAndSearch'
 import { FileUpload } from './FileUpload'
 import CreateGroup from './CreateGroup'
 import Video from './Video'
+import { emitPrivateChatMessage } from '../utils/SocketEmits'
 
 function Chat() {
   const dispatch = useDispatch()
@@ -97,34 +98,48 @@ function Chat() {
 
     activeConversation.profiles.map((profile) => {
       if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
-        socket.emit('private-chat-message', {
-          content:
-            loggedInUser.user?.profile?.username + ' sent you a message.',
-          from: loggedInUser.user?.profile?.uuid,
-          fromUsername: loggedInUser.user?.profile?.username,
-          to: profile.uuid,
-          toUsername: profile.username,
-          messageUuid: message.data?.saveGroupMessage?.uuid,
-          message: data,
-          type: 'text',
-          src: '',
-          conversationUuid: activeConversation.uuid,
+        emitPrivateChatMessage({
+          loggedInUser,
+          profile,
+          response: message,
+          activeConversation,
+          socket,
         })
+        //
+        // socket.emit('private-chat-message', {
+        //   content:
+        //     loggedInUser.user?.profile?.username + ' sent you a message.',
+        //   from: loggedInUser.user?.profile?.uuid,
+        //   fromUsername: loggedInUser.user?.profile?.username,
+        //   to: profile.uuid,
+        //   toUsername: profile.username,
+        //   messageUuid: message.data?.saveGroupMessage?.uuid,
+        //   message: data,
+        //   type: 'text',
+        //   src: '',
+        //   conversationUuid: activeConversation.uuid,
+        // })
       }
     })
 
     dispatch(
       addMessageToActiveConversation({
-        uuid: message.data?.saveGroupMessage?.uuid,
-        message: data,
-        sender: {
-          uuid: loggedInUser?.user?.profile?.uuid,
-          username: loggedInUser?.user?.profile?.username,
+        message: {
+          uuid: message.data?.saveGroupMessage?.uuid as string,
+          content: data,
+          sender: {
+            uuid: loggedInUser?.user?.profile?.uuid,
+            username: loggedInUser?.user?.profile?.username,
+          },
+          from: 'me',
+          type: 'text',
+          src: '',
+          deleted: false,
+          conversationUuid: activeConversation.uuid,
+          updatedAt: new Date().toString(),
+          createdAt: new Date().toString(),
         },
-        from: 'me',
-        type: 'text',
-        src: '',
-        conversationUuid: activeConversation.uuid,
+        loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
       })
     )
   }
@@ -147,31 +162,46 @@ function Chat() {
       },
     })
 
-    socket.emit('private-chat-message', {
-      content: loggedInUser.user?.profile?.username + ' sent you a message.',
-      from: loggedInUser.user?.profile?.uuid,
-      fromUsername: loggedInUser.user?.profile?.username,
-      to: profile.uuid,
-      toUsername: profile.username,
-      messageUuid: message.data?.saveMessage?.uuid,
-      message: data,
-      type: 'text',
-      src: '',
-      conversationUuid: activeConversation.uuid,
+    emitPrivateChatMessage({
+      loggedInUser,
+      profile,
+      response: message,
+      activeConversation,
+      socket,
     })
+
+    // socket.emit('private-chat-message', {
+    //   content: loggedInUser.user?.profile?.username + ' sent you a message.',
+    //   from: loggedInUser.user?.profile?.uuid,
+    //   fromUsername: loggedInUser.user?.profile?.username,
+    //   to: profile.uuid,
+    //   toUsername: profile.username,
+    //   messageUuid: message.data?.saveMessage?.uuid,
+    //   message: data,
+    //   type: 'text',
+    //   src: '',
+    //   conversationUuid: activeConversation.uuid,
+    // })
 
     dispatch(
       addMessageToActiveConversation({
-        uuid: message.data?.saveMessage?.uuid,
-        message: data,
-        sender: {
-          uuid: loggedInUser?.user?.profile?.uuid,
-          username: loggedInUser?.user?.profile?.username,
+        message: {
+          uuid: message.data?.saveMessage?.uuid as string,
+          content: data as string,
+          sender: {
+            uuid: loggedInUser?.user?.profile?.uuid,
+            username: loggedInUser?.user?.profile?.username,
+          },
+          from: 'me',
+          type: 'text',
+          src: '',
+          deleted: false,
+          conversationUuid: activeConversation.uuid,
+          updatedAt: new Date().toString(),
+          createdAt: new Date().toString(),
+          // deleted: ,
         },
-        from: 'me',
-        type: 'text',
-        src: '',
-        conversationUuid: activeConversation.uuid,
+        loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
       })
     )
   }

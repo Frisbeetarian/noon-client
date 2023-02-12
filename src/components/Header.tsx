@@ -177,7 +177,7 @@ const Header = () => {
                   dispatch(
                     setPendingCall({
                       profileUuid: loggedInUser.user?.profile?.uuid,
-                      from: 'fewfewf',
+                      from: 'me',
                       fromJoin: true,
                       pendingCall: false,
                       ongoingCall: false,

@@ -7,6 +7,7 @@ import { useMeQuery } from '../generated/graphql'
 import { useRouter } from 'next/router'
 import { isServer } from '../utils/isServer'
 import { withApollo } from '../utils/withApollo'
+// import Head from 'next/head'
 
 const Index = () => {
   const router = useRouter()
@@ -27,9 +28,24 @@ const Index = () => {
   }, [data, loading])
 
   return (
-    <Flex className="flex-col justify-center items-center bg-black text-white h-screen">
-      {loading && <p className="fixed top-12 text-5xl">Loading...</p>}
-    </Flex>
+    <>
+      {/*<Head>*/}
+      {/*  <title>{meta.title}</title>*/}
+      {/*  <meta name="robots" content="follow, index" />*/}
+      {/*  <meta content={meta.description} name="description" />*/}
+      {/*  <meta property="og:url" content={`https://noon.tube${router.asPath}`} />*/}
+      {/*  <link rel="canonical" href={`https://noon.tube${router.asPath}`} />*/}
+      {/*  <meta property="og:type" content={meta.type} />*/}
+      {/*  <meta property="og:site_name" content="Noon" />*/}
+      {/*  <meta property="og:description" content={meta.description} />*/}
+      {/*  <meta property="og:title" content={meta.title} />*/}
+      {/*  <meta property="og:image" content={meta.image} />*/}
+      {/*</Head>*/}
+
+      <Flex className="flex-col justify-center items-center bg-black text-white h-screen">
+        {loading && <p className="fixed top-12 text-5xl">Loading...</p>}
+      </Flex>
+    </>
   )
 }
 export default withApollo({ ssr: true })(Index)

@@ -6,6 +6,8 @@ fragment MessageSnippet on Message {
   type
   src
   deleted
+  from
+  conversationUuid
   sender {
     uuid
     username

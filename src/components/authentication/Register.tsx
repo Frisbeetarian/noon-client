@@ -147,9 +147,6 @@ function Register() {
       <Text
         className="text-lg text-green-100 cursor-pointer"
         onClick={() => {
-          // setLogin(true)
-          // setRegister(false)
-          // router.push('/login', undefined, { shallow: true })
           dispatch(setShowLoginComponent(true))
           dispatch(setShowRegisterComponent(false))
           dispatch(setShowForgotPasswordComponent(false))

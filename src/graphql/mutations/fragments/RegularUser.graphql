@@ -2,6 +2,8 @@ fragment RegularUser on User {
   uuid
   username
   email
+  updatedAt
+  createdAt
   profile {
     uuid
     username

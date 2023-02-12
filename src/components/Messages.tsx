@@ -36,8 +36,8 @@ import { getLoggedInUser } from '../store/users'
 import ReactAudioPlayer from 'react-audio-player'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSocket } from '../store/sockets'
-import { Message } from '../../gql-types'
 import { getIsMobile } from '../store/ui'
+import { Message } from '../generated/graphql'
 
 const Messages = () => {
   const dispatch = useDispatch()
@@ -135,7 +135,7 @@ const Messages = () => {
         addMessagesToConversation({
           conversationUuid: activeConversation.uuid,
           messages: localMessages,
-          loggedInUser,
+          loggedInProfileUuid: loggedInUser.user.profile.uuid,
         })
       )
 
@@ -199,9 +199,9 @@ const Messages = () => {
 
     dispatch(
       deleteMessageInStore({
-        uuid: message.data?.deleteMessage.uuid,
-        content: message.data?.deleteMessage.content,
-        deleted: message.data?.deleteMessage.deleted,
+        uuid: message.data?.deleteMessage.uuid as string,
+        content: message.data?.deleteMessage.content as string,
+        deleted: message.data?.deleteMessage.deleted as boolean,
         conversationUuid: activeConversation.uuid,
       })
     )

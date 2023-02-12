@@ -11,8 +11,8 @@ fragment ConversationSnippet on Conversation {
     ...MessageSnippet
   }
   hasMore
-#  ongoingCall
-#  pendingCall
+  pendingCall
+  ongoingCall
   calls {
     ...CallsSnippet
   }
@@ -20,6 +20,7 @@ fragment ConversationSnippet on Conversation {
   name
   description
   pendingCallProfile {
-    ...ConversationProfileSnippet
+    uuid
+    username
   }
 }

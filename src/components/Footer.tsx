@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react'
 import { Flex, Input, Button, Box, Icon } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
-// import PubSub from 'pubsub-js'
+
+import { useSelector, useDispatch } from 'react-redux'
+import { ImUpload2 } from 'react-icons/im'
 
 import {
   addMessageToActiveConversation,
@@ -12,8 +14,12 @@ import {
 } from '../store/chat'
 
 import { setVideoFrameForConversation } from '../store/video'
-import { useSelector, useDispatch } from 'react-redux'
-import { ImUpload2 } from 'react-icons/im'
+
+import RecorderControls from './AudioRecorder/recorder-controls'
+import { UseRecorder } from './AudioRecorder/types/recorder'
+import useRecorder from './AudioRecorder/hooks/use-recorder'
+
+import { getIsMobile } from '../store/ui'
 
 import { getLoggedInUser } from '../store/users'
 import { getSocket } from '../store/sockets'
@@ -21,14 +27,6 @@ import {
   useSetPendingCallForConversationMutation,
   useUploadImageMutation,
 } from '../generated/graphql'
-
-import RecorderControls from './AudioRecorder/recorder-controls'
-// import useRecorder from '../../components/AudioRecorder/hooks/use-recorder_old'
-import { UseRecorder } from './AudioRecorder/types/recorder'
-import useRecorder from './AudioRecorder/hooks/use-recorder'
-import { getIsMobile } from '../store/ui'
-// import { ImCancelCircle } from 'react-icons/im'
-// import { uploadFile } from '../store/files'
 
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const hiddenFileInput = React.useRef(null)
@@ -50,20 +48,18 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
 
   useEffect(() => {
     if (socket) {
-      socket.on(
-        'set-ongoing-call-for-conversation',
-        ({ from, fromUsername }) => {
-          dispatch(
-            setOngoingCall({
-              uuid: activeConversation.uuid,
-              initiator: {
-                uuid: from,
-                username: fromUsername,
-              },
-            })
-          )
-        }
-      )
+      socket.on('set-ongoing-call-for-conversation', () => {
+        dispatch(
+          setOngoingCall()
+          //   {
+          //   uuid: activeConversation.uuid,
+          //   initiator: {
+          //     uuid: from,
+          //     username: fromUsername,
+          //   },
+          // }
+        )
+      })
 
       socket.on('message-deleted', ({ messageUuid, conversationUuid }) => {
         dispatch(
@@ -94,7 +90,6 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
       },
     })
       .then(async (response) => {
-        console.log('response:', response)
         if (activeConversation.type === 'pm') {
           socket.emit('private-chat-message', {
             content:
@@ -131,17 +126,22 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
 
         dispatch(
           addMessageToActiveConversation({
-            uuid: response.data?.uploadImage.uuid,
-            message: response.data?.uploadImage.content,
-            from: 'me',
-            type: response.data?.uploadImage.type,
-            src: response.data?.uploadImage.src,
-            conversationUuid: activeConversation.uuid,
-            deleted: false,
-            sender: {
-              uuid: loggedInUser?.user?.profile?.uuid,
-              username: loggedInUser?.user?.profile?.username,
+            message: {
+              uuid: response.data?.uploadImage.uuid as string,
+              content: response.data?.uploadImage.content as string,
+              from: 'me',
+              type: response.data?.uploadImage.type as string,
+              src: response.data?.uploadImage.src,
+              conversationUuid: activeConversation.uuid,
+              deleted: false,
+              sender: {
+                uuid: loggedInUser?.user?.profile?.uuid,
+                username: loggedInUser?.user?.profile?.username,
+              },
+              updatedAt: new Date().toString(),
+              createdAt: new Date().toString(),
             },
+            loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
           })
         )
       })
