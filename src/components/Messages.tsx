@@ -37,7 +37,7 @@ import ReactAudioPlayer from 'react-audio-player'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getSocket } from '../store/sockets'
 import { getIsMobile } from '../store/ui'
-import { Message } from '../utils/types'
+import { Message } from '../generated/graphql'
 
 const Messages = () => {
   const dispatch = useDispatch()
