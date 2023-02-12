@@ -1,6 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
-import { Friend, FriendRequest, User } from '../utils/types'
+import {
+  Friend,
+  FriendshipRequestSnippetFragment,
+  User,
+} from '../generated/graphql'
+import { FriendRequest } from '../utils/types'
 
 interface UsersState {
   user: User | Record<string, never> | null | undefined
@@ -31,25 +36,34 @@ const slice = createSlice({
       }
     },
     addFriendRequestEntry: (users, action: PayloadAction<FriendRequest>) => {
-      const userObject = { ...users.user }
+      // const userObject = { ...users.user }
+      // const friendshipRequests: FriendRequest[] = <FriendRequest[]>{
+      //   ...users.user?.friendshipRequests,
+      // }
 
-      userObject.friendshipRequests?.push(action.payload)
+      // if (friendshipRequests) {
+      users.user?.friendshipRequests?.push(<FriendRequest>action.payload)
+      // }
     },
     removeFriendRequestEntry: (
       users,
       action: PayloadAction<RemoveFriendRequestEntryPayload>
     ) => {
-      const friendRequests = action.payload.friendRequests.filter(
-        (FREntry) => FREntry.uuid != action.payload.profileUuid
-      )
+      const friendRequests: FriendRequest[] =
+        action.payload.friendRequests.filter(
+          (FREntry: FriendRequest) => FREntry.uuid != action.payload.profileUuid
+        )
 
-      const userObject = { ...users.user }
-      userObject.friendshipRequests?.push(friendRequests)
+      const userObject: User = <User>{ ...users.user }
+      if (friendRequests) {
+        userObject.friendshipRequests = friendRequests
+        // userObject.friendshipRequests?.push(friendRequests)
+      }
     },
     addFriendEntry: (users, action: PayloadAction<Friend>) => {
       try {
-        const userObject = { ...users.user }
-        userObject.friends?.push(action.payload)
+        // const userObject = { ...users.user }
+        users.user?.friends?.push(action.payload)
       } catch (e) {
         console.log('error:', e)
       }
@@ -62,8 +76,10 @@ const slice = createSlice({
         (FREntry) => FREntry.uuid != action.payload.profileUuid
       )
 
-      const userObject = { ...users.user }
-      userObject.friends?.push(friends)
+      // const userObject = { ...users.user }
+      if (users.user) users.user.friends = friends
+
+      // userObject.friends?.push(friends)
     },
   },
 })
