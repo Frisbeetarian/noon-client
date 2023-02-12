@@ -33,7 +33,7 @@ const slice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    setSearchQuery: (search, action: PayloadAction<string>) => {
+    setSearchQuery: (search, action: PayloadAction<string | null>) => {
       search.query = action.payload
     },
     setProfiles: (search, action: PayloadAction<AddProfilesPayload>) => {
