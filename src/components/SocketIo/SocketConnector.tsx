@@ -35,6 +35,9 @@ export default function SocketConnector() {
         }
 
         socket.connect()
+
+        // fix the below so that it doesnt produce warning about serialization of socket payload
+
         dispatch(setSocket({ socket }))
       } else {
         socket.auth = {

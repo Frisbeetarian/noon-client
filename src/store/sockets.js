@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
-let lastId = 0
 
 const slice = createSlice({
   name: 'sockets',

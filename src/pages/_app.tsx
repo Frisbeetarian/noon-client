@@ -1,22 +1,22 @@
-import React, { useEffect } from 'react'
-import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
+import React, { useEffect } from "react"
+import { ChakraProvider, ColorModeProvider } from "@chakra-ui/react"
 // import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 
-import theme from '../theme'
-import './index.css'
-import { wrapper } from '../store/store'
+import theme from "../theme"
+import "./index.css"
+import { wrapper } from "../store/store"
 
-import '../components/SocketIo/Messages.css'
-import '../components/AudioRecorder/recorder-controls/styles.css'
-import { setIsMobile } from '../store/ui'
-import { useDispatch } from 'react-redux'
+import "../components/SocketIo/Messages.css"
+import "../components/AudioRecorder/recorder-controls/styles.css"
+import { setIsMobile } from "../store/ui"
+import { useDispatch } from "react-redux"
 
 function MyApp({ Component, pageProps }) {
   const dispatch = useDispatch()
 
   useEffect(() => {
     const vh = window.innerHeight * 0.01
-    document.documentElement.style.setProperty('--vh', `${vh}px`)
+    document.documentElement.style.setProperty("--vh", `${vh}px`)
 
     if (window.innerWidth <= 1000) {
       dispatch(setIsMobile(true))
@@ -26,9 +26,9 @@ function MyApp({ Component, pageProps }) {
   }, [])
 
   useEffect(() => {
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       const vh = window.innerHeight * 0.01
-      document.documentElement.style.setProperty('--vh', `${vh}px`)
+      document.documentElement.style.setProperty("--vh", `${vh}px`)
 
       if (window.innerWidth <= 1000) {
         dispatch(setIsMobile(true))
@@ -38,7 +38,7 @@ function MyApp({ Component, pageProps }) {
     })
 
     return () => {
-      window.removeEventListener('resize', () => {
+      window.removeEventListener("resize", () => {
         if (window.innerWidth <= 1000) {
           dispatch(setIsMobile(true))
         } else {
