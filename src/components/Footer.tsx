@@ -22,16 +22,17 @@ import useRecorder from './AudioRecorder/hooks/use-recorder'
 import { getIsMobile } from '../store/ui'
 
 import { getLoggedInUser } from '../store/users'
-import { getSocket } from '../store/sockets'
 import {
   useSetPendingCallForConversationMutation,
   useUploadImageMutation,
 } from '../generated/graphql'
 
+import SocketManager from './SocketIo/SocketManager'
+
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const hiddenFileInput = React.useRef(null)
   const dispatch = useDispatch()
-  const socket = useSelector(getSocket)
+  const socket = SocketManager.getSocket()
   const isMobile = useSelector(getIsMobile)
 
   const activeConversation = useSelector(getActiveConversation)
@@ -91,7 +92,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
     })
       .then(async (response) => {
         if (activeConversation.type === 'pm') {
-          socket.emit('private-chat-message', {
+          socket?.emit('private-chat-message', {
             content:
               loggedInUser.user?.profile?.username + ' sent you a message.',
             from: loggedInUser.user?.profile?.uuid,
@@ -107,7 +108,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
         } else {
           activeConversation.profiles.map((conversationProfile) => {
             if (conversationProfile.uuid !== loggedInUser.user?.profile?.uuid) {
-              socket.emit('private-chat-message', {
+              socket?.emit('private-chat-message', {
                 content:
                   loggedInUser.user?.profile?.username + ' sent you a message.',
                 from: loggedInUser.user?.profile?.uuid,
@@ -209,7 +210,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
               dispatch(setVideoFrameForConversation(true))
 
               activeConversation.profiles.map(async (profile) => {
-                socket.emit('set-pending-call-for-conversation', {
+                socket?.emit('set-pending-call-for-conversation', {
                   from: loggedInUser.user?.profile?.uuid,
                   fromUsername: loggedInUser.user?.profile?.username,
                   to: profile.uuid,

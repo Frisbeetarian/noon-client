@@ -35,7 +35,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
 import ReactAudioPlayer from 'react-audio-player'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { getSocket } from '../store/sockets'
+import SocketManager from './SocketIo/SocketManager'
 import { getIsMobile } from '../store/ui'
 import { Message } from '../generated/graphql'
 
@@ -45,7 +45,7 @@ const Messages = () => {
   const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
   const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
-  const socket = useSelector(getSocket)
+  const socket = SocketManager.getSocket()
   const isMobile = useSelector(getIsMobile)
 
   const [

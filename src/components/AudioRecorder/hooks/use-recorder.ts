@@ -14,10 +14,10 @@ import {
 } from '../../../store/chat'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { getSocket } from '../../../store/sockets'
 import { getLoggedInUser } from '../../../store/users'
 import { useUploadVoiceRecordingMutation } from '../../../generated/graphql'
 import { emitPrivateChatMessage } from '../../../utils/SocketEmits'
+import SocketManager from '../../SocketIo/SocketManager'
 
 const initialState: Recorder = {
   recordingMinutes: 0,
@@ -34,7 +34,7 @@ export default function useRecorder() {
   const [uploadVoiceRecordingMutation] = useUploadVoiceRecordingMutation()
 
   const dispatch = useDispatch()
-  const socket = useSelector(getSocket)
+  const socket = SocketManager.getSocket()
 
   const activeConversation = useSelector(getActiveConversation)
   const loggedInUser = useSelector(getLoggedInUser)

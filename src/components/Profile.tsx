@@ -15,7 +15,6 @@ import {
   addFriendEntry,
 } from '../store/users'
 
-import { getSocket } from '../store/sockets'
 import {
   useAcceptFriendRequestMutation,
   useCancelFriendRequestMutation,
@@ -23,7 +22,7 @@ import {
 } from '../generated/graphql'
 import { addConversation } from '../store/chat'
 import { emitFriendshipRequestAccepted } from '../utils/SocketEmits'
-
+import SocketManager from './SocketIo/SocketManager'
 // interface ProfileProps {
 //   uuid: string
 //   username: string
@@ -52,7 +51,8 @@ export default function Profile({ profile }) {
     sendFriendRequest,
     // { loading: sendFriendRequestLoading }
   ] = useSendFriendRequestMutation()
-  const socket = useSelector(getSocket)
+  // const socket = useSelector(getSocket)
+  const socket = SocketManager.getSocket()
   const toast = useToast()
   // const toastIdRef = React.useRef()
 
@@ -106,7 +106,7 @@ export default function Profile({ profile }) {
               )
 
               if (cancelFriendRequestResponse) {
-                socket.emit('cancel-friend-request', {
+                socket?.emit('cancel-friend-request', {
                   content:
                     loggedInUser.user?.profile?.username +
                     ' cancelled the friend request.',
@@ -211,7 +211,7 @@ export default function Profile({ profile }) {
                   },
                 })
 
-                socket.emit('send-friend-request', {
+                socket?.emit('send-friend-request', {
                   content:
                     loggedInUser.user?.profile?.username +
                     ' wants to be your friend.',

@@ -10,7 +10,7 @@ import {
 
 import { getVideoFrameOpenState } from '../store/video'
 import { useDispatch, useSelector } from 'react-redux'
-import { getSocket } from '../store/sockets'
+import { getSocketId } from '../store/sockets'
 
 import Header from './Header'
 import Messages from './Messages'
@@ -44,12 +44,10 @@ function Chat() {
   const [innerHeight, setInnerHeight] = useState(0)
 
   const [inputMessage, setInputMessage] = useState('')
-  const socket = useSelector(getSocket)
+  const socket = useSelector(getSocketId)
 
   const activeConversation = useSelector(getActiveConversation)
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
-  // const chatContainerHeight = useSelector(getChatContainerHeight)
-  // const searchActive = useSelector(getIsSearchActive)
 
   const profile = useSelector(getActiveConversee)
 

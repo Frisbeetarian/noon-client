@@ -4,11 +4,16 @@ import { Conversation, Message, Profile, Sender } from '../generated/graphql'
 
 // import { Conversation, Message, Profile } from '../utils/types'
 
+type ExtendedConversation = Conversation & {
+  conversee: Sender | null | undefined
+}
+
 interface ChatState {
-  conversations: Conversation[] | null | undefined
+  conversations: ExtendedConversation[] | null | undefined
   activeConversee: Profile | null
-  activeConversation: Conversation | null | undefined
+  activeConversation: ExtendedConversation | null | undefined
   conversationController: {
+    conversationUuid: string | null | undefined
     conversee: Sender | null | undefined
   }
   conversationsThatHaveUnreadMessagesForProfile: string[]
@@ -17,8 +22,8 @@ interface ChatState {
 }
 
 interface ConversationPayload {
-  conversation?: Conversation | undefined
-  conversationsToSend?: Conversation[] | null | undefined
+  conversation?: ExtendedConversation | undefined
+  conversationsToSend?: ExtendedConversation[] | null | undefined
   loggedInProfileUuid?: string | null | undefined
   conversationUuid?: string | null | undefined
   participantUuid?: string | null | undefined
@@ -61,6 +66,7 @@ const initialState: ChatState = {
   activeConversee: null,
   activeConversation: null,
   conversationController: {
+    conversationUuid: null,
     conversee: null,
   },
   conversationsThatHaveUnreadMessagesForProfile: [],
@@ -100,7 +106,7 @@ const slice = createSlice({
 
       // conversationObject.ongoingCall = false
       if (conversationObject)
-        chat.conversations?.push(<Conversation>conversationObject)
+        chat.conversations?.push(<ExtendedConversation>conversationObject)
     },
     removeConversation: (
       chat,
@@ -141,43 +147,82 @@ const slice = createSlice({
       }
     },
     setConversations: (chat, action: PayloadAction<ConversationPayload>) => {
-      const conversationsArray: Conversation[] = []
+      const { conversationsToSend, loggedInProfileUuid } = action.payload
+      if (!conversationsToSend) return
 
-      // Promise.all(
-      action.payload.conversationsToSend?.map((conversation) => {
-        const conversationObject = { ...conversation }
+      const newConversationsThatHaveUnreadMessagesForProfile = [
+        ...chat.conversationsThatHaveUnreadMessagesForProfile,
+      ]
 
-        const converseeObject = conversationObject.profiles.find(
-          (element) => element.uuid !== action.payload.loggedInProfileUuid
+      const conversationsArray = conversationsToSend.map((conversation) => {
+        const converseeObject = conversation.profiles.find(
+          (profile) => profile.uuid !== loggedInProfileUuid
         )
 
-        const callObject = conversationObject.calls?.find(
-          (call) => call.profileUuid === action.payload.loggedInProfileUuid
+        const callObject = conversation.calls?.find(
+          (call) => call.profileUuid === loggedInProfileUuid
         )
 
-        if (
+        const hasUnreadMessages =
           conversation.unreadMessages !== 0 &&
-          conversation.profileThatHasUnreadMessages ===
-            action.payload.loggedInProfileUuid
-        ) {
-          chat.conversationsThatHaveUnreadMessagesForProfile.push(
+          conversation.profileThatHasUnreadMessages === loggedInProfileUuid
+        if (hasUnreadMessages) {
+          newConversationsThatHaveUnreadMessagesForProfile.push(
             conversation.uuid
           )
         }
 
-        if (conversationObject.calls && callObject) {
-          conversationObject.pendingCall = callObject.pendingCall
-          conversationObject.ongoingCall = callObject.ongoingCall
+        return {
+          ...conversation,
+          conversee: converseeObject,
+          pendingCall: callObject?.pendingCall as boolean,
+          ongoingCall: callObject?.ongoingCall as boolean,
         }
-
-        // conversationObject.conversee = converseeObject
-        chat.conversationController.conversee = converseeObject
-        conversationsArray.push(conversationObject)
       })
-      // )
 
       chat.conversations = conversationsArray
+      chat.conversationsThatHaveUnreadMessagesForProfile =
+        newConversationsThatHaveUnreadMessagesForProfile
     },
+
+    // setConversations: (chat, action: PayloadAction<ConversationPayload>) => {
+    //   const conversationsArray: ExtendedConversation[] = []
+    //
+    //   // Promise.all(
+    //   action.payload.conversationsToSend?.map((conversation) => {
+    //     const conversationObject = { ...conversation }
+    //
+    //     const converseeObject = conversationObject.profiles.find(
+    //       (element) => element.uuid !== action.payload.loggedInProfileUuid
+    //     )
+    //
+    //     const callObject = conversationObject.calls?.find(
+    //       (call) => call.profileUuid === action.payload.loggedInProfileUuid
+    //     )
+    //
+    //     if (
+    //       conversation.unreadMessages !== 0 &&
+    //       conversation.profileThatHasUnreadMessages ===
+    //         action.payload.loggedInProfileUuid
+    //     ) {
+    //       chat.conversationsThatHaveUnreadMessagesForProfile.push(
+    //         conversation.uuid
+    //       )
+    //     }
+    //
+    //     if (conversationObject.calls && callObject) {
+    //       conversationObject.pendingCall = callObject.pendingCall
+    //       conversationObject.ongoingCall = callObject.ongoingCall
+    //     }
+    //
+    //     conversationObject.conversee = converseeObject
+    //     // chat.conversationController.conversee = converseeObject
+    //     conversationsArray.push(conversationObject)
+    //   })
+    //   // )
+    //
+    //   chat.conversations = conversationsArray
+    // },
     addMessagesToConversation: (
       chat,
       action: PayloadAction<MessagesPayload>
@@ -333,74 +378,116 @@ const slice = createSlice({
         return
       }
 
-      const index = chat.conversationsThatHaveUnreadMessagesForProfile.indexOf(
-        action.payload.conversation?.uuid as string
-      )
-
-      if (index > -1) {
-        chat.conversationsThatHaveUnreadMessagesForProfile.splice(index, 1)
-      }
-
-      // chat.conversationsThatHaveUnreadMessagesForProfile =
-      //   chat.conversationsThatHaveUnreadMessagesForProfile.filter(
-      //     (conversationUuid) =>
-      //       conversationUuid === action.payload.conversation.uuid
-      //   )
-
-      const conversationObject = { ...action.payload.conversation }
-      // conversationObject.unreadMessages = 0
-      // conversationObject.profileThatHasUnreadMessages = []
+      chat.conversationsThatHaveUnreadMessagesForProfile =
+        chat.conversationsThatHaveUnreadMessagesForProfile.filter(
+          (uuid) => uuid !== action.payload.conversation?.uuid
+        )
 
       const conversationFromStack = chat.conversations?.find(
-        (conversation) => conversation.uuid === conversationObject.uuid
+        (conversation) =>
+          conversation.uuid === action.payload.conversation?.uuid
       )
 
       const callInConversationStack = conversationFromStack?.calls.find(
         (call) => call.profileUuid === action.payload?.loggedInProfileUuid
       )
 
-      // let callInActiveConversation = conversationObject.calls.find(
-      //   (call) => call.profileUuid === action.payload.loggedInProfileUuid
-      // )
+      const messagesArray =
+        action.payload.conversation?.messages.map((message) => ({
+          ...message,
+          from:
+            message.sender.uuid === action.payload?.loggedInProfileUuid
+              ? 'me'
+              : 'other',
+        })) || []
 
-      conversationObject.pendingCall = callInConversationStack?.pendingCall
+      const sortedMessage = messagesArray.sort(
+        (a, b) => (b.createdAt as any) - (a.createdAt as any)
+      )
+
+      const conversationObject: ExtendedConversation = {
+        ...action.payload.conversation,
+        pendingCall: callInConversationStack?.pendingCall,
+        messages: action.payload.conversation?.messages ? sortedMessage : [],
+      }
+
       if (conversationFromStack) {
         conversationFromStack.unreadMessages = 0
         conversationFromStack.profileThatHasUnreadMessages = null
         conversationFromStack.ongoingCall = false
       }
 
-      if (!action.payload.conversation?.messages) {
-        conversationObject.messages = []
-      } else {
-        const messagesArray: Message[] = []
-
-        action.payload.conversation?.messages.map((message) => {
-          const messageObject = { ...message }
-
-          messageObject.from =
-            messageObject.sender.uuid === action.payload?.loggedInProfileUuid
-              ? 'me'
-              : 'other'
-
-          messagesArray.push(messageObject)
-        })
-
-        const sortedMessage = messagesArray.sort(
-          (a, b) => (b.createdAt as any) - (a.createdAt as any)
-        )
-
-        conversationObject.messages = [...sortedMessage]
-      }
-
-      if (!chat['activeConversation']) {
-        chat['activeConversation'] = null
-      }
-
-      if (chat.activeConversation) {
-        chat.activeConversation = <Conversation>conversationObject
-      }
+      // chat.activeConversation ??= null
+      chat.activeConversation = conversationObject
     },
+    // setActiveConversation: (
+    //   chat,
+    //   action: PayloadAction<ConversationPayload | null>
+    // ) => {
+    //   if (action.payload === null) {
+    //     chat.activeConversation = null
+    //     return
+    //   }
+    //
+    //   const index = chat.conversationsThatHaveUnreadMessagesForProfile.indexOf(
+    //     action.payload.conversation?.uuid as string
+    //   )
+    //
+    //   if (index > -1) {
+    //     chat.conversationsThatHaveUnreadMessagesForProfile.splice(index, 1)
+    //   }
+    //
+    //   const conversationObject: ExtendedConversation = {
+    //     ...action.payload.conversation,
+    //   }
+    //
+    //   const conversationFromStack = chat.conversations?.find(
+    //     (conversation) => conversation.uuid === conversationObject.uuid
+    //   )
+    //
+    //   const callInConversationStack = conversationFromStack?.calls.find(
+    //     (call) => call.profileUuid === action.payload?.loggedInProfileUuid
+    //   )
+    //
+    //   conversationObject.pendingCall = callInConversationStack?.pendingCall
+    //   if (conversationFromStack) {
+    //     conversationFromStack.unreadMessages = 0
+    //     conversationFromStack.profileThatHasUnreadMessages = null
+    //     conversationFromStack.ongoingCall = false
+    //   }
+    //
+    //   if (!action.payload.conversation?.messages) {
+    //     conversationObject.messages = []
+    //   } else {
+    //     const messagesArray: Message[] = []
+    //
+    //     action.payload.conversation?.messages.map((message) => {
+    //       const messageObject = { ...message }
+    //
+    //       messageObject.from =
+    //         messageObject.sender.uuid === action.payload?.loggedInProfileUuid
+    //           ? 'me'
+    //           : 'other'
+    //
+    //       messagesArray.push(messageObject)
+    //     })
+    //
+    //     const sortedMessage = messagesArray.sort(
+    //       (a, b) => (b.createdAt as any) - (a.createdAt as any)
+    //     )
+    //
+    //     conversationObject.messages = [...sortedMessage]
+    //   }
+    //
+    //   if (!chat['activeConversation']) {
+    //     chat['activeConversation'] = null
+    //   }
+    //
+    //   console.log('conversationObject', conversationObject)
+    //   if (chat.activeConversation) {
+    //     chat.activeConversation = <ExtendedConversation>conversationObject
+    //   }
+    // },
     setOngoingCall: (
       chat
       // action: PayloadAction<{
@@ -415,7 +502,9 @@ const slice = createSlice({
       activeConversationObject.ongoingCall = true
 
       if (chat.activeConversation) {
-        chat.activeConversation = <Conversation>{ ...activeConversationObject }
+        chat.activeConversation = <ExtendedConversation>{
+          ...activeConversationObject,
+        }
       }
     },
     setActiveGroupInStore: (
@@ -469,7 +558,7 @@ const slice = createSlice({
       }
 
       if (chat.activeConversation) {
-        chat.activeConversation = <Conversation>conversationObject
+        chat.activeConversation = <ExtendedConversation>conversationObject
       }
     },
     setPendingCall: (chat, action: PayloadAction<PendingCallPayload>) => {

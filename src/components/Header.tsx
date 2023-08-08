@@ -15,9 +15,10 @@ import {
   getActiveConversee,
   setPendingCall,
 } from '../store/chat'
+import SocketManager from './SocketIo/SocketManager'
 
 import { getLoggedInUser } from '../store/users'
-import { getSocket } from '../store/sockets'
+// import { getSocket } from '../store/sockets'
 import { useCancelPendingCallForConversationMutation } from '../generated/graphql'
 import { setVideoFrameForConversation } from '../store/video'
 import { getIsMobile } from '../store/ui'
@@ -26,7 +27,7 @@ const Header = () => {
   const activeConversee = useSelector(getActiveConversee)
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
-  const socket = useSelector(getSocket)
+  const socket = SocketManager.getSocket()
   const [online, setOnline] = useState('loading')
   const activeConversation = useSelector(getActiveConversation)
   const isMobile = useSelector(getIsMobile)
@@ -37,7 +38,7 @@ const Header = () => {
   ] = useCancelPendingCallForConversationMutation()
 
   useEffect(() => {
-    if (activeConversee) {
+    if (activeConversee && socket) {
       socket.emit('check-friend-connection', {
         from: loggedInUser.user?.profile?.uuid,
         fromUsername: loggedInUser.user?.profile?.username,
@@ -72,7 +73,7 @@ const Header = () => {
       socket.off('friend-connected')
       socket.off('friend-disconnected')
     }
-  }, [activeConversee])
+  }, [activeConversee, socket, loggedInUser.user?.profile?.uuid])
 
   return (
     <Flex w="100%" className="items-center justify-between">

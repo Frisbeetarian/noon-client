@@ -25,7 +25,6 @@ import {
 } from '../../store/ui'
 import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
-// import { getIsMobile } from '../../store/ui'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -48,14 +47,13 @@ function Noon() {
     fetchPolicy: 'network-only',
   })
 
-  // const [, logout] = useLogoutMutation()
   const loggedInUser = useSelector(getLoggedInUser)
   const conversations = useSelector(getConversations)
 
-  const {
-    data: fetchedConversations,
-    // loading: getConversationLoading
-  } = useGetConversationForLoggedInUserQuery({ fetchPolicy: 'network-only' })
+  const { data: fetchedConversations } = useGetConversationForLoggedInUserQuery(
+    { fetchPolicy: 'network-only' }
+  )
+  // log fetchedconversations
 
   useEffect(() => {
     if (!meLoading) {
@@ -68,9 +66,19 @@ function Noon() {
   }, [meLoading, data?.me?.username])
 
   useEffect(() => {
+    // console.log(
+    //   'fetchedConversations?.getConversationForLoggedInUser:',
+    //   fetchedConversations?.getConversationForLoggedInUser
+    // )
+    // console.log('conversations:', conversations)
+    // console.log(
+    //   'loggedInUser?.user?.profile?.uuid:',
+    //   loggedInUser?.user?.profile?.uuid
+    // )
+
     if (
       fetchedConversations?.getConversationForLoggedInUser &&
-      conversations === null &&
+      (conversations === null || conversations.length === 0) &&
       loggedInUser?.user?.profile?.uuid
     ) {
       dispatch(

@@ -38,6 +38,13 @@ export type Profile = {
   friendshipRequests: FriendshipRequest[]
 }
 
+export interface Auth {
+  sessionID?: string | null | undefined
+  username?: string
+  userSocketUuid?: string
+  userID?: string
+}
+
 export type Friend = {
   uuid: string
   username: string

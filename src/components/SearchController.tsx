@@ -20,6 +20,11 @@ export default function SearchController() {
     fetchPolicy: 'network-only',
   })
 
+  console.log(
+    'data?.searchForProfileByUsername',
+    data?.searchForProfileByUsername
+  )
+
   useEffect(() => {
     if (data?.searchForProfileByUsername && loggedInUser.user) {
       dispatch(

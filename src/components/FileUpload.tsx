@@ -2,8 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
 import { getLoggedInUser } from '../store/users'
-import { getSocket } from '../store/sockets'
-
+import SocketManager from './SocketIo/SocketManager'
 import {
   addMessageToActiveConversation,
   getActiveConversation,
@@ -17,7 +16,7 @@ export const FileUpload = ({ children }) => {
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
   const profile = useSelector(getActiveConversee)
-  const socket = useSelector(getSocket)
+  const socket = SocketManager.getSocket()
   const [uploadImageMutation] = useUploadImageMutation()
 
   const { acceptedFiles, getRootProps } = useDropzone()

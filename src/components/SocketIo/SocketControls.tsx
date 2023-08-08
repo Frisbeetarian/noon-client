@@ -25,7 +25,8 @@ import {
 } from '../../store/chat'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { getSocket } from '../../store/sockets'
+import SocketManager from './SocketManager'
+// import { getSocketId } from '../../store/sockets'
 
 import {
   useAcceptFriendRequestMutation,
@@ -34,7 +35,7 @@ import {
 
 function SocketControls() {
   const dispatch = useDispatch()
-  const socket = useSelector(getSocket)
+  const socket = SocketManager.getSocket()
   const toast = useToast()
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversationSet = useSelector(getActiveConversationSet)
@@ -51,6 +52,8 @@ function SocketControls() {
   ] = useUpdateUnreadMessagesForConversationMutation()
 
   useEffect(() => {
+    console.log('socket:', socket)
+
     if (socket) {
       socket.on(
         'private-chat-message',
