@@ -69,9 +69,9 @@ const Header = () => {
 
     return () => {
       setOnline('loading')
-      socket.off('check-friend-connection')
-      socket.off('friend-connected')
-      socket.off('friend-disconnected')
+      socket?.off('check-friend-connection')
+      socket?.off('friend-connected')
+      socket?.off('friend-disconnected')
     }
   }, [activeConversee, socket, loggedInUser.user?.profile?.uuid])
 

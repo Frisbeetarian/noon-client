@@ -50,16 +50,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   useEffect(() => {
     if (socket) {
       socket.on('set-ongoing-call-for-conversation', () => {
-        dispatch(
-          setOngoingCall()
-          //   {
-          //   uuid: activeConversation.uuid,
-          //   initiator: {
-          //     uuid: from,
-          //     username: fromUsername,
-          //   },
-          // }
-        )
+        dispatch(setOngoingCall())
       })
 
       socket.on('message-deleted', ({ messageUuid, conversationUuid }) => {

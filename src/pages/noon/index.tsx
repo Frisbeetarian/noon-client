@@ -53,7 +53,6 @@ function Noon() {
   const { data: fetchedConversations } = useGetConversationForLoggedInUserQuery(
     { fetchPolicy: 'network-only' }
   )
-  // log fetchedconversations
 
   useEffect(() => {
     if (!meLoading) {
@@ -66,16 +65,6 @@ function Noon() {
   }, [meLoading, data?.me?.username])
 
   useEffect(() => {
-    // console.log(
-    //   'fetchedConversations?.getConversationForLoggedInUser:',
-    //   fetchedConversations?.getConversationForLoggedInUser
-    // )
-    // console.log('conversations:', conversations)
-    // console.log(
-    //   'loggedInUser?.user?.profile?.uuid:',
-    //   loggedInUser?.user?.profile?.uuid
-    // )
-
     if (
       fetchedConversations?.getConversationForLoggedInUser &&
       (conversations === null || conversations.length === 0) &&

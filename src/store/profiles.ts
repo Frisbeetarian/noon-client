@@ -34,6 +34,8 @@ const slice = createSlice({
     addProfiles: (profiles, action: PayloadAction<AddProfilesPayload>) => {
       const { profiles: incomingProfiles, loggedInUser } = action.payload
 
+      console.log('incomingProfiles:', incomingProfiles)
+
       if (incomingProfiles == null) {
         profiles.list = []
       } else {
@@ -140,9 +142,8 @@ export const getProfilesByName = createSelector(
 // Create a selector to get profiles by username
 export const getProfilesByUsername = createSelector(
   getProfiles,
-  (_, username) => username, // Second argument to the selector function will be the username
+  (_, username) => username,
   (profiles, username) => {
-    // Filter the profiles by username
     return profiles.filter((profile) =>
       profile.username.toLowerCase().includes(username.toLowerCase())
     )
