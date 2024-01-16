@@ -32,9 +32,9 @@ const slice = createSlice({
   initialState,
   reducers: {
     addProfiles: (profiles, action: PayloadAction<AddProfilesPayload>) => {
-      const { profiles: incomingProfiles, loggedInUser } = action.payload
+      profiles.list = []
 
-      console.log('incomingProfiles:', incomingProfiles)
+      const { profiles: incomingProfiles, loggedInUser } = action.payload
 
       if (incomingProfiles == null) {
         profiles.list = []

@@ -52,7 +52,7 @@ function SocketControls() {
   ] = useUpdateUnreadMessagesForConversationMutation()
 
   useEffect(() => {
-    console.log('socket:', socket)
+    console.log('socket in socket controls:', socket)
 
     if (socket) {
       socket.on(
@@ -104,18 +104,19 @@ function SocketControls() {
         }
       )
 
-      socket.on('send-friend-request', ({ from, fromUsername }) => {
+      socket.on('send-friend-request', ({ senderUuid, senderUsername }) => {
+        console.log('SEND FRIEND REQUEST RECEIVED')
         dispatch(
           addFriendRequestEntry({
-            uuid: from,
-            username: fromUsername,
+            uuid: senderUuid,
+            username: senderUsername,
             reverse: true,
           })
         )
 
         toast({
-          id: from,
-          title: `${fromUsername} sent you a friend request.`,
+          id: senderUuid,
+          title: `${senderUsername} sent you a friend request.`,
           position: 'bottom-right',
           isClosable: true,
           status: 'success',
@@ -123,13 +124,13 @@ function SocketControls() {
           render: () => (
             <Flex direction="column" color="white" p={3} bg="green.500">
               <Flex>
-                <p>{fromUsername} sent you a friend request.</p>
+                <p>{senderUsername} sent you a friend request.</p>
 
                 <CloseButton
                   className="sticky top ml-4"
                   size="sm"
                   onClick={() => {
-                    toast.close(from)
+                    toast.close(senderUuid)
                   }}
                   name="close button"
                 />
@@ -142,27 +143,27 @@ function SocketControls() {
                   onClick={async () => {
                     const acceptFriendshipResponse = await acceptFriendRequest({
                       variables: {
-                        profileUuid: from,
+                        profileUuid: senderUuid,
                       },
                     })
 
                     dispatch(
                       setFriendFlagOnProfile({
-                        profileUuid: from,
+                        profileUuid: senderUuid,
                       })
                     )
 
                     dispatch(
                       removeFriendRequestEntry({
-                        profileUuid: from,
+                        profileUuid: senderUuid,
                         friendRequests: loggedInUser.user?.friendshipRequests,
                       })
                     )
 
                     dispatch(
                       addFriendEntry({
-                        uuid: from,
-                        username: fromUsername,
+                        uuid: senderUuid,
+                        username: senderUsername,
                       })
                     )
 
@@ -181,14 +182,14 @@ function SocketControls() {
                           ' accepted your friend request.',
                         from: loggedInUser.user?.profile?.uuid,
                         fromUsername: loggedInUser.user?.profile?.username,
-                        to: from,
-                        toUsername: fromUsername,
+                        to: senderUuid,
+                        toUsername: senderUsername,
                         conversation:
                           acceptFriendshipResponse.data?.acceptFriendRequest,
                       })
                     }
 
-                    toast.close(from)
+                    toast.close(senderUuid)
                   }}
                 >
                   Accept

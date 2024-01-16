@@ -13,9 +13,8 @@ html {
 
 .search-sidebar {
     position: absolute;
-    padding: 0 28px 0 28px;
+    padding: 24px 28px 0 28px;
     margin: 0;
-    padding-top: 24px;
     height: 100vh;
     z-index: 1000;
     opacity: 1;

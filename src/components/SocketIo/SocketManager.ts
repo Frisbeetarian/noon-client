@@ -13,7 +13,7 @@ class SocketManager {
     SocketManager.instance = this
   }
 
-  connect(auth): Socket {
+  async connect(auth): Promise<Socket> {
     const SOCKET_SERVER_URL = process.env.NEXT_PUBLIC_URL as string
 
     if (!this.socket) {
@@ -30,6 +30,11 @@ class SocketManager {
 
   disconnect(): void {
     if (this.socket) {
+      this.socket.off('connect')
+      this.socket.off('disconnect')
+      this.socket.off('session')
+      this.socket.off('connect_error')
+
       this.socket.close()
       this.socket = null
     }

@@ -59,7 +59,7 @@ export default function Profile({ profile }) {
   return (
     <Flex
       key={profile.uuid}
-      className="items-center w-full justify-between  relative h-12 "
+      className="items-center w-full justify-between  relative h-12 my-5"
       style={{ flex: '1' }}
     >
       <Flex className="items-center ">
@@ -211,15 +211,15 @@ export default function Profile({ profile }) {
                   },
                 })
 
-                socket?.emit('send-friend-request', {
-                  content:
-                    loggedInUser.user?.profile?.username +
-                    ' wants to be your friend.',
-                  from: loggedInUser.user?.profile?.uuid,
-                  fromUsername: loggedInUser.user?.profile?.username,
-                  to: profile.uuid,
-                  toUsername: profile.username,
-                })
+                // socket?.emit('send-friend-request', {
+                //   content:
+                //     loggedInUser.user?.profile?.username +
+                //     ' wants to be your friend.',
+                //   from: loggedInUser.user?.profile?.uuid,
+                //   fromUsername: loggedInUser.user?.profile?.username,
+                //   to: profile.uuid,
+                //   toUsername: profile.username,
+                // })
               }}
             >
               Send friend request

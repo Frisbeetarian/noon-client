@@ -25,6 +25,7 @@ import {
 } from '../../store/ui'
 import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
+import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -98,13 +99,13 @@ function Noon() {
       </Head>
 
       {mounted && loggedInUser.user?.profile ? (
-        <>
+        <SocketConnectionProvider>
           <Sidebar />
           {!isMobile && <Chat />}
           {isMobile && isConversationOpen && <Chat />}
           {!isMobile && <SocketControls />}
           {createGroupActive && <CreateGroupSidebar />}
-        </>
+        </SocketConnectionProvider>
       ) : null}
     </div>
   )
