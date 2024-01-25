@@ -39,12 +39,12 @@ export default function SearchController() {
     }
 
     return () => {
-      // dispatch(
-      //   addProfiles({
-      //     profiles: [],
-      //     loggedInUser: loggedInUser.user,
-      //   })
-      // )
+      dispatch(
+        addProfiles({
+          profiles: [],
+          loggedInUser: loggedInUser.user,
+        })
+      )
       if (socket) socket.off('search-results')
     }
   }, [socket, loggedInUser, dispatch])

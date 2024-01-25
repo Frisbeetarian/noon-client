@@ -35,6 +35,7 @@ import {
   useUpdateUnreadMessagesForConversationMutation,
 } from '../../generated/graphql'
 import { getSocketAuthObject } from '../../store/sockets'
+import { uuid } from 'uuidv4'
 
 function SocketControls() {
   const dispatch = useDispatch()
@@ -55,11 +56,6 @@ function SocketControls() {
   ] = useUpdateUnreadMessagesForConversationMutation()
 
   useEffect(() => {
-    // console.log('SocketControls rendered')
-  }, [])
-
-  useEffect(() => {
-    // console.log('socket in socket controls:', socket)
     if (socketAuthObject) {
       socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
     }
@@ -115,7 +111,6 @@ function SocketControls() {
       )
 
       socket.on('send-friend-request', ({ senderUuid, senderUsername }) => {
-        console.log('SEND FRIEND REQUEST RECEIVED')
         dispatch(
           addFriendRequestEntry({
             uuid: senderUuid,
@@ -125,7 +120,7 @@ function SocketControls() {
         )
 
         toast({
-          id: senderUuid,
+          id: uuid(),
           title: `${senderUsername} sent you a friend request.`,
           position: 'bottom-right',
           isClosable: true,

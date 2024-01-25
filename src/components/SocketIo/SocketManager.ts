@@ -10,7 +10,6 @@ class SocketManager {
   static getInstance(auth): SocketManager | null {
     if (!auth) {
       console.error('Auth object is null or undefined.')
-      // Handle this situation - either return the existing instance or throw an error
       return null
     }
 
@@ -27,7 +26,6 @@ class SocketManager {
 
     if (!this.socket) {
       this.socket = io(SOCKET_SERVER_URL, { auth })
-      console.log(this.socket)
 
       this.socket.onAny((event, ...args) => {
         console.log(event, args)
@@ -43,10 +41,10 @@ class SocketManager {
     }
   }
 
-  static disconnect(): void {
-    if (this.socket) {
-      this.socket.disconnect()
-      this.socket = null
+  public disconnect(): void {
+    if (SocketManager.socket) {
+      SocketManager.socket.disconnect()
+      SocketManager.socket = null
     }
   }
 }

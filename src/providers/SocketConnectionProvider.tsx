@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { connectSocket, socketDisconnected } from '../store/sockets'
+import { connectSocket } from '../store/sockets'
 import { getLoggedInUser } from '../store/users'
 import { Auth } from '../utils/types'
 
@@ -25,7 +25,7 @@ const SocketConnectionProvider = ({ children }) => {
 
     return () => {
       // @ts-ignore
-      dispatch(socketDisconnected())
+      // dispatch(socketDisconnected())
     }
   }, [loggedInUser])
 

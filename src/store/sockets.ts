@@ -120,6 +120,9 @@ const socketsSlice = createSlice({
     socketDisconnected: (state) => {
       state.isConnected = false
       state.socketId = null
+
+      const socketManager = SocketManager.getInstance(state.auth)
+      socketManager?.disconnect()
     },
     connectSocket: (state, action) => {
       const socketManager = SocketManager.getInstance(action.payload)
