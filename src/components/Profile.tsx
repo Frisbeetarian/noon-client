@@ -23,6 +23,7 @@ import {
 import { addConversation } from '../store/chat'
 import { emitFriendshipRequestAccepted } from '../utils/SocketEmits'
 import SocketManager from './SocketIo/SocketManager'
+import { getSocketAuthObject } from '../store/sockets'
 // interface ProfileProps {
 //   uuid: string
 //   username: string
@@ -35,6 +36,7 @@ import SocketManager from './SocketIo/SocketManager'
 export default function Profile({ profile }) {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
+  const socketAuthObject = useSelector(getSocketAuthObject)
 
   const [
     acceptFriendRequest,
@@ -52,7 +54,8 @@ export default function Profile({ profile }) {
     // { loading: sendFriendRequestLoading }
   ] = useSendFriendRequestMutation()
   // const socket = useSelector(getSocket)
-  const socket = SocketManager.getSocket()
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
+
   const toast = useToast()
   // const toastIdRef = React.useRef()
 

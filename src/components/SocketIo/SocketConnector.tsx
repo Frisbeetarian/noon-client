@@ -5,8 +5,12 @@ import { Box } from '@chakra-ui/react'
 import { getSocketConnected } from '../../store/sockets'
 
 export default function SocketConnector() {
-  const socketConnected = useSelector(getSocketConnected)
+  // const [isConnected, setIsConnected] = React.useState(false)
 
+  const socketConnected = useSelector(getSocketConnected)
+  // useEffect(() => {
+  //   setIsConnected(socketConnected)
+  // }, [socketConnected])
   return (
     <Box className="flex mt-0.5">
       {socketConnected ? (

@@ -73,6 +73,7 @@ function Noon() {
     ) {
       dispatch(
         setConversations({
+          // @ts-ignore
           conversationsToSend:
             fetchedConversations?.getConversationForLoggedInUser,
           loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,

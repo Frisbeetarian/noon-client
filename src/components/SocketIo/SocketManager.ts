@@ -1,45 +1,54 @@
 import { io, Socket } from 'socket.io-client'
 
 class SocketManager {
-  private static instance?: SocketManager
-  private socket: Socket | null = null
+  private static instance: SocketManager
+  private static socket: Socket | null = null
 
-  constructor() {
-    if (SocketManager.instance) {
-      return SocketManager.instance
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private constructor() {}
+
+  static getInstance(auth): SocketManager | null {
+    if (!auth) {
+      console.error('Auth object is null or undefined.')
+      // Handle this situation - either return the existing instance or throw an error
+      return null
     }
 
-    this.socket = null
-    SocketManager.instance = this
+    if (!SocketManager.instance) {
+      SocketManager.instance = new SocketManager()
+      SocketManager.connect(auth)
+    }
+
+    return SocketManager.instance
   }
 
-  async connect(auth): Promise<Socket> {
+  private static async connect(auth): Promise<void> {
     const SOCKET_SERVER_URL = process.env.NEXT_PUBLIC_URL as string
 
     if (!this.socket) {
-      this.socket = io(SOCKET_SERVER_URL, {
-        auth,
+      this.socket = io(SOCKET_SERVER_URL, { auth })
+      console.log(this.socket)
+
+      this.socket.onAny((event, ...args) => {
+        console.log(event, args)
       })
     }
-    return this.socket
   }
 
-  getSocket(): Socket | null {
-    return this.socket
+  public getSocket(): Socket | null {
+    if (SocketManager.socket) {
+      return SocketManager.socket
+    } else {
+      return null
+    }
   }
 
-  disconnect(): void {
+  static disconnect(): void {
     if (this.socket) {
-      this.socket.off('connect')
-      this.socket.off('disconnect')
-      this.socket.off('session')
-      this.socket.off('connect_error')
-
-      this.socket.close()
+      this.socket.disconnect()
       this.socket = null
     }
   }
 }
 
-const instance = new SocketManager()
-export default instance
+export default SocketManager

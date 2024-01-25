@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react'
+import { Socket } from 'socket.io-client'
+
 import {
   addFriendEntry,
   addFriendRequestEntry,
@@ -32,15 +34,16 @@ import {
   useAcceptFriendRequestMutation,
   useUpdateUnreadMessagesForConversationMutation,
 } from '../../generated/graphql'
+import { getSocketAuthObject } from '../../store/sockets'
 
 function SocketControls() {
   const dispatch = useDispatch()
-  const socket = SocketManager.getSocket()
   const toast = useToast()
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversationSet = useSelector(getActiveConversationSet)
   const activeConversation = useSelector(getActiveConversation)
-
+  const socketAuthObject = useSelector(getSocketAuthObject)
+  let socket: Socket | null | undefined = null
   const [
     acceptFriendRequest,
     // {loading: acceptFriendRequestLoading}
@@ -52,7 +55,14 @@ function SocketControls() {
   ] = useUpdateUnreadMessagesForConversationMutation()
 
   useEffect(() => {
-    console.log('socket in socket controls:', socket)
+    // console.log('SocketControls rendered')
+  }, [])
+
+  useEffect(() => {
+    // console.log('socket in socket controls:', socket)
+    if (socketAuthObject) {
+      socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
+    }
 
     if (socket) {
       socket.on(
@@ -169,6 +179,7 @@ function SocketControls() {
 
                     dispatch(
                       addConversation({
+                        // @ts-ignore
                         conversation:
                           acceptFriendshipResponse.data?.acceptFriendRequest,
                         loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
@@ -176,7 +187,7 @@ function SocketControls() {
                     )
 
                     if (acceptFriendshipResponse) {
-                      socket.emit('friendship-request-accepted', {
+                      socket?.emit('friendship-request-accepted', {
                         content:
                           loggedInUser.user?.profile?.username +
                           ' accepted your friend request.',
@@ -337,17 +348,17 @@ function SocketControls() {
     }
 
     return () => {
-      if (socket) {
-        socket.off('send-friend-request')
-        socket.off('cancel-friend-request')
-        socket.off('friendship-request-accepted')
-        socket.off('unfriend')
-        socket.off('set-pending-call-for-conversation')
-        socket.off('invited-to-group')
-        socket.off('left-group')
-      }
+      // if (socket) {
+      //   socket.off('send-friend-request')
+      //   socket.off('cancel-friend-request')
+      //   socket.off('friendship-request-accepted')
+      //   socket.off('unfriend')
+      //   socket.off('set-pending-call-for-conversation')
+      //   socket.off('invited-to-group')
+      //   socket.off('left-group')
+      // }
     }
-  }, [socket])
+  }, [socket, socketAuthObject])
 
   return null
 }

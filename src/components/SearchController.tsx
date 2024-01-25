@@ -8,6 +8,7 @@ import { getLoggedInUser } from '../store/users'
 import { addProfiles, getProfiles } from '../store/profiles'
 import Profile from './Profile'
 import SocketManager from './SocketIo/SocketManager'
+import { getSocketAuthObject } from '../store/sockets'
 
 export default function SearchController() {
   const dispatch = useDispatch()
@@ -15,22 +16,19 @@ export default function SearchController() {
   const loggedInUser = useSelector(getLoggedInUser)
   const searchQuery = useSelector(getSearchQuery)
   const profilesFromStore = useSelector(getProfiles)
-  const socket = SocketManager.getSocket()
+  const socketAuthObject = useSelector(getSocketAuthObject)
+  // const socket = SocketManager.getSocket()
 
-  const { data } = useSearchForProfileByUsernameQuery({
+  useSearchForProfileByUsernameQuery({
     variables: { username: searchQuery },
     fetchPolicy: 'network-only',
   })
 
-  console.log(
-    'data?.searchForProfileByUsername',
-    data?.searchForProfileByUsername
-  )
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
 
   useEffect(() => {
     if (socket) {
       socket.on('search-results', (profiles) => {
-        console.log('profile', profiles)
         dispatch(
           addProfiles({
             profiles: profiles,
@@ -49,7 +47,7 @@ export default function SearchController() {
       // )
       if (socket) socket.off('search-results')
     }
-  }, [loggedInUser])
+  }, [socket, loggedInUser, dispatch])
 
   return (
     <Flex className="w-full flex-col">
