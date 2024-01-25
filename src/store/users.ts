@@ -32,28 +32,26 @@ const slice = createSlice({
       }
     },
     addFriendRequestEntry: (users, action: PayloadAction<FriendRequest>) => {
-      // const userObject = { ...users.user }
-      // const friendshipRequests: FriendRequest[] = <FriendRequest[]>{
-      //   ...users.user?.friendshipRequests,
-      // }
-
-      // if (friendshipRequests) {
-      users.user?.friendshipRequests?.push(<FriendRequest>action.payload)
-      // }
+      if (users.user?.friendshipRequests) {
+        // Using the spread operator to create a new array
+        users.user.friendshipRequests = [
+          ...users.user.friendshipRequests,
+          action.payload,
+        ]
+      } else {
+        // If friendshipRequests is undefined, initialize it with the new request
+        // @ts-ignore
+        users.user.friendshipRequests = [action.payload]
+      }
     },
     removeFriendRequestEntry: (
       users,
       action: PayloadAction<RemoveFriendRequestEntryPayload>
     ) => {
-      const friendRequests: FriendRequest[] =
-        action.payload.friendRequests.filter(
-          (FREntry: FriendRequest) => FREntry.uuid != action.payload.profileUuid
+      if (users.user && users.user.friendshipRequests) {
+        users.user.friendshipRequests = users.user.friendshipRequests.filter(
+          (FREntry) => FREntry.uuid !== action.payload.profileUuid
         )
-
-      const userObject: User = <User>{ ...users.user }
-      if (friendRequests) {
-        userObject.friendshipRequests = friendRequests
-        // userObject.friendshipRequests?.push(friendRequests)
       }
     },
     addFriendEntry: (users, action: PayloadAction<Friend>) => {
