@@ -29,15 +29,19 @@ import { setVideoFrameForConversation } from '../store/video'
 import { useDispatch, useSelector } from 'react-redux'
 import { useUnfriendMutation } from '../generated/graphql'
 import SocketManager from './SocketIo/SocketManager'
+import { getSocketAuthObject } from '../store/sockets'
 
 function PrivateConversationListing({ conversation, i }) {
+  const socketAuthObject = useSelector(getSocketAuthObject)
+
   const [, setProfile] = useState()
 
   // const router = useRouter()
   const dispatch = useDispatch()
 
   const loggedInUser = useSelector(getLoggedInUser)
-  const socket = SocketManager.getSocket()
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
+
   const activeConversation = useSelector(getActiveConversation)
   const isMobile = useSelector(getIsMobile)
 

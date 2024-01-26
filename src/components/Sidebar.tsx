@@ -50,10 +50,10 @@ function Sidebar() {
   const searchComponentState = useSelector(getSearchComponentState)
   const [innerHeight, setInnerHeight] = useState(0)
 
-  const [
-    logout,
-    // { loading: logoutLoading }
-  ] = useLogoutMutation()
+  // const [
+  //   logout,
+  //   // { loading: logoutLoading }
+  // ] = useLogoutMutation()
   const loggedInUser = useSelector(getLoggedInUser)
   const isConversationOpen = useSelector(getIsConversationOpen)
   const getConversationsFromStore = useSelector(getSortedConversations)
@@ -204,7 +204,7 @@ function Sidebar() {
                 bg="bg-gray-800"
                 className="bg-gray-800"
                 onClick={async () => {
-                  await logout()
+                  // await logout()
                   await router.push('/')
                 }}
                 // isLoading={fetching}

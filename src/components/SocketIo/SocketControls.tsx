@@ -127,7 +127,7 @@ function SocketControls() {
           status: 'success',
           duration: null,
           render: () => (
-            <Flex direction="column" color="white" p={3} bg="green.500">
+            <Flex direction="column" color="white" p={3} bg="green.700">
               <Flex>
                 <p>{senderUsername} sent you a friend request.</p>
 
@@ -143,7 +143,7 @@ function SocketControls() {
 
               <Flex className="justify-end mt-3">
                 <Button
-                  variant="green"
+                  bg="green"
                   className="mr-3"
                   onClick={async () => {
                     const acceptFriendshipResponse = await acceptFriendRequest({
@@ -201,7 +201,7 @@ function SocketControls() {
                   Accept
                 </Button>
 
-                <Button bg="tomato">Reject</Button>
+                <Button bg="red">Reject</Button>
               </Flex>
             </Flex>
           ),

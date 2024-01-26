@@ -191,8 +191,8 @@ export default function Profile({ profile }) {
             </Flex>
           ) : (
             <Button
-              variant="green"
-              className="bg-green-800"
+              // className="bg-green-800"
+              bg="green"
               onClick={async () => {
                 dispatch(
                   setFriendshipRequestSentOnProfile({

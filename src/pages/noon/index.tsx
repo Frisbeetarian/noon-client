@@ -26,6 +26,7 @@ import {
 import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
 import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
+import withAxios from '../../utils/withAxios'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -33,7 +34,7 @@ const meta = {
   image: 'https://noon.tube/static/images/muhammad-banner.png',
   type: 'website',
 }
-function Noon() {
+function Noon({ axios }) {
   const router = useRouter()
   const dispatch = useDispatch()
   const [mounted, setMounted] = useState(false)
@@ -43,44 +44,79 @@ function Noon() {
 
   useEffect(() => setMounted(true), [])
 
-  const { data, loading: meLoading } = useMeQuery({
-    skip: isServer(),
-    fetchPolicy: 'network-only',
-  })
+  // const { data, loading: meLoading } = useMeQuery({
+  //   skip: isServer(),
+  //   fetchPolicy: 'network-only',
+  // })
 
   const loggedInUser = useSelector(getLoggedInUser)
   const conversations = useSelector(getConversations)
 
-  const { data: fetchedConversations } = useGetConversationForLoggedInUserQuery(
-    { fetchPolicy: 'network-only' }
-  )
+  // const { data: fetchedConversations } = useGetConversationForLoggedInUserQuery(
+  //   { fetchPolicy: 'network-only' }
+  // )
+
+  // useEffect(() => {
+  //   if (!meLoading) {
+  //     if (!data?.me?.username) {
+  //       router.replace('/')
+  //     } else {
+  //       dispatch(setLoggedInUser(data.me as User))
+  //     }
+  //   }
+  // }, [meLoading, data?.me?.username])
+
+  // useEffect(() => {
+  //   if (
+  //     fetchedConversations?.getConversationForLoggedInUser &&
+  //     (conversations === null || conversations.length === 0) &&
+  //     loggedInUser?.user?.profile?.uuid
+  //   ) {
+  //     dispatch(
+  //       setConversations({
+  //         // @ts-ignore
+  //         conversationsToSend:
+  //           fetchedConversations?.getConversationForLoggedInUser,
+  //         loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+  //       })
+  //     )
+  //   }
+  // }, [fetchedConversations, loggedInUser?.user?.profile?.uuid])
 
   useEffect(() => {
-    if (!meLoading) {
-      if (!data?.me?.username) {
-        router.replace('/')
-      } else {
-        dispatch(setLoggedInUser(data.me as User))
-      }
-    }
-  }, [meLoading, data?.me?.username])
-
-  useEffect(() => {
-    if (
-      fetchedConversations?.getConversationForLoggedInUser &&
-      (conversations === null || conversations.length === 0) &&
-      loggedInUser?.user?.profile?.uuid
-    ) {
-      dispatch(
-        setConversations({
-          // @ts-ignore
-          conversationsToSend:
-            fetchedConversations?.getConversationForLoggedInUser,
-          loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+    setMounted(true)
+    if (!isServer()) {
+      axios
+        .get('/api/users/me')
+        .then((response) => {
+          if (response.data.username) {
+            dispatch(setLoggedInUser(response.data))
+          } else {
+            router.replace('/')
+          }
         })
-      )
+        .catch((error) => {
+          console.error('Error fetching user data:', error)
+          router.replace('/')
+        })
+
+      axios
+        .get('/api/conversations')
+        .then((response) => {
+          if (conversations === null && loggedInUser?.user?.profile?.uuid) {
+            dispatch(
+              setConversations({
+                conversationsToSend: response.data,
+                loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+              })
+            )
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching conversations:', error)
+        })
     }
-  }, [fetchedConversations, loggedInUser?.user?.profile?.uuid])
+  }, [axios, dispatch, loggedInUser?.user?.profile?.uuid, conversations])
 
   if (!mounted) return null
 
@@ -102,14 +138,14 @@ function Noon() {
       {mounted && loggedInUser.user?.profile ? (
         <SocketConnectionProvider>
           <Sidebar />
-          {!isMobile && <Chat />}
-          {isMobile && isConversationOpen && <Chat />}
-          {!isMobile && <SocketControls />}
-          {createGroupActive && <CreateGroupSidebar />}
+          {/*{!isMobile && <Chat />}*/}
+          {/*{isMobile && isConversationOpen && <Chat />}*/}
+          {/*{!isMobile && <SocketControls />}*/}
+          {/*{createGroupActive && <CreateGroupSidebar />}*/}
         </SocketConnectionProvider>
       ) : null}
     </div>
   )
 }
 
-export default withApollo({ ssr: true })(Noon)
+export default withAxios(Noon)

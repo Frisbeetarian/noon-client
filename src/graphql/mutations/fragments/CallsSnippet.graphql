@@ -1,6 +1,6 @@
-fragment CallsSnippet on Call {
-    profileUuid
-    profileUsername
-    pendingCall
-    ongoingCall
-}
+#fragment CallsSnippet on Call {
+#    profileUuid
+#    profileUsername
+#    pendingCall
+#    ongoingCall
+#}

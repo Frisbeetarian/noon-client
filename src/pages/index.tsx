@@ -1,31 +1,49 @@
 import { Flex } from '@chakra-ui/react'
 
-import React, { useEffect } from 'react'
-
-import { useMeQuery } from '../generated/graphql'
+import React, { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import { isServer } from '../utils/isServer'
-import { withApollo } from '../utils/withApollo'
+import { withAxios } from '../utils/withAxios'
 // import Head from 'next/head'
 
-const Index = () => {
+const Index = ({ axios }) => {
   const router = useRouter()
+  const [userData, setUserData] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  const { data, loading } = useMeQuery({
-    skip: isServer(),
-    fetchPolicy: 'network-only',
-  })
+  // const { data, loading } = useMeQuery({
+  //   skip: isServer(),
+  //   fetchPolicy: 'network-only',
+  // })
+
+  useEffect(() => {
+    if (!isServer()) {
+      axios
+        .get('/api/users/me')
+        .then((response) => {
+          setUserData(response.data)
+          setLoading(false)
+        })
+        .catch((error) => {
+          // console.error('Error fetching user data:', error)
+          setLoading(false)
+          // Handle error (e.g., redirect to login if unauthorized)
+        })
+    } else {
+      setLoading(false)
+    }
+  }, [axios])
 
   useEffect(() => {
     if (!loading) {
-      if (data?.me?.username) {
+      if (userData?.username) {
         router.replace('/noon')
       } else {
         router.replace('/onboarding')
       }
     }
-  }, [data, loading])
+  }, [userData, loading, router])
 
   return (
     <>
@@ -48,4 +66,4 @@ const Index = () => {
     </>
   )
 }
-export default withApollo({ ssr: true })(Index)
+export default withAxios(Index)

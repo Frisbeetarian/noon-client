@@ -1,11 +1,11 @@
 import { Flex } from '@chakra-ui/react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useMeQuery } from '../generated/graphql'
 
 import { useRouter } from 'next/router'
 import { isServer } from '../utils/isServer'
-import { withApollo } from '../utils/withApollo'
+import { withApollo, withAxios } from '../utils/withAxios'
 import Register from '../components/authentication/Register'
 import Login from '../components/authentication/Login'
 import ForgotPassword from '../components/authentication/ForgotPassword'
@@ -16,24 +16,34 @@ import {
   getShowRegisterComponent,
 } from '../store/ui'
 
-const Onboarding = () => {
+const Onboarding = ({ axios }) => {
   const router = useRouter()
+  const [userData, setUserData] = useState(null)
   const showRegisterComponent = useSelector(getShowRegisterComponent)
   const showLoginComponent = useSelector(getShowLoginComponent)
   const showForgotPasswordComponent = useSelector(
     getShowForgotPasswordComponent
   )
 
-  const { data } = useMeQuery({
-    skip: isServer(),
-    fetchPolicy: 'network-only',
-  })
+  useEffect(() => {
+    if (!isServer()) {
+      axios
+        .get('/api/users/me')
+        .then((response) => {
+          setUserData(response.data)
+        })
+        .catch((error) => {
+          // console.error('Error fetching user data:', error)
+          // Handle error (e.g., redirect to login if unauthorized)
+        })
+    }
+  }, [axios])
 
   useEffect(() => {
-    if (data?.me?.username) {
+    if (userData?.username) {
       router.replace('/noon')
     }
-  }, [data])
+  }, [userData, router])
 
   return (
     <Flex className="flex-col justify-center items-center bg-black text-white h-screen">
@@ -49,4 +59,4 @@ const Onboarding = () => {
   )
 }
 
-export default withApollo({ ssr: false })(Onboarding)
+export default withAxios(Onboarding)

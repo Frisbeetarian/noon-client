@@ -1,4 +1,4 @@
-fragment ConversationProfileSnippet on Sender {
+fragment ConversationProfileSnippet on Profile {
     uuid
     username
 }

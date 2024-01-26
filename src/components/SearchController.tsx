@@ -47,7 +47,7 @@ export default function SearchController() {
       // )
       // if (socket) socket.off('search-results')
     }
-  }, [socket, loggedInUser, dispatch])
+  }, [socket, loggedInUser])
 
   return (
     <Flex className="w-full flex-col">
