@@ -51,15 +51,15 @@ function Chat() {
 
   const profile = useSelector(getActiveConversee)
 
-  const [
-    saveMessage,
-    // { loading: saveMessageLoading }
-  ] = useSaveMessageMutation()
+  // const [
+  //   saveMessage,
+  //   // { loading: saveMessageLoading }
+  // ] = useSaveMessageMutation()
 
-  const [
-    saveGroupMessage,
-    // { loading: saveGroupLoading }
-  ] = useSaveGroupMessageMutation()
+  // const [
+  //   saveGroupMessage,
+  //   // { loading: saveGroupLoading }
+  // ] = useSaveGroupMessageMutation()
 
   useEffect(() => {
     setInnerHeight(window.innerHeight)
@@ -85,14 +85,14 @@ function Chat() {
     const data = inputMessage
     setInputMessage('')
 
-    const message = await saveGroupMessage({
-      variables: {
-        message: data,
-        type: 'text',
-        src: '',
-        conversationUuid: activeConversation.uuid,
-      },
-    })
+    // const message = await saveGroupMessage({
+    //   variables: {
+    //     message: data,
+    //     type: 'text',
+    //     src: '',
+    //     conversationUuid: activeConversation.uuid,
+    //   },
+    // })
 
     activeConversation.profiles.map((profile) => {
       if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
@@ -150,15 +150,15 @@ function Chat() {
     const data = inputMessage
     setInputMessage('')
 
-    const message = await saveMessage({
-      variables: {
-        message: data,
-        type: 'text',
-        src: '',
-        conversationUuid: activeConversation.uuid,
-        to: profile.uuid,
-      },
-    })
+    // const message = await saveMessage({
+    //   variables: {
+    //     message: data,
+    //     type: 'text',
+    //     src: '',
+    //     conversationUuid: activeConversation.uuid,
+    //     to: profile.uuid,
+    //   },
+    // })
 
     emitPrivateChatMessage({
       loggedInUser,

@@ -30,10 +30,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import SocketManager from './SocketManager'
 // import { getSocketId } from '../../store/sockets'
 
-import {
-  useAcceptFriendRequestMutation,
-  useUpdateUnreadMessagesForConversationMutation,
-} from '../../generated/graphql'
+// import {
+//   useAcceptFriendRequestMutation,
+//   useUpdateUnreadMessagesForConversationMutation,
+// } from '../../generated/graphql'
 import { getSocketAuthObject } from '../../store/sockets'
 import { uuid } from 'uuidv4'
 
@@ -45,15 +45,15 @@ function SocketControls() {
   const activeConversation = useSelector(getActiveConversation)
   const socketAuthObject = useSelector(getSocketAuthObject)
   let socket: Socket | null | undefined = null
-  const [
-    acceptFriendRequest,
-    // {loading: acceptFriendRequestLoading}
-  ] = useAcceptFriendRequestMutation()
+  // const [
+  //   acceptFriendRequest,
+  //   // {loading: acceptFriendRequestLoading}
+  // ] = useAcceptFriendRequestMutation()
 
-  const [
-    updateUnreadMessagesForConversation,
-    // { loading: updateUnreadMessagesLoading },
-  ] = useUpdateUnreadMessagesForConversationMutation()
+  // const [
+  //   updateUnreadMessagesForConversation,
+  //   // { loading: updateUnreadMessagesLoading },
+  // ] = useUpdateUnreadMessagesForConversationMutation()
 
   useEffect(() => {
     if (socketAuthObject) {
@@ -81,12 +81,12 @@ function SocketControls() {
             activeConversationSet === false ||
             conversationUuid !== activeConversation.uuid
           ) {
-            updateUnreadMessagesForConversation({
-              variables: {
-                conversationUuid: conversationUuid,
-                profileUuid: loggedInUser?.user?.profile?.uuid,
-              },
-            })
+            // updateUnreadMessagesForConversation({
+            //   variables: {
+            //     conversationUuid: conversationUuid,
+            //     profileUuid: loggedInUser?.user?.profile?.uuid,
+            //   },
+            // })
           }
 
           dispatch(
@@ -146,11 +146,11 @@ function SocketControls() {
                   bg="green"
                   className="mr-3"
                   onClick={async () => {
-                    const acceptFriendshipResponse = await acceptFriendRequest({
-                      variables: {
-                        profileUuid: senderUuid,
-                      },
-                    })
+                    // const acceptFriendshipResponse = await acceptFriendRequest({
+                    //   variables: {
+                    //     profileUuid: senderUuid,
+                    //   },
+                    // })
 
                     dispatch(
                       setFriendFlagOnProfile({
@@ -172,28 +172,28 @@ function SocketControls() {
                       })
                     )
 
-                    dispatch(
-                      addConversation({
-                        // @ts-ignore
-                        conversation:
-                          acceptFriendshipResponse.data?.acceptFriendRequest,
-                        loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-                      })
-                    )
+                    // dispatch(
+                    //   addConversation({
+                    //     // @ts-ignore
+                    //     conversation:
+                    //       acceptFriendshipResponse.data?.acceptFriendRequest,
+                    //     loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+                    //   })
+                    // )
 
-                    if (acceptFriendshipResponse) {
-                      socket?.emit('friendship-request-accepted', {
-                        content:
-                          loggedInUser.user?.profile?.username +
-                          ' accepted your friend request.',
-                        from: loggedInUser.user?.profile?.uuid,
-                        fromUsername: loggedInUser.user?.profile?.username,
-                        to: senderUuid,
-                        toUsername: senderUsername,
-                        conversation:
-                          acceptFriendshipResponse.data?.acceptFriendRequest,
-                      })
-                    }
+                    // if (acceptFriendshipResponse) {
+                    //   socket?.emit('friendship-request-accepted', {
+                    //     content:
+                    //       loggedInUser.user?.profile?.username +
+                    //       ' accepted your friend request.',
+                    //     from: loggedInUser.user?.profile?.uuid,
+                    //     fromUsername: loggedInUser.user?.profile?.username,
+                    //     to: senderUuid,
+                    //     toUsername: senderUsername,
+                    //     conversation:
+                    //       acceptFriendshipResponse.data?.acceptFriendRequest,
+                    //   })
+                    // }
 
                     toast.close(senderUuid)
                   }}

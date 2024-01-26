@@ -3,12 +3,12 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Sidebar from '../../components/Sidebar'
 
-import {
-  useGetConversationForLoggedInUserQuery,
-  // useLogoutMutation,
-  useMeQuery,
-  User,
-} from '../../generated/graphql'
+// import {
+//   useGetConversationForLoggedInUserQuery,
+//   // useLogoutMutation,
+//   useMeQuery,
+//   User,
+// } from '../../generated/graphql'
 
 import { isServer } from '../../utils/isServer'
 import { getLoggedInUser, setLoggedInUser } from '../../store/users'
@@ -16,7 +16,7 @@ import { getLoggedInUser, setLoggedInUser } from '../../store/users'
 import { setConversations, getConversations } from '../../store/chat'
 
 import Chat from '../../components/Chat'
-import { withApollo } from '../../utils/withApollo'
+import { withAxios } from '../../utils/withAxios'
 import { useRouter } from 'next/router'
 import {
   getCreateGroupActive,
@@ -26,7 +26,6 @@ import {
 import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
 import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
-import withAxios from '../../utils/withAxios'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -41,47 +40,8 @@ function Noon({ axios }) {
   const isMobile = useSelector(getIsMobile)
   const isConversationOpen = useSelector(getIsConversationOpen)
   const createGroupActive = useSelector(getCreateGroupActive)
-
-  useEffect(() => setMounted(true), [])
-
-  // const { data, loading: meLoading } = useMeQuery({
-  //   skip: isServer(),
-  //   fetchPolicy: 'network-only',
-  // })
-
   const loggedInUser = useSelector(getLoggedInUser)
   const conversations = useSelector(getConversations)
-
-  // const { data: fetchedConversations } = useGetConversationForLoggedInUserQuery(
-  //   { fetchPolicy: 'network-only' }
-  // )
-
-  // useEffect(() => {
-  //   if (!meLoading) {
-  //     if (!data?.me?.username) {
-  //       router.replace('/')
-  //     } else {
-  //       dispatch(setLoggedInUser(data.me as User))
-  //     }
-  //   }
-  // }, [meLoading, data?.me?.username])
-
-  // useEffect(() => {
-  //   if (
-  //     fetchedConversations?.getConversationForLoggedInUser &&
-  //     (conversations === null || conversations.length === 0) &&
-  //     loggedInUser?.user?.profile?.uuid
-  //   ) {
-  //     dispatch(
-  //       setConversations({
-  //         // @ts-ignore
-  //         conversationsToSend:
-  //           fetchedConversations?.getConversationForLoggedInUser,
-  //         loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
-  //       })
-  //     )
-  //   }
-  // }, [fetchedConversations, loggedInUser?.user?.profile?.uuid])
 
   useEffect(() => {
     setMounted(true)
@@ -118,6 +78,46 @@ function Noon({ axios }) {
     }
   }, [axios, dispatch, loggedInUser?.user?.profile?.uuid, conversations])
 
+  //
+  // const { data, loading: meLoading } = useMeQuery({
+  //   skip: isServer(),
+  //   fetchPolicy: 'network-only',
+  // })
+
+  // const loggedInUser = useSelector(getLoggedInUser)
+  // const conversations = useSelector(getConversations)
+
+  // const { data: fetchedConversations } = useGetConversationForLoggedInUserQuery(
+  //   { fetchPolicy: 'network-only' }
+  // )
+
+  // useEffect(() => {
+  //   if (!meLoading) {
+  //     if (!data?.me?.username) {
+  //       router.replace('/')
+  //     } else {
+  //       dispatch(setLoggedInUser(data.me as User))
+  //     }
+  //   }
+  // }, [meLoading, data?.me?.username])
+
+  // useEffect(() => {
+  //   if (
+  //     fetchedConversations?.getConversationForLoggedInUser &&
+  //     (conversations === null || conversations.length === 0) &&
+  //     loggedInUser?.user?.profile?.uuid
+  //   ) {
+  //     dispatch(
+  //       setConversations({
+  //         // @ts-ignore
+  //         conversationsToSend:
+  //           fetchedConversations?.getConversationForLoggedInUser,
+  //         loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+  //       })
+  //     )
+  //   }
+  // }, [fetchedConversations, loggedInUser?.user?.profile?.uuid])
+
   if (!mounted) return null
 
   return (
@@ -138,10 +138,10 @@ function Noon({ axios }) {
       {mounted && loggedInUser.user?.profile ? (
         <SocketConnectionProvider>
           <Sidebar />
-          {/*{!isMobile && <Chat />}*/}
-          {/*{isMobile && isConversationOpen && <Chat />}*/}
-          {/*{!isMobile && <SocketControls />}*/}
-          {/*{createGroupActive && <CreateGroupSidebar />}*/}
+          {!isMobile && <Chat />}
+          {isMobile && isConversationOpen && <Chat />}
+          {!isMobile && <SocketControls />}
+          {createGroupActive && <CreateGroupSidebar />}
         </SocketConnectionProvider>
       ) : null}
     </div>
