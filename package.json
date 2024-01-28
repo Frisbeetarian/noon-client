@@ -22,7 +22,6 @@
     "@typescript-eslint/parser": "^5.47.1",
     "apollo-upload-client": "^17.0.0",
     "axios": "^1.2.2",
-    "daisyui": "^2.17.0",
     "form-data": "^4.0.0",
     "formik": "^2.2.9",
     "framer-motion": "^6.5.1",

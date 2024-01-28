@@ -33,7 +33,7 @@ const Onboarding = ({ axios }) => {
           setUserData(response.data)
         })
         .catch((error) => {
-          // console.error('Error fetching user data:', error)
+          console.error('Error fetching user data:', error.message)
           // Handle error (e.g., redirect to login if unauthorized)
         })
     }
@@ -46,7 +46,7 @@ const Onboarding = ({ axios }) => {
   }, [userData, router])
 
   return (
-    <Flex className="flex-col justify-center items-center bg-black text-white h-screen">
+    <Flex className="flex-col justify-center items-center bg-black text-red-500 h-screen">
       <p className="fixed top-12 text-5xl">NOON</p>
 
       <Flex minH={'100%'} align={'center'} justify={'center'}>

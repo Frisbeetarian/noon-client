@@ -36,6 +36,8 @@ const Index = ({ axios }) => {
   }, [axios])
 
   useEffect(() => {
+    console.log('user data:', userData)
+
     if (!loading) {
       if (userData?.username) {
         router.replace('/noon')
@@ -60,7 +62,7 @@ const Index = ({ axios }) => {
       {/*  <meta property="og:image" content={meta.image} />*/}
       {/*</Head>*/}
 
-      <Flex className="flex-col justify-center items-center bg-black text-white h-screen">
+      <Flex className="flex-col justify-center items-center bg-red-500 text-black h-screen">
         {loading && <p className="fixed top-12 text-5xl">Loading...</p>}
       </Flex>
     </>

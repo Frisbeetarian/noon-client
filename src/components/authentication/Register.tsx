@@ -16,7 +16,7 @@ import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import * as Yup from 'yup'
-import { useRegisterMutation } from '../../generated/graphql'
+// import { useRegisterMutation } from '../../generated/graphql'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import {
@@ -56,10 +56,17 @@ function Register({ axios }) {
         </Heading>
       </Stack>
 
-      <Box boxShadow={'lg'} p={8} className="border bg-black">
+      <Box
+        boxShadow={'lg'}
+        border={0}
+        p={8}
+        className="border bg-red-500 text-black"
+      >
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           validationSchema={RegisterSchema}
+          validateOnBlur={false}
+          validateOnChange={false}
           onSubmit={async (values, { setErrors }) => {
             const response = await axios.post('/api/users/register', values)
             // const response = await axios.post('/api/users/register', {
@@ -89,7 +96,17 @@ function Register({ axios }) {
                 <HStack>
                   <Box>
                     <FormControl id="username" isRequired>
-                      <FormLabel>Username</FormLabel>
+                      <FormLabel
+                        requiredIndicator={
+                          <span
+                            style={{ color: 'text-black', marginLeft: '5px' }}
+                          >
+                            *
+                          </span>
+                        }
+                      >
+                        Username
+                      </FormLabel>
 
                       <InputField
                         name="username"
@@ -101,7 +118,15 @@ function Register({ axios }) {
                 </HStack>
 
                 <FormControl id="email" isRequired>
-                  <FormLabel>Email address</FormLabel>
+                  <FormLabel
+                    requiredIndicator={
+                      <span style={{ color: 'text-black', marginLeft: '5px' }}>
+                        *
+                      </span>
+                    }
+                  >
+                    Email address
+                  </FormLabel>
 
                   <InputField
                     name="email"
@@ -111,7 +136,15 @@ function Register({ axios }) {
                 </FormControl>
 
                 <FormControl id="password" isRequired>
-                  <FormLabel className="">Password</FormLabel>
+                  <FormLabel
+                    requiredIndicator={
+                      <span style={{ color: 'text-black', marginLeft: '5px' }}>
+                        *
+                      </span>
+                    }
+                  >
+                    Password
+                  </FormLabel>
 
                   <InputGroup m={0} p={0} className="">
                     <InputField
@@ -136,14 +169,19 @@ function Register({ axios }) {
 
                 <Stack spacing={10} pt={2}>
                   <Button
-                    className="w-1/2 ml-auto "
+                    className="w-1/2 ml-auto"
+                    sx={{
+                      width: '50%',
+                      marginLeft: 'auto',
+                      backgroundColor: 'var(--tw-color-red-500)',
+                      color: 'black',
+                      '&:hover': {
+                        backgroundColor: 'var(--tw-color-red-900)',
+                        color: 'var(--tw-color-red-200)',
+                      },
+                    }}
                     type="submit"
                     size="md"
-                    bg={'green.400'}
-                    color={'white'}
-                    _hover={{
-                      bg: 'green.900',
-                    }}
                     isLoading={isSubmitting}
                   >
                     Register
@@ -156,7 +194,7 @@ function Register({ axios }) {
       </Box>
 
       <Text
-        className="text-lg text-green-100 cursor-pointer"
+        className="text-lg text-red-500 cursor-pointer"
         onClick={() => {
           dispatch(setShowLoginComponent(true))
           dispatch(setShowRegisterComponent(false))

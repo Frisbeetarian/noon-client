@@ -10,30 +10,82 @@ const breakpoints = createBreakpoints({
   xl: '80em',
 })
 
-const theme = extendTheme({
-  colors: {
-    black: '#16161D',
+const colors = {
+  black: '#000000',
+  red: {
+    50: '#F8E6E5',
+    100: '#EBC8C6',
+    200: '#DDA9A7',
+    300: '#CF8A88',
+    400: '#C16B69',
+    500: '#B34C4A',
+    600: '#9F4443',
+    700: '#8B3B3A',
+    800: '#772E2E',
+    900: '#5E1F1E',
   },
+  gradients: {
+    redToBlack: 'linear-gradient(45deg, #921A1C, #000000)',
+    blackToRed: 'linear-gradient(45deg, #000000, #921A1C)',
+  },
+}
+
+const theme = extendTheme({
+  colors,
   fonts,
   breakpoints,
-  icons: {
-    logo: {
-      path: (
-        <svg
-          width="3000"
-          height="3163"
-          viewBox="0 0 3000 3163"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect width="3000" height="3162.95" fill="none" />
-          <path
-            d="M1470.89 1448.81L2170 2488.19H820V706.392H2170L1470.89 1448.81ZM1408.21 1515.37L909.196 2045.3V2393.46H1998.84L1408.21 1515.37Z"
-            fill="currentColor"
-          />
-        </svg>
-      ),
-      viewBox: '0 0 3000 3163',
+  components: {
+    Button: {
+      baseStyle: {
+        fontWeight: 'bold',
+      },
+      variants: {
+        solid: {
+          bg: 'red',
+          color: 'black',
+          _hover: {
+            bg: 'black',
+            color: 'red',
+          },
+        },
+      },
+    },
+    Input: {
+      baseStyle: {
+        field: {
+          border: 'none',
+          borderBottom: '1px solid',
+          borderRadius: '0',
+        },
+      },
+      variants: {
+        outline: (props) => ({
+          field: {
+            borderColor: props.isInvalid ? 'initial' : 'inherit',
+          },
+        }),
+      },
+    },
+    TextArea: {
+      baseStyle: {
+        field: {
+          border: 'none',
+          borderBottom: '1px solid',
+          borderRadius: '0',
+        },
+      },
+    },
+  },
+
+  styles: {
+    global: {
+      body: {
+        bg: 'black',
+        color: 'red',
+      },
+      '*::placeholder': {
+        color: 'green',
+      },
     },
   },
 })

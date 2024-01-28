@@ -6,7 +6,7 @@ import {
   Textarea,
 } from '@chakra-ui/react'
 import { useField } from 'formik'
-import React, { InputHTMLAttributes } from "react";
+import React, { InputHTMLAttributes } from 'react'
 
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   name: string
@@ -20,11 +20,11 @@ export const InputField: React.FC<InputFieldProps> = ({
   size: _,
   ...props
 }) => {
-  let InputOrTextarea;
+  let InputOrTextarea
 
   if (textarea) {
     InputOrTextarea = Textarea
-  }else {
+  } else {
     // TextareaHTMLAttributes
     InputOrTextarea = Input
   }
@@ -38,8 +38,15 @@ export const InputField: React.FC<InputFieldProps> = ({
         {...props}
         id={field.name}
         placeholder={props.placeholder}
+        border="none"
+        borderBottom="1px solid"
+        borderRadius="0"
       />
-      {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
+      {error ? (
+        <FormErrorMessage color="text-black" className="text-black">
+          {error}
+        </FormErrorMessage>
+      ) : null}
     </FormControl>
   )
 }

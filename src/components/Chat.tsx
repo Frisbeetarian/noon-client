@@ -17,10 +17,10 @@ import Messages from './Messages'
 
 import { getLoggedInUser } from '../store/users'
 
-import {
-  useSaveMessageMutation,
-  useSaveGroupMessageMutation,
-} from '../generated/graphql'
+// import {
+//   useSaveMessageMutation,
+//   useSaveGroupMessageMutation,
+// } from '../generated/graphql'
 
 import {
   getCreateGroupComponent,
@@ -207,7 +207,7 @@ function Chat() {
   return (
     <Flex
       className={
-        'flex-col bg-gray-700 text-white box-content relative z-50 md:z-0 chat-container'
+        'flex-col bg-red-500 text-white box-content relative z-50 md:z-0 chat-container'
       }
       style={{
         flex: isMobile ? '1' : '0.75',
@@ -216,7 +216,7 @@ function Chat() {
       }}
     >
       <div
-        className="flex items-center justify-center border-b box-content"
+        className="flex items-center justify-center border-b border-black box-content"
         style={{ height: isMobile ? '10vh' : '5vh' }}
       >
         <ChatControlsAndSearch />

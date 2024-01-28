@@ -49,6 +49,8 @@ function Noon({ axios }) {
       axios
         .get('/api/users/me')
         .then((response) => {
+          // console.log('respone: ', response.data)
+
           if (response.data.username) {
             dispatch(setLoggedInUser(response.data))
           } else {
@@ -73,7 +75,7 @@ function Noon({ axios }) {
           }
         })
         .catch((error) => {
-          console.error('Error fetching conversations:', error)
+          console.error('Error fetching conversations:', error.message)
         })
     }
   }, [axios, dispatch, loggedInUser?.user?.profile?.uuid, conversations])

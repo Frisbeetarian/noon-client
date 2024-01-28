@@ -7,32 +7,23 @@ module.exports = {
     './src/components/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
-  },
-  plugins: [require('@tailwindcss/typography'), require('daisyui')],
-  daisyui: {
-    styled: true,
-    themes: [
-      {
-        mytheme: {
-          primary: '#f24fd4',
-          secondary: '#5deacc',
-          accent: '#f7bdbb',
-          neutral: '#1C151E',
-          'base-100': '#4C384D',
-          info: '#A4D6EA',
-          success: '#0F753B',
-          warning: '#ECB622',
-          error: '#EC3C6B',
+    extend: {
+      colors: {
+        black: '#000',
+        red: {
+          50: '#F8E6E5',
+          100: '#F1CDCB',
+          200: '#E9B3B0',
+          300: '#E29A96',
+          400: '#DA807C',
+          500: '#921A1C',
+          600: '#7A1618',
+          700: '#631214',
+          800: '#4B0E10',
+          900: '#5E1F1E',
         },
       },
-      'dark',
-      'cupcake',
-    ],
-    base: true,
-    utils: true,
-    logs: true,
-    rtl: false,
-    prefix: '',
+    },
   },
+  plugins: [require('@tailwindcss/typography')],
 }

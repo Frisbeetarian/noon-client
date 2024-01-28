@@ -62,6 +62,7 @@ function ChatControlsAndSearch() {
       )}
 
       <SearchIcon
+        color="black"
         className="p-1 m-4 text-2xl cursor-pointer"
         onClick={() => {
           dispatch(
