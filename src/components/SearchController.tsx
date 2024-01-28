@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { getSearchQuery } from '../store/search'
-import { useSearchForProfileByUsernameQuery } from '../generated/graphql'
 
 import { Flex } from '@chakra-ui/react'
 import React, { useEffect } from 'react'
@@ -9,24 +8,30 @@ import { addProfiles, getProfiles } from '../store/profiles'
 import Profile from './Profile'
 import SocketManager from './SocketIo/SocketManager'
 import { getSocketAuthObject } from '../store/sockets'
+import withAxios from '../utils/withAxios'
 
-export default function SearchController() {
+function SearchController({ axios }) {
   const dispatch = useDispatch()
 
   const loggedInUser = useSelector(getLoggedInUser)
   const searchQuery = useSelector(getSearchQuery)
   const profilesFromStore = useSelector(getProfiles)
   const socketAuthObject = useSelector(getSocketAuthObject)
-  // const socket = SocketManager.getSocket()
-
-  useSearchForProfileByUsernameQuery({
-    variables: { username: searchQuery },
-    fetchPolicy: 'network-only',
-  })
 
   const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
 
+  async function searchProfiles(searchQuery) {
+    const response = await axios.post('/api/search', searchQuery)
+    console.log('search results: ', response)
+  }
+
   useEffect(() => {
+    if (searchQuery !== '' && searchQuery !== null) {
+      console.log('search query:', searchQuery)
+
+      searchProfiles(searchQuery)
+    }
+
     if (socket) {
       socket.on('search-results', (profiles) => {
         dispatch(
@@ -47,7 +52,7 @@ export default function SearchController() {
       // )
       // if (socket) socket.off('search-results')
     }
-  }, [socket, loggedInUser])
+  }, [socket, loggedInUser, searchQuery])
 
   return (
     <Flex className="w-full flex-col">
@@ -59,3 +64,5 @@ export default function SearchController() {
     </Flex>
   )
 }
+
+export default withAxios(SearchController)

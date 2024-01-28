@@ -41,5 +41,18 @@ html {
 /* styles/globals.css */
 input::placeholder,
 textarea::placeholder {
-    @apply text-black; /* Replace 'yourColor' with your Tailwind color class */
+    @apply text-black;
+}
+
+input, textarea {
+    border: none !important;
+    border-bottom: 1px solid #921A1C !important;
+    outline: none !important;
+    transition: border-color 0.3s !important;
+}
+
+input:focus, textarea:focus {
+    border-color: black !important;
+    outline: none !important;
+    box-shadow: none !important;
 }

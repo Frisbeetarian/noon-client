@@ -35,6 +35,7 @@ import { FileUpload } from './FileUpload'
 import CreateGroup from './CreateGroup'
 import Video from './Video'
 import { emitPrivateChatMessage } from '../utils/SocketEmits'
+import withAxios from '../utils/withAxios'
 
 function Chat() {
   const dispatch = useDispatch()
@@ -308,4 +309,4 @@ function Chat() {
   )
 }
 
-export default Chat
+export default withAxios(Chat)

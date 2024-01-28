@@ -14,6 +14,7 @@ import {
 } from '../store/ui'
 import SearchSidebar from './SearchSidebar'
 import Header from './Header'
+import withAxios from '../utils/withAxios'
 
 function ChatControlsAndSearch() {
   const dispatch = useDispatch()
@@ -76,4 +77,4 @@ function ChatControlsAndSearch() {
   )
 }
 
-export default ChatControlsAndSearch
+export default withAxios(ChatControlsAndSearch)
