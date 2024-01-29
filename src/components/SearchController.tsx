@@ -21,14 +21,11 @@ function SearchController({ axios }) {
   const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
 
   async function searchProfiles(searchQuery) {
-    const response = await axios.post('/api/search', searchQuery)
-    console.log('search results: ', response)
+    await axios.post('/api/search', { query: searchQuery })
   }
 
   useEffect(() => {
     if (searchQuery !== '' && searchQuery !== null) {
-      console.log('search query:', searchQuery)
-
       searchProfiles(searchQuery)
     }
 
@@ -58,7 +55,9 @@ function SearchController({ axios }) {
     <Flex className="w-full flex-col">
       {profilesFromStore
         ? [...Object.values(profilesFromStore)].map((profile, i) =>
-            !profile ? null : <Profile key={i} profile={profile} />
+            !profile ? null : (
+              <Profile key={i} profile={profile} axios={axios} />
+            )
           )
         : null}
     </Flex>

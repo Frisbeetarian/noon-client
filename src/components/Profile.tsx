@@ -15,44 +15,32 @@ import {
   addFriendEntry,
 } from '../store/users'
 
-import {
-  useAcceptFriendRequestMutation,
-  useCancelFriendRequestMutation,
-  useSendFriendRequestMutation,
-} from '../generated/graphql'
 import { addConversation } from '../store/chat'
 import { emitFriendshipRequestAccepted } from '../utils/SocketEmits'
 import SocketManager from './SocketIo/SocketManager'
 import { getSocketAuthObject } from '../store/sockets'
-// interface ProfileProps {
-//   uuid: string
-//   username: string
-//   name: string
-//   userId: string
-//   updatedAt: Date
-//   createdAt: Date
-// }
+import AppButton from './AppComponents/AppButton'
 
-export default function Profile({ profile }) {
+function Profile({ profile, axios }) {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
   const socketAuthObject = useSelector(getSocketAuthObject)
 
-  const [
-    acceptFriendRequest,
-    // { loading: acceptFriendRequestLoading }
-  ] = useAcceptFriendRequestMutation()
+  // const [
+  //   acceptFriendRequest,
+  //   // { loading: acceptFriendRequestLoading }
+  // ] = useAcceptFriendRequestMutation()
 
   // const [, refuseFriendRequest] = useRefuseFriendRequestMutation()
-  const [
-    cancelFriendRequest,
-    // { loading: cancelFriendRequestLoading }
-  ] = useCancelFriendRequestMutation()
+  // const [
+  //   cancelFriendRequest,
+  //   // { loading: cancelFriendRequestLoading }
+  // ] = useCancelFriendRequestMutation()
 
-  const [
-    sendFriendRequest,
-    // { loading: sendFriendRequestLoading }
-  ] = useSendFriendRequestMutation()
+  // const [
+  //   sendFriendRequest,
+  //   // { loading: sendFriendRequestLoading }
+  // ] = useSendFriendRequestMutation()
   // const socket = useSelector(getSocket)
   const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
 
@@ -75,25 +63,38 @@ export default function Profile({ profile }) {
 
       {profile.hasSentFriendshipRequestToProfile ? (
         <Flex className="relative">
-          <Button
+          {/*<Button*/}
+          {/*  disabled={true}*/}
+          {/*  className="relative text-green-500 p-0"*/}
+          {/*  borderRadius="0"*/}
+          {/*  fontFamily="Menlo"*/}
+          {/*  bg="#921A1C"*/}
+          {/*></Button>*/}
+
+          <AppButton
+            color="#921A1C"
+            bg="black"
+            borderRadius="0"
+            fontFamily="Menlo"
             disabled={true}
-            className="relative text-green-500 p-0"
-            style={{ borderRadius: '5px 0px 0px 5px' }}
+            onClick={() => console.log('Button clicked')}
           >
             Friendship request sent
-          </Button>
+          </AppButton>
 
-          <Button
+          <AppButton
             disabled={false}
-            className="absolute bg-red-500 text-white"
-            bg="red"
-            style={{ borderRadius: '0px 5px 5px 0px' }}
+            className="absolute"
+            borderRadius="0"
+            fontFamily="Menlo"
+            color="white"
+            bg="#921A1C"
             onClick={async () => {
-              const cancelFriendRequestResponse = await cancelFriendRequest({
-                variables: {
-                  profileUuid: profile.uuid,
-                },
-              })
+              // const cancelFriendRequestResponse = await cancelFriendRequest({
+              //   variables: {
+              //     profileUuid: profile.uuid,
+              //   },
+              // })
 
               dispatch(
                 cancelFriendshipRequestSentOnProfile({
@@ -108,21 +109,21 @@ export default function Profile({ profile }) {
                 })
               )
 
-              if (cancelFriendRequestResponse) {
-                socket?.emit('cancel-friend-request', {
-                  content:
-                    loggedInUser.user?.profile?.username +
-                    ' cancelled the friend request.',
-                  from: loggedInUser.user?.profile?.uuid,
-                  fromUsername: loggedInUser.user?.profile?.username,
-                  to: profile.uuid,
-                  toUsername: profile.username,
-                })
-              }
+              // if (cancelFriendRequestResponse) {
+              //   socket?.emit('cancel-friend-request', {
+              //     content:
+              //       loggedInUser.user?.profile?.username +
+              //       ' cancelled the friend request.',
+              //     from: loggedInUser.user?.profile?.uuid,
+              //     fromUsername: loggedInUser.user?.profile?.username,
+              //     to: profile.uuid,
+              //     toUsername: profile.username,
+              //   })
+              // }
             }}
           >
             Cancel
-          </Button>
+          </AppButton>
         </Flex>
       ) : profile.hasFriendshipRequestFromLoggedInProfile ? (
         <Flex className="justify-end mt-3">
@@ -130,11 +131,11 @@ export default function Profile({ profile }) {
             className="mr-3 bg-green-500"
             variant="green"
             onClick={async () => {
-              const acceptFriendshipResponse = await acceptFriendRequest({
-                variables: {
-                  profileUuid: profile.uuid,
-                },
-              })
+              // const acceptFriendshipResponse = await acceptFriendRequest({
+              //   variables: {
+              //     profileUuid: profile.uuid,
+              //   },
+              // })
 
               dispatch(
                 removeFriendRequestEntry({
@@ -150,23 +151,23 @@ export default function Profile({ profile }) {
                 })
               )
 
-              dispatch(
-                addConversation({
-                  conversation:
-                    acceptFriendshipResponse.data?.acceptFriendRequest,
-                  loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-                })
-              )
+              // dispatch(
+              //   addConversation({
+              //     conversation:
+              //       acceptFriendshipResponse.data?.acceptFriendRequest,
+              //     loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+              //   })
+              // )
 
-              if (acceptFriendshipResponse) {
-                emitFriendshipRequestAccepted({
-                  loggedInUser,
-                  profile,
-                  conversation:
-                    acceptFriendshipResponse.data?.acceptFriendRequest,
-                  socket,
-                })
-              }
+              // if (acceptFriendshipResponse) {
+              //   emitFriendshipRequestAccepted({
+              //     loggedInUser,
+              //     profile,
+              //     conversation:
+              //       acceptFriendshipResponse.data?.acceptFriendRequest,
+              //     socket,
+              //   })
+              // }
               // if (toastIdRef.current) {
               toast.close(profile.uuid)
               // }
@@ -190,46 +191,37 @@ export default function Profile({ profile }) {
               />
             </Flex>
           ) : (
-            <Button
-              // className="bg-green-800"
-              bg="green"
+            <AppButton
               onClick={async () => {
-                dispatch(
-                  setFriendshipRequestSentOnProfile({
-                    profileUuid: profile.uuid,
-                  })
+                const response = await axios.post(
+                  '/api/profiles/sendFriendRequest',
+                  { profileUuid: profile.uuid }
                 )
 
-                dispatch(
-                  addFriendRequestEntry({
-                    uuid: profile.uuid,
-                    username: profile.username,
-                    reverse: false,
-                  })
-                )
+                if (response.status === 200) {
+                  dispatch(
+                    setFriendshipRequestSentOnProfile({
+                      profileUuid: profile.uuid,
+                    })
+                  )
 
-                await sendFriendRequest({
-                  variables: {
-                    profileUuid: profile.uuid,
-                  },
-                })
-
-                // socket?.emit('send-friend-request', {
-                //   content:
-                //     loggedInUser.user?.profile?.username +
-                //     ' wants to be your friend.',
-                //   from: loggedInUser.user?.profile?.uuid,
-                //   fromUsername: loggedInUser.user?.profile?.username,
-                //   to: profile.uuid,
-                //   toUsername: profile.username,
-                // })
+                  dispatch(
+                    addFriendRequestEntry({
+                      uuid: profile.uuid,
+                      username: profile.username,
+                      reverse: false,
+                    })
+                  )
+                }
               }}
             >
               Send friend request
-            </Button>
+            </AppButton>
           )}
         </Box>
       )}
     </Flex>
   )
 }
+
+export default Profile

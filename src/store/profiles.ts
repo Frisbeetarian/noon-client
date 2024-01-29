@@ -47,11 +47,11 @@ const slice = createSlice({
           // Clone the profile to avoid directly mutating the state
           const updatedProfile = { ...profile }
 
-          const isFriend = loggedInUser.friends.some(
+          const isFriend = loggedInUser.friends?.some(
             (friend) => friend.uuid === updatedProfile.uuid
           )
 
-          const friendshipRequestCheck = loggedInUser.friendshipRequests.find(
+          const friendshipRequestCheck = loggedInUser.friendshipRequests?.find(
             (request) => request.uuid === updatedProfile.uuid
           )
 

@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 html {
+    font-family: 'Menlo', monospace;
     overflow: hidden !important;
 }
 
