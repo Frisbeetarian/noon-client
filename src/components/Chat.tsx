@@ -37,7 +37,7 @@ import Video from './Video'
 import { emitPrivateChatMessage } from '../utils/SocketEmits'
 import withAxios from '../utils/withAxios'
 
-function Chat() {
+function Chat({ axios }) {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
   const isCreateGroupOpen = useSelector(getCreateGroupComponent)
@@ -151,6 +151,15 @@ function Chat() {
     const data = inputMessage
     setInputMessage('')
 
+    const message = await axios.post('/api/messages', {
+      message: data,
+      type: 'text',
+      src: '',
+      conversationUuid: activeConversation.uuid,
+      recipientUuid: profile.uuid,
+      recipientUsername: profile.username,
+    })
+
     // const message = await saveMessage({
     //   variables: {
     //     message: data,
@@ -161,13 +170,13 @@ function Chat() {
     //   },
     // })
 
-    emitPrivateChatMessage({
-      loggedInUser,
-      profile,
-      response: message,
-      activeConversation,
-      socket,
-    })
+    // emitPrivateChatMessage({
+    //   loggedInUser,
+    //   profile,
+    //   response: message,
+    //   activeConversation,
+    //   socket,
+    // })
 
     // socket.emit('private-chat-message', {
     //   content: loggedInUser.user?.profile?.username + ' sent you a message.',

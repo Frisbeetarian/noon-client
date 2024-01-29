@@ -32,12 +32,7 @@ import { getSocketAuthObject } from '../store/sockets'
 import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
 
-const Footer = ({
-  inputMessage,
-  setInputMessage,
-  handleSendMessage,
-  axios,
-}) => {
+const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const socketAuthObject = useSelector(getSocketAuthObject)
 
   const hiddenFileInput = React.useRef(null)

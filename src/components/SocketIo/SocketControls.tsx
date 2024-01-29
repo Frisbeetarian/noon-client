@@ -65,17 +65,18 @@ function SocketControls({ axios }) {
       socket.on(
         'private-chat-message',
         ({
-          from,
-          fromUsername,
-          messageUuid,
-          message,
+          recipientUuid,
+          recipientUsername,
+          senderUuid,
+          senderUsername,
           conversationUuid,
-          type,
-          src,
+          content,
+          message,
         }) => {
-          if (!message.trim().length) {
-            return
-          }
+          console.log('message:', message)
+          // if (!message.trim().length) {
+          //   return
+          // }
 
           const data = message
           if (
@@ -90,24 +91,24 @@ function SocketControls({ axios }) {
             // })
           }
 
-          dispatch(
-            addMessageToActiveConversation({
-              message: {
-                uuid: messageUuid,
-                content: data,
-                sender: { uuid: from, username: fromUsername },
-                from: 'other',
-                conversationUuid,
-                type,
-                src,
-                //TODO get deleted from payload
-                deleted: false,
-                updatedAt: new Date().toString(),
-                createdAt: new Date().toString(),
-              },
-              loggedInProfileUuid: loggedInUser.user?.profile.uuid,
-            })
-          )
+          // dispatch(
+          //   addMessageToActiveConversation({
+          //     message: {
+          //       uuid: messageUuid,
+          //       content: data,
+          //       sender: { uuid: from, username: fromUsername },
+          //       from: 'other',
+          //       conversationUuid,
+          //       type,
+          //       src,
+          //       //TODO get deleted from payload
+          //       deleted: false,
+          //       updatedAt: new Date().toString(),
+          //       createdAt: new Date().toString(),
+          //     },
+          //     loggedInProfileUuid: loggedInUser.user?.profile.uuid,
+          //   })
+          // )
         }
       )
 
