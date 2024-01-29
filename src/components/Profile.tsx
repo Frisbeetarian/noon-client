@@ -90,36 +90,25 @@ function Profile({ profile, axios }) {
             color="white"
             bg="#921A1C"
             onClick={async () => {
-              // const cancelFriendRequestResponse = await cancelFriendRequest({
-              //   variables: {
-              //     profileUuid: profile.uuid,
-              //   },
-              // })
-
-              dispatch(
-                cancelFriendshipRequestSentOnProfile({
-                  profileUuid: profile.uuid,
-                })
+              const response = await axios.post(
+                '/api/profiles/cancelFriendRequest',
+                { profileUuid: profile.uuid }
               )
 
-              dispatch(
-                removeFriendRequestEntry({
-                  profileUuid: profile.uuid,
-                  friendRequests: loggedInUser.user?.friendshipRequests,
-                })
-              )
+              if (response.status === 200) {
+                dispatch(
+                  cancelFriendshipRequestSentOnProfile({
+                    profileUuid: profile.uuid,
+                  })
+                )
 
-              // if (cancelFriendRequestResponse) {
-              //   socket?.emit('cancel-friend-request', {
-              //     content:
-              //       loggedInUser.user?.profile?.username +
-              //       ' cancelled the friend request.',
-              //     from: loggedInUser.user?.profile?.uuid,
-              //     fromUsername: loggedInUser.user?.profile?.username,
-              //     to: profile.uuid,
-              //     toUsername: profile.username,
-              //   })
-              // }
+                dispatch(
+                  removeFriendRequestEntry({
+                    profileUuid: profile.uuid,
+                    friendRequests: loggedInUser.user?.friendshipRequests,
+                  })
+                )
+              }
             }}
           >
             Cancel

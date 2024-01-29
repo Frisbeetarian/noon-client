@@ -120,7 +120,7 @@ function SocketControls() {
         )
 
         toast({
-          id: uuid(),
+          id: senderUuid + 'friend-request',
           title: `${senderUsername} sent you a friend request.`,
           position: 'bottom-right',
           isClosable: true,
@@ -259,18 +259,18 @@ function SocketControls() {
         }
       )
 
-      socket.on('cancel-friend-request', ({ from, fromUsername }) => {
+      socket.on('cancel-friend-request', ({ senderUuid, senderUsername }) => {
         dispatch(
           removeFriendRequestEntry({
-            profileUuid: from,
+            profileUuid: senderUuid,
             friendRequests: loggedInUser.user?.friendshipRequests,
           })
         )
 
-        toast.close(from)
+        toast.close(senderUuid + 'friend-request')
         toast({
-          id: from,
-          title: `${fromUsername} has cancelled the friend request.`,
+          id: senderUuid,
+          title: `${senderUsername} has cancelled the friend request.`,
           position: 'bottom-right',
           isClosable: true,
           status: 'error',
@@ -343,15 +343,15 @@ function SocketControls() {
     }
 
     return () => {
-      // if (socket) {
-      //   socket.off('send-friend-request')
-      //   socket.off('cancel-friend-request')
-      //   socket.off('friendship-request-accepted')
-      //   socket.off('unfriend')
-      //   socket.off('set-pending-call-for-conversation')
-      //   socket.off('invited-to-group')
-      //   socket.off('left-group')
-      // }
+      if (socket) {
+        socket.off('send-friend-request')
+        socket.off('cancel-friend-request')
+        socket.off('friendship-request-accepted')
+        socket.off('unfriend')
+        socket.off('set-pending-call-for-conversation')
+        socket.off('invited-to-group')
+        socket.off('left-group')
+      }
     }
   }, [socket, socketAuthObject])
 
