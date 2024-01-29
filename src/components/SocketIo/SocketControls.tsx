@@ -36,6 +36,7 @@ import SocketManager from './SocketManager'
 // } from '../../generated/graphql'
 import { getSocketAuthObject } from '../../store/sockets'
 import { uuid } from 'uuidv4'
+import AppButton from '../AppComponents/AppButton'
 
 function SocketControls() {
   const dispatch = useDispatch()
@@ -127,7 +128,7 @@ function SocketControls() {
           status: 'success',
           duration: null,
           render: () => (
-            <Flex direction="column" color="white" p={3} bg="green.700">
+            <Flex direction="column" color="white" p={3} bg="#4B0E10">
               <Flex>
                 <p>{senderUsername} sent you a friend request.</p>
 
@@ -135,15 +136,14 @@ function SocketControls() {
                   className="sticky top ml-4"
                   size="sm"
                   onClick={() => {
-                    toast.close(senderUuid)
+                    toast.close(senderUuid + 'friend-request')
                   }}
                   name="close button"
                 />
               </Flex>
 
               <Flex className="justify-end mt-3">
-                <Button
-                  bg="green"
+                <AppButton
                   className="mr-3"
                   onClick={async () => {
                     // const acceptFriendshipResponse = await acceptFriendRequest({
@@ -199,9 +199,9 @@ function SocketControls() {
                   }}
                 >
                   Accept
-                </Button>
+                </AppButton>
 
-                <Button bg="red">Reject</Button>
+                <AppButton bg="black">Reject</AppButton>
               </Flex>
             </Flex>
           ),
@@ -275,6 +275,22 @@ function SocketControls() {
           isClosable: true,
           status: 'error',
           duration: 5000,
+          render: () => (
+            <Flex direction="column" color="white" p={3} bg="#4B0E10">
+              <Flex>
+                <p>{senderUsername} has cancelled the friend request.</p>
+
+                <CloseButton
+                  className="sticky top ml-4"
+                  size="sm"
+                  onClick={() => {
+                    toast.close(senderUuid)
+                  }}
+                  name="close button"
+                />
+              </Flex>
+            </Flex>
+          ),
         })
       })
 
