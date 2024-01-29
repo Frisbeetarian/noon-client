@@ -46,8 +46,8 @@ textarea::placeholder {
 }
 
 input, textarea {
-    border: none !important;
-    border-bottom: 1px solid #921A1C !important;
+    /*border: none !important;*/
+    /*border-bottom: 1px solid #921A1C !important;*/
     outline: none !important;
     transition: border-color 0.3s !important;
 }

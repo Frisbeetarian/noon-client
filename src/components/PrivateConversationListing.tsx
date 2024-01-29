@@ -27,7 +27,6 @@ import {
 } from '../store/ui'
 import { setVideoFrameForConversation } from '../store/video'
 import { useDispatch, useSelector } from 'react-redux'
-import { useUnfriendMutation } from '../generated/graphql'
 import SocketManager from './SocketIo/SocketManager'
 import { getSocketAuthObject } from '../store/sockets'
 import AppMenuList from './AppComponents/AppMenuList'
@@ -104,12 +103,15 @@ function PrivateConversationListing({ conversation, i, axios }) {
     <Flex
       key={conversation.uuid}
       tabIndex={0}
-      className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-red-800 hover:border-b-red-500 focus:outline-none focus:border-sky-700 focus-within:shadow-lg"
+      className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-red-800 hover:border-b-red-500 focus:outline-none"
       style={{
-        transition: 'all .25s',
+        transition: 'all .0s',
         ...(activeConversation && activeConversation.uuid === conversation.uuid
           ? {
-              backgroundColor: '#0F753B',
+              backgroundColor: '#921A1C',
+              outline: 'none',
+              boxShadow: 'none',
+              border: 'none',
             }
           : null),
       }}

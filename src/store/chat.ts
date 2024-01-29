@@ -700,7 +700,7 @@ export const getSortedConversations = createSelector(
 
 export const getActiveConversee = createSelector(
   (state) => state.entities.chat,
-  (chat) => chat.conversationController.activeConversee
+  (chat) => chat?.activeConversation?.conversee
 )
 
 export const getActiveConversation = createSelector(

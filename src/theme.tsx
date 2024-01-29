@@ -56,6 +56,9 @@ const theme = extendTheme({
           border: 'none',
           borderBottom: '1px solid',
           borderRadius: '0',
+          '*::placeholder': {
+            color: 'white',
+          },
         },
       },
       variants: {
@@ -84,7 +87,7 @@ const theme = extendTheme({
         color: 'red',
       },
       '*::placeholder': {
-        color: 'green',
+        color: 'white',
       },
     },
   },

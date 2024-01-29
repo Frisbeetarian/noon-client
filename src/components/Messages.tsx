@@ -38,25 +38,28 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import SocketManager from './SocketIo/SocketManager'
 import { getIsMobile } from '../store/ui'
 import { Message } from '../generated/graphql'
+import { getSocketAuthObject } from '../store/sockets'
 
 const Messages = () => {
   const dispatch = useDispatch()
+  const socketAuthObject = useSelector(getSocketAuthObject)
+
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
   const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
-  const socket = SocketManager.getSocket()
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const isMobile = useSelector(getIsMobile)
 
-  const [
-    clearUnreadMessagesForConversation,
-    // { loading: unreadMessagesLoading },
-  ] = useClearUnreadMessagesForConversationMutation()
-
-  const [
-    deleteMessage,
-    // { loading: deleteMessageLoading }
-  ] = useDeleteMessageMutation()
+  // const [
+  //   clearUnreadMessagesForConversation,
+  //   // { loading: unreadMessagesLoading },
+  // ] = useClearUnreadMessagesForConversationMutation()
+  //
+  // const [
+  //   deleteMessage,
+  //   // { loading: deleteMessageLoading }
+  // ] = useDeleteMessageMutation()
 
   const [variables, setVariables] = useState({
     limit: 20,
@@ -77,56 +80,56 @@ const Messages = () => {
     fetchPolicy: 'network-only',
   })*/
 
-  const { data } = useGetMessagesForConversationQuery({
-    variables,
-    skip: shouldPause,
-    fetchPolicy: 'network-only',
-  })
+  // const { data } = useGetMessagesForConversationQuery({
+  //   variables,
+  //   skip: shouldPause,
+  //   fetchPolicy: 'network-only',
+  // })
+  //
+  // let { data: hasMoreOnInit } = useCheckIfConversationHasMoreMessagesQuery({
+  //   variables: {
+  //     conversationUuid: activeConversation.uuid,
+  //   },
+  //   skip: shouldPauseCheckHasMore,
+  //   fetchPolicy: 'network-only',
+  // })
 
-  let { data: hasMoreOnInit } = useCheckIfConversationHasMoreMessagesQuery({
-    variables: {
-      conversationUuid: activeConversation.uuid,
-    },
-    skip: shouldPauseCheckHasMore,
-    fetchPolicy: 'network-only',
-  })
-
-  useEffect(() => {
-    console.log(
-      'hasmore on init:',
-      hasMoreOnInit?.checkIfConversationHasMoreMessages
-    )
-
-    if (hasMoreOnInit?.checkIfConversationHasMoreMessages) {
-      dispatch(
-        setActiveConversationHasMoreMessages(
-          hasMoreOnInit?.checkIfConversationHasMoreMessages
-        )
-      )
-    }
-
-    return () => {
-      setShouldCheckHasMorePause(false)
-      setLocalMessages([])
-    }
-  }, [hasMoreOnInit?.checkIfConversationHasMoreMessages])
-
-  useEffect(() => {
-    if (data) {
-      setShouldCheckHasMorePause(true)
-      hasMoreOnInit = undefined
-
-      // @ts-ignore
-      setLocalMessages((prevState) => {
-        return [...prevState, ...data.getMessagesForConversation.messages]
-      })
-    }
-
-    return () => {
-      setShouldCheckHasMorePause(false)
-      setLocalMessages([])
-    }
-  }, [data])
+  // useEffect(() => {
+  //   console.log(
+  //     'hasmore on init:',
+  //     hasMoreOnInit?.checkIfConversationHasMoreMessages
+  //   )
+  //
+  //   if (hasMoreOnInit?.checkIfConversationHasMoreMessages) {
+  //     dispatch(
+  //       setActiveConversationHasMoreMessages(
+  //         hasMoreOnInit?.checkIfConversationHasMoreMessages
+  //       )
+  //     )
+  //   }
+  //
+  //   return () => {
+  //     setShouldCheckHasMorePause(false)
+  //     setLocalMessages([])
+  //   }
+  // }, [hasMoreOnInit?.checkIfConversationHasMoreMessages])
+  //
+  // useEffect(() => {
+  //   if (data) {
+  //     setShouldCheckHasMorePause(true)
+  //     hasMoreOnInit = undefined
+  //
+  //     // @ts-ignore
+  //     setLocalMessages((prevState) => {
+  //       return [...prevState, ...data.getMessagesForConversation.messages]
+  //     })
+  //   }
+  //
+  //   return () => {
+  //     setShouldCheckHasMorePause(false)
+  //     setLocalMessages([])
+  //   }
+  // }, [data])
 
   // TODO check how to initialize data
   useEffect(() => {
@@ -150,12 +153,12 @@ const Messages = () => {
       activeConversation.profileThatHasUnreadMessages ===
         loggedInUser.user.profile.uuid
     ) {
-      clearUnreadMessagesForConversation({
-        variables: {
-          conversationUuid: activeConversation.uuid,
-          profileUuid: 'fejfnewjnfewjf',
-        },
-      })
+      // clearUnreadMessagesForConversation({
+      //   variables: {
+      //     conversationUuid: activeConversation.uuid,
+      //     profileUuid: 'fejfnewjnfewjf',
+      //   },
+      // })
 
       dispatch(clearUnreadMessagesForConversationInStore)
     }
@@ -238,13 +241,13 @@ const Messages = () => {
           overflowX: 'hidden',
         }}
         inverse={true}
-        hasMore={
-          !shouldPauseCheckHasMore
-            ? !!hasMoreOnInit?.checkIfConversationHasMoreMessages
-            : !!data?.getMessagesForConversation
-            ? !!data?.getMessagesForConversation.hasMore
-            : true
-        }
+        // hasMore={
+        //   !shouldPauseCheckHasMore
+        //     ? !!hasMoreOnInit?.checkIfConversationHasMoreMessages
+        //     : !!data?.getMessagesForConversation
+        //     ? !!data?.getMessagesForConversation.hasMore
+        //     : true
+        // }
         loader={
           <h4 className="m-auto text-xl py-5 top-0 left-1/2">Loading...</h4>
         }

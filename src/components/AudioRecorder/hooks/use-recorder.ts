@@ -15,9 +15,10 @@ import {
 
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../../../store/users'
-import { useUploadVoiceRecordingMutation } from '../../../generated/graphql'
+// import { useUploadVoiceRecordingMutation } from '../../../generated/graphql'
 import { emitPrivateChatMessage } from '../../../utils/SocketEmits'
 import SocketManager from '../../SocketIo/SocketManager'
+import { getSocketAuthObject } from '../../../store/sockets'
 
 const initialState: Recorder = {
   recordingMinutes: 0,
@@ -29,12 +30,14 @@ const initialState: Recorder = {
 }
 
 export default function useRecorder() {
+  const socketAuthObject = useSelector(getSocketAuthObject)
   const [recorderState, setRecorderState] = useState<Recorder>(initialState)
   // const [recordings, setRecordings] = useState<Audio[]>([])
-  const [uploadVoiceRecordingMutation] = useUploadVoiceRecordingMutation()
+  // const [uploadVoiceRecordingMutation] = useUploadVoiceRecordingMutation()
 
   const dispatch = useDispatch()
-  const socket = SocketManager.getSocket()
+  // const socket = SocketManager.getSocket()
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
 
   const activeConversation = useSelector(getActiveConversation)
   const loggedInUser = useSelector(getLoggedInUser)
@@ -107,93 +110,93 @@ export default function useRecorder() {
         const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' })
 
         if (recorder.stream.active) {
-          uploadVoiceRecordingMutation({
-            variables: {
-              file: blob as any,
-              conversationUuid: activeConversation.uuid,
-              profileUuid: loggedInUser.user.profile.uuid,
-            },
-          })
-            .then(async (response) => {
-              if (activeConversation.type === 'pm') {
-                emitPrivateChatMessage({
-                  loggedInUser,
-                  profile: activeConversee,
-                  response,
-                  activeConversation,
-                  socket,
-                })
-
-                // socket.emit('private-chat-message', {
-                //   content:
-                //     loggedInUser.user?.profile?.username +
-                //     ' sent you a message.',
-                //   from: loggedInUser.user?.profile?.uuid,
-                //   fromUsername: loggedInUser.user?.profile?.username,
-                //   to: activeConversee.uuid,
-                //   toUsername: activeConversee.username,
-                //   messageUuid: response.data?.uploadVoiceRecording.uuid,
-                //   message: response.data?.uploadVoiceRecording.content,
-                //   type: response.data?.uploadVoiceRecording.type,
-                //   src: response.data?.uploadVoiceRecording.src,
-                //   conversationUuid: activeConversation.uuid,
-                // })
-              } else {
-                activeConversation.profiles.map((conversationProfile) => {
-                  if (
-                    conversationProfile.uuid !==
-                    loggedInUser.user?.profile?.uuid
-                  ) {
-                    emitPrivateChatMessage({
-                      loggedInUser,
-                      profile: conversationProfile,
-                      response,
-                      activeConversation,
-                      socket,
-                    })
-                    // socket.emit('private-chat-message', {
-                    //   content:
-                    //     loggedInUser.user?.profile?.username +
-                    //     ' sent you a message.',
-                    //   from: loggedInUser.user?.profile?.uuid,
-                    //   fromUsername: loggedInUser.user?.profile?.username,
-                    //   to: conversationProfile.uuid,
-                    //   toUsername: conversationProfile.username,
-                    //   messageUuid: response.data?.uploadVoiceRecording.uuid,
-                    //   message: response.data?.uploadVoiceRecording.content,
-                    //   type: response.data?.uploadVoiceRecording.type,
-                    //   src: response.data?.uploadVoiceRecording.src,
-                    //   conversationUuid: activeConversation.uuid,
-                    // })
-                  }
-                })
-              }
-
-              dispatch(
-                addMessageToActiveConversation({
-                  message: {
-                    uuid: response.data?.uploadVoiceRecording.uuid as string,
-                    content: response.data?.uploadVoiceRecording
-                      .content as string,
-                    from: 'me',
-                    type: response.data?.uploadVoiceRecording.type as string,
-                    src: response.data?.uploadVoiceRecording.src,
-                    conversationUuid: activeConversation.uuid,
-                    deleted: false,
-                    sender: {
-                      uuid: loggedInUser?.user?.profile?.uuid,
-                      username: loggedInUser?.user?.profile?.username,
-                    },
-                    updatedAt: new Date().toString(),
-                    createdAt: new Date().toString(),
-                  },
-                  loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-                })
-              )
-            })
-            .catch((error) => {
-              console.log('error:', error)
-            })
+          // uploadVoiceRecordingMutation({
+          //   variables: {
+          //     file: blob as any,
+          //     conversationUuid: activeConversation.uuid,
+          //     profileUuid: loggedInUser.user.profile.uuid,
+          //   },
+          // })
+          //   .then(async (response) => {
+          //     if (activeConversation.type === 'pm') {
+          //       emitPrivateChatMessage({
+          //         loggedInUser,
+          //         profile: activeConversee,
+          //         response,
+          //         activeConversation,
+          //         socket,
+          //       })
+          //
+          //       // socket.emit('private-chat-message', {
+          //       //   content:
+          //       //     loggedInUser.user?.profile?.username +
+          //       //     ' sent you a message.',
+          //       //   from: loggedInUser.user?.profile?.uuid,
+          //       //   fromUsername: loggedInUser.user?.profile?.username,
+          //       //   to: activeConversee.uuid,
+          //       //   toUsername: activeConversee.username,
+          //       //   messageUuid: response.data?.uploadVoiceRecording.uuid,
+          //       //   message: response.data?.uploadVoiceRecording.content,
+          //       //   type: response.data?.uploadVoiceRecording.type,
+          //       //   src: response.data?.uploadVoiceRecording.src,
+          //       //   conversationUuid: activeConversation.uuid,
+          //       // })
+          //     } else {
+          //       activeConversation.profiles.map((conversationProfile) => {
+          //         if (
+          //           conversationProfile.uuid !==
+          //           loggedInUser.user?.profile?.uuid
+          //         ) {
+          //           emitPrivateChatMessage({
+          //             loggedInUser,
+          //             profile: conversationProfile,
+          //             response,
+          //             activeConversation,
+          //             socket,
+          //           })
+          //           // socket.emit('private-chat-message', {
+          //           //   content:
+          //           //     loggedInUser.user?.profile?.username +
+          //           //     ' sent you a message.',
+          //           //   from: loggedInUser.user?.profile?.uuid,
+          //           //   fromUsername: loggedInUser.user?.profile?.username,
+          //           //   to: conversationProfile.uuid,
+          //           //   toUsername: conversationProfile.username,
+          //           //   messageUuid: response.data?.uploadVoiceRecording.uuid,
+          //           //   message: response.data?.uploadVoiceRecording.content,
+          //           //   type: response.data?.uploadVoiceRecording.type,
+          //           //   src: response.data?.uploadVoiceRecording.src,
+          //           //   conversationUuid: activeConversation.uuid,
+          //           // })
+          //         }
+          //       })
+          //     }
+          //
+          //     dispatch(
+          //       addMessageToActiveConversation({
+          //         message: {
+          //           uuid: response.data?.uploadVoiceRecording.uuid as string,
+          //           content: response.data?.uploadVoiceRecording
+          //             .content as string,
+          //           from: 'me',
+          //           type: response.data?.uploadVoiceRecording.type as string,
+          //           src: response.data?.uploadVoiceRecording.src,
+          //           conversationUuid: activeConversation.uuid,
+          //           deleted: false,
+          //           sender: {
+          //             uuid: loggedInUser?.user?.profile?.uuid,
+          //             username: loggedInUser?.user?.profile?.username,
+          //           },
+          //           updatedAt: new Date().toString(),
+          //           createdAt: new Date().toString(),
+          //         },
+          //         loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+          //       })
+          //     )
+          //   })
+          //   .catch((error) => {
+          //     console.log('error:', error)
+          //   })
         }
         setRecorderState((prevState: Recorder) => {
           if (prevState.mediaRecorder) {

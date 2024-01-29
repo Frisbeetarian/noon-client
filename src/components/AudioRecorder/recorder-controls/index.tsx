@@ -4,6 +4,7 @@ import { Button, Flex, Icon } from '@chakra-ui/react'
 import { ImMic, ImArrowRight, ImCancelCircle } from 'react-icons/im'
 import { useSelector } from 'react-redux'
 import { getIsMobile } from '../../../store/ui'
+import AppButton from '../../AppComponents/AppButton'
 
 export default function RecorderControls({
   recorderState,
@@ -51,16 +52,14 @@ export default function RecorderControls({
             <Icon as={ImArrowRight} />
           </button>
         ) : (
-          <Button
-            color="white"
-            bg="green.500"
+          <AppButton
             size={isMobile ? 'sm' : 'md'}
             title="Start recording"
             onClick={startRecording}
           >
             {/* <FontAwesomeIcon icon={faMicrophone} size="2x" /> */}
             <Icon as={ImMic} />
-          </Button>
+          </AppButton>
         )}
       </Flex>
     </Flex>
