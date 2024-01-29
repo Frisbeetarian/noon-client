@@ -42,8 +42,10 @@ import PrivateConversationListing from './PrivateConversationListing'
 import GroupConversationListing from './GroupConversationListing'
 import ChatControlsAndSearchForMobile from './ChatControlsAndSearchForMobile'
 import SocketControls from './SocketIo/SocketControls'
+import withAxios from '../utils/withAxios'
+import AppMenuList from './AppComponents/AppMenuList'
 
-function Sidebar() {
+function Sidebar({ axios }) {
   const router = useRouter()
   const dispatch = useDispatch()
   const isMobile: number = useSelector(getIsMobile)
@@ -129,7 +131,7 @@ function Sidebar() {
               borderRadius="0"
             />
 
-            <MenuList
+            <AppMenuList
               bg="black"
               className="bg-red-500 text-black"
               border="none"
@@ -161,7 +163,7 @@ function Sidebar() {
               >
                 Create group
               </MenuItem>
-            </MenuList>
+            </AppMenuList>
           </Menu>
         </Flex>
 
@@ -184,6 +186,7 @@ function Sidebar() {
                     key={i}
                     conversation={conversation}
                     i={i}
+                    axios={axios}
                   />
                 ) : (
                   <GroupConversationListing
@@ -238,4 +241,4 @@ function Sidebar() {
   )
 }
 
-export default Sidebar
+export default withAxios(Sidebar)

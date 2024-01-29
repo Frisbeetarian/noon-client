@@ -3,13 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Sidebar from '../../components/Sidebar'
 
-// import {
-//   useGetConversationForLoggedInUserQuery,
-//   // useLogoutMutation,
-//   useMeQuery,
-//   User,
-// } from '../../generated/graphql'
-
 import { isServer } from '../../utils/isServer'
 import { getLoggedInUser, setLoggedInUser } from '../../store/users'
 
@@ -49,8 +42,6 @@ function Noon({ axios }) {
       axios
         .get('/api/users/me')
         .then((response) => {
-          // console.log('respone: ', response.data)
-
           if (response.data.username) {
             dispatch(setLoggedInUser(response.data))
           } else {
