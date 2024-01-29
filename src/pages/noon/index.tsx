@@ -65,7 +65,10 @@ function Noon({ axios }) {
       axios
         .get('/api/conversations')
         .then((response) => {
-          if (conversations === null && loggedInUser?.user?.profile?.uuid) {
+          if (
+            (conversations === null || conversations.length === 0) &&
+            loggedInUser?.user?.profile?.uuid
+          ) {
             dispatch(
               setConversations({
                 conversationsToSend: response.data,
