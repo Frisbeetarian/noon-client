@@ -45,10 +45,10 @@ function PrivateConversationListing({ conversation, i }) {
   const activeConversation = useSelector(getActiveConversation)
   const isMobile = useSelector(getIsMobile)
 
-  const [
-    unfriend,
-    // { loading: unfriendLoading }
-  ] = useUnfriendMutation()
+  // const [
+  //   unfriend,
+  //   // { loading: unfriendLoading }
+  // ] = useUnfriendMutation()
 
   function setActiveConverseeFunction(profile, conversation) {
     dispatch(

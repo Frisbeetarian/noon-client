@@ -85,13 +85,16 @@ const slice = createSlice({
       chat,
       action: PayloadAction<ConversationPayload>
     ) {
-      const conversationObject = { ...action.payload.conversation }
+      const conversationObject = action.payload.conversation
 
-      if (conversationObject.type !== 'group') {
-        chat.conversationController.conversee =
-          conversationObject.profiles?.find(
-            (element) => element.uuid !== action.payload.loggedInProfileUuid
-          )
+      if (conversationObject?.type !== 'group') {
+        const conversee = conversationObject?.profiles?.find(
+          (profile) => profile.uuid !== action.payload.loggedInProfileUuid
+        )
+        if (conversee) {
+          conversationObject.conversee = conversee
+          chat.conversationController.conversee = conversee
+        }
       }
 
       // if (
@@ -104,9 +107,17 @@ const slice = createSlice({
       //   )
       // }
 
-      // conversationObject.ongoingCall = false
-      if (conversationObject)
+      if (
+        !chat.conversations?.some(
+          (conv) => conv.uuid === conversationObject?.uuid
+        )
+      ) {
         chat.conversations?.push(<ExtendedConversation>conversationObject)
+      }
+
+      // // conversationObject.ongoingCall = false
+      // if (conversationObject)
+      //   chat.conversations?.push(<ExtendedConversation>conversationObject)
     },
     removeConversation: (
       chat,
@@ -689,7 +700,7 @@ export const getSortedConversations = createSelector(
 
 export const getActiveConversee = createSelector(
   (state) => state.entities.chat,
-  (chat) => chat.activeConversee
+  (chat) => chat.conversationController.activeConversee
 )
 
 export const getActiveConversation = createSelector(

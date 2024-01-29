@@ -35,10 +35,10 @@ import SocketManager from './SocketManager'
 //   useUpdateUnreadMessagesForConversationMutation,
 // } from '../../generated/graphql'
 import { getSocketAuthObject } from '../../store/sockets'
-import { uuid } from 'uuidv4'
 import AppButton from '../AppComponents/AppButton'
+import withAxios from '../../utils/withAxios'
 
-function SocketControls() {
+function SocketControls({ axios }) {
   const dispatch = useDispatch()
   const toast = useToast()
   const loggedInUser = useSelector(getLoggedInUser)
@@ -152,25 +152,63 @@ function SocketControls() {
                     //   },
                     // })
 
-                    dispatch(
-                      setFriendFlagOnProfile({
+                    const response = await axios.post(
+                      '/api/profiles/acceptFriendRequest',
+                      {
                         profileUuid: senderUuid,
-                      })
+                      }
                     )
 
-                    dispatch(
-                      removeFriendRequestEntry({
-                        profileUuid: senderUuid,
-                        friendRequests: loggedInUser.user?.friendshipRequests,
-                      })
-                    )
+                    if (response.status === 200) {
+                      dispatch(
+                        setFriendFlagOnProfile({
+                          profileUuid: senderUuid,
+                        })
+                      )
 
-                    dispatch(
-                      addFriendEntry({
-                        uuid: senderUuid,
-                        username: senderUsername,
-                      })
-                    )
+                      dispatch(
+                        removeFriendRequestEntry({
+                          profileUuid: senderUuid,
+                          friendRequests: loggedInUser.user?.friendshipRequests,
+                        })
+                      )
+
+                      dispatch(
+                        addFriendEntry({
+                          uuid: senderUuid,
+                          username: senderUsername,
+                        })
+                      )
+
+                      dispatch(
+                        addConversation({
+                          conversation: response.data,
+                          loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+                        })
+                      )
+
+                      toast.close(senderUuid)
+                    }
+
+                    // dispatch(
+                    //   setFriendFlagOnProfile({
+                    //     profileUuid: senderUuid,
+                    //   })
+                    // )
+                    //
+                    // dispatch(
+                    //   removeFriendRequestEntry({
+                    //     profileUuid: senderUuid,
+                    //     friendRequests: loggedInUser.user?.friendshipRequests,
+                    //   })
+                    // )
+                    //
+                    // dispatch(
+                    //   addFriendEntry({
+                    //     uuid: senderUuid,
+                    //     username: senderUsername,
+                    //   })
+                    // )
 
                     // dispatch(
                     //   addConversation({
@@ -195,7 +233,7 @@ function SocketControls() {
                     //   })
                     // }
 
-                    toast.close(senderUuid)
+                    // toast.close(senderUuid)
                   }}
                 >
                   Accept
@@ -374,4 +412,4 @@ function SocketControls() {
   return null
 }
 
-export default SocketControls
+export default withAxios(SocketControls)
