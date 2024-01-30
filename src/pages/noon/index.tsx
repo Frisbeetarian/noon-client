@@ -4,9 +4,18 @@ import { useSelector, useDispatch } from 'react-redux'
 import Sidebar from '../../components/Sidebar'
 
 import { isServer } from '../../utils/isServer'
-import { getLoggedInUser, setLoggedInUser } from '../../store/users'
+import {
+  addFriendEntry,
+  getLoggedInUser,
+  removeFriendRequestEntry,
+  setLoggedInUser,
+} from '../../store/users'
 
-import { setConversations, getConversations } from '../../store/chat'
+import {
+  setConversations,
+  getConversations,
+  addConversation,
+} from '../../store/chat'
 
 import Chat from '../../components/Chat'
 import { withAxios } from '../../utils/withAxios'
@@ -19,6 +28,9 @@ import {
 import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
 import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
+import { CloseButton, Flex, useToast } from '@chakra-ui/react'
+import AppButton from '../../components/AppComponents/AppButton'
+import { setFriendFlagOnProfile } from '../../store/profiles'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -35,6 +47,7 @@ function Noon({ axios }) {
   const createGroupActive = useSelector(getCreateGroupActive)
   const loggedInUser = useSelector(getLoggedInUser)
   const conversations = useSelector(getConversations)
+  const toast = useToast()
 
   useEffect(() => {
     setMounted(true)
@@ -77,6 +90,99 @@ function Noon({ axios }) {
       })
     // }
   }, [loggedInUser])
+
+  useEffect(() => {
+    let sent = false
+    if (
+      loggedInUser &&
+      loggedInUser.user.profile &&
+      loggedInUser.user?.profile?.friendshipRequests &&
+      loggedInUser.user?.profile?.friendshipRequests.length !== 0 &&
+      sent === false
+    ) {
+      loggedInUser?.user?.profile?.friendshipRequests.forEach(
+        (friendRequest) => {
+          if (friendRequest.reverse) {
+            toast({
+              id: friendRequest.uuid + 'friend-request',
+              title: `${friendRequest.username} sent you a friend request.`,
+              position: 'bottom-right',
+              isClosable: true,
+              status: 'success',
+              duration: null,
+              render: () => (
+                <Flex direction="column" color="white" p={3} bg="#4B0E10">
+                  <Flex>
+                    <p>{friendRequest.username} sent you a friend request.</p>
+
+                    <CloseButton
+                      className="sticky top ml-4"
+                      size="sm"
+                      onClick={() => {
+                        toast.close(friendRequest.uuid + 'friend-request')
+                      }}
+                      name="close button"
+                    />
+                  </Flex>
+
+                  <Flex className="justify-end mt-3">
+                    <AppButton
+                      className="mr-3"
+                      onClick={async () => {
+                        const response = await axios.post(
+                          '/api/profiles/acceptFriendRequest',
+                          {
+                            profileUuid: friendRequest.uuid,
+                          }
+                        )
+
+                        if (response.status === 200) {
+                          dispatch(
+                            setFriendFlagOnProfile({
+                              profileUuid: friendRequest.uuid,
+                            })
+                          )
+
+                          dispatch(
+                            removeFriendRequestEntry({
+                              profileUuid: friendRequest.uuid,
+                              friendRequests:
+                                loggedInUser.user?.friendshipRequests,
+                            })
+                          )
+
+                          dispatch(
+                            addFriendEntry({
+                              uuid: friendRequest.uuid,
+                              username: friendRequest.username,
+                            })
+                          )
+
+                          dispatch(
+                            addConversation({
+                              conversation: response.data,
+                              loggedInProfileUuid:
+                                loggedInUser.user?.profile?.uuid,
+                            })
+                          )
+
+                          toast.close(friendRequest.uuid + 'friend-request')
+                        }
+                      }}
+                    >
+                      Accept
+                    </AppButton>
+
+                    <AppButton bg="black">Reject</AppButton>
+                  </Flex>
+                </Flex>
+              ),
+            })
+          }
+        }
+      )
+    }
+  }, [loggedInUser.user.profile])
 
   //
   // const { data, loading: meLoading } = useMeQuery({
