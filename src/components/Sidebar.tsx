@@ -54,10 +54,6 @@ function Sidebar({ axios }) {
   const [innerHeight, setInnerHeight] = useState(0)
   const [areConversationsLoading, setAreConversationsLoading] = useState(true)
 
-  // const [
-  //   logout,
-  //   // { loading: logoutLoading }
-  // ] = useLogoutMutation()
   const loggedInUser = useSelector(getLoggedInUser)
   const isConversationOpen = useSelector(getIsConversationOpen)
   const getConversationsFromStore = useSelector(getSortedConversations)
