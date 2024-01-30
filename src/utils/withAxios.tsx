@@ -10,7 +10,7 @@ const createAxiosInstance = (ctx?: NextPageContext) => {
     headers: {
       ...(typeof window === 'undefined' && ctx?.req?.headers.cookie
         ? { Cookie: ctx.req.headers.cookie }
-        : { Cookie: ctx?.req?.headers.cookie }),
+        : {}),
     },
   })
 
