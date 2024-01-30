@@ -79,10 +79,9 @@ function Register({ axios }) {
             console.log('response: ', response)
 
             if (response && response.statusText === 'OK') {
-              const data = await response.data.json()
-              if (data.errors) {
-                setErrors(toErrorMap(data.errors))
-              } else if (data.user) {
+              if (response.errors) {
+                setErrors(toErrorMap(response.errors))
+              } else if (response.data) {
                 router.replace('/noon')
               }
             } else {

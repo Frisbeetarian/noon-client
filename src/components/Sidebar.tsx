@@ -19,6 +19,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Spinner,
 } from '@chakra-ui/react'
 
 import {
@@ -51,6 +52,7 @@ function Sidebar({ axios }) {
   const isMobile: number = useSelector(getIsMobile)
   const searchComponentState = useSelector(getSearchComponentState)
   const [innerHeight, setInnerHeight] = useState(0)
+  const [areConversationsLoading, setAreConversationsLoading] = useState(true)
 
   // const [
   //   logout,
@@ -63,7 +65,11 @@ function Sidebar({ axios }) {
 
   useEffect(() => {
     setInnerHeight(window.innerHeight)
-  }, [])
+
+    if (getConversationsFromStore) {
+      setAreConversationsLoading(false)
+    }
+  }, [getConversationsFromStore])
 
   useEffect(() => {
     window.addEventListener('resize', () => {
@@ -174,29 +180,45 @@ function Sidebar({ axios }) {
         ) : null}
       </Flex>
 
+      {/*{areConversationsLoading ? (*/}
+      {/*  <Flex className="flex-col items-center justify-center">*/}
+      {/*    <p className="text-white">Loading conversations...</p>*/}
+      {/*  </Flex>*/}
+      {/*) : (*/}
+
       <Flex
         className="flex-col pt-3 scroll-auto overflow-auto"
         style={{ flex: '0.875' }}
       >
-        {getConversationsFromStore
-          ? [...Object.values(getConversationsFromStore)].map(
-              (conversation, i) =>
-                !conversation ? null : (conversation as any).type === 'pm' ? (
-                  <PrivateConversationListing
-                    key={i}
-                    conversation={conversation}
-                    i={i}
-                    axios={axios}
-                  />
-                ) : (
-                  <GroupConversationListing
-                    conversation={conversation}
-                    i={i}
-                    key={i}
-                  />
-                )
+        {areConversationsLoading ? (
+          <Spinner />
+        ) : getConversationsFromStore &&
+          getConversationsFromStore.length !== 0 ? (
+          [...Object.values(getConversationsFromStore)].map((conversation, i) =>
+            !conversation ? null : (conversation as any).type === 'pm' ? (
+              <PrivateConversationListing
+                key={i}
+                conversation={conversation}
+                i={i}
+                axios={axios}
+              />
+            ) : (
+              <GroupConversationListing
+                conversation={conversation}
+                i={i}
+                key={i}
+              />
             )
-          : null}
+          )
+        ) : (
+          <p className="w-3/4 p-5 ">
+            No conversations yet. Use the search component to look for people to
+            send friend requests to. Click on the search icon to search for
+            profiles. Once you find the profile you want to befriend, send them
+            a friend request. Once they accept the friend request, you'll become
+            friends and a conversation will be visible on this dashboard.
+          </p>
+        )}
       </Flex>
 
       <Flex
@@ -223,8 +245,16 @@ function Sidebar({ axios }) {
                 className="bg-black"
                 border="none"
                 onClick={async () => {
-                  // await logout()
-                  await router.push('/')
+                  await axios
+                    .post('/api/users/logout')
+                    .then((response) => {
+                      if (response.status === 200) {
+                        router.push('/')
+                      }
+                    })
+                    .catch((error) => {
+                      console.error('Error logging out:', error)
+                    })
                 }}
                 // isLoading={fetching}
               >
