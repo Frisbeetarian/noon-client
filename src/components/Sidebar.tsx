@@ -211,8 +211,8 @@ function Sidebar({ axios }) {
             No conversations yet. Use the search component to look for people to
             send friend requests to. Click on the search icon to search for
             profiles. Once you find the profile you want to befriend, send them
-            a friend request. Once they accept the friend request, you'll become
-            friends and a conversation will be visible on this dashboard.
+            a friend request. Once they accept the friend request, you will
+            become friends and a conversation will be visible on this dashboard.
           </p>
         )}
       </Flex>
