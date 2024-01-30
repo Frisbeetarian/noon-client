@@ -92,13 +92,11 @@ function Noon({ axios }) {
   }, [loggedInUser])
 
   useEffect(() => {
-    let sent = false
     if (
       loggedInUser &&
       loggedInUser.user.profile &&
       loggedInUser.user?.profile?.friendshipRequests &&
-      loggedInUser.user?.profile?.friendshipRequests.length !== 0 &&
-      sent === false
+      loggedInUser.user?.profile?.friendshipRequests.length !== 0
     ) {
       loggedInUser?.user?.profile?.friendshipRequests.forEach(
         (friendRequest) => {
