@@ -28,7 +28,6 @@ const Index = ({ axios }) => {
         .catch((error) => {
           console.error('Error fetching user data:', error)
           setLoading(false)
-
           // Handle error (e.g., redirect to login if unauthorized)
         })
     } else {
