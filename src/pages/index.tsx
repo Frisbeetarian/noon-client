@@ -13,7 +13,7 @@ const Index = ({ axios }) => {
   const [loading, setLoading] = useState(true)
 
   // const { data, loading } = useMeQuery({
-  //   skip: isServer(),
+  //   skip: isServe(),
   //   fetchPolicy: 'network-only',
   // })
 
