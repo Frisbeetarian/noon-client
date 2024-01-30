@@ -25,6 +25,7 @@ import {
   setShowRegisterComponent,
 } from '../../store/ui'
 import withAxios from '../../utils/withAxios'
+import AppButton from '../AppComponents/AppButton'
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -167,24 +168,15 @@ function Register({ axios }) {
                 </FormControl>
 
                 <Stack spacing={10} pt={2}>
-                  <Button
+                  <AppButton
+                    color="black"
                     className="w-1/2 ml-auto"
-                    sx={{
-                      width: '50%',
-                      marginLeft: 'auto',
-                      backgroundColor: 'var(--tw-color-red-500)',
-                      color: 'black',
-                      '&:hover': {
-                        backgroundColor: 'var(--tw-color-red-900)',
-                        color: 'var(--tw-color-red-200)',
-                      },
-                    }}
                     type="submit"
                     size="md"
                     isLoading={isSubmitting}
                   >
                     Register
-                  </Button>
+                  </AppButton>
                 </Stack>
               </Stack>
             </Form>

@@ -20,6 +20,7 @@ import {
   setShowRegisterComponent,
 } from '../../store/ui'
 import { useDispatch } from 'react-redux'
+import AppButton from '../AppComponents/AppButton'
 
 const LoginSchema = Yup.object().shape({
   usernameOrEmail: Yup.string()
@@ -38,11 +39,11 @@ function Login({ axios }) {
 
   return (
     <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-      <Stack align={'start'}>
+      <Stack align={'start'} className="text-red-500">
         <Heading fontSize={'4xl'}>Login to your account</Heading>
       </Stack>
 
-      <Box boxShadow={'lg'} p={8} className="border bg-black">
+      <Box boxShadow={'lg'} p={8} className="bg-red-500" border={0}>
         <Formik
           initialValues={{
             usernameOrEmail: '',
@@ -50,6 +51,8 @@ function Login({ axios }) {
             rememberMe: false,
           }}
           validationSchema={LoginSchema}
+          validateOnBlur={false}
+          validateOnChange={false}
           onSubmit={async (values, { setErrors }) => {
             const response = await axios.post('/api/users/login', values)
 
@@ -66,9 +69,17 @@ function Login({ axios }) {
         >
           {({ isSubmitting }) => (
             <Form>
-              <Stack spacing={4} className="text-white">
+              <Stack spacing={4} className="text-black">
                 <FormControl id="email" isRequired>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel
+                    requiredIndicator={
+                      <span style={{ color: 'text-black', marginLeft: '5px' }}>
+                        *
+                      </span>
+                    }
+                  >
+                    Username
+                  </FormLabel>
                   <InputField
                     placeholder="Username"
                     name="usernameOrEmail"
@@ -77,7 +88,15 @@ function Login({ axios }) {
                 </FormControl>
 
                 <FormControl id="password" isRequired>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel
+                    requiredIndicator={
+                      <span style={{ color: 'text-black', marginLeft: '5px' }}>
+                        *
+                      </span>
+                    }
+                  >
+                    Password
+                  </FormLabel>
 
                   <InputField
                     name="password"
@@ -105,32 +124,28 @@ function Login({ axios }) {
                     </FormControl>
                   </Stack>
 
-                  <Link
-                    className="pt-1"
-                    color={'blue.400'}
-                    onClick={() => {
-                      dispatch(setShowForgotPasswordComponent(true))
-                      dispatch(setShowLoginComponent(false))
-                      dispatch(setShowRegisterComponent(false))
-                    }}
-                  >
-                    Forgot password?
-                  </Link>
+                  {/*<Link*/}
+                  {/*  className="pt-1"*/}
+                  {/*  color={'blue.400'}*/}
+                  {/*  onClick={() => {*/}
+                  {/*    dispatch(setShowForgotPasswordComponent(true))*/}
+                  {/*    dispatch(setShowLoginComponent(false))*/}
+                  {/*    dispatch(setShowRegisterComponent(false))*/}
+                  {/*  }}*/}
+                  {/*>*/}
+                  {/*  Forgot password?*/}
+                  {/*</Link>*/}
 
                   <Stack>
-                    <Button
+                    <AppButton
                       className="w-1/2 ml-auto mt-5"
                       size="md"
-                      bg={'green.400'}
-                      color={'white'}
-                      _hover={{
-                        bg: 'green.900',
-                      }}
+                      color="black"
                       type="submit"
                       isLoading={isSubmitting}
                     >
                       Login
-                    </Button>
+                    </AppButton>
                   </Stack>
                 </Stack>
               </Stack>
@@ -140,7 +155,7 @@ function Login({ axios }) {
       </Box>
 
       <Text
-        className="text-lg text-green-100 cursor-pointer"
+        className="text-lg text-red-500 cursor-pointer"
         onClick={() => {
           dispatch(setShowRegisterComponent(true))
           dispatch(setShowLoginComponent(false))
