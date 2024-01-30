@@ -52,27 +52,31 @@ function Noon({ axios }) {
           console.error('Error fetching user data:', error)
           router.replace('/')
         })
-
-      axios
-        .get('/api/conversations')
-        .then((response) => {
-          if (
-            (conversations === null || conversations.length === 0) &&
-            loggedInUser?.user?.profile?.uuid
-          ) {
-            dispatch(
-              setConversations({
-                conversationsToSend: response.data,
-                loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
-              })
-            )
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching conversations:', error.message)
-        })
     }
-  }, [axios, dispatch, loggedInUser?.user?.profile?.uuid, conversations])
+  }, [])
+
+  useEffect(() => {
+    // if (!conversations) {
+    axios
+      .get('/api/conversations')
+      .then((response) => {
+        if (
+          (conversations === null || conversations.length === 0) &&
+          loggedInUser?.user?.profile?.uuid
+        ) {
+          dispatch(
+            setConversations({
+              conversationsToSend: response.data,
+              loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+            })
+          )
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching conversations:', error.message)
+      })
+    // }
+  }, [loggedInUser])
 
   //
   // const { data, loading: meLoading } = useMeQuery({

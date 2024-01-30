@@ -27,7 +27,7 @@ const SocketConnectionProvider = ({ children }) => {
       // @ts-ignore
       // dispatch(socketDisconnected())
     }
-  }, [loggedInUser])
+  }, [])
 
   return <>{children}</>
 }

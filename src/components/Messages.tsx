@@ -12,13 +12,13 @@ import {
 } from '@chakra-ui/react'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
-import {
-  // PaginatedMessages,
-  useCheckIfConversationHasMoreMessagesQuery,
-  useClearUnreadMessagesForConversationMutation,
-  useDeleteMessageMutation,
-  useGetMessagesForConversationQuery,
-} from '../generated/graphql'
+// import {
+//   // PaginatedMessages,
+//   useCheckIfConversationHasMoreMessagesQuery,
+//   useClearUnreadMessagesForConversationMutation,
+//   useDeleteMessageMutation,
+//   useGetMessagesForConversationQuery,
+// } from '../generated/graphql'
 
 import {
   clearUnreadMessagesForConversationInStore,
@@ -39,11 +39,11 @@ import SocketManager from './SocketIo/SocketManager'
 import { getIsMobile } from '../store/ui'
 import { Message } from '../generated/graphql'
 import { getSocketAuthObject } from '../store/sockets'
+import withAxios from '../utils/withAxios'
 
-const Messages = () => {
+const Messages = ({ axios }) => {
   const dispatch = useDispatch()
   const socketAuthObject = useSelector(getSocketAuthObject)
-
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
@@ -94,26 +94,31 @@ const Messages = () => {
   //   fetchPolicy: 'network-only',
   // })
 
-  // useEffect(() => {
-  //   console.log(
-  //     'hasmore on init:',
-  //     hasMoreOnInit?.checkIfConversationHasMoreMessages
-  //   )
-  //
-  //   if (hasMoreOnInit?.checkIfConversationHasMoreMessages) {
-  //     dispatch(
-  //       setActiveConversationHasMoreMessages(
-  //         hasMoreOnInit?.checkIfConversationHasMoreMessages
-  //       )
-  //     )
-  //   }
-  //
-  //   return () => {
-  //     setShouldCheckHasMorePause(false)
-  //     setLocalMessages([])
-  //   }
-  // }, [hasMoreOnInit?.checkIfConversationHasMoreMessages])
-  //
+  async function handleCheckForHasMoreMessages() {
+    console.log('active conversation:', activeConversation)
+
+    const hasMore = await axios.get(
+      'api/conversations/' + activeConversation.uuid + '/checkMessages'
+    )
+
+    if (hasMore) {
+      dispatch(setActiveConversationHasMoreMessages(hasMore.data))
+    }
+  }
+
+  useEffect(() => {
+    if (activeConversation) {
+      if (activeConversation.messages.length === 0) {
+        handleCheckForHasMoreMessages()
+      }
+    }
+
+    return () => {
+      setShouldCheckHasMorePause(false)
+      // setLocalMessages([])
+    }
+  }, [activeConversation.messages, handleCheckForHasMoreMessages])
+
   // useEffect(() => {
   //   if (data) {
   //     setShouldCheckHasMorePause(true)
@@ -132,48 +137,30 @@ const Messages = () => {
   // }, [data])
 
   // TODO check how to initialize data
-  useEffect(() => {
-    if (localMessages.length !== 0) {
-      dispatch(
-        addMessagesToConversation({
-          conversationUuid: activeConversation.uuid,
-          messages: localMessages,
-          loggedInProfileUuid: loggedInUser.user.profile.uuid,
-        })
-      )
-
-      dispatch(setShouldPauseCheckHasMore(true))
-    }
-  }, [localMessages])
-
-  useEffect(() => {
-    if (
-      activeConversation.unreadMessages &&
-      activeConversation.unreadMessages !== 0 &&
-      activeConversation.profileThatHasUnreadMessages ===
-        loggedInUser.user.profile.uuid
-    ) {
-      // clearUnreadMessagesForConversation({
-      //   variables: {
-      //     conversationUuid: activeConversation.uuid,
-      //     profileUuid: 'fejfnewjnfewjf',
-      //   },
-      // })
-
-      dispatch(clearUnreadMessagesForConversationInStore)
-    }
-
-    return () => {
-      // dispatch(setActiveConversationSet(false))
-      // dispatch(setActiveConversee(null))
-      // dispatch(setActiveConversation(null))
-      // setVariables({
-      //   conversationUuid: null,
-      //   limit: variables.limit,
-      //   cursor: null,
-      // })
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (localMessages.length !== 0) {
+  //     dispatch(
+  //       addMessagesToConversation({
+  //         conversationUuid: activeConversation.uuid,
+  //         messages: localMessages,
+  //         loggedInProfileUuid: loggedInUser.user.profile.uuid,
+  //       })
+  //     )
+  //
+  //     dispatch(setShouldPauseCheckHasMore(true))
+  //   }
+  // }, [localMessages])
+  //
+  // useEffect(() => {
+  //   if (
+  //     activeConversation.unreadMessages &&
+  //     activeConversation.unreadMessages !== 0 &&
+  //     activeConversation.profileThatHasUnreadMessages ===
+  //       loggedInUser.user.profile.uuid
+  //   ) {
+  //     dispatch(clearUnreadMessagesForConversationInStore)
+  //   }
+  // }, [])
 
   const fetchMoreMessage = () => {
     setTimeout(() => {
@@ -190,37 +177,37 @@ const Messages = () => {
   }
 
   const deleteMessageHandler = async (item) => {
-    const message = await deleteMessage({
-      variables: {
-        messageUuid: item.uuid,
-        conversationUuid: activeConversation.uuid,
-        from: loggedInUser.user.profile.uuid,
-        type: item.type,
-        src: item.src,
-      },
-    })
-
-    dispatch(
-      deleteMessageInStore({
-        uuid: message.data?.deleteMessage.uuid as string,
-        content: message.data?.deleteMessage.content as string,
-        deleted: message.data?.deleteMessage.deleted as boolean,
-        conversationUuid: activeConversation.uuid,
-      })
-    )
-
-    activeConversation.profiles.map((profile) => {
-      if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
-        socket.emit('message-deleted', {
-          messageUuid: item.uuid,
-          to: profile.uuid,
-          toUsername: profile.username,
-          fromUsername: loggedInUser.user?.profile?.username,
-          from: loggedInUser.user.profile.uuid,
-          conversationUuid: activeConversation.uuid,
-        })
-      }
-    })
+    // const message = await deleteMessage({
+    //   variables: {
+    //     messageUuid: item.uuid,
+    //     conversationUuid: activeConversation.uuid,
+    //     from: loggedInUser.user.profile.uuid,
+    //     type: item.type,
+    //     src: item.src,
+    //   },
+    // })
+    //
+    // dispatch(
+    //   deleteMessageInStore({
+    //     uuid: message.data?.deleteMessage.uuid as string,
+    //     content: message.data?.deleteMessage.content as string,
+    //     deleted: message.data?.deleteMessage.deleted as boolean,
+    //     conversationUuid: activeConversation.uuid,
+    //   })
+    // )
+    //
+    // activeConversation.profiles.map((profile) => {
+    //   if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
+    //     socket.emit('message-deleted', {
+    //       messageUuid: item.uuid,
+    //       to: profile.uuid,
+    //       toUsername: profile.username,
+    //       fromUsername: loggedInUser.user?.profile?.username,
+    //       from: loggedInUser.user.profile.uuid,
+    //       conversationUuid: activeConversation.uuid,
+    //     })
+    //   }
+    // })
   }
 
   return (
@@ -229,7 +216,7 @@ const Messages = () => {
       overflowY="auto"
       overflowX="hidden"
       flexDirection="column-reverse"
-      className="w-full top-0  px-2 md:px-4 relative overflow-x-hidden"
+      className="w-full top-0 px-2 md:px-4 relative overflow-x-hidden"
       style={isMobile ? { height: '77.5vh' } : { height: '77.5vh' }}
     >
       <InfiniteScroll
@@ -241,6 +228,7 @@ const Messages = () => {
           overflowX: 'hidden',
         }}
         inverse={true}
+        hasMore={false}
         // hasMore={
         //   !shouldPauseCheckHasMore
         //     ? !!hasMoreOnInit?.checkIfConversationHasMoreMessages
@@ -268,7 +256,7 @@ const Messages = () => {
                         pr={!item.deleted ? '0' : '3'}
                         pl="3"
                         py="2"
-                        className="relative justify-between   "
+                        className="relative justify-between"
                       >
                         <Text className="">
                           {!item.deleted ? (
@@ -669,4 +657,4 @@ const Messages = () => {
   )
 }
 
-export default Messages
+export default withAxios(Messages)

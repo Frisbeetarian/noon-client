@@ -46,6 +46,7 @@ function SocketControls({ axios }) {
   const activeConversation = useSelector(getActiveConversation)
   const socketAuthObject = useSelector(getSocketAuthObject)
   let socket: Socket | null | undefined = null
+
   // const [
   //   acceptFriendRequest,
   //   // {loading: acceptFriendRequestLoading}
@@ -63,17 +64,9 @@ function SocketControls({ axios }) {
 
     if (socket) {
       socket.on(
-        'private-chat-message',
-        ({
-          recipientUuid,
-          recipientUsername,
-          senderUuid,
-          senderUsername,
-          conversationUuid,
-          content,
-          message,
-        }) => {
-          console.log('message:', message)
+        'send-message',
+        ({ senderUuid, senderUsername, conversationUuid, message }) => {
+          console.log('message in socket controls:', message)
           // if (!message.trim().length) {
           //   return
           // }
@@ -91,24 +84,24 @@ function SocketControls({ axios }) {
             // })
           }
 
-          // dispatch(
-          //   addMessageToActiveConversation({
-          //     message: {
-          //       uuid: messageUuid,
-          //       content: data,
-          //       sender: { uuid: from, username: fromUsername },
-          //       from: 'other',
-          //       conversationUuid,
-          //       type,
-          //       src,
-          //       //TODO get deleted from payload
-          //       deleted: false,
-          //       updatedAt: new Date().toString(),
-          //       createdAt: new Date().toString(),
-          //     },
-          //     loggedInProfileUuid: loggedInUser.user?.profile.uuid,
-          //   })
-          // )
+          dispatch(
+            addMessageToActiveConversation({
+              message: {
+                uuid: message.uuid,
+                content: data.content,
+                sender: { uuid: senderUuid, username: senderUsername },
+                from: 'other',
+                conversationUuid,
+                type: message.type,
+                src: message.src,
+                //TODO get deleted from payload
+                deleted: false,
+                updatedAt: new Date().toString(),
+                createdAt: new Date().toString(),
+              },
+              loggedInProfileUuid: loggedInUser.user?.profile.uuid,
+            })
+          )
         }
       )
 
@@ -406,6 +399,7 @@ function SocketControls({ axios }) {
         socket.off('set-pending-call-for-conversation')
         socket.off('invited-to-group')
         socket.off('left-group')
+        socket.off('send-message')
       }
     }
   }, [socket, socketAuthObject])

@@ -18,7 +18,7 @@ const AppMenuList = forwardRef<HTMLButtonElement, AppMenuListProps>(
       border = '0',
       borderRadius = '0',
       fontFamily = 'Menlo',
-      disabled = 'false',
+      disabled = false,
       children,
       ...rest
     },

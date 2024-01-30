@@ -42,15 +42,15 @@ function Profile({ profile, axios }) {
   //   // { loading: sendFriendRequestLoading }
   // ] = useSendFriendRequestMutation()
   // const socket = useSelector(getSocket)
-  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
 
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const toast = useToast()
   // const toastIdRef = React.useRef()
 
   return (
     <Flex
       key={profile.uuid}
-      className="items-center w-full justify-between  relative h-12 my-5"
+      className="items-center w-full justify-between relative h-12 my-5"
       style={{ flex: '1' }}
     >
       <Flex className="items-center ">
@@ -58,7 +58,7 @@ function Profile({ profile, axios }) {
           {/*<AvatarBadge boxSize="1.25em" bg="red.500"></AvatarBadge>*/}
         </Avatar>
 
-        <p className="">{profile.username}</p>
+        <p>{profile.username}</p>
       </Flex>
 
       {profile.hasSentFriendshipRequestToProfile ? (
