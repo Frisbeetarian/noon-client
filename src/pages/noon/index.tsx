@@ -48,6 +48,8 @@ function Noon({ axios }) {
   const loggedInUser = useSelector(getLoggedInUser)
   const conversations = useSelector(getConversations)
   const toast = useToast()
+  const [isCount, setIsCount] = useState(0)
+  const [activeToasts, setActiveToasts] = useState({})
 
   useEffect(() => {
     setMounted(true)
@@ -101,8 +103,11 @@ function Noon({ axios }) {
       loggedInUser?.user?.profile?.friendshipRequests.forEach(
         (friendRequest) => {
           if (friendRequest.reverse) {
+            setIsCount(isCount + 1)
+
             toast({
-              id: friendRequest.uuid + 'friend-request',
+              id:
+                friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid,
               title: `${friendRequest.username} sent you a friend request.`,
               position: 'bottom-right',
               isClosable: true,
@@ -145,7 +150,7 @@ function Noon({ axios }) {
                             removeFriendRequestEntry({
                               profileUuid: friendRequest.uuid,
                               friendRequests:
-                                loggedInUser.user?.friendshipRequests,
+                                loggedInUser.user?.profile.friendshipRequests,
                             })
                           )
 
@@ -164,7 +169,11 @@ function Noon({ axios }) {
                             })
                           )
 
-                          toast.close(friendRequest.uuid + 'friend-request')
+                          toast.close(
+                            friendRequest.uuid +
+                              'friend-request' +
+                              loggedInUser.user.uuid
+                          )
                         }
                       }}
                     >

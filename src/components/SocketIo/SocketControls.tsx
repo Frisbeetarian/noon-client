@@ -272,7 +272,7 @@ function SocketControls({ axios }) {
             status: 'success',
             duration: 5000,
             render: () => (
-              <Flex direction="column" color="white" p={3} bg="green.500">
+              <Flex direction="column" color="white" p={3} bg="#4B0E10">
                 <Flex>
                   <p>{senderUsername} accepted your friend request.</p>
 

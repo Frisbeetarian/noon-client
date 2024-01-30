@@ -45,10 +45,11 @@ const slice = createSlice({
       users,
       action: PayloadAction<RemoveFriendRequestEntryPayload>
     ) => {
-      if (users.user && users.user.friendshipRequests) {
-        users.user.friendshipRequests = users.user.friendshipRequests.filter(
-          (FREntry) => FREntry.uuid !== action.payload.profileUuid
-        )
+      if (users.user && users.user.profile.friendshipRequests) {
+        users.user.profile.friendshipRequests =
+          users.user.profile.friendshipRequests.filter(
+            (FREntry) => FREntry.uuid !== action.payload.profileUuid
+          )
       }
     },
     addFriendEntry: (users, action: PayloadAction<Friend>) => {
