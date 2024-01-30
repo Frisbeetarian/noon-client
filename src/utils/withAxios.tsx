@@ -3,6 +3,7 @@ import React from 'react'
 import { NextPageContext } from 'next'
 
 const createAxiosInstance = (ctx?: NextPageContext) => {
+  console.log('next public url env: ', process.env.NEXT_PUBLIC_URL)
   const axiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_URL,
     withCredentials: true,
