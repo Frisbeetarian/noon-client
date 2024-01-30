@@ -53,7 +53,7 @@ const slice = createSlice({
     },
     addFriendEntry: (users, action: PayloadAction<Friend>) => {
       try {
-        users.user?.friends?.push(action.payload)
+        users.user?.profile?.friends?.push(action.payload)
       } catch (e) {
         console.log('error:', e)
       }
@@ -66,7 +66,7 @@ const slice = createSlice({
         (FREntry) => FREntry.uuid != action.payload.profileUuid
       )
 
-      if (users.user) users.user.friends = friends
+      if (users.user) users.user.profile.friends = friends
     },
   },
 })

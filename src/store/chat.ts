@@ -123,6 +123,7 @@ const slice = createSlice({
       chat,
       action: PayloadAction<{ conversationUuid: string }>
     ) => {
+      console.log('action.payload.conversationUuid', action.payload)
       chat.conversations = chat.conversations?.filter(
         (conversation) => conversation.uuid != action.payload.conversationUuid
       )

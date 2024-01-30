@@ -181,7 +181,7 @@ function SocketControls({ axios }) {
                         })
                       )
 
-                      toast.close(senderUuid)
+                      toast.close(senderUuid + 'friend-request')
                     }
 
                     // dispatch(
@@ -242,18 +242,18 @@ function SocketControls({ axios }) {
 
       socket.on(
         'friendship-request-accepted',
-        ({ from, fromUsername, conversation }) => {
+        ({ senderUuid, senderUsername, conversation }) => {
           dispatch(
             removeFriendRequestEntry({
-              profileUuid: from,
+              profileUuid: senderUuid,
               friendRequests: loggedInUser.user?.friendshipRequests,
             })
           )
 
           dispatch(
             addFriendEntry({
-              uuid: from,
-              username: fromUsername,
+              uuid: senderUuid,
+              username: senderUsername,
             })
           )
 
@@ -265,8 +265,8 @@ function SocketControls({ axios }) {
           )
 
           toast({
-            id: from,
-            title: `${fromUsername} accepted your friend request.`,
+            id: senderUuid,
+            title: `${senderUsername} accepted your friend request.`,
             position: 'bottom-right',
             isClosable: true,
             status: 'success',
@@ -274,13 +274,13 @@ function SocketControls({ axios }) {
             render: () => (
               <Flex direction="column" color="white" p={3} bg="green.500">
                 <Flex>
-                  <p>{fromUsername} accepted your friend request.</p>
+                  <p>{senderUsername} accepted your friend request.</p>
 
                   <CloseButton
                     className="sticky top ml-4"
                     size="sm"
                     onClick={() => {
-                      toast.close(from)
+                      toast.close(senderUuid)
                     }}
                     name="close button"
                   />
@@ -326,11 +326,11 @@ function SocketControls({ axios }) {
         })
       })
 
-      socket.on('unfriend', ({ from, conversationUuid }) => {
+      socket.on('unfriend', ({ senderUuid, conversationUuid }) => {
         dispatch(
           removeFriendEntry({
-            profileUuid: from,
-            friends: loggedInUser.user?.friends,
+            profileUuid: senderUuid,
+            friends: loggedInUser.user?.profile?.friends,
           })
         )
 
