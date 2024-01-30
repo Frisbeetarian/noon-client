@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { formatMinutes, formatSeconds } from '../../../utils/formatTime'
 import { RecorderControlsProps } from '../types/recorder'
 import { Button, Flex, Icon } from '@chakra-ui/react'

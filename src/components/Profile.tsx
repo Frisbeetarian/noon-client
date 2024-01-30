@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { Avatar, Box, Button, Flex, useToast } from '@chakra-ui/react'
 

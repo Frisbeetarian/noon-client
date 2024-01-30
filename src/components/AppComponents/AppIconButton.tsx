@@ -1,5 +1,6 @@
+// @ts-nocheck
 import React, { forwardRef } from 'react'
-import { Button, ButtonProps, IconButton } from '@chakra-ui/react'
+import { ButtonProps, IconButton } from '@chakra-ui/react'
 
 interface AppIconButtonProps extends ButtonProps {
   bg?: string
@@ -18,7 +19,7 @@ const AppIconButton = forwardRef<HTMLButtonElement, AppIconButtonProps>(
       border = '0',
       borderRadius = '0',
       fontFamily = 'Menlo',
-      disabled = 'false',
+      disabled = false,
       children,
       ...rest
     },

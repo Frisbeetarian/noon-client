@@ -49,7 +49,7 @@ function Noon({ axios }) {
   const conversations = useSelector(getConversations)
   const toast = useToast()
   const [isCount, setIsCount] = useState(0)
-  const [activeToasts, setActiveToasts] = useState({})
+  // const [activeToasts, setActiveToasts] = useState({})
 
   useEffect(() => {
     setMounted(true)

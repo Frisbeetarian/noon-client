@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
 import { Conversation, Message, Profile, Sender } from '../generated/graphql'

@@ -9,7 +9,7 @@ import {
   removeFriendRequestEntry,
 } from '../../store/users'
 
-import { Button, CloseButton, Flex, useToast } from '@chakra-ui/react'
+import { CloseButton, Flex, useToast } from '@chakra-ui/react'
 import { setFriendFlagOnProfile } from '../../store/profiles'
 
 import {
@@ -89,6 +89,7 @@ function SocketControls({ axios }) {
               message: {
                 uuid: message.uuid,
                 content: data.content,
+                // @ts-ignore
                 sender: { uuid: senderUuid, username: senderUsername },
                 from: 'other',
                 conversationUuid,

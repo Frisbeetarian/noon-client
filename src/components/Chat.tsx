@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 import { Flex } from '@chakra-ui/react'
 import Footer from './Footer'

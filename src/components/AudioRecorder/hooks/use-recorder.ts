@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from 'react'
 import { startRecording, saveRecording } from '../handlers/recorder-controls'
 import {

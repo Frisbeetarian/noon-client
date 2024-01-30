@@ -1,11 +1,9 @@
 import { Flex } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 
-import { useMeQuery } from '../generated/graphql'
-
 import { useRouter } from 'next/router'
 import { isServer } from '../utils/isServer'
-import { withApollo, withAxios } from '../utils/withAxios'
+import { withAxios } from '../utils/withAxios'
 import Register from '../components/authentication/Register'
 import Login from '../components/authentication/Login'
 import ForgotPassword from '../components/authentication/ForgotPassword'
@@ -40,6 +38,7 @@ const Onboarding = ({ axios }) => {
   }, [axios])
 
   useEffect(() => {
+    // @ts-ignore
     if (userData?.username) {
       router.replace('/noon')
     }

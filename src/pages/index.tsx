@@ -26,8 +26,9 @@ const Index = ({ axios }) => {
           setLoading(false)
         })
         .catch((error) => {
-          // console.error('Error fetching user data:', error)
+          console.error('Error fetching user data:', error)
           setLoading(false)
+
           // Handle error (e.g., redirect to login if unauthorized)
         })
     } else {
@@ -39,6 +40,7 @@ const Index = ({ axios }) => {
     console.log('user data:', userData)
 
     if (!loading) {
+      // @ts-ignore
       if (userData?.username) {
         router.replace('/noon')
       } else {

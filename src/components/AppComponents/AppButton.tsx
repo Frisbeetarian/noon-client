@@ -7,7 +7,7 @@ interface AppButtonProps extends ButtonProps {
   border?: string
   borderRadius?: string
   fontFamily?: string
-  disabled?: boolean
+  disabled?: boolean | undefined
 }
 
 const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
@@ -18,7 +18,7 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
       border = '0',
       borderRadius = '0',
       fontFamily = 'Menlo',
-      disabled = 'false',
+      disabled = false,
       children,
       ...rest
     },
