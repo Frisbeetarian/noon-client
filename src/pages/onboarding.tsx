@@ -50,8 +50,8 @@ const Onboarding = ({ axios }) => {
       <p className="fixed top-12 text-5xl">NOON</p>
 
       <Flex minH={'100%'} align={'center'} justify={'center'}>
-        {showRegisterComponent && <Register />}
-        {showLoginComponent && <Login />}
+        {showRegisterComponent && <Register axios={axios} />}
+        {showLoginComponent && <Login axios={axios} />}
 
         {showForgotPasswordComponent && <ForgotPassword />}
       </Flex>

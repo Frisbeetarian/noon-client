@@ -206,4 +206,4 @@ function Register({ axios }) {
   )
 }
 
-export default withAxios(Register)
+export default Register

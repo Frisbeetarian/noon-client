@@ -14,7 +14,6 @@ import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
 import * as Yup from 'yup'
 import { useRouter } from 'next/router'
-import { useLoginMutation } from '../../generated/graphql'
 import {
   setShowForgotPasswordComponent,
   setShowLoginComponent,
@@ -33,14 +32,9 @@ const LoginSchema = Yup.object().shape({
     .required('Password is required.'),
 })
 
-function Login() {
+function Login({ axios }) {
   const router = useRouter()
   const dispatch = useDispatch()
-
-  const [
-    login,
-    // { loading: loginLoading }
-  ] = useLoginMutation()
 
   return (
     <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
@@ -57,17 +51,11 @@ function Login() {
           }}
           validationSchema={LoginSchema}
           onSubmit={async (values, { setErrors }) => {
-            const response = await login({
-              variables: {
-                username: values.usernameOrEmail,
-                password: values.password,
-                rememberMe: values.rememberMe,
-              },
-            })
+            const response = await axios.post('/api/users/login', values)
 
-            if (response.data?.login.errors) {
-              setErrors(toErrorMap(response.data.login.errors))
-            } else if (response.data?.login.user) {
+            if (response.data?.errors) {
+              setErrors(toErrorMap(response.data.errors))
+            } else if (response.data) {
               if (typeof router.query.next === 'string') {
                 router.push(router.query.next)
               } else {
