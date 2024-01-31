@@ -61,9 +61,9 @@ function Login({ axios }) {
               setErrors(toErrorMap(response.data.errors))
             } else if (response.data) {
               if (typeof router.query.next === 'string') {
-                router.push(router.query.next)
+                // router.push(router.query.next)
               } else {
-                router.replace('/noon')
+                // router.replace('/noon')
               }
             }
           }}
