@@ -84,7 +84,7 @@ function Register({ axios }) {
               if (response.errors) {
                 setErrors(toErrorMap(response.errors))
               } else if (response.data) {
-                // router.replace('/noon')
+                router.replace('/noon')
               }
             } else {
               console.error('Failed to register')

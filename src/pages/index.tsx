@@ -36,8 +36,6 @@ const Index = ({ axios }) => {
   }, [axios])
 
   useEffect(() => {
-    console.log('user data:', userData)
-
     if (!loading) {
       // @ts-ignore
       if (userData?.username) {
