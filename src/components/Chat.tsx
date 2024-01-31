@@ -1,6 +1,16 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react'
-import { Flex } from '@chakra-ui/react'
+import {
+  Flex,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from '@chakra-ui/react'
 import Footer from './Footer'
 
 import {
@@ -37,6 +47,7 @@ import CreateGroup from './CreateGroup'
 import Video from './Video'
 import { emitPrivateChatMessage } from '../utils/SocketEmits'
 import withAxios from '../utils/withAxios'
+import AppButton from './AppComponents/AppButton'
 
 function Chat({ axios }) {
   const dispatch = useDispatch()
@@ -52,6 +63,7 @@ function Chat({ axios }) {
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
 
   const profile = useSelector(getActiveConversee)
+  const [isOpen, setIsOpen] = useState(true)
 
   // const [
   //   saveMessage,
@@ -232,6 +244,41 @@ function Chat({ axios }) {
       >
         <ChatControlsAndSearch />
       </div>
+
+      <Modal isOpen={isOpen}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader className="bg-black p-5 text-red-500">
+            Welcome to NOON
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody className="bg-black p-5 text-white">
+            <p>
+              NOON attempts to be a whitelabel, open source, free and secure
+              communication platform for security and privacy minded individuals
+              and organizations. This is a very early build and a lot of the
+              features are still being reworked. An initial working version was
+              constructed with Graphql but ive decided that it just wasnt worth
+              the overhead and am currently refactoring to a REST client.
+              Searching, befriending and private one on one chatting currently
+              {/* eslint-disable-next-line react/no-unescaped-entities */}
+              "works". Would highly appreciate it if you could drop me bug
+              reports on mohamad.sleimanhaidar@gmail.com if you encounter any
+              and many thanks!{' '}
+            </p>
+          </ModalBody>
+          <ModalFooter className="bg-black">
+            <AppButton
+              mr={3}
+              onClick={() => {
+                setIsOpen(false)
+              }}
+            >
+              Close
+            </AppButton>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
       {isCreateGroupOpen ? (
         <Flex

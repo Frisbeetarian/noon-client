@@ -99,7 +99,7 @@ function Sidebar({ axios }) {
       >
         <Flex className="w-full items-center">
           <Heading className="w-full px-4 py-4 md:py-0 text-white">
-            Noon
+            NOON
           </Heading>
 
           {isMobile && (
