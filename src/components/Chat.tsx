@@ -264,7 +264,7 @@ function Chat({ axios }) {
               {/* eslint-disable-next-line react/no-unescaped-entities */}
               "works". Would highly appreciate it if you could drop me bug
               reports on mohamad.sleimanhaidar@gmail.com if you encounter any
-              and many thanks!{' '}
+              issues and many thanks!{' '}
             </p>
           </ModalBody>
           <ModalFooter className="bg-black">
