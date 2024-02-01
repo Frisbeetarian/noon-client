@@ -10,8 +10,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
 import GroupParticipant from './GroupParticipant'
 
-// import { useCreateGroupConversationMutation } from '../generated/graphql'
-
 import { clearState, getParticipants } from '../store/groups'
 import { setCreateGroupComponent } from '../store/ui'
 import { getSocketAuthObject } from '../store/sockets'
