@@ -34,6 +34,7 @@ import {
 } from '../store/ui'
 import SocketManager from './SocketIo/SocketManager'
 import withAxios from '../utils/withAxios'
+import AppMenuList from './AppComponents/AppMenuList'
 
 function GroupConversationListing({ conversation, i, axios }) {
   const dispatch = useDispatch()
@@ -108,11 +109,17 @@ function GroupConversationListing({ conversation, i, axios }) {
           aria-label="Options"
           icon={<HamburgerIcon />}
           variant="outline"
+          color="black"
+          className="mr-3 bg-red-500 text-black"
+          border="none"
+          borderRadius="0"
+          boxSize="1.5em"
         />
 
-        <MenuList>
+        <AppMenuList bg="black">
           <MenuItem
-            className="bg-gray-800"
+            bg="black"
+            className="bg-gray-800 text-black"
             icon={<EditIcon />}
             onClick={async () => {
               // const leaveGroupResponse = await leaveGroup({
@@ -157,7 +164,7 @@ function GroupConversationListing({ conversation, i, axios }) {
           >
             Leave group
           </MenuItem>
-        </MenuList>
+        </AppMenuList>
       </Menu>
     </Flex>
   )

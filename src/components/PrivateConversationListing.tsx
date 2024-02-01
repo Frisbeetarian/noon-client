@@ -8,7 +8,6 @@ import {
   Menu,
   MenuButton,
   MenuItem,
-  MenuList,
 } from '@chakra-ui/react'
 import { EditIcon, HamburgerIcon } from '@chakra-ui/icons'
 import { getLoggedInUser, removeFriendEntry } from '../store/users'
@@ -28,20 +27,15 @@ import {
 } from '../store/ui'
 import { setVideoFrameForConversation } from '../store/video'
 import { useDispatch, useSelector } from 'react-redux'
-import SocketManager from './SocketIo/SocketManager'
-import { getSocketAuthObject } from '../store/sockets'
 import AppMenuList from './AppComponents/AppMenuList'
 
 function PrivateConversationListing({ conversation, i, axios }) {
-  const socketAuthObject = useSelector(getSocketAuthObject)
-
   const [, setProfile] = useState()
 
   // const router = useRouter()
   const dispatch = useDispatch()
 
   const loggedInUser = useSelector(getLoggedInUser)
-  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
 
   const activeConversation = useSelector(getActiveConversation)
   const isMobile = useSelector(getIsMobile)
