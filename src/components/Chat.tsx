@@ -98,8 +98,8 @@ function Chat({ axios }) {
 
     const data = inputMessage
     setInputMessage('')
-    console.log('input message:', data)
-    const response = await axios
+
+    await axios
       .post('/api/messages/groupMessages', {
         message: data,
         type: 'text',
