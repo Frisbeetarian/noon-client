@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 html {
+    font-family: 'Menlo', monospace;
     overflow: hidden !important;
 }
 
@@ -13,9 +14,8 @@ html {
 
 .search-sidebar {
     position: absolute;
-    padding: 0 28px 0 28px;
+    padding: 24px 28px 0 28px;
     margin: 0;
-    padding-top: 24px;
     height: 100vh;
     z-index: 1000;
     opacity: 1;
@@ -37,4 +37,23 @@ html {
     right: 0;
     transition: opacity 300ms ease, transform 300ms ease;
     min-width: 40vw;
+}
+
+/* styles/globals.css */
+input::placeholder,
+textarea::placeholder {
+    @apply text-black;
+}
+
+input, textarea {
+    /*border: none !important;*/
+    /*border-bottom: 1px solid #921A1C !important;*/
+    outline: none !important;
+    transition: border-color 0.3s !important;
+}
+
+input:focus, textarea:focus {
+    border-color: black !important;
+    outline: none !important;
+    box-shadow: none !important;
 }

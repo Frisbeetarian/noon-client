@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 import {
   Flex,
@@ -15,29 +16,34 @@ import {
   getActiveConversee,
   setPendingCall,
 } from '../store/chat'
+import SocketManager from './SocketIo/SocketManager'
 
 import { getLoggedInUser } from '../store/users'
-import { getSocket } from '../store/sockets'
-import { useCancelPendingCallForConversationMutation } from '../generated/graphql'
+// import { getSocket } from '../store/sockets'
+// import { useCancelPendingCallForConversationMutation } from '../generated/graphql'
 import { setVideoFrameForConversation } from '../store/video'
 import { getIsMobile } from '../store/ui'
+import { getSocketAuthObject } from '../store/sockets'
 
 const Header = () => {
+  const socketAuthObject = useSelector(getSocketAuthObject)
+
   const activeConversee = useSelector(getActiveConversee)
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
-  const socket = useSelector(getSocket)
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
+
   const [online, setOnline] = useState('loading')
   const activeConversation = useSelector(getActiveConversation)
   const isMobile = useSelector(getIsMobile)
 
-  const [
-    cancelPendingCallForConversation,
-    // { loading: cancelPendingCallForConversationLoading },
-  ] = useCancelPendingCallForConversationMutation()
+  // const [
+  //   cancelPendingCallForConversation,
+  //   // { loading: cancelPendingCallForConversationLoading },
+  // ] = useCancelPendingCallForConversationMutation()
 
   useEffect(() => {
-    if (activeConversee) {
+    if (activeConversee && socket) {
       socket.emit('check-friend-connection', {
         from: loggedInUser.user?.profile?.uuid,
         fromUsername: loggedInUser.user?.profile?.username,
@@ -68,11 +74,11 @@ const Header = () => {
 
     return () => {
       setOnline('loading')
-      socket.off('check-friend-connection')
-      socket.off('friend-connected')
-      socket.off('friend-disconnected')
+      socket?.off('check-friend-connection')
+      socket?.off('friend-connected')
+      socket?.off('friend-disconnected')
     }
-  }, [activeConversee])
+  }, [activeConversee, socket, loggedInUser.user?.profile?.uuid])
 
   return (
     <Flex w="100%" className="items-center justify-between">
@@ -146,12 +152,12 @@ const Header = () => {
                     })
                   )
 
-                  await cancelPendingCallForConversation({
-                    variables: {
-                      conversationUuid: activeConversation.uuid,
-                      profileUuid: loggedInUser.user?.profile?.uuid,
-                    },
-                  })
+                  // await cancelPendingCallForConversation({
+                  //   variables: {
+                  //     conversationUuid: activeConversation.uuid,
+                  //     profileUuid: loggedInUser.user?.profile?.uuid,
+                  //   },
+                  // })
 
                   activeConversation.calls.map((call) => {
                     socket.emit('cancel-pending-call-for-conversation', {

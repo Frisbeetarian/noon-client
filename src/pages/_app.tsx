@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react'
 import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
-// import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
-
 import theme from '../theme'
 import './index.css'
 import { wrapper } from '../store/store'
@@ -63,5 +61,4 @@ function MyApp({ Component, pageProps }) {
   )
 }
 
-// export default MyApp
 export default wrapper.withRedux(MyApp)

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react'
 import {
   Box,
@@ -16,7 +17,7 @@ import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import * as Yup from 'yup'
-import { useRegisterMutation } from '../../generated/graphql'
+// import { useRegisterMutation } from '../../generated/graphql'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import {
@@ -24,6 +25,8 @@ import {
   setShowLoginComponent,
   setShowRegisterComponent,
 } from '../../store/ui'
+import withAxios from '../../utils/withAxios'
+import AppButton from '../AppComponents/AppButton'
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -37,16 +40,16 @@ const RegisterSchema = Yup.object().shape({
     .required('Password is required.'),
 })
 
-function Register() {
+function Register({ axios }) {
   const router = useRouter()
   const dispatch = useDispatch()
-
   const [showPassword, setShowPassword] = useState(false)
 
-  const [
-    register,
-    // { loading: registerLoading }
-  ] = useRegisterMutation()
+  // const [
+  //   register,
+  //   // { loading: registerLoading }
+  // ] = useRegisterMutation()
+
   return (
     <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
       <Stack align={'start'}>
@@ -55,20 +58,36 @@ function Register() {
         </Heading>
       </Stack>
 
-      <Box boxShadow={'lg'} p={8} className="border bg-black">
+      <Box
+        boxShadow={'lg'}
+        border={0}
+        p={8}
+        className="border bg-red-500 text-black"
+      >
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           validationSchema={RegisterSchema}
+          validateOnBlur={false}
+          validateOnChange={false}
           onSubmit={async (values, { setErrors }) => {
-            console.log(values)
-            const response = await register({
-              variables: { options: values },
-            })
+            const response = await axios.post('/api/users/register', values)
+            // const response = await axios.post('/api/users/register', {
+            //   method: 'POST',
+            //   headers: {
+            //     'Content-Type': 'application/json',
+            //   },
+            //   body: JSON.stringify({ options: values }),
+            // })
+            console.log('response: ', response)
 
-            if (response.data?.register.errors) {
-              setErrors(toErrorMap(response.data.register.errors))
-            } else if (response.data?.register.user) {
-              router.replace('/noon')
+            if (response && response.statusText === 'OK') {
+              if (response.errors) {
+                setErrors(toErrorMap(response.errors))
+              } else if (response.data) {
+                router.replace('/noon')
+              }
+            } else {
+              console.error('Failed to register')
             }
           }}
         >
@@ -78,7 +97,17 @@ function Register() {
                 <HStack>
                   <Box>
                     <FormControl id="username" isRequired>
-                      <FormLabel>Username</FormLabel>
+                      <FormLabel
+                        requiredIndicator={
+                          <span
+                            style={{ color: 'text-black', marginLeft: '5px' }}
+                          >
+                            *
+                          </span>
+                        }
+                      >
+                        Username
+                      </FormLabel>
 
                       <InputField
                         name="username"
@@ -90,7 +119,15 @@ function Register() {
                 </HStack>
 
                 <FormControl id="email" isRequired>
-                  <FormLabel>Email address</FormLabel>
+                  <FormLabel
+                    requiredIndicator={
+                      <span style={{ color: 'text-black', marginLeft: '5px' }}>
+                        *
+                      </span>
+                    }
+                  >
+                    Email address
+                  </FormLabel>
 
                   <InputField
                     name="email"
@@ -100,7 +137,15 @@ function Register() {
                 </FormControl>
 
                 <FormControl id="password" isRequired>
-                  <FormLabel className="">Password</FormLabel>
+                  <FormLabel
+                    requiredIndicator={
+                      <span style={{ color: 'text-black', marginLeft: '5px' }}>
+                        *
+                      </span>
+                    }
+                  >
+                    Password
+                  </FormLabel>
 
                   <InputGroup m={0} p={0} className="">
                     <InputField
@@ -124,19 +169,15 @@ function Register() {
                 </FormControl>
 
                 <Stack spacing={10} pt={2}>
-                  <Button
-                    className="w-1/2 ml-auto "
+                  <AppButton
+                    color="black"
+                    className="w-1/2 ml-auto"
                     type="submit"
                     size="md"
-                    bg={'green.400'}
-                    color={'white'}
-                    _hover={{
-                      bg: 'green.900',
-                    }}
                     isLoading={isSubmitting}
                   >
                     Register
-                  </Button>
+                  </AppButton>
                 </Stack>
               </Stack>
             </Form>
@@ -145,7 +186,7 @@ function Register() {
       </Box>
 
       <Text
-        className="text-lg text-green-100 cursor-pointer"
+        className="text-lg text-red-500 cursor-pointer"
         onClick={() => {
           dispatch(setShowLoginComponent(true))
           dispatch(setShowRegisterComponent(false))

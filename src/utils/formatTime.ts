@@ -5,3 +5,5 @@ export function formatMinutes(minutes: number) {
 export function formatSeconds(seconds: number) {
   return seconds < 10 ? `0${seconds}` : `${seconds}`
 }
+
+// implement e2e encryption using signal's algorithm

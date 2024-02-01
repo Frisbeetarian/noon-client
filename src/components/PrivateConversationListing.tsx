@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react'
 import {
   Avatar,
@@ -27,24 +28,28 @@ import {
 } from '../store/ui'
 import { setVideoFrameForConversation } from '../store/video'
 import { useDispatch, useSelector } from 'react-redux'
-// import { useRouter } from 'next/router'
-import { getSocket } from '../store/sockets'
-import { useUnfriendMutation } from '../generated/graphql'
+import SocketManager from './SocketIo/SocketManager'
+import { getSocketAuthObject } from '../store/sockets'
+import AppMenuList from './AppComponents/AppMenuList'
 
-function PrivateConversationListing({ conversation, i }) {
+function PrivateConversationListing({ conversation, i, axios }) {
+  const socketAuthObject = useSelector(getSocketAuthObject)
+
   const [, setProfile] = useState()
 
   // const router = useRouter()
   const dispatch = useDispatch()
 
   const loggedInUser = useSelector(getLoggedInUser)
-  const socket = useSelector(getSocket)
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
+
   const activeConversation = useSelector(getActiveConversation)
   const isMobile = useSelector(getIsMobile)
-  const [
-    unfriend,
-    // { loading: unfriendLoading }
-  ] = useUnfriendMutation()
+
+  // const [
+  //   unfriend,
+  //   // { loading: unfriendLoading }
+  // ] = useUnfriendMutation()
 
   function setActiveConverseeFunction(profile, conversation) {
     dispatch(
@@ -99,41 +104,46 @@ function PrivateConversationListing({ conversation, i }) {
     <Flex
       key={conversation.uuid}
       tabIndex={0}
-      className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-amber-100 hover:border-sky-500 focus:outline-none focus:border-sky-700 focus-within:shadow-lg"
+      className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-red-800 hover:border-b-red-500 focus:outline-none"
       style={{
-        transition: 'all .25s',
+        transition: 'all .0s',
         ...(activeConversation && activeConversation.uuid === conversation.uuid
           ? {
-              backgroundColor: '#0F753B',
+              backgroundColor: '#921A1C',
+              outline: 'none',
+              boxShadow: 'none',
+              border: 'none',
             }
           : null),
       }}
     >
-      <Flex
-        className="items-center cursor-pointer flex-1"
-        onClick={() => {
-          setActiveConverseeFunction(conversation.conversee, conversation)
-          setProfile(conversation.conversee)
-        }}
-      >
-        <Avatar
-          key={i}
-          name={conversation.conversee.username}
-          size="sm"
-          className="mr-2"
+      {conversation.conversee ? (
+        <Flex
+          className="items-center cursor-pointer flex-1"
+          onClick={() => {
+            setActiveConverseeFunction(conversation.conversee, conversation)
+            setProfile(conversation.conversee)
+          }}
         >
-          {conversation.unreadMessages &&
-          conversation.unreadMessages !== 0 &&
-          conversation.profileThatHasUnreadMessages ===
-            loggedInUser.user.profile.uuid ? (
-            <AvatarBadge boxSize="1.25em" bg="red.500">
-              <p className="text-xs">{conversation.unreadMessages}</p>
-            </AvatarBadge>
-          ) : null}
-        </Avatar>
+          <Avatar
+            key={i}
+            name={conversation.conversee.username}
+            size="sm"
+            className="mr-2"
+          >
+            {conversation.unreadMessages &&
+            conversation.unreadMessages !== 0 &&
+            conversation.profileThatHasUnreadMessages ===
+              loggedInUser.user.profile.uuid ? (
+              <AvatarBadge boxSize="1.25em" bg="red.500">
+                <p className="text-xs">{conversation.unreadMessages}</p>
+              </AvatarBadge>
+            ) : null}
+          </Avatar>
 
-        <p>{conversation.conversee.username}</p>
-      </Flex>
+          <p>{conversation.conversee.username}</p>
+        </Flex>
+      ) : null}
 
       <Menu>
         <MenuButton
@@ -141,63 +151,77 @@ function PrivateConversationListing({ conversation, i }) {
           aria-label="Options"
           icon={<HamburgerIcon />}
           variant="outline"
+          color="black"
+          className="mr-3 bg-red-500 text-black"
+          border="none"
+          borderRadius="0"
+          boxSize="1.5em"
         />
 
-        <MenuList>
+        <AppMenuList bg="black">
           <MenuItem
-            className="bg-gray-800"
-            bg="bg-gray-800"
+            bg="black"
+            className="bg-black text-black"
+            border="none"
             icon={<EditIcon />}
             onClick={async () => {
-              const unfriendResponse = await unfriend({
-                variables: {
-                  profileUuid: conversation.conversee.uuid,
-                  conversationUuid: conversation.uuid,
-                },
+              // const unfriendResponse = await unfriend({
+              //   variables: {
+              //     profileUuid: conversation.conversee.uuid,
+              //     conversationUuid: conversation.uuid,
+              //   },
+              // })
+
+              const response = await axios.post('/api/profiles/unfriend', {
+                profileUuid: conversation.conversee.uuid,
+                conversationUuid: conversation.uuid,
               })
 
-              dispatch(
-                removeFriendEntry({
-                  profileUuid: conversation.conversee.uuid,
-                  friends: loggedInUser.user?.friends,
-                })
-              )
+              if (response.status === 200) {
+                dispatch(
+                  removeFriendEntry({
+                    profileUuid: conversation.conversee.uuid,
+                    friends: loggedInUser.user?.profile?.friends,
+                  })
+                )
 
-              dispatch(
-                removeConversation({
-                  conversationUuid: conversation.uuid,
-                })
-              )
+                dispatch(
+                  removeConversation({
+                    conversationUuid: conversation.uuid,
+                  })
+                )
 
-              dispatch(setActiveConversationSet(false))
-              dispatch(setActiveConversee(null))
-              dispatch(setActiveConversation(null))
-              dispatch(setShouldPauseCheckHasMore(false))
-
-              if (unfriendResponse) {
-                socket.emit('unfriend', {
-                  content:
-                    loggedInUser.user?.profile?.username + ' unfriended you.',
-                  from: loggedInUser.user?.profile?.uuid,
-                  fromUsername: loggedInUser.user?.profile?.username,
-                  to: conversation.conversee.uuid,
-                  toUsername: conversation.conversee.username,
-                  conversationUuid: conversation.uuid,
-                })
+                dispatch(setActiveConversationSet(false))
+                dispatch(setActiveConversee(null))
+                dispatch(setActiveConversation(null))
+                dispatch(setShouldPauseCheckHasMore(false))
               }
+
+              // if (unfriendResponse) {
+              //   socket.emit('unfriend', {
+              //     content:
+              //       loggedInUser.user?.profile?.username + ' unfriended you.',
+              //     from: loggedInUser.user?.profile?.uuid,
+              //     fromUsername: loggedInUser.user?.profile?.username,
+              //     to: conversation.conversee.uuid,
+              //     toUsername: conversation.conversee.username,
+              //     conversationUuid: conversation.uuid,
+              //   })
+              // }
             }}
           >
             Unfriend
           </MenuItem>
 
           <MenuItem
-            bg="bg-gray-800"
-            className="bg-gray-800"
+            bg="black"
+            className="bg-red-500 text-black"
+            border="none"
             icon={<EditIcon />}
           >
             Block
           </MenuItem>
-        </MenuList>
+        </AppMenuList>
       </Menu>
     </Flex>
   )

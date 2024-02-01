@@ -3,11 +3,11 @@ import { createSelector } from 'reselect'
 import { User } from '../utils/types'
 
 interface ProfilesState {
-  list: ProfilePayload[] | null
+  list: ProfilePayload[]
 }
 
 interface AddProfilesPayload {
-  profiles: ProfilePayload[] | null | undefined
+  profiles: ProfilePayload[]
   loggedInUser: User
 }
 
@@ -32,52 +32,42 @@ const slice = createSlice({
   initialState,
   reducers: {
     addProfiles: (profiles, action: PayloadAction<AddProfilesPayload>) => {
-      // let profilesArray = [...action.payload.profiles]
-      const profilesArray: ProfilePayload[] = []
+      profiles.list = []
 
-      if (action.payload.profiles == null) {
-        profiles.list = null
+      const { profiles: incomingProfiles, loggedInUser } = action.payload
+
+      if (incomingProfiles == null) {
+        profiles.list = []
       } else {
-        action.payload.profiles = action.payload.profiles.filter(
-          (profile) => profile.uuid != action.payload.loggedInUser.profile.uuid
+        const updatedProfiles = incomingProfiles.filter(
+          (profile) => profile.uuid !== loggedInUser.profile.uuid
         )
 
-        action.payload.profiles.map((profile) => {
-          const profileObject = { ...profile }
+        updatedProfiles.forEach((profile) => {
+          // Clone the profile to avoid directly mutating the state
+          const updatedProfile = { ...profile }
 
-          const friendsCheck = action.payload.loggedInUser.friends.find(
-            (element) => element.uuid == profileObject.uuid
+          const isFriend = loggedInUser.friends?.some(
+            (friend) => friend.uuid === updatedProfile.uuid
           )
 
-          const friendshipRequestCheck =
-            action.payload.loggedInUser.friendshipRequests.find(
-              (element) => element.uuid == profileObject.uuid
-            )
+          const friendshipRequestCheck = loggedInUser.friendshipRequests?.find(
+            (request) => request.uuid === updatedProfile.uuid
+          )
 
-          // const reverseFriendshipCheck = profile.friendshipRequests.find()
-          profileObject.isAFriend = !!friendsCheck
+          updatedProfile.isAFriend = isFriend
+          updatedProfile.hasFriendshipRequestFromLoggedInProfile =
+            friendshipRequestCheck?.reverse || false
+          updatedProfile.hasSentFriendshipRequestToProfile =
+            !!friendshipRequestCheck && !friendshipRequestCheck.reverse
 
-          if (friendshipRequestCheck?.reverse) {
-            profileObject.hasFriendshipRequestFromLoggedInProfile = true
-          } else if (friendshipRequestCheck) {
-            profileObject.hasSentFriendshipRequestToProfile = true
-          }
-
-          // if (friendshipRequestCheck?.reverse) {
-          //   profileObject.hasSentFriendshipRequestToProfile = true
-          // } else if (friendshipRequestCheck) {
-          //   profileObject.hasFriendshipRequestFromLoggedInProfile = true
-          // }
-
-          profilesArray.push(profileObject)
+          profiles.list.push(updatedProfile)
         })
-
-        profiles.list = profilesArray
       }
     },
     setFriendshipRequestSentOnProfile: (profiles, action) => {
-      const profile = profiles.list?.find(
-        (profile) => profile.uuid == action.payload.profileUuid
+      const profile = profiles.list.find(
+        (profile) => profile.uuid === action.payload.profileUuid
       )
 
       if (profile) {
@@ -85,8 +75,8 @@ const slice = createSlice({
       }
     },
     cancelFriendshipRequestSentOnProfile: (profiles, action) => {
-      const profile = profiles.list?.find(
-        (profile) => profile.uuid == action.payload.profileUuid
+      const profile = profiles.list.find(
+        (profile) => profile.uuid === action.payload.profileUuid
       )
 
       if (profile) {
@@ -94,59 +84,70 @@ const slice = createSlice({
       }
     },
     setHasFriendshipRequestFromLoggedInProfile: (profiles, action) => {
-      const profile = profiles.list?.find(
-        (profile) => profile.uuid == action.payload.profileUuid
+      const profile = profiles.list.find(
+        (profile) => profile.uuid === action.payload.profileUuid
       )
       if (profile) {
         profile.hasFriendshipRequestFromLoggedInProfile = true
       }
     },
     unsetHasFriendshipRequestFromLoggedInProfile: (profiles, action) => {
-      const profile = profiles.list?.find(
-        (profile) => profile.uuid == action.payload.profileUuid
+      const profile = profiles.list.find(
+        (profile) => profile.uuid === action.payload.profileUuid
       )
       if (profile) {
         profile.hasFriendshipRequestFromLoggedInProfile = false
       }
     },
     setFriendFlagOnProfile: (profiles, action) => {
-      if (profiles.list !== null && profiles.list?.length !== 0) {
-        const profile = profiles.list.find(
-          (profile) => profile.uuid == action.payload.profileUuid
-        )
-
-        if (profile) {
-          profile.isAFriend = true
-          profile.hasFriendshipRequestFromLoggedInProfile = false
-          profile.hasSentFriendshipRequestToProfile = false
-        }
-      }
-    },
-    unsetFriendFlagOnProfile: (profiles, action) => {
-      const profile = profiles.list?.find(
-        (profile) => profile.uuid == action.payload.profileUuid
+      const profile = profiles.list.find(
+        (profile) => profile.uuid === action.payload.profileUuid
       )
 
       if (profile) {
         profile.isAFriend = true
+        profile.hasFriendshipRequestFromLoggedInProfile = false
+        profile.hasSentFriendshipRequestToProfile = false
       }
     },
-    // addProfile: (profiles, action) => {
-    //   const { profile } = action.payload
-    //
-    //   if (profiles.list) {
-    //     profiles.list = {
-    //       ...profiles.list,
-    //       [profile.uuid]: profile,
-    //     }
-    //   }
-    // },
+    unsetFriendFlagOnProfile: (profiles, action) => {
+      const profile = profiles.list.find(
+        (profile) => profile.uuid === action.payload.profileUuid
+      )
+
+      if (profile) {
+        profile.isAFriend = false
+      }
+    },
   },
 })
 
 export const getProfiles = createSelector(
-  (state) => state.entities.profiles,
-  (profiles) => profiles.list
+  (state) => state.entities.profiles.list,
+  (profiles) => profiles || []
+)
+
+// Create a selector to get profiles by name
+export const getProfilesByName = createSelector(
+  getProfiles,
+  (_, name) => name, // Second argument to the selector function will be the name
+  (profiles, name) => {
+    // Filter the profiles by name
+    return profiles.filter((profile) =>
+      profile.name.toLowerCase().includes(name.toLowerCase())
+    )
+  }
+)
+
+// Create a selector to get profiles by username
+export const getProfilesByUsername = createSelector(
+  getProfiles,
+  (_, username) => username,
+  (profiles, username) => {
+    return profiles.filter((profile) =>
+      profile.username.toLowerCase().includes(username.toLowerCase())
+    )
+  }
 )
 
 export const {
@@ -157,4 +158,5 @@ export const {
   setHasFriendshipRequestFromLoggedInProfile,
   unsetHasFriendshipRequestFromLoggedInProfile,
 } = slice.actions
+
 export default slice.reducer

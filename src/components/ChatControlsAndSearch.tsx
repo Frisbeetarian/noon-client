@@ -14,6 +14,7 @@ import {
 } from '../store/ui'
 import SearchSidebar from './SearchSidebar'
 import Header from './Header'
+import withAxios from '../utils/withAxios'
 
 function ChatControlsAndSearch() {
   const dispatch = useDispatch()
@@ -62,6 +63,7 @@ function ChatControlsAndSearch() {
       )}
 
       <SearchIcon
+        color="black"
         className="p-1 m-4 text-2xl cursor-pointer"
         onClick={() => {
           dispatch(
@@ -75,4 +77,4 @@ function ChatControlsAndSearch() {
   )
 }
 
-export default ChatControlsAndSearch
+export default withAxios(ChatControlsAndSearch)

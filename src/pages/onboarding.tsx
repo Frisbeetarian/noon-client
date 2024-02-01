@@ -1,11 +1,9 @@
 import { Flex } from '@chakra-ui/react'
-import React, { useEffect } from 'react'
-
-import { useMeQuery } from '../generated/graphql'
+import React, { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import { isServer } from '../utils/isServer'
-import { withApollo } from '../utils/withApollo'
+import { withAxios } from '../utils/withAxios'
 import Register from '../components/authentication/Register'
 import Login from '../components/authentication/Login'
 import ForgotPassword from '../components/authentication/ForgotPassword'
@@ -16,32 +14,43 @@ import {
   getShowRegisterComponent,
 } from '../store/ui'
 
-const Onboarding = () => {
+const Onboarding = ({ axios }) => {
   const router = useRouter()
+  const [userData, setUserData] = useState(null)
   const showRegisterComponent = useSelector(getShowRegisterComponent)
   const showLoginComponent = useSelector(getShowLoginComponent)
   const showForgotPasswordComponent = useSelector(
     getShowForgotPasswordComponent
   )
 
-  const { data } = useMeQuery({
-    skip: isServer(),
-    fetchPolicy: 'network-only',
-  })
+  useEffect(() => {
+    if (!isServer()) {
+      axios
+        .get('/api/users/me')
+        .then((response) => {
+          setUserData(response.data)
+        })
+        .catch((error) => {
+          console.error('Error fetching user data:', error.message)
+          // Handle error (e.g., redirect to login if unauthorized)
+        })
+    }
+  }, [axios])
 
   useEffect(() => {
-    if (data?.me?.username) {
+    // @ts-ignore
+    if (userData?.username) {
       router.replace('/noon')
     }
-  }, [data])
+  }, [userData, router])
 
   return (
-    <Flex className="flex-col justify-center items-center bg-black text-white h-screen">
+    <Flex className="flex-col justify-center items-center bg-black text-red-500 h-screen">
       <p className="fixed top-12 text-5xl">NOON</p>
 
       <Flex minH={'100%'} align={'center'} justify={'center'}>
-        {showRegisterComponent && <Register />}
-        {showLoginComponent && <Login />}
+        {showRegisterComponent && <Register axios={axios} />}
+        {showLoginComponent && <Login axios={axios} />}
 
         {showForgotPasswordComponent && <ForgotPassword />}
       </Flex>
@@ -49,4 +58,4 @@ const Onboarding = () => {
   )
 }
 
-export default withApollo({ ssr: false })(Onboarding)
+export default withAxios(Onboarding)

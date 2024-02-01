@@ -1,6 +1,6 @@
+import { NextPageContext } from 'next'
 import { withApollo as createWithApollo } from 'next-apollo'
 import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { NextPageContext } from 'next'
 import { createUploadLink } from 'apollo-upload-client'
 
 const createClient = (ctx: NextPageContext) =>

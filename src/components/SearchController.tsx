@@ -1,52 +1,67 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { getSearchQuery } from '../store/search'
-import { useSearchForProfileByUsernameQuery } from '../generated/graphql'
 
 import { Flex } from '@chakra-ui/react'
 import React, { useEffect } from 'react'
 import { getLoggedInUser } from '../store/users'
 import { addProfiles, getProfiles } from '../store/profiles'
 import Profile from './Profile'
+import SocketManager from './SocketIo/SocketManager'
+import { getSocketAuthObject } from '../store/sockets'
+import withAxios from '../utils/withAxios'
 
-export default function SearchController() {
+function SearchController({ axios }) {
   const dispatch = useDispatch()
 
   const loggedInUser = useSelector(getLoggedInUser)
   const searchQuery = useSelector(getSearchQuery)
   const profilesFromStore = useSelector(getProfiles)
+  const socketAuthObject = useSelector(getSocketAuthObject)
 
-  const { data } = useSearchForProfileByUsernameQuery({
-    variables: { username: searchQuery },
-    fetchPolicy: 'network-only',
-  })
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
+
+  async function searchProfiles(searchQuery) {
+    await axios.post('/api/search', { query: searchQuery })
+  }
 
   useEffect(() => {
-    if (data?.searchForProfileByUsername && loggedInUser.user) {
-      dispatch(
-        addProfiles({
-          profiles: data?.searchForProfileByUsername,
-          loggedInUser: loggedInUser.user,
-        })
-      )
+    if (searchQuery !== '' && searchQuery !== null) {
+      searchProfiles(searchQuery)
+    }
+
+    if (socket) {
+      socket.on('search-results', (profiles) => {
+        dispatch(
+          addProfiles({
+            profiles: profiles,
+            loggedInUser: loggedInUser.user,
+          })
+        )
+      })
     }
 
     return () => {
-      dispatch(
-        addProfiles({
-          profiles: null,
-          loggedInUser: loggedInUser.user,
-        })
-      )
+      // dispatch(
+      //   addProfiles({
+      //     profiles: [],
+      //     loggedInUser: loggedInUser.user,
+      //   })
+      // )
+      // if (socket) socket.off('search-results')
     }
-  }, [data?.searchForProfileByUsername, loggedInUser])
+  }, [socket, loggedInUser, searchQuery])
 
   return (
-    <Flex className="w-full">
+    <Flex className="w-full flex-col">
       {profilesFromStore
         ? [...Object.values(profilesFromStore)].map((profile, i) =>
-            !profile ? null : <Profile key={i} profile={profile} />
+            !profile ? null : (
+              <Profile key={i} profile={profile} axios={axios} />
+            )
           )
         : null}
     </Flex>
   )
 }
+
+export default withAxios(SearchController)

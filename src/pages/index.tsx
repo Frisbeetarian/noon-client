@@ -1,31 +1,50 @@
 import { Flex } from '@chakra-ui/react'
 
-import React, { useEffect } from 'react'
-
-import { useMeQuery } from '../generated/graphql'
+import React, { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import { isServer } from '../utils/isServer'
-import { withApollo } from '../utils/withApollo'
+import { withAxios } from '../utils/withAxios'
 // import Head from 'next/head'
 
-const Index = () => {
+const Index = ({ axios }) => {
   const router = useRouter()
+  const [userData, setUserData] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  const { data, loading } = useMeQuery({
-    skip: isServer(),
-    fetchPolicy: 'network-only',
-  })
+  // const { data, loading } = useMeQuery({
+  //   skip: isServe(),
+  //   fetchPolicy: 'network-only',
+  // })
+
+  useEffect(() => {
+    if (!isServer()) {
+      axios
+        .get('/api/users/me')
+        .then((response) => {
+          setUserData(response.data)
+          setLoading(false)
+        })
+        .catch((error) => {
+          console.error('Error fetching user data:', error)
+          setLoading(false)
+          // Handle error (e.g., redirect to login if unauthoried)
+        })
+    } else {
+      setLoading(false)
+    }
+  }, [axios])
 
   useEffect(() => {
     if (!loading) {
-      if (data?.me?.username) {
+      // @ts-ignore
+      if (userData?.username) {
         router.replace('/noon')
       } else {
         router.replace('/onboarding')
       }
     }
-  }, [data, loading])
+  }, [userData, loading, router])
 
   return (
     <>
@@ -42,10 +61,10 @@ const Index = () => {
       {/*  <meta property="og:image" content={meta.image} />*/}
       {/*</Head>*/}
 
-      <Flex className="flex-col justify-center items-center bg-black text-white h-screen">
+      <Flex className="flex-col justify-center items-center bg-red-500 text-black h-screen">
         {loading && <p className="fixed top-12 text-5xl">Loading...</p>}
       </Flex>
     </>
   )
 }
-export default withApollo({ ssr: true })(Index)
+export default withAxios(Index)

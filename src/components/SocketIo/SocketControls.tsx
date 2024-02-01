@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react'
+import { Socket } from 'socket.io-client'
+
 import {
   addFriendEntry,
   addFriendRequestEntry,
@@ -7,7 +9,7 @@ import {
   removeFriendRequestEntry,
 } from '../../store/users'
 
-import { Button, CloseButton, Flex, useToast } from '@chakra-ui/react'
+import { CloseButton, Flex, useToast } from '@chakra-ui/react'
 import { setFriendFlagOnProfile } from '../../store/profiles'
 
 import {
@@ -25,71 +27,74 @@ import {
 } from '../../store/chat'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { getSocket } from '../../store/sockets'
+import SocketManager from './SocketManager'
+// import { getSocketId } from '../../store/sockets'
 
-import {
-  useAcceptFriendRequestMutation,
-  useUpdateUnreadMessagesForConversationMutation,
-} from '../../generated/graphql'
+// import {
+//   useAcceptFriendRequestMutation,
+//   useUpdateUnreadMessagesForConversationMutation,
+// } from '../../generated/graphql'
+import { getSocketAuthObject } from '../../store/sockets'
+import AppButton from '../AppComponents/AppButton'
+import withAxios from '../../utils/withAxios'
 
-function SocketControls() {
+function SocketControls({ axios }) {
   const dispatch = useDispatch()
-  const socket = useSelector(getSocket)
   const toast = useToast()
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversationSet = useSelector(getActiveConversationSet)
   const activeConversation = useSelector(getActiveConversation)
+  const socketAuthObject = useSelector(getSocketAuthObject)
+  let socket: Socket | null | undefined = null
 
-  const [
-    acceptFriendRequest,
-    // {loading: acceptFriendRequestLoading}
-  ] = useAcceptFriendRequestMutation()
+  // const [
+  //   acceptFriendRequest,
+  //   // {loading: acceptFriendRequestLoading}
+  // ] = useAcceptFriendRequestMutation()
 
-  const [
-    updateUnreadMessagesForConversation,
-    // { loading: updateUnreadMessagesLoading },
-  ] = useUpdateUnreadMessagesForConversationMutation()
+  // const [
+  //   updateUnreadMessagesForConversation,
+  //   // { loading: updateUnreadMessagesLoading },
+  // ] = useUpdateUnreadMessagesForConversationMutation()
 
   useEffect(() => {
+    if (socketAuthObject) {
+      socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
+    }
+
     if (socket) {
       socket.on(
-        'private-chat-message',
-        ({
-          from,
-          fromUsername,
-          messageUuid,
-          message,
-          conversationUuid,
-          type,
-          src,
-        }) => {
-          if (!message.trim().length) {
-            return
-          }
+        'send-message',
+        ({ senderUuid, senderUsername, conversationUuid, message }) => {
+          console.log('message in socket controls:', message)
+          // if (!message.trim().length) {
+          //   return
+          // }
 
           const data = message
           if (
             activeConversationSet === false ||
             conversationUuid !== activeConversation.uuid
           ) {
-            updateUnreadMessagesForConversation({
-              variables: {
-                conversationUuid: conversationUuid,
-                profileUuid: loggedInUser?.user?.profile?.uuid,
-              },
-            })
+            // updateUnreadMessagesForConversation({
+            //   variables: {
+            //     conversationUuid: conversationUuid,
+            //     profileUuid: loggedInUser?.user?.profile?.uuid,
+            //   },
+            // })
           }
 
           dispatch(
             addMessageToActiveConversation({
               message: {
-                uuid: messageUuid,
-                content: data,
-                sender: { uuid: from, username: fromUsername },
+                uuid: message.uuid,
+                content: data.content,
+                // @ts-ignore
+                sender: { uuid: senderUuid, username: senderUsername },
                 from: 'other',
                 conversationUuid,
-                type,
-                src,
+                type: message.type,
+                src: message.src,
                 //TODO get deleted from payload
                 deleted: false,
                 updatedAt: new Date().toString(),
@@ -101,97 +106,135 @@ function SocketControls() {
         }
       )
 
-      socket.on('send-friend-request', ({ from, fromUsername }) => {
+      socket.on('send-friend-request', ({ senderUuid, senderUsername }) => {
         dispatch(
           addFriendRequestEntry({
-            uuid: from,
-            username: fromUsername,
+            uuid: senderUuid,
+            username: senderUsername,
             reverse: true,
           })
         )
 
         toast({
-          id: from,
-          title: `${fromUsername} sent you a friend request.`,
+          id: senderUuid + 'friend-request',
+          title: `${senderUsername} sent you a friend request.`,
           position: 'bottom-right',
           isClosable: true,
           status: 'success',
           duration: null,
           render: () => (
-            <Flex direction="column" color="white" p={3} bg="green.500">
+            <Flex direction="column" color="white" p={3} bg="#4B0E10">
               <Flex>
-                <p>{fromUsername} sent you a friend request.</p>
+                <p>{senderUsername} sent you a friend request.</p>
 
                 <CloseButton
                   className="sticky top ml-4"
                   size="sm"
                   onClick={() => {
-                    toast.close(from)
+                    toast.close(senderUuid + 'friend-request')
                   }}
                   name="close button"
                 />
               </Flex>
 
               <Flex className="justify-end mt-3">
-                <Button
-                  variant="green"
+                <AppButton
                   className="mr-3"
                   onClick={async () => {
-                    const acceptFriendshipResponse = await acceptFriendRequest({
-                      variables: {
-                        profileUuid: from,
-                      },
-                    })
+                    // const acceptFriendshipResponse = await acceptFriendRequest({
+                    //   variables: {
+                    //     profileUuid: senderUuid,
+                    //   },
+                    // })
 
-                    dispatch(
-                      setFriendFlagOnProfile({
-                        profileUuid: from,
-                      })
+                    const response = await axios.post(
+                      '/api/profiles/acceptFriendRequest',
+                      {
+                        profileUuid: senderUuid,
+                      }
                     )
 
-                    dispatch(
-                      removeFriendRequestEntry({
-                        profileUuid: from,
-                        friendRequests: loggedInUser.user?.friendshipRequests,
-                      })
-                    )
+                    if (response.status === 200) {
+                      dispatch(
+                        setFriendFlagOnProfile({
+                          profileUuid: senderUuid,
+                        })
+                      )
 
-                    dispatch(
-                      addFriendEntry({
-                        uuid: from,
-                        username: fromUsername,
-                      })
-                    )
+                      dispatch(
+                        removeFriendRequestEntry({
+                          profileUuid: senderUuid,
+                          friendRequests: loggedInUser.user?.friendshipRequests,
+                        })
+                      )
 
-                    dispatch(
-                      addConversation({
-                        conversation:
-                          acceptFriendshipResponse.data?.acceptFriendRequest,
-                        loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-                      })
-                    )
+                      dispatch(
+                        addFriendEntry({
+                          uuid: senderUuid,
+                          username: senderUsername,
+                        })
+                      )
 
-                    if (acceptFriendshipResponse) {
-                      socket.emit('friendship-request-accepted', {
-                        content:
-                          loggedInUser.user?.profile?.username +
-                          ' accepted your friend request.',
-                        from: loggedInUser.user?.profile?.uuid,
-                        fromUsername: loggedInUser.user?.profile?.username,
-                        to: from,
-                        toUsername: fromUsername,
-                        conversation:
-                          acceptFriendshipResponse.data?.acceptFriendRequest,
-                      })
+                      dispatch(
+                        addConversation({
+                          conversation: response.data,
+                          loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+                        })
+                      )
+
+                      toast.close(senderUuid + 'friend-request')
                     }
 
-                    toast.close(from)
+                    // dispatch(
+                    //   setFriendFlagOnProfile({
+                    //     profileUuid: senderUuid,
+                    //   })
+                    // )
+                    //
+                    // dispatch(
+                    //   removeFriendRequestEntry({
+                    //     profileUuid: senderUuid,
+                    //     friendRequests: loggedInUser.user?.friendshipRequests,
+                    //   })
+                    // )
+                    //
+                    // dispatch(
+                    //   addFriendEntry({
+                    //     uuid: senderUuid,
+                    //     username: senderUsername,
+                    //   })
+                    // )
+
+                    // dispatch(
+                    //   addConversation({
+                    //     // @ts-ignore
+                    //     conversation:
+                    //       acceptFriendshipResponse.data?.acceptFriendRequest,
+                    //     loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+                    //   })
+                    // )
+
+                    // if (acceptFriendshipResponse) {
+                    //   socket?.emit('friendship-request-accepted', {
+                    //     content:
+                    //       loggedInUser.user?.profile?.username +
+                    //       ' accepted your friend request.',
+                    //     from: loggedInUser.user?.profile?.uuid,
+                    //     fromUsername: loggedInUser.user?.profile?.username,
+                    //     to: senderUuid,
+                    //     toUsername: senderUsername,
+                    //     conversation:
+                    //       acceptFriendshipResponse.data?.acceptFriendRequest,
+                    //   })
+                    // }
+
+                    // toast.close(senderUuid)
                   }}
                 >
                   Accept
-                </Button>
+                </AppButton>
 
-                <Button bg="tomato">Reject</Button>
+                <AppButton bg="black">Reject</AppButton>
               </Flex>
             </Flex>
           ),
@@ -200,18 +243,18 @@ function SocketControls() {
 
       socket.on(
         'friendship-request-accepted',
-        ({ from, fromUsername, conversation }) => {
+        ({ senderUuid, senderUsername, conversation }) => {
           dispatch(
             removeFriendRequestEntry({
-              profileUuid: from,
+              profileUuid: senderUuid,
               friendRequests: loggedInUser.user?.friendshipRequests,
             })
           )
 
           dispatch(
             addFriendEntry({
-              uuid: from,
-              username: fromUsername,
+              uuid: senderUuid,
+              username: senderUsername,
             })
           )
 
@@ -223,22 +266,22 @@ function SocketControls() {
           )
 
           toast({
-            id: from,
-            title: `${fromUsername} accepted your friend request.`,
+            id: senderUuid,
+            title: `${senderUsername} accepted your friend request.`,
             position: 'bottom-right',
             isClosable: true,
             status: 'success',
             duration: 5000,
             render: () => (
-              <Flex direction="column" color="white" p={3} bg="green.500">
+              <Flex direction="column" color="white" p={3} bg="#4B0E10">
                 <Flex>
-                  <p>{fromUsername} accepted your friend request.</p>
+                  <p>{senderUsername} accepted your friend request.</p>
 
                   <CloseButton
                     className="sticky top ml-4"
                     size="sm"
                     onClick={() => {
-                      toast.close(from)
+                      toast.close(senderUuid)
                     }}
                     name="close button"
                   />
@@ -249,30 +292,46 @@ function SocketControls() {
         }
       )
 
-      socket.on('cancel-friend-request', ({ from, fromUsername }) => {
+      socket.on('cancel-friend-request', ({ senderUuid, senderUsername }) => {
         dispatch(
           removeFriendRequestEntry({
-            profileUuid: from,
+            profileUuid: senderUuid,
             friendRequests: loggedInUser.user?.friendshipRequests,
           })
         )
 
-        toast.close(from)
+        toast.close(senderUuid + 'friend-request')
         toast({
-          id: from,
-          title: `${fromUsername} has cancelled the friend request.`,
+          id: senderUuid,
+          title: `${senderUsername} has cancelled the friend request.`,
           position: 'bottom-right',
           isClosable: true,
           status: 'error',
           duration: 5000,
+          render: () => (
+            <Flex direction="column" color="white" p={3} bg="#4B0E10">
+              <Flex>
+                <p>{senderUsername} has cancelled the friend request.</p>
+
+                <CloseButton
+                  className="sticky top ml-4"
+                  size="sm"
+                  onClick={() => {
+                    toast.close(senderUuid)
+                  }}
+                  name="close button"
+                />
+              </Flex>
+            </Flex>
+          ),
         })
       })
 
-      socket.on('unfriend', ({ from, conversationUuid }) => {
+      socket.on('unfriend', ({ senderUuid, conversationUuid }) => {
         dispatch(
           removeFriendEntry({
-            profileUuid: from,
-            friends: loggedInUser.user?.friends,
+            profileUuid: senderUuid,
+            friends: loggedInUser.user?.profile?.friends,
           })
         )
 
@@ -341,11 +400,12 @@ function SocketControls() {
         socket.off('set-pending-call-for-conversation')
         socket.off('invited-to-group')
         socket.off('left-group')
+        socket.off('send-message')
       }
     }
-  }, [socket])
+  }, [socket, socketAuthObject])
 
   return null
 }
 
-export default SocketControls
+export default withAxios(SocketControls)

@@ -1,5 +1,16 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react'
-import { Flex } from '@chakra-ui/react'
+import {
+  Flex,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from '@chakra-ui/react'
 import Footer from './Footer'
 
 import {
@@ -10,17 +21,17 @@ import {
 
 import { getVideoFrameOpenState } from '../store/video'
 import { useDispatch, useSelector } from 'react-redux'
-import { getSocket } from '../store/sockets'
+import { getSocketId } from '../store/sockets'
 
 import Header from './Header'
 import Messages from './Messages'
 
 import { getLoggedInUser } from '../store/users'
 
-import {
-  useSaveMessageMutation,
-  useSaveGroupMessageMutation,
-} from '../generated/graphql'
+// import {
+//   useSaveMessageMutation,
+//   useSaveGroupMessageMutation,
+// } from '../generated/graphql'
 
 import {
   getCreateGroupComponent,
@@ -35,8 +46,10 @@ import { FileUpload } from './FileUpload'
 import CreateGroup from './CreateGroup'
 import Video from './Video'
 import { emitPrivateChatMessage } from '../utils/SocketEmits'
+import withAxios from '../utils/withAxios'
+import AppButton from './AppComponents/AppButton'
 
-function Chat() {
+function Chat({ axios }) {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
   const isCreateGroupOpen = useSelector(getCreateGroupComponent)
@@ -44,24 +57,23 @@ function Chat() {
   const [innerHeight, setInnerHeight] = useState(0)
 
   const [inputMessage, setInputMessage] = useState('')
-  const socket = useSelector(getSocket)
+  const socket = useSelector(getSocketId)
 
   const activeConversation = useSelector(getActiveConversation)
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
-  // const chatContainerHeight = useSelector(getChatContainerHeight)
-  // const searchActive = useSelector(getIsSearchActive)
 
   const profile = useSelector(getActiveConversee)
+  const [isOpen, setIsOpen] = useState(true)
 
-  const [
-    saveMessage,
-    // { loading: saveMessageLoading }
-  ] = useSaveMessageMutation()
+  // const [
+  //   saveMessage,
+  //   // { loading: saveMessageLoading }
+  // ] = useSaveMessageMutation()
 
-  const [
-    saveGroupMessage,
-    // { loading: saveGroupLoading }
-  ] = useSaveGroupMessageMutation()
+  // const [
+  //   saveGroupMessage,
+  //   // { loading: saveGroupLoading }
+  // ] = useSaveGroupMessageMutation()
 
   useEffect(() => {
     setInnerHeight(window.innerHeight)
@@ -87,14 +99,14 @@ function Chat() {
     const data = inputMessage
     setInputMessage('')
 
-    const message = await saveGroupMessage({
-      variables: {
-        message: data,
-        type: 'text',
-        src: '',
-        conversationUuid: activeConversation.uuid,
-      },
-    })
+    // const message = await saveGroupMessage({
+    //   variables: {
+    //     message: data,
+    //     type: 'text',
+    //     src: '',
+    //     conversationUuid: activeConversation.uuid,
+    //   },
+    // })
 
     activeConversation.profiles.map((profile) => {
       if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
@@ -152,23 +164,32 @@ function Chat() {
     const data = inputMessage
     setInputMessage('')
 
-    const message = await saveMessage({
-      variables: {
-        message: data,
-        type: 'text',
-        src: '',
-        conversationUuid: activeConversation.uuid,
-        to: profile.uuid,
-      },
+    const message = await axios.post('/api/messages', {
+      message: data,
+      type: 'text',
+      src: '',
+      conversationUuid: activeConversation.uuid,
+      recipientUuid: profile.uuid,
+      recipientUsername: profile.username,
     })
 
-    emitPrivateChatMessage({
-      loggedInUser,
-      profile,
-      response: message,
-      activeConversation,
-      socket,
-    })
+    // const message = await saveMessage({
+    //   variables: {
+    //     message: data,
+    //     type: 'text',
+    //     src: '',
+    //     conversationUuid: activeConversation.uuid,
+    //     to: profile.uuid,
+    //   },
+    // })
+
+    // emitPrivateChatMessage({
+    //   loggedInUser,
+    //   profile,
+    //   response: message,
+    //   activeConversation,
+    //   socket,
+    // })
 
     // socket.emit('private-chat-message', {
     //   content: loggedInUser.user?.profile?.username + ' sent you a message.',
@@ -209,7 +230,7 @@ function Chat() {
   return (
     <Flex
       className={
-        'flex-col bg-gray-700 text-white box-content relative z-50 md:z-0 chat-container'
+        'flex-col bg-red-500 text-white box-content relative z-50 md:z-0 chat-container'
       }
       style={{
         flex: isMobile ? '1' : '0.75',
@@ -218,11 +239,46 @@ function Chat() {
       }}
     >
       <div
-        className="flex items-center justify-center border-b box-content"
+        className="flex items-center justify-center border-b border-black box-content"
         style={{ height: isMobile ? '10vh' : '5vh' }}
       >
         <ChatControlsAndSearch />
       </div>
+
+      <Modal isOpen={isOpen}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader className="bg-black p-5 text-red-500">
+            Welcome to NOON
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody className="bg-black p-5 text-white">
+            <p>
+              NOON attempts to be a whitelabel, open source, free and secure
+              communication platform for security and privacy minded individuals
+              and organizations. This is a very early build and a lot of the
+              features are still being reworked. An initial working version was
+              constructed with Graphql but ive decided that it just wasnt worth
+              the overhead and am currently refactoring to a REST client.
+              Searching, befriending and private one on one chatting currently
+              {/* eslint-disable-next-line react/no-unescaped-entities */}
+              "works". Would highly appreciate it if you could drop me bug
+              reports on mohamad.sleimanhaidar@gmail.com if you encounter any
+              issues and many thanks!{' '}
+            </p>
+          </ModalBody>
+          <ModalFooter className="bg-black">
+            <AppButton
+              mr={3}
+              onClick={() => {
+                setIsOpen(false)
+              }}
+            >
+              Close
+            </AppButton>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
       {isCreateGroupOpen ? (
         <Flex
@@ -310,4 +366,4 @@ function Chat() {
   )
 }
 
-export default Chat
+export default withAxios(Chat)

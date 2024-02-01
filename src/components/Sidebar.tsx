@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLogoutMutation } from '../generated/graphql'
@@ -19,6 +20,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Spinner,
 } from '@chakra-ui/react'
 
 import {
@@ -42,18 +44,17 @@ import PrivateConversationListing from './PrivateConversationListing'
 import GroupConversationListing from './GroupConversationListing'
 import ChatControlsAndSearchForMobile from './ChatControlsAndSearchForMobile'
 import SocketControls from './SocketIo/SocketControls'
+import withAxios from '../utils/withAxios'
+import AppMenuList from './AppComponents/AppMenuList'
 
-function Sidebar() {
+function Sidebar({ axios }) {
   const router = useRouter()
   const dispatch = useDispatch()
   const isMobile: number = useSelector(getIsMobile)
   const searchComponentState = useSelector(getSearchComponentState)
   const [innerHeight, setInnerHeight] = useState(0)
+  const [areConversationsLoading, setAreConversationsLoading] = useState(true)
 
-  const [
-    logout,
-    // { loading: logoutLoading }
-  ] = useLogoutMutation()
   const loggedInUser = useSelector(getLoggedInUser)
   const isConversationOpen = useSelector(getIsConversationOpen)
   const getConversationsFromStore = useSelector(getSortedConversations)
@@ -61,7 +62,11 @@ function Sidebar() {
 
   useEffect(() => {
     setInnerHeight(window.innerHeight)
-  }, [])
+
+    if (getConversationsFromStore) {
+      setAreConversationsLoading(false)
+    }
+  }, [getConversationsFromStore])
 
   useEffect(() => {
     window.addEventListener('resize', () => {
@@ -89,11 +94,13 @@ function Sidebar() {
       }
     >
       <Flex
-        className="items-center flex-col md:flex-row justify-between border-b"
-        style={{ flex: '0.05' }}
+        className="items-center flex-col md:flex-row justify-between border-b border-red-500"
+        style={{ flex: '0.051' }}
       >
         <Flex className="w-full items-center">
-          <Heading className="w-full px-4 py-4 md:py-0">Noon</Heading>
+          <Heading className="w-full px-4 py-4 md:py-0 text-white">
+            NOON
+          </Heading>
 
           {isMobile && (
             <IconButton
@@ -121,11 +128,22 @@ function Sidebar() {
               aria-label="Options"
               icon={<HamburgerIcon />}
               variant="outline"
-              className="mr-3"
+              color="black"
+              className="mr-3 bg-red-500 text-black"
+              border="none"
+              borderRadius="0"
             />
 
-            <MenuList>
+            <AppMenuList
+              bg="black"
+              className="bg-red-500 text-black"
+              border="none"
+              borderRadius="0"
+            >
               <MenuItem
+                bg="black"
+                className="bg-red-500 text-black"
+                border="none"
                 icon={<EditIcon />}
                 onClick={async () => {
                   // dispatch(setActiveConversationSet(false))
@@ -148,7 +166,7 @@ function Sidebar() {
               >
                 Create group
               </MenuItem>
-            </MenuList>
+            </AppMenuList>
           </Menu>
         </Flex>
 
@@ -159,53 +177,81 @@ function Sidebar() {
         ) : null}
       </Flex>
 
+      {/*{areConversationsLoading ? (*/}
+      {/*  <Flex className="flex-col items-center justify-center">*/}
+      {/*    <p className="text-white">Loading conversations...</p>*/}
+      {/*  </Flex>*/}
+      {/*) : (*/}
+
       <Flex
         className="flex-col pt-3 scroll-auto overflow-auto"
         style={{ flex: '0.875' }}
       >
-        {getConversationsFromStore
-          ? [...Object.values(getConversationsFromStore)].map(
-              (conversation, i) =>
-                !conversation ? null : (conversation as any).type === 'pm' ? (
-                  <PrivateConversationListing
-                    key={i}
-                    conversation={conversation}
-                    i={i}
-                  />
-                ) : (
-                  <GroupConversationListing
-                    conversation={conversation}
-                    i={i}
-                    key={i}
-                  />
-                )
+        {areConversationsLoading ? (
+          <Spinner />
+        ) : getConversationsFromStore &&
+          getConversationsFromStore.length !== 0 ? (
+          [...Object.values(getConversationsFromStore)].map((conversation, i) =>
+            !conversation ? null : (conversation as any).type === 'pm' ? (
+              <PrivateConversationListing
+                key={i}
+                conversation={conversation}
+                i={i}
+                axios={axios}
+              />
+            ) : (
+              <GroupConversationListing
+                conversation={conversation}
+                i={i}
+                key={i}
+              />
             )
-          : null}
+          )
+        ) : (
+          <p className="w-3/4 p-5 ">
+            No conversations yet. Use the search component to look for people to
+            send friend requests to. Click on the search icon to search for
+            profiles. Once you find the profile you want to befriend, send them
+            a friend request. Once they accept the friend request, you will
+            become friends and a conversation will be visible on this dashboard.
+          </p>
+        )}
       </Flex>
 
       <Flex
-        className="flex justify-between items-center border-t box-content py-4 md:py-0 px-4 md:px-0"
+        className="flex justify-between items-center border-t border-red-500 box-content py-4 md:py-0 px-4 md:px-0"
         style={{ flex: '0.075' }}
       >
         <Flex className="items-center px-2">
           <Avatar size="md" />
-          <p className="ml-2 text-md">{loggedInUser.user?.profile?.username}</p>
+          <p className="ml-2 text-lg text-white">
+            {loggedInUser.user?.profile?.username}
+          </p>
           <SocketConnector />
         </Flex>
 
         <Flex className="px-3 justify-between">
           <Menu>
             <MenuButton>
-              <SettingsIcon />
+              <SettingsIcon color="#921A1C" />
             </MenuButton>
 
-            <MenuList>
+            <MenuList className="bg-black" bg="bg-black" border="none">
               <MenuItem
-                bg="bg-gray-800"
-                className="bg-gray-800"
+                bg="bg-black"
+                className="bg-black"
+                border="none"
                 onClick={async () => {
-                  await logout()
-                  await router.push('/')
+                  await axios
+                    .post('/api/users/logout')
+                    .then((response) => {
+                      if (response.status === 200) {
+                        router.push('/')
+                      }
+                    })
+                    .catch((error) => {
+                      console.error('Error logging out:', error)
+                    })
                 }}
                 // isLoading={fetching}
               >
@@ -222,4 +268,4 @@ function Sidebar() {
   )
 }
 
-export default Sidebar
+export default withAxios(Sidebar)

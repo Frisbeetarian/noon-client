@@ -26,40 +26,35 @@ const slice = createSlice({
   initialState,
   reducers: {
     setLoggedInUser: (users, action: PayloadAction<User>) => {
-      // console.log('retrieved user: ', action.payload)
       if (action.payload) {
         users.user = action.payload
       }
     },
     addFriendRequestEntry: (users, action: PayloadAction<FriendRequest>) => {
-      // const userObject = { ...users.user }
-      // const friendshipRequests: FriendRequest[] = <FriendRequest[]>{
-      //   ...users.user?.friendshipRequests,
-      // }
-
-      // if (friendshipRequests) {
-      users.user?.friendshipRequests?.push(<FriendRequest>action.payload)
-      // }
+      if (users.user?.friendshipRequests) {
+        users.user.friendshipRequests = [
+          ...users.user.friendshipRequests,
+          action.payload,
+        ]
+      } else {
+        // @ts-ignore
+        users.user.friendshipRequests = [action.payload]
+      }
     },
     removeFriendRequestEntry: (
       users,
       action: PayloadAction<RemoveFriendRequestEntryPayload>
     ) => {
-      const friendRequests: FriendRequest[] =
-        action.payload.friendRequests.filter(
-          (FREntry: FriendRequest) => FREntry.uuid != action.payload.profileUuid
-        )
-
-      const userObject: User = <User>{ ...users.user }
-      if (friendRequests) {
-        userObject.friendshipRequests = friendRequests
-        // userObject.friendshipRequests?.push(friendRequests)
+      if (users.user && users.user.profile.friendshipRequests) {
+        users.user.profile.friendshipRequests =
+          users.user.profile.friendshipRequests.filter(
+            (FREntry) => FREntry.uuid !== action.payload.profileUuid
+          )
       }
     },
     addFriendEntry: (users, action: PayloadAction<Friend>) => {
       try {
-        // const userObject = { ...users.user }
-        users.user?.friends?.push(action.payload)
+        users.user?.profile?.friends?.push(action.payload)
       } catch (e) {
         console.log('error:', e)
       }
@@ -72,10 +67,7 @@ const slice = createSlice({
         (FREntry) => FREntry.uuid != action.payload.profileUuid
       )
 
-      // const userObject = { ...users.user }
-      if (users.user) users.user.friends = friends
-
-      // userObject.friends?.push(friends)
+      if (users.user) users.user.profile.friends = friends
     },
   },
 })
@@ -83,29 +75,12 @@ const slice = createSlice({
 // selector
 export const getUser = (state, action) => {
   return state.entities.users.filter((user) => user.id === action.id)
-  // return state.entities.bugs.filter(bug => !bug.resolved)
 }
 
 export const getLoggedInUser = createSelector(
   (state) => state.entities.users,
   (user) => user
 )
-
-// export const getBugsAssignedToUser = (state, action) => {
-//   const user = state.entities.users.filter((user) => user.id === action.id)
-//   const bugsForUser = []
-//
-//   // for (let index = 0; index <= user[0].bugsAssigned.length - 1; index++) {
-//     // const bug = state.entities.bugs.filter(
-//     //   (bug) => bug.id === user[0].bugsAssigned[index]
-//     // )
-//
-//     // bugsForUser.push(bug)
-//     // const fef = [...bugsForUser, bug];
-//   // }
-//
-//   return bugsForUser
-// }
 
 export const {
   setLoggedInUser,
