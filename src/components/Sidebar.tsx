@@ -26,6 +26,10 @@ import {
 import {
   // getActiveConversation,
   getSortedConversations,
+  setActiveConversation,
+  setActiveConversationSet,
+  setActiveConversee,
+  setShouldPauseCheckHasMore,
 } from '../store/chat'
 
 import SocketConnector from './SocketIo/SocketConnector'
@@ -36,6 +40,7 @@ import {
   getIsMobile,
   getSearchComponentState,
   setChatContainerHeight,
+  setCreateGroupComponent,
   setSearchComponent,
   toggleCreateGroupActive,
 } from '../store/ui'
@@ -150,16 +155,16 @@ function Sidebar({ axios }) {
                   // dispatch(setActiveConversee(null))
                   // dispatch(setActiveConversation(null))
                   // dispatch(setShouldPauseCheckHasMore(false))
-                  // dispatch(setCreateGroupComponent(true))
-                  //
-                  // dispatch(
-                  //   setSearchComponent({
-                  //     searchActive: false,
-                  //     containerDisplay: 'relative',
-                  //     containerHeight: '5vh',
-                  //     inputPadding: '5px',
-                  //   })
-                  // )
+                  dispatch(setCreateGroupComponent(true))
+
+                  dispatch(
+                    setSearchComponent({
+                      searchActive: false,
+                      containerDisplay: 'relative',
+                      containerHeight: '5vh',
+                      inputPadding: '5px',
+                    })
+                  )
 
                   dispatch(toggleCreateGroupActive(true))
                 }}

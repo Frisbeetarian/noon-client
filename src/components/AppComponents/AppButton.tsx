@@ -8,6 +8,7 @@ interface AppButtonProps extends ButtonProps {
   borderRadius?: string
   fontFamily?: string
   disabled?: boolean | undefined
+  type?: 'button' | 'submit' | 'reset' | undefined
 }
 
 const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
@@ -20,6 +21,7 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
       fontFamily = 'Menlo',
       disabled = false,
       children,
+      type = 'button',
       ...rest
     },
     ref
@@ -33,6 +35,7 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
         borderRadius={borderRadius}
         fontFamily={fontFamily}
         disabled={disabled}
+        type={type}
         {...rest}
       >
         {children}

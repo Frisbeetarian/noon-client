@@ -63,7 +63,7 @@ function Chat({ axios }) {
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
 
   const profile = useSelector(getActiveConversee)
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
 
   // const [
   //   saveMessage,
@@ -99,61 +99,40 @@ function Chat({ axios }) {
     const data = inputMessage
     setInputMessage('')
 
-    // const message = await saveGroupMessage({
-    //   variables: {
-    //     message: data,
-    //     type: 'text',
-    //     src: '',
-    //     conversationUuid: activeConversation.uuid,
-    //   },
-    // })
-
-    activeConversation.profiles.map((profile) => {
-      if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
-        emitPrivateChatMessage({
-          loggedInUser,
-          profile,
-          response: message,
-          activeConversation,
-          socket,
-        })
-        //
-        // socket.emit('private-chat-message', {
-        //   content:
-        //     loggedInUser.user?.profile?.username + ' sent you a message.',
-        //   from: loggedInUser.user?.profile?.uuid,
-        //   fromUsername: loggedInUser.user?.profile?.username,
-        //   to: profile.uuid,
-        //   toUsername: profile.username,
-        //   messageUuid: message.data?.saveGroupMessage?.uuid,
-        //   message: data,
-        //   type: 'text',
-        //   src: '',
-        //   conversationUuid: activeConversation.uuid,
-        // })
-      }
-    })
-
-    dispatch(
-      addMessageToActiveConversation({
-        message: {
-          uuid: message.data?.saveGroupMessage?.uuid as string,
-          content: data,
-          sender: {
-            uuid: loggedInUser?.user?.profile?.uuid,
-            username: loggedInUser?.user?.profile?.username,
-          },
-          from: 'me',
-          type: 'text',
-          src: '',
-          deleted: false,
-          conversationUuid: activeConversation.uuid,
-          updatedAt: new Date().toString(),
-          createdAt: new Date().toString(),
-        },
-        loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+    await axios
+      .post('/api/messages/groupMessages', {
+        message: data,
+        type: 'text',
+        src: '',
+        conversationUuid: activeConversation.uuid,
       })
-    )
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch(
+            addMessageToActiveConversation({
+              message: {
+                uuid: response.data?.uuid as string,
+                content: data,
+                sender: {
+                  uuid: loggedInUser?.user?.profile?.uuid,
+                  username: loggedInUser?.user?.profile?.username,
+                },
+                from: 'me',
+                type: 'text',
+                src: '',
+                deleted: false,
+                conversationUuid: activeConversation.uuid,
+                updatedAt: new Date().toString(),
+                createdAt: new Date().toString(),
+              },
+              loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+            })
+          )
+        }
+      })
+      .catch((error) => {
+        console.log('error:', error.message)
+      })
   }
 
   const handleSendMessage = async () => {
@@ -280,17 +259,17 @@ function Chat({ axios }) {
         </ModalContent>
       </Modal>
 
-      {isCreateGroupOpen ? (
-        <Flex
-          className="flex-col p-0 box-content"
-          style={{
-            height: isMobile ? '77.5vh' : '90vh',
-            transition: 'all .5s',
-          }}
-        >
-          <CreateGroup />
-        </Flex>
-      ) : null}
+      {/*{isCreateGroupOpen ? (*/}
+      {/*  <Flex*/}
+      {/*    className="flex-col p-0 box-content"*/}
+      {/*    style={{*/}
+      {/*      height: isMobile ? '77.5vh' : '90vh',*/}
+      {/*      transition: 'all .5s',*/}
+      {/*    }}*/}
+      {/*  >*/}
+      {/*    <CreateGroup />*/}
+      {/*  </Flex>*/}
+      {/*) : null}*/}
 
       {activeConversation && activeConversation.type === 'group' ? (
         <Flex

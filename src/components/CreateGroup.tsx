@@ -1,32 +1,33 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 
 import { Box, Button, Flex, Input } from '@chakra-ui/react'
 
 import { useFormik } from 'formik'
-import { addConversation, setOngoingCall } from '../store/chat'
+import { setOngoingCall } from '../store/chat'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
-import { getSocket } from '../store/sockets'
 import GroupParticipant from './GroupParticipant'
 
-import { useCreateGroupConversationMutation } from '../generated/graphql'
+// import { useCreateGroupConversationMutation } from '../generated/graphql'
 
 import { clearState, getParticipants } from '../store/groups'
 import { setCreateGroupComponent } from '../store/ui'
+import { getSocketAuthObject } from '../store/sockets'
+import SocketManager from './SocketIo/SocketManager'
 
 const CreateGroup = ({}) => {
   const dispatch = useDispatch()
-  const socket = useSelector(getSocket)
   const participants = useSelector(getParticipants)
   const loggedInUser = useSelector(getLoggedInUser)
   const [friends, setFriends] = useState(null)
+  const socketAuthObject = useSelector(getSocketAuthObject)
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
 
-  const [
-    createGroupConversation,
-    // { loading: createGroupConversationLoading }
-  ] = useCreateGroupConversationMutation()
+  // const [
+  //   createGroupConversation,
+  //   // { loading: createGroupConversationLoading }
+  // ] = useCreateGroupConversationMutation()
 
   useEffect(() => {
     setFriends(loggedInUser?.user?.friends)
@@ -63,31 +64,31 @@ const CreateGroup = ({}) => {
 
         participantsToSend.push(loggedInUser.user?.profile?.uuid)
 
-        const conversation = await createGroupConversation({
-          variables: {
-            input: { ...values, type: 'group' },
-            participants: participantsToSend,
-          },
-        })
+        // const conversation = await createGroupConversation({
+        //   variables: {
+        //     input: { ...values, type: 'group' },
+        //     participants: participantsToSend,
+        //   },
+        // })
 
         dispatch(clearState())
 
-        socket.emit('group-created', {
-          fromUuid: loggedInUser.user?.profile?.uuid,
-          fromUsername: loggedInUser.user?.profile?.username,
-          groupUuid: conversation.data?.createGroupConversation.uuid,
-          conversation: conversation.data?.createGroupConversation,
-          participants: participantsToSend,
-        })
+        // socket.emit('group-created', {
+        //   fromUuid: loggedInUser.user?.profile?.uuid,
+        //   fromUsername: loggedInUser.user?.profile?.username,
+        //   groupUuid: conversation.data?.createGroupConversation.uuid,
+        //   conversation: conversation.data?.createGroupConversation,
+        //   participants: participantsToSend,
+        // })
 
-        console.log('conversation:', conversation)
-
-        dispatch(
-          addConversation({
-            conversation: conversation.data?.createGroupConversation,
-            loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-          })
-        )
+        // console.log('conversation:', conversation)
+        //
+        // dispatch(
+        //   addConversation({
+        //     conversation: conversation.data?.createGroupConversation,
+        //     loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+        //   })
+        // )
 
         dispatch(setCreateGroupComponent(false))
       }

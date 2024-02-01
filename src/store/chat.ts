@@ -530,49 +530,39 @@ const slice = createSlice({
       }
 
       const conversationObject = { ...action.payload.conversation }
-      // conversationObject.unreadMessages = 0
-      // conversationObject.profileThatHasUnreadMessages = []
 
-      const conversationFromStack = chat.conversations?.find(
+      // Find the conversation in the stack to update its state
+      const conversationIndex = chat.conversations?.findIndex(
         (conversation) => conversation.uuid === conversationObject.uuid
       )
 
-      if (conversationFromStack) {
-        conversationFromStack.unreadMessages = 0
-        conversationFromStack.profileThatHasUnreadMessages = null
-        conversationFromStack.ongoingCall = false
+      if (conversationIndex !== -1) {
+        chat.conversations[conversationIndex].unreadMessages = 0
+        chat.conversations[conversationIndex].profileThatHasUnreadMessages =
+          null
+        chat.conversations[conversationIndex].ongoingCall = false
       }
 
       if (!action.payload.conversation?.messages) {
         conversationObject.messages = []
       } else {
-        const messagesArray: Message[] = []
+        const messagesArray = action.payload.conversation.messages
+          .map((message) => ({
+            ...message,
+            from:
+              message.sender.uuid === action.payload?.loggedInProfileUuid
+                ? 'me'
+                : 'other',
+          }))
+          .sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
 
-        action.payload.conversation?.messages.map((message) => {
-          const messageObject = { ...message }
-
-          messageObject.from =
-            messageObject.sender.uuid == action.payload?.loggedInProfileUuid
-              ? 'me'
-              : 'other'
-
-          messagesArray.push(messageObject)
-        })
-
-        const sortedMessage = messagesArray.sort(
-          (a, b) => (b.createdAt as any) - (a.createdAt as any)
-        )
-
-        conversationObject.messages = [...sortedMessage]
+        conversationObject.messages = messagesArray
       }
 
-      if (!chat['activeConversation']) {
-        chat['activeConversation'] = null
-      }
-
-      if (chat.activeConversation) {
-        chat.activeConversation = <ExtendedConversation>conversationObject
-      }
+      chat.activeConversation = conversationObject
     },
     setPendingCall: (chat, action: PayloadAction<PendingCallPayload>) => {
       try {

@@ -9,6 +9,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  useToast,
 } from '@chakra-ui/react'
 
 import { EditIcon, HamburgerIcon } from '@chakra-ui/icons'
@@ -25,25 +26,22 @@ import {
 
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
-import { getSocket } from '../store/sockets'
 
-import { useLeaveGroupMutation } from '../generated/graphql'
 import {
   setChatContainerHeight,
   setConversationOpen,
   setSearchComponent,
 } from '../store/ui'
+import withAxios from '../utils/withAxios'
+import AppMenuList from './AppComponents/AppMenuList'
+// import toast from '../store/middleware/toast'
 
-function GroupConversationListing({ conversation, i }) {
+function GroupConversationListing({ conversation, i, axios }) {
   const dispatch = useDispatch()
-  const [
-    leaveGroup,
-    // { loading: leaveGroupLoading }
-  ] = useLeaveGroupMutation()
 
   const loggedInUser = useSelector(getLoggedInUser)
-  const socket = useSelector(getSocket)
   const activeConversation = useSelector(getActiveConversation)
+  const toast = useToast()
 
   function setActiveGroup(conversation) {
     dispatch(setActiveConversationSet(false))
@@ -63,7 +61,7 @@ function GroupConversationListing({ conversation, i }) {
 
     dispatch(setChatContainerHeight('87.5vh'))
     dispatch(setConversationOpen(true))
-
+    dispatch(setActiveConversationSet(true))
     dispatch(
       setActiveGroupInStore({
         conversation,
@@ -76,13 +74,16 @@ function GroupConversationListing({ conversation, i }) {
     <Flex
       key={conversation.uuid}
       tabIndex={0}
-      className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-amber-100 hover:border-sky-500 focus:outline-none focus:border-sky-700 focus-within:shadow-lg"
+      className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-red-800 hover:border-b-red-500 focus:outline-none"
       // style={{ transition: 'all .25s ' }}
       style={{
         transition: 'all .25s',
         ...(activeConversation && activeConversation.uuid === conversation.uuid
           ? {
-              backgroundColor: '#0F753B',
+              backgroundColor: '#921A1C',
+              outline: 'none',
+              boxShadow: 'none',
+              border: 'none',
             }
           : null),
       }}
@@ -113,59 +114,60 @@ function GroupConversationListing({ conversation, i }) {
           aria-label="Options"
           icon={<HamburgerIcon />}
           variant="outline"
+          color="black"
+          className="mr-3 bg-red-500 text-black"
+          border="none"
+          borderRadius="0"
+          boxSize="1.5em"
         />
 
-        <MenuList>
+        <AppMenuList bg="black">
           <MenuItem
-            className="bg-gray-800"
+            bg="black"
+            className="bg-gray-800 text-black"
             icon={<EditIcon />}
             onClick={async () => {
-              const leaveGroupResponse = await leaveGroup({
-                variables: {
+              await axios
+                .post('/api/conversations/leaveGroup', {
                   groupUuid: conversation.uuid,
-                },
-              })
-
-              dispatch(
-                removeConversation({
-                  conversationUuid: conversation.uuid,
                 })
-              )
+                .then((response) => {
+                  if (respons.status === 200) {
+                    dispatch(
+                      removeConversation({
+                        conversationUuid: conversation.uuid,
+                      })
+                    )
 
-              if (
-                activeConversation &&
-                activeConversation.uuid === conversation.uuid
-              ) {
-                dispatch(setActiveConversationSet(false))
-                dispatch(setActiveConversee(null))
-                dispatch(setActiveConversation(null))
-                dispatch(setShouldPauseCheckHasMore(false))
-              }
-
-              if (leaveGroupResponse) {
-                const participantsToSend: string[] = []
-
-                conversation.profiles.map((profile) => {
-                  if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
-                    participantsToSend.push(profile.uuid)
+                    if (
+                      activeConversation &&
+                      activeConversation.uuid === conversation.uuid
+                    ) {
+                      dispatch(setActiveConversationSet(false))
+                      dispatch(setActiveConversee(null))
+                      dispatch(setActiveConversation(null))
+                      dispatch(setShouldPauseCheckHasMore(false))
+                    }
                   }
                 })
-
-                socket.emit('left-group', {
-                  fromUuid: loggedInUser.user?.profile?.uuid,
-                  fromUsername: loggedInUser.user?.profile?.username,
-                  conversationUuid: conversation.uuid,
-                  participants: participantsToSend,
+                .catch((error) => {
+                  console.error('An error occurred:', error.message)
+                  toast({
+                    title: `Error creating group.`,
+                    position: 'bottom-right',
+                    isClosable: true,
+                    status: 'error',
+                    duration: 5000,
+                  })
                 })
-              }
             }}
           >
             Leave group
           </MenuItem>
-        </MenuList>
+        </AppMenuList>
       </Menu>
     </Flex>
   )
 }
 
-export default GroupConversationListing
+export default withAxios(GroupConversationListing)

@@ -348,7 +348,7 @@ function SocketControls({ axios }) {
         }
       })
 
-      socket.on('invited-to-group', ({ conversation }) => {
+      socket.on('added-to-group', ({ conversation }) => {
         dispatch(
           addConversation({
             conversation,
@@ -401,6 +401,7 @@ function SocketControls({ axios }) {
         socket.off('invited-to-group')
         socket.off('left-group')
         socket.off('send-message')
+        socket.off('send-message-to-group')
       }
     }
   }, [socket, socketAuthObject])

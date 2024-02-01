@@ -32,6 +32,7 @@ import SocketManager from './SocketIo/SocketManager'
 import { getSocketAuthObject } from '../store/sockets'
 import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
+import AppInput from './AppComponents/AppInput'
 
 const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const socketAuthObject = useSelector(getSocketAuthObject)
