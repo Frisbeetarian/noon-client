@@ -98,27 +98,41 @@ function Chat({ axios }) {
 
     const data = inputMessage
     setInputMessage('')
-
-    dispatch(
-      addMessageToActiveConversation({
-        message: {
-          uuid: message.data?.saveGroupMessage?.uuid as string,
-          content: data,
-          sender: {
-            uuid: loggedInUser?.user?.profile?.uuid,
-            username: loggedInUser?.user?.profile?.username,
-          },
-          from: 'me',
-          type: 'text',
-          src: '',
-          deleted: false,
-          conversationUuid: activeConversation.uuid,
-          updatedAt: new Date().toString(),
-          createdAt: new Date().toString(),
-        },
-        loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+    console.log('input message:', data)
+    const response = await axios
+      .post('/api/messages/groupMessages', {
+        message: data,
+        type: 'text',
+        src: '',
+        conversationUuid: activeConversation.uuid,
       })
-    )
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch(
+            addMessageToActiveConversation({
+              message: {
+                uuid: response.data?.uuid as string,
+                content: data,
+                sender: {
+                  uuid: loggedInUser?.user?.profile?.uuid,
+                  username: loggedInUser?.user?.profile?.username,
+                },
+                from: 'me',
+                type: 'text',
+                src: '',
+                deleted: false,
+                conversationUuid: activeConversation.uuid,
+                updatedAt: new Date().toString(),
+                createdAt: new Date().toString(),
+              },
+              loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+            })
+          )
+        }
+      })
+      .catch((error) => {
+        console.log('error:', error.message)
+      })
   }
 
   const handleSendMessage = async () => {

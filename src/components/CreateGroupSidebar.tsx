@@ -108,7 +108,6 @@ function CreateGroupSidebar({ axios }) {
                       dispatch(clearState())
                       dispatch(setCreateGroupComponent(false))
                       dispatch(toggleCreateGroupActive(false))
-                      console.log('group conversation:', response.data)
                       toast({
                         title: `${values.name} has been created.`,
                         position: 'bottom-right',

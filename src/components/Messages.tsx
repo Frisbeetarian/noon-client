@@ -118,7 +118,7 @@ const Messages = ({ axios }) => {
       setShouldCheckHasMorePause(false)
       // setLocalMessages([])
     }
-  }, [activeConversation.messages, handleCheckForHasMoreMessages])
+  }, [activeConversation.messages])
 
   // useEffect(() => {
   //   if (data) {
