@@ -40,8 +40,6 @@ function GroupConversationListing({ conversation, i, axios }) {
 
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
-  const socketAuthObject = useSelector(getSocketAuthObject)
-  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
 
   function setActiveGroup(conversation) {
     dispatch(setActiveConversationSet(false))
