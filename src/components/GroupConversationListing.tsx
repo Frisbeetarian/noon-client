@@ -9,6 +9,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  useToast,
 } from '@chakra-ui/react'
 
 import { EditIcon, HamburgerIcon } from '@chakra-ui/icons'
@@ -35,12 +36,14 @@ import {
 import SocketManager from './SocketIo/SocketManager'
 import withAxios from '../utils/withAxios'
 import AppMenuList from './AppComponents/AppMenuList'
+// import toast from '../store/middleware/toast'
 
 function GroupConversationListing({ conversation, i, axios }) {
   const dispatch = useDispatch()
 
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
+  const toast = useToast()
 
   function setActiveGroup(conversation) {
     dispatch(setActiveConversationSet(false))
@@ -122,44 +125,39 @@ function GroupConversationListing({ conversation, i, axios }) {
             className="bg-gray-800 text-black"
             icon={<EditIcon />}
             onClick={async () => {
-              // const leaveGroupResponse = await leaveGroup({
-              //   variables: {
-              //     groupUuid: conversation.uuid,
-              //   },
-              // })
-
-              dispatch(
-                removeConversation({
-                  conversationUuid: conversation.uuid,
+              await axios
+                .post('/api/conversations/leaveGroup', {
+                  groupUuid: conversation.uuid,
                 })
-              )
+                .then((response) => {
+                  if (respons.status === 200) {
+                    dispatch(
+                      removeConversation({
+                        conversationUuid: conversation.uuid,
+                      })
+                    )
 
-              if (
-                activeConversation &&
-                activeConversation.uuid === conversation.uuid
-              ) {
-                dispatch(setActiveConversationSet(false))
-                dispatch(setActiveConversee(null))
-                dispatch(setActiveConversation(null))
-                dispatch(setShouldPauseCheckHasMore(false))
-              }
-
-              // if (leaveGroupResponse) {
-              //   const participantsToSend: string[] = []
-              //
-              //   conversation.profiles.map((profile) => {
-              //     if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
-              //       participantsToSend.push(profile.uuid)
-              //     }
-              //   })
-              //
-              //   socket.emit('left-group', {
-              //     fromUuid: loggedInUser.user?.profile?.uuid,
-              //     fromUsername: loggedInUser.user?.profile?.username,
-              //     conversationUuid: conversation.uuid,
-              //     participants: participantsToSend,
-              //   })
-              // }
+                    if (
+                      activeConversation &&
+                      activeConversation.uuid === conversation.uuid
+                    ) {
+                      dispatch(setActiveConversationSet(false))
+                      dispatch(setActiveConversee(null))
+                      dispatch(setActiveConversation(null))
+                      dispatch(setShouldPauseCheckHasMore(false))
+                    }
+                  }
+                })
+                .catch((error) => {
+                  console.error('An error occurred:', error.message)
+                  toast({
+                    title: `Error creating group.`,
+                    position: 'bottom-right',
+                    isClosable: true,
+                    status: 'error',
+                    duration: 5000,
+                  })
+                })
             }}
           >
             Leave group
