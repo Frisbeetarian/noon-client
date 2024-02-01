@@ -85,6 +85,7 @@ function Login({ axios }) {
                     placeholder="Username"
                     name="usernameOrEmail"
                     label=""
+                    color="white"
                   />
                 </FormControl>
 
@@ -104,6 +105,7 @@ function Login({ axios }) {
                     placeholder="Password"
                     label=""
                     type="password"
+                    color="white"
                   />
                 </FormControl>
 

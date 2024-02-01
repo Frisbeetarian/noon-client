@@ -113,6 +113,7 @@ function Register({ axios }) {
                         name="username"
                         placeholder="Username"
                         label=""
+                        color="white"
                       />
                     </FormControl>
                   </Box>
@@ -133,6 +134,7 @@ function Register({ axios }) {
                     name="email"
                     placeholder="Email address"
                     label=""
+                    color="white"
                   />
                 </FormControl>
 
@@ -153,6 +155,7 @@ function Register({ axios }) {
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Password"
                       label=""
+                      color="white"
                     />
 
                     <InputRightElement h={'full'} className="mt-1">
