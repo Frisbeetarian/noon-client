@@ -99,41 +99,6 @@ function Chat({ axios }) {
     const data = inputMessage
     setInputMessage('')
 
-    // const message = await saveGroupMessage({
-    //   variables: {
-    //     message: data,
-    //     type: 'text',
-    //     src: '',
-    //     conversationUuid: activeConversation.uuid,
-    //   },
-    // })
-
-    activeConversation.profiles.map((profile) => {
-      if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
-        emitPrivateChatMessage({
-          loggedInUser,
-          profile,
-          response: message,
-          activeConversation,
-          socket,
-        })
-        //
-        // socket.emit('private-chat-message', {
-        //   content:
-        //     loggedInUser.user?.profile?.username + ' sent you a message.',
-        //   from: loggedInUser.user?.profile?.uuid,
-        //   fromUsername: loggedInUser.user?.profile?.username,
-        //   to: profile.uuid,
-        //   toUsername: profile.username,
-        //   messageUuid: message.data?.saveGroupMessage?.uuid,
-        //   message: data,
-        //   type: 'text',
-        //   src: '',
-        //   conversationUuid: activeConversation.uuid,
-        // })
-      }
-    })
-
     dispatch(
       addMessageToActiveConversation({
         message: {
