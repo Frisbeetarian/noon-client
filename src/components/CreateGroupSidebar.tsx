@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react'
 import {
   Box,
-  Button,
   CloseButton,
   Flex,
   FormControl,
@@ -25,12 +24,9 @@ import { getLoggedInUser } from '../store/users'
 import { setOngoingCall } from '../store/chat'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
-// import { toErrorMap } from '../utils/toErrorMap'
-import { InputField } from './InputField'
 import SocketManager from './SocketIo/SocketManager'
 import AppButton from './AppComponents/AppButton'
 import AppInput from './AppComponents/AppInput'
-// import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
 const createGroupSchema = Yup.object().shape({
   name: Yup.string()
@@ -155,12 +151,6 @@ export default function CreateGroupSidebar() {
                 <HStack className="pl-1">
                   <Box>
                     <FormControl id="name" isRequired>
-                      {/*<InputField*/}
-                      {/*  name="name"*/}
-                      {/*  placeholder="Name"*/}
-                      {/*  label="Group name"*/}
-                      {/*/>*/}
-
                       <AppInput
                         name="name"
                         placeholder="Name"
@@ -171,12 +161,6 @@ export default function CreateGroupSidebar() {
                 </HStack>
 
                 <FormControl id="description" className="pl-1" isRequired>
-                  {/*<InputField*/}
-                  {/*  name="description"*/}
-                  {/*  placeholder="Description"*/}
-                  {/*  label="Group description"*/}
-                  {/*/>*/}
-
                   <AppInput
                     name="description"
                     placeholder="Description"
@@ -195,7 +179,6 @@ export default function CreateGroupSidebar() {
                         <GroupParticipant
                           key={friend.uuid}
                           participant={friend}
-                          // className="mb-3 box-content cursor-pointer"
                         ></GroupParticipant>
                       ))
                     ) : (
