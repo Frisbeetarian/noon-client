@@ -26,14 +26,12 @@ import {
 
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
-import { getSocketAuthObject } from '../store/sockets'
 
 import {
   setChatContainerHeight,
   setConversationOpen,
   setSearchComponent,
 } from '../store/ui'
-import SocketManager from './SocketIo/SocketManager'
 import withAxios from '../utils/withAxios'
 import AppMenuList from './AppComponents/AppMenuList'
 // import toast from '../store/middleware/toast'
@@ -63,6 +61,7 @@ function GroupConversationListing({ conversation, i, axios }) {
 
     dispatch(setChatContainerHeight('87.5vh'))
     dispatch(setConversationOpen(true))
+    dispatch(setActiveConversationSet(true))
     dispatch(
       setActiveGroupInStore({
         conversation,
@@ -75,13 +74,16 @@ function GroupConversationListing({ conversation, i, axios }) {
     <Flex
       key={conversation.uuid}
       tabIndex={0}
-      className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-amber-100 hover:border-sky-500 focus:outline-none focus:border-sky-700 focus-within:shadow-lg"
+      className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-red-800 hover:border-b-red-500 focus:outline-none"
       // style={{ transition: 'all .25s ' }}
       style={{
         transition: 'all .25s',
         ...(activeConversation && activeConversation.uuid === conversation.uuid
           ? {
-              backgroundColor: '#0F753B',
+              backgroundColor: '#921A1C',
+              outline: 'none',
+              boxShadow: 'none',
+              border: 'none',
             }
           : null),
       }}
