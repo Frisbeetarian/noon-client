@@ -25,25 +25,23 @@ import {
 
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
-import { getSocket } from '../store/sockets'
+import { getSocketAuthObject } from '../store/sockets'
 
-import { useLeaveGroupMutation } from '../generated/graphql'
 import {
   setChatContainerHeight,
   setConversationOpen,
   setSearchComponent,
 } from '../store/ui'
+import SocketManager from './SocketIo/SocketManager'
+import withAxios from '../utils/withAxios'
 
-function GroupConversationListing({ conversation, i }) {
+function GroupConversationListing({ conversation, i, axios }) {
   const dispatch = useDispatch()
-  const [
-    leaveGroup,
-    // { loading: leaveGroupLoading }
-  ] = useLeaveGroupMutation()
 
   const loggedInUser = useSelector(getLoggedInUser)
-  const socket = useSelector(getSocket)
   const activeConversation = useSelector(getActiveConversation)
+  const socketAuthObject = useSelector(getSocketAuthObject)
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
 
   function setActiveGroup(conversation) {
     dispatch(setActiveConversationSet(false))
@@ -63,7 +61,6 @@ function GroupConversationListing({ conversation, i }) {
 
     dispatch(setChatContainerHeight('87.5vh'))
     dispatch(setConversationOpen(true))
-
     dispatch(
       setActiveGroupInStore({
         conversation,
@@ -120,11 +117,11 @@ function GroupConversationListing({ conversation, i }) {
             className="bg-gray-800"
             icon={<EditIcon />}
             onClick={async () => {
-              const leaveGroupResponse = await leaveGroup({
-                variables: {
-                  groupUuid: conversation.uuid,
-                },
-              })
+              // const leaveGroupResponse = await leaveGroup({
+              //   variables: {
+              //     groupUuid: conversation.uuid,
+              //   },
+              // })
 
               dispatch(
                 removeConversation({
@@ -142,22 +139,22 @@ function GroupConversationListing({ conversation, i }) {
                 dispatch(setShouldPauseCheckHasMore(false))
               }
 
-              if (leaveGroupResponse) {
-                const participantsToSend: string[] = []
-
-                conversation.profiles.map((profile) => {
-                  if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
-                    participantsToSend.push(profile.uuid)
-                  }
-                })
-
-                socket.emit('left-group', {
-                  fromUuid: loggedInUser.user?.profile?.uuid,
-                  fromUsername: loggedInUser.user?.profile?.username,
-                  conversationUuid: conversation.uuid,
-                  participants: participantsToSend,
-                })
-              }
+              // if (leaveGroupResponse) {
+              //   const participantsToSend: string[] = []
+              //
+              //   conversation.profiles.map((profile) => {
+              //     if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
+              //       participantsToSend.push(profile.uuid)
+              //     }
+              //   })
+              //
+              //   socket.emit('left-group', {
+              //     fromUuid: loggedInUser.user?.profile?.uuid,
+              //     fromUsername: loggedInUser.user?.profile?.username,
+              //     conversationUuid: conversation.uuid,
+              //     participants: participantsToSend,
+              //   })
+              // }
             }}
           >
             Leave group
@@ -168,4 +165,4 @@ function GroupConversationListing({ conversation, i }) {
   )
 }
 
-export default GroupConversationListing
+export default withAxios(GroupConversationListing)
