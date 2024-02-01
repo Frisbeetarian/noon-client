@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from 'react'
 import {
   Box,
+  Button,
   CloseButton,
   Flex,
   FormControl,
   HStack,
+  Input,
   Stack,
   useToast,
 } from '@chakra-ui/react'
@@ -27,6 +29,8 @@ import * as Yup from 'yup'
 import SocketManager from './SocketIo/SocketManager'
 import AppButton from './AppComponents/AppButton'
 import AppInput from './AppComponents/AppInput'
+import withAxios from '../utils/withAxios'
+import { InputField } from './InputField'
 
 const createGroupSchema = Yup.object().shape({
   name: Yup.string()
@@ -35,7 +39,7 @@ const createGroupSchema = Yup.object().shape({
     .required('Group name is required'),
 })
 
-export default function CreateGroupSidebar() {
+function CreateGroupSidebar({ axios }) {
   const dispatch = useDispatch()
   const participants = useSelector(getParticipants)
   const loggedInUser = useSelector(getLoggedInUser)
@@ -82,6 +86,8 @@ export default function CreateGroupSidebar() {
         <Formik
           initialValues={{ name: '', description: '' }}
           validationSchema={createGroupSchema}
+          validateOnBlur={false}
+          validateOnChange={false}
           onSubmit={async (
             values
             // { setErrors }
@@ -92,40 +98,36 @@ export default function CreateGroupSidebar() {
 
                 participantsToSend.push(loggedInUser.user?.profile?.uuid)
 
-                // const conversation = await createGroupConversation({
-                //   variables: {
-                //     input: { ...values, type: 'group' },
-                //     participants: participantsToSend,
-                //   },
-                // })
+                axios
+                  .post('/api/conversations', {
+                    input: { ...values, type: 'group' },
+                    participants: participantsToSend,
+                  })
+                  .then((response) => {
+                    if (response.status === 200) {
+                      dispatch(clearState())
+                      dispatch(setCreateGroupComponent(false))
+                      dispatch(toggleCreateGroupActive(false))
 
-                dispatch(clearState())
-
-                // socket.emit('group-created', {
-                //   fromUuid: loggedInUser.user?.profile?.uuid,
-                //   fromUsername: loggedInUser.user?.profile?.username,
-                //   groupUuid: conversation.data?.createGroupConversation.uuid,
-                //   conversation: conversation.data?.createGroupConversation,
-                //   participants: participantsToSend,
-                // })
-                //
-                // dispatch(
-                //   addConversation({
-                //     conversation: conversation.data?.createGroupConversation,
-                //     loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-                //   })
-                // )
-
-                dispatch(setCreateGroupComponent(false))
-                dispatch(toggleCreateGroupActive(false))
-
-                toast({
-                  title: `${values.name} has been created. `,
-                  position: 'bottom-right',
-                  isClosable: true,
-                  status: 'success',
-                  duration: 5000,
-                })
+                      toast({
+                        title: `${values.name} has been created.`,
+                        position: 'bottom-right',
+                        isClosable: true,
+                        status: 'success',
+                        duration: 5000,
+                      })
+                    }
+                  })
+                  .catch((error) => {
+                    console.error('An error occurred:', error)
+                    toast({
+                      title: `Error creating group.`,
+                      position: 'bottom-right',
+                      isClosable: true,
+                      status: 'error',
+                      duration: 5000,
+                    })
+                  })
               } else {
                 setZeroFriendsError(true)
               }
@@ -151,7 +153,14 @@ export default function CreateGroupSidebar() {
                 <HStack className="pl-1">
                   <Box>
                     <FormControl id="name" isRequired>
-                      <AppInput
+                      {/*<AppInput*/}
+                      {/*  name="name"*/}
+                      {/*  placeholder="Name"*/}
+                      {/*  label="Group name"*/}
+                      {/*  type="text"*/}
+                      {/*/>*/}
+
+                      <InputField
                         name="name"
                         placeholder="Name"
                         label="Group name"
@@ -160,11 +169,18 @@ export default function CreateGroupSidebar() {
                   </Box>
                 </HStack>
 
-                <FormControl id="description" className="pl-1" isRequired>
-                  <AppInput
+                <FormControl id="description" className="pl-1">
+                  {/*<AppInput*/}
+                  {/*  name="description"*/}
+                  {/*  placeholder="Description"*/}
+                  {/*  label="Group description"*/}
+                  {/*  required={false}*/}
+                  {/*/>*/}
+
+                  <InputField
                     name="description"
                     placeholder="Description"
-                    label="Group description"
+                    label="description"
                   />
                 </FormControl>
 
@@ -241,3 +257,5 @@ export default function CreateGroupSidebar() {
     </div>
   )
 }
+
+export default withAxios(CreateGroupSidebar)

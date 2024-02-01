@@ -12,12 +12,27 @@ type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   name: string
   label: string
   textarea?: boolean
+  size?: string
+  placeholder?: string
+  border?: string
+  borderBottom?: string
+  borderRadius?: string
+  outline?: number
+  bg?: string
+  required?: boolean
 }
 
 export const InputField: React.FC<InputFieldProps> = ({
   label,
   textarea,
-  size: _,
+  size = 'md',
+  placeholder = 'Type message...',
+  border = 'none',
+  borderBottom = '1px solid #921A1C',
+  borderRadius = 'none',
+  outline = 0,
+  bg = 'black',
+  required = false,
   ...props
 }) => {
   let InputOrTextarea
@@ -37,13 +52,22 @@ export const InputField: React.FC<InputFieldProps> = ({
         {...field}
         {...props}
         id={field.name}
-        placeholder={props.placeholder}
-        border="none"
-        borderBottom="1px solid"
-        borderRadius="0"
+        size={size}
+        placeholder={placeholder}
+        border={border}
+        borderBottom={borderBottom}
+        borderRadius={borderRadius}
+        outline={outline}
+        bg={bg}
+        required={required}
+        sx={{
+          '::placeholder': {
+            color: 'white',
+          },
+        }}
       />
       {error ? (
-        <FormErrorMessage color="text-black" className="text-black">
+        <FormErrorMessage color="text-red-500" className="text-red-500">
           {error}
         </FormErrorMessage>
       ) : null}
