@@ -19,15 +19,17 @@ import {
 } from '../store/ui'
 
 import GroupParticipant from './GroupParticipant'
-import { getSocket } from '../store/sockets'
+import { getSocketAuthObject } from '../store/sockets'
 import { clearState, getParticipants } from '../store/groups'
 import { getLoggedInUser } from '../store/users'
-import { useCreateGroupConversationMutation } from '../generated/graphql'
-import { addConversation, setOngoingCall } from '../store/chat'
+import { setOngoingCall } from '../store/chat'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 // import { toErrorMap } from '../utils/toErrorMap'
 import { InputField } from './InputField'
+import SocketManager from './SocketIo/SocketManager'
+import AppButton from './AppComponents/AppButton'
+import AppInput from './AppComponents/AppInput'
 // import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 
 const createGroupSchema = Yup.object().shape({
@@ -39,21 +41,22 @@ const createGroupSchema = Yup.object().shape({
 
 export default function CreateGroupSidebar() {
   const dispatch = useDispatch()
-  const socket = useSelector(getSocket)
   const participants = useSelector(getParticipants)
   const loggedInUser = useSelector(getLoggedInUser)
   const [friends, setFriends] = useState(null)
   const [zeroFriendsError, setZeroFriendsError] = useState(false)
   const toast = useToast()
   const isMobile = useSelector(getIsMobile)
+  const socketAuthObject = useSelector(getSocketAuthObject)
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
 
-  const [
-    createGroupConversation,
-    // { loading: createGroupConversationLoading }
-  ] = useCreateGroupConversationMutation()
+  // const [
+  //   createGroupConversation,
+  //   // { loading: createGroupConversationLoading }
+  // ] = useCreateGroupConversationMutation()
 
   useEffect(() => {
-    setFriends(loggedInUser?.user?.friends)
+    setFriends(loggedInUser?.user?.profile?.friends)
 
     if (socket) {
       socket.on('set-ongoing-call-for-conversation', () => {
@@ -76,8 +79,8 @@ export default function CreateGroupSidebar() {
   }, [])
 
   return (
-    <div className="create-group-sidebar bg-gray-800 w-10/12 md:w-3/4 xl:w-2/5">
-      <h1 className="text-xl mb-10">Create Group</h1>
+    <div className="create-group-sidebar bg-black text-white w-10/12 md:w-3/4 xl:w-2/5">
+      <h1 className="text-xl mb-10 text-red-500 font-bold ">Create Group</h1>
 
       <Flex className="flex-col md:flex-row items-center md:items-start ">
         <Formik
@@ -93,29 +96,29 @@ export default function CreateGroupSidebar() {
 
                 participantsToSend.push(loggedInUser.user?.profile?.uuid)
 
-                const conversation = await createGroupConversation({
-                  variables: {
-                    input: { ...values, type: 'group' },
-                    participants: participantsToSend,
-                  },
-                })
+                // const conversation = await createGroupConversation({
+                //   variables: {
+                //     input: { ...values, type: 'group' },
+                //     participants: participantsToSend,
+                //   },
+                // })
 
                 dispatch(clearState())
 
-                socket.emit('group-created', {
-                  fromUuid: loggedInUser.user?.profile?.uuid,
-                  fromUsername: loggedInUser.user?.profile?.username,
-                  groupUuid: conversation.data?.createGroupConversation.uuid,
-                  conversation: conversation.data?.createGroupConversation,
-                  participants: participantsToSend,
-                })
-
-                dispatch(
-                  addConversation({
-                    conversation: conversation.data?.createGroupConversation,
-                    loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-                  })
-                )
+                // socket.emit('group-created', {
+                //   fromUuid: loggedInUser.user?.profile?.uuid,
+                //   fromUsername: loggedInUser.user?.profile?.username,
+                //   groupUuid: conversation.data?.createGroupConversation.uuid,
+                //   conversation: conversation.data?.createGroupConversation,
+                //   participants: participantsToSend,
+                // })
+                //
+                // dispatch(
+                //   addConversation({
+                //     conversation: conversation.data?.createGroupConversation,
+                //     loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+                //   })
+                // )
 
                 dispatch(setCreateGroupComponent(false))
                 dispatch(toggleCreateGroupActive(false))
@@ -145,14 +148,20 @@ export default function CreateGroupSidebar() {
           {({}) => (
             <Form className="flex w-full md:w-2/4">
               <Stack spacing={4}>
-                <p className="text-gray-500 underline text-lg md:text-md">
+                <p className="text-red-500 font-bold  text-lg md:text-md">
                   Group details
                 </p>
 
                 <HStack className="pl-1">
                   <Box>
                     <FormControl id="name" isRequired>
-                      <InputField
+                      {/*<InputField*/}
+                      {/*  name="name"*/}
+                      {/*  placeholder="Name"*/}
+                      {/*  label="Group name"*/}
+                      {/*/>*/}
+
+                      <AppInput
                         name="name"
                         placeholder="Name"
                         label="Group name"
@@ -162,7 +171,13 @@ export default function CreateGroupSidebar() {
                 </HStack>
 
                 <FormControl id="description" className="pl-1" isRequired>
-                  <InputField
+                  {/*<InputField*/}
+                  {/*  name="description"*/}
+                  {/*  placeholder="Description"*/}
+                  {/*  label="Group description"*/}
+                  {/*/>*/}
+
+                  <AppInput
                     name="description"
                     placeholder="Description"
                     label="Group description"
@@ -171,19 +186,21 @@ export default function CreateGroupSidebar() {
 
                 {isMobile && (
                   <Flex className="flex-col pt-5 text-black w-full md:w-2/4 box-content">
-                    <p className="text-gray-500 underline text-lg md:text-md">
-                      Add friends
+                    <p className="text-red-500 font-bold  text-lg md:text-md">
+                      Friends
                     </p>
 
-                    {friends
-                      ? (friends as any).map((friend) => (
-                          <GroupParticipant
-                            key={friend.uuid}
-                            participant={friend}
-                            // className="mb-3 box-content cursor-pointer"
-                          ></GroupParticipant>
-                        ))
-                      : null}
+                    {friends ? (
+                      (friends as any).map((friend) => (
+                        <GroupParticipant
+                          key={friend.uuid}
+                          participant={friend}
+                          // className="mb-3 box-content cursor-pointer"
+                        ></GroupParticipant>
+                      ))
+                    ) : (
+                      <p>No friends added yet.</p>
+                    )}
 
                     {zeroFriendsError && (
                       <p className="text-red-500 ml-auto text-sm mt-2">
@@ -194,19 +211,14 @@ export default function CreateGroupSidebar() {
                 )}
 
                 <Stack spacing={10} pt={2}>
-                  <Button
+                  <AppButton
                     className="w-3/5 ml-auto"
                     type="submit"
                     loadingText="Submitting"
                     size="md"
-                    bg={'green.500'}
-                    color={'white'}
-                    _hover={{
-                      bg: 'green.900',
-                    }}
                   >
                     Create group
-                  </Button>
+                  </AppButton>
                 </Stack>
               </Stack>
             </Form>
@@ -214,20 +226,20 @@ export default function CreateGroupSidebar() {
         </Formik>
 
         {!isMobile && (
-          <Flex className="flex-col text-black w-2/4 box-content">
-            <p className="text-gray-500 underline text-lg md:text-md">
-              Add friends
-            </p>
+          <Flex className="flex-col  w-2/4 box-content">
+            <p className="text-red-500 font-bold text-lg md:text-md">Friends</p>
 
-            {friends
-              ? (friends as any).map((friend) => (
-                  <GroupParticipant
-                    key={friend.uuid}
-                    participant={friend}
-                    // className="mb-3 box-content cursor-pointer"
-                  ></GroupParticipant>
-                ))
-              : null}
+            {friends ? (
+              (friends as any).map((friend) => (
+                <GroupParticipant
+                  key={friend.uuid}
+                  participant={friend}
+                  // className="mb-3 box-content cursor-pointer"
+                ></GroupParticipant>
+              ))
+            ) : (
+              <p>No friends added yet.</p>
+            )}
 
             {zeroFriendsError && (
               <p className="text-red-500 ml-auto text-sm mt-2">

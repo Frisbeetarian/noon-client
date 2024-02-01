@@ -63,7 +63,7 @@ function Chat({ axios }) {
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
 
   const profile = useSelector(getActiveConversee)
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
 
   // const [
   //   saveMessage,
@@ -280,17 +280,17 @@ function Chat({ axios }) {
         </ModalContent>
       </Modal>
 
-      {isCreateGroupOpen ? (
-        <Flex
-          className="flex-col p-0 box-content"
-          style={{
-            height: isMobile ? '77.5vh' : '90vh',
-            transition: 'all .5s',
-          }}
-        >
-          <CreateGroup />
-        </Flex>
-      ) : null}
+      {/*{isCreateGroupOpen ? (*/}
+      {/*  <Flex*/}
+      {/*    className="flex-col p-0 box-content"*/}
+      {/*    style={{*/}
+      {/*      height: isMobile ? '77.5vh' : '90vh',*/}
+      {/*      transition: 'all .5s',*/}
+      {/*    }}*/}
+      {/*  >*/}
+      {/*    <CreateGroup />*/}
+      {/*  </Flex>*/}
+      {/*) : null}*/}
 
       {activeConversation && activeConversation.type === 'group' ? (
         <Flex
