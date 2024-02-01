@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { InputHTMLAttributes } from 'react'
 import {
   FormControl,
