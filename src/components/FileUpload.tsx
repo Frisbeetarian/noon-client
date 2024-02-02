@@ -1,17 +1,10 @@
-// @ts-nocheck
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
 import { getLoggedInUser } from '../store/users'
 import SocketManager from './SocketIo/SocketManager'
-import {
-  addMessageToActiveConversation,
-  getActiveConversation,
-  getActiveConversee,
-} from '../store/chat'
+import { getActiveConversation, getActiveConversee } from '../store/chat'
 
-import { useUploadImageMutation } from '../generated/graphql'
-import { emitPrivateChatMessage } from '../utils/SocketEmits'
 import { getSocketAuthObject } from '../store/sockets'
 export const FileUpload = ({ children }) => {
   const dispatch = useDispatch()
@@ -25,6 +18,18 @@ export const FileUpload = ({ children }) => {
   // const [uploadImageMutation] = useUploadImageMutation()
 
   const { acceptedFiles, getRootProps } = useDropzone()
+
+  // .post('/api/messages/uploadFile', {
+  //   file: {
+  //     lastModified: event.target.files[0].lastModified,
+  //     name: event.target.files[0].name,
+  //     size: event.target.files[0].size,
+  //     type: event.target.files[0].type,
+  //     webkitRelativePath: event.target.files[0].webkitRelativePath,
+  //   },
+  //   conversationUuid: activeConversation.uuid,
+  //   profileUuid: loggedInUser.user.profile.uuid,
+  // })
 
   useEffect(() => {
     if (acceptedFiles.length !== 0) {

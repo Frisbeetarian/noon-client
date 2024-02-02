@@ -143,45 +143,37 @@ function Chat({ axios }) {
     const data = inputMessage
     setInputMessage('')
 
-    const message = await axios.post('/api/messages', {
-      message: data,
-      type: 'text',
-      src: '',
-      conversationUuid: activeConversation.uuid,
-      recipientUuid: profile.uuid,
-      recipientUsername: profile.username,
-    })
+    const message = await axios
+      .post('/api/messages', {
+        message: data,
+        type: 'text',
+        src: '',
+        conversationUuid: activeConversation.uuid,
+        recipientUuid: profile.uuid,
+        recipientUsername: profile.username,
+      })
+      .then(function (response) {
+        if (!response.status) {
+          toast({
+            title: `Error sending message.`,
+            position: 'bottom-right',
+            isClosable: true,
+            status: 'error',
+            duration: 5000,
+          })
+        }
+      })
+      .catch(function (error) {
+        console.log('error:', error)
 
-    // const message = await saveMessage({
-    //   variables: {
-    //     message: data,
-    //     type: 'text',
-    //     src: '',
-    //     conversationUuid: activeConversation.uuid,
-    //     to: profile.uuid,
-    //   },
-    // })
-
-    // emitPrivateChatMessage({
-    //   loggedInUser,
-    //   profile,
-    //   response: message,
-    //   activeConversation,
-    //   socket,
-    // })
-
-    // socket.emit('private-chat-message', {
-    //   content: loggedInUser.user?.profile?.username + ' sent you a message.',
-    //   from: loggedInUser.user?.profile?.uuid,
-    //   fromUsername: loggedInUser.user?.profile?.username,
-    //   to: profile.uuid,
-    //   toUsername: profile.username,
-    //   messageUuid: message.data?.saveMessage?.uuid,
-    //   message: data,
-    //   type: 'text',
-    //   src: '',
-    //   conversationUuid: activeConversation.uuid,
-    // })
+        toast({
+          title: `Error sending message.`,
+          position: 'bottom-right',
+          isClosable: true,
+          status: 'error',
+          duration: 5000,
+        })
+      })
 
     dispatch(
       addMessageToActiveConversation({
