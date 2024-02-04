@@ -106,15 +106,26 @@ function SocketControls({ axios }) {
         }
       )
 
+      // senderProfileUuid,
+      //   senderProfileUsername,
+      //   recipientUuid,
+      //   conversationUuid,
+      //   conversationType,
+      //   messageUuid,
+      //   messageType,
+      //   filePath,
+
       socket.on(
         'send-file',
-        ({ senderUuid, senderUsername, conversationUuid, message }) => {
-          console.log('message in socket controls:', message)
-          // if (!message.trim().length) {
-          //   return
-          // }
-
-          const data = message
+        ({
+          senderProfileUuid,
+          senderProfileUsername,
+          recipientProfileUuid,
+          conversationUuid,
+          messageUuid,
+          messageType,
+          filePath,
+        }) => {
           if (
             activeConversationSet === false ||
             conversationUuid !== activeConversation.uuid
@@ -130,14 +141,20 @@ function SocketControls({ axios }) {
           dispatch(
             addMessageToActiveConversation({
               message: {
-                uuid: message.uuid,
-                content: data.content,
+                uuid: messageUuid,
+                content: '',
                 // @ts-ignore
-                sender: { uuid: senderUuid, username: senderUsername },
-                from: 'other',
+                sender: {
+                  uuid: senderProfileUuid,
+                  username: senderProfileUsername,
+                },
+                from:
+                  loggedInUser.user.profile.uuid === recipientProfileUuid
+                    ? 'me'
+                    : 'other',
                 conversationUuid,
-                type: message.type,
-                src: message.src,
+                type: messageType,
+                src: filePath,
                 //TODO get deleted from payload
                 deleted: false,
                 updatedAt: new Date().toString(),

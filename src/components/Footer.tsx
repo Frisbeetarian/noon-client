@@ -95,9 +95,9 @@ const Footer = ({
 
     const participants = []
     activeConversation.profiles.map((profile) => {
-      if (profile.uuid !== loggedInUser.user.profile.uuid) {
-        participants.push(profile.uuid)
-      }
+      // if (profile.uuid !== loggedInUser.user.profile.uuid) {
+      participants.push(profile.uuid)
+      // }
     })
 
     formData.append('participantUuids', participants.join(','))
@@ -145,7 +145,7 @@ const Footer = ({
           border="none"
           borderBottom="1px solid #921A1C"
           borderRadius="none"
-          className=" box-content text-white w-3/4 ml-4 border-b"
+          className="box-content text-white w-3/4 ml-4 border-b"
           pl={isMobile ? '2' : '4'}
           outline={0}
           style={{ borderBottom: '1px solid black !important' }}
