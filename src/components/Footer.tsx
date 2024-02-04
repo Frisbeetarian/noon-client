@@ -87,13 +87,36 @@ const Footer = ({
   }
   const handleChange = async (event) => {
     console.log('event file:', event.target.files[0])
-    await axios
-      .post('/api/messages/uploadFile', {
-        file: event.target.files[0],
-        conversationUuid: activeConversation.uuid,
-        profileUuid: loggedInUser.user.profile.uuid,
+
+    const formData = new FormData()
+    formData.append('file', event.target.files[0])
+    formData.append('conversationUuid', activeConversation.uuid)
+    formData.append('profileUuid', loggedInUser.user.profile.uuid)
+    formData.append('conversationType', activeConversation.type)
+
+    if (activeConversation.type === 'pm') {
+      activeConversation.profiles.map((profile) => {
+        if (profile.uuid !== loggedInUser.user.profile.uuid) {
+          formData.append('toProfileUuid', profile.uuid)
+        }
+      })
+    } else if (activeConversation.type === 'group') {
+      const participants = []
+      activeConversation.profiles.map((profile) => {
+        if (profile.uuid !== loggedInUser.user.profile.uuid) {
+          participants.push(profile.uuid)
+        }
       })
 
+      formData.append('participants', participants.join(','))
+    }
+
+    await axios
+      .post('/api/messages/uploadFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
       .then(async (response) => {
         dispatch(
           addMessageToActiveConversation({
