@@ -91,13 +91,12 @@ const Footer = ({
     const formData = new FormData()
     formData.append('file', event.target.files[0])
     formData.append('conversationUuid', activeConversation.uuid)
-    formData.append('profileUuid', loggedInUser.user.profile.uuid)
     formData.append('conversationType', activeConversation.type)
 
     if (activeConversation.type === 'pm') {
       activeConversation.profiles.map((profile) => {
         if (profile.uuid !== loggedInUser.user.profile.uuid) {
-          formData.append('toProfileUuid', profile.uuid)
+          formData.append('recipientProfileUuid', profile.uuid)
         }
       })
     } else if (activeConversation.type === 'group') {
@@ -108,7 +107,7 @@ const Footer = ({
         }
       })
 
-      formData.append('participants', participants.join(','))
+      formData.append('participantUuids', participants.join(','))
     }
 
     await axios

@@ -106,6 +106,49 @@ function SocketControls({ axios }) {
         }
       )
 
+      socket.on(
+        'send-file',
+        ({ senderUuid, senderUsername, conversationUuid, message }) => {
+          console.log('message in socket controls:', message)
+          // if (!message.trim().length) {
+          //   return
+          // }
+
+          const data = message
+          if (
+            activeConversationSet === false ||
+            conversationUuid !== activeConversation.uuid
+          ) {
+            // updateUnreadMessagesForConversation({
+            //   variables: {
+            //     conversationUuid: conversationUuid,
+            //     profileUuid: loggedInUser?.user?.profile?.uuid,
+            //   },
+            // })
+          }
+
+          dispatch(
+            addMessageToActiveConversation({
+              message: {
+                uuid: message.uuid,
+                content: data.content,
+                // @ts-ignore
+                sender: { uuid: senderUuid, username: senderUsername },
+                from: 'other',
+                conversationUuid,
+                type: message.type,
+                src: message.src,
+                //TODO get deleted from payload
+                deleted: false,
+                updatedAt: new Date().toString(),
+                createdAt: new Date().toString(),
+              },
+              loggedInProfileUuid: loggedInUser.user?.profile.uuid,
+            })
+          )
+        }
+      )
+
       socket.on('send-friend-request', ({ senderUuid, senderUsername }) => {
         dispatch(
           addFriendRequestEntry({
