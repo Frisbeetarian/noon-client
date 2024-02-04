@@ -93,22 +93,14 @@ const Footer = ({
     formData.append('conversationUuid', activeConversation.uuid)
     formData.append('conversationType', activeConversation.type)
 
-    if (activeConversation.type === 'pm') {
-      activeConversation.profiles.map((profile) => {
-        if (profile.uuid !== loggedInUser.user.profile.uuid) {
-          formData.append('recipientProfileUuid', profile.uuid)
-        }
-      })
-    } else if (activeConversation.type === 'group') {
-      const participants = []
-      activeConversation.profiles.map((profile) => {
-        if (profile.uuid !== loggedInUser.user.profile.uuid) {
-          participants.push(profile.uuid)
-        }
-      })
+    const participants = []
+    activeConversation.profiles.map((profile) => {
+      if (profile.uuid !== loggedInUser.user.profile.uuid) {
+        participants.push(profile.uuid)
+      }
+    })
 
-      formData.append('participantUuids', participants.join(','))
-    }
+    formData.append('participantUuids', participants.join(','))
 
     await axios
       .post('/api/messages/uploadFile', formData, {
