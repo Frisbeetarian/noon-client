@@ -167,13 +167,16 @@ const Messages = ({ axios }) => {
 
   const deleteMessageHandler = async (item) => {
     await axios
-      .delete('/api/messages/', {
-        conversationUuid: activeConversation.uuid,
-        messageUuid: item.uuid,
-        from: loggedInUser.user.profile.uuid,
-        type: item.type,
-        src: item.src,
-      })
+      .delete(
+        `/api/messages?messageUuid=${item.uuid}&conversationUuid=${activeConversation.uuid}&from=${loggedInUser.user.profile.uuid}&type=${item.type}&src=${item.src}.`,
+        {
+          conversationUuid: activeConversation.uuid,
+          messageUuid: item.uuid,
+          from: loggedInUser.user.profile.uuid,
+          type: item.type,
+          src: item.src,
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
           dispatch(
