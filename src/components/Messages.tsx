@@ -22,10 +22,8 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 // } from '../generated/graphql'
 
 import {
-  clearUnreadMessagesForConversationInStore,
   getActiveConversation,
   getActiveConversee,
-  addMessagesToConversation,
   setActiveConversationHasMoreMessages,
   setShouldPauseCheckHasMore,
   getShouldPauseCheckHasMore,
@@ -41,6 +39,7 @@ import { getIsMobile } from '../store/ui'
 import { Message } from '../generated/graphql'
 import { getSocketAuthObject } from '../store/sockets'
 import withAxios from '../utils/withAxios'
+import AppMenuList from './AppComponents/AppMenuList'
 
 const Messages = ({ axios }) => {
   const dispatch = useDispatch()
@@ -49,18 +48,7 @@ const Messages = ({ axios }) => {
   const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
   const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
-  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const isMobile = useSelector(getIsMobile)
-
-  // const [
-  //   clearUnreadMessagesForConversation,
-  //   // { loading: unreadMessagesLoading },
-  // ] = useClearUnreadMessagesForConversationMutation()
-  //
-  // const [
-  //   deleteMessage,
-  //   // { loading: deleteMessageLoading }
-  // ] = useDeleteMessageMutation()
 
   const [variables, setVariables] = useState({
     limit: 20,
@@ -178,37 +166,36 @@ const Messages = ({ axios }) => {
   }
 
   const deleteMessageHandler = async (item) => {
-    // const message = await deleteMessage({
-    //   variables: {
-    //     messageUuid: item.uuid,
-    //     conversationUuid: activeConversation.uuid,
-    //     from: loggedInUser.user.profile.uuid,
-    //     type: item.type,
-    //     src: item.src,
-    //   },
-    // })
-    //
-    // dispatch(
-    //   deleteMessageInStore({
-    //     uuid: message.data?.deleteMessage.uuid as string,
-    //     content: message.data?.deleteMessage.content as string,
-    //     deleted: message.data?.deleteMessage.deleted as boolean,
-    //     conversationUuid: activeConversation.uuid,
-    //   })
-    // )
-    //
-    // activeConversation.profiles.map((profile) => {
-    //   if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
-    //     socket.emit('message-deleted', {
-    //       messageUuid: item.uuid,
-    //       to: profile.uuid,
-    //       toUsername: profile.username,
-    //       fromUsername: loggedInUser.user?.profile?.username,
-    //       from: loggedInUser.user.profile.uuid,
-    //       conversationUuid: activeConversation.uuid,
-    //     })
-    //   }
-    // })
+    await axios
+      .delete('/api/messages/' + item.uuid)
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch(
+            deleteMessageInStore({
+              uuid: item.uuid,
+              content: item.content,
+              deleted: true,
+              conversationUuid: activeConversation.uuid,
+            })
+          )
+
+          activeConversation.profiles.map((profile) => {
+            if (profile.uuid !== loggedInUser.user.profile.uuid) {
+              SocketManager.emit('message-deleted', {
+                messageUuid: item.uuid,
+                to: profile.uuid,
+                toUsername: profile.username,
+                fromUsername: loggedInUser.user.profile.username,
+                from: loggedInUser.user.profile.uuid,
+                conversationUuid: activeConversation.uuid,
+              })
+            }
+          })
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 
   return (
@@ -278,16 +265,24 @@ const Messages = ({ axios }) => {
                             />
 
                             {/*<Portal>*/}
-                            <MenuList>
+                            <AppMenuList
+                              bg="black"
+                              className="bg-red-500 text-black"
+                              border="none"
+                              borderRadius="0"
+                            >
                               <MenuItem
-                                className="text-red-500 bg-gray-500"
+                                size="xs"
+                                bg="black"
+                                className="bg-red-500 text-black text-sm"
+                                border="none"
                                 onClick={async () => {
                                   await deleteMessageHandler(item)
                                 }}
                               >
-                                Unsend message
+                                Delete message
                               </MenuItem>
-                            </MenuList>
+                            </AppMenuList>
                             {/*</Portal>*/}
                           </Menu>
                         ) : null}

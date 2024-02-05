@@ -10,6 +10,7 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react'
 import Footer from './Footer'
 
@@ -42,10 +43,7 @@ import {
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 
-import { FileUpload } from './FileUpload'
-import CreateGroup from './CreateGroup'
 import Video from './Video'
-import { emitPrivateChatMessage } from '../utils/SocketEmits'
 import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
 
@@ -57,13 +55,13 @@ function Chat({ axios }) {
   const [innerHeight, setInnerHeight] = useState(0)
 
   const [inputMessage, setInputMessage] = useState('')
-  const socket = useSelector(getSocketId)
 
   const activeConversation = useSelector(getActiveConversation)
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
 
   const profile = useSelector(getActiveConversee)
   const [isOpen, setIsOpen] = useState(false)
+  const toast = useToast()
 
   // const [
   //   saveMessage,
