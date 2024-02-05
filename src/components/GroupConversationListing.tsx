@@ -132,7 +132,7 @@ function GroupConversationListing({ conversation, i, axios }) {
                   groupUuid: conversation.uuid,
                 })
                 .then((response) => {
-                  if (respons.status === 200) {
+                  if (response.status === 200) {
                     dispatch(
                       removeConversation({
                         conversationUuid: conversation.uuid,

@@ -143,67 +143,62 @@ function Chat({ axios }) {
     const data = inputMessage
     setInputMessage('')
 
-    const message = await axios.post('/api/messages', {
-      message: data,
-      type: 'text',
-      src: '',
-      conversationUuid: activeConversation.uuid,
-      recipientUuid: profile.uuid,
-      recipientUsername: profile.username,
-    })
-
-    // const message = await saveMessage({
-    //   variables: {
-    //     message: data,
-    //     type: 'text',
-    //     src: '',
-    //     conversationUuid: activeConversation.uuid,
-    //     to: profile.uuid,
-    //   },
-    // })
-
-    // emitPrivateChatMessage({
-    //   loggedInUser,
-    //   profile,
-    //   response: message,
-    //   activeConversation,
-    //   socket,
-    // })
-
-    // socket.emit('private-chat-message', {
-    //   content: loggedInUser.user?.profile?.username + ' sent you a message.',
-    //   from: loggedInUser.user?.profile?.uuid,
-    //   fromUsername: loggedInUser.user?.profile?.username,
-    //   to: profile.uuid,
-    //   toUsername: profile.username,
-    //   messageUuid: message.data?.saveMessage?.uuid,
-    //   message: data,
-    //   type: 'text',
-    //   src: '',
-    //   conversationUuid: activeConversation.uuid,
-    // })
-
-    dispatch(
-      addMessageToActiveConversation({
-        message: {
-          uuid: message.data?.saveMessage?.uuid as string,
-          content: data as string,
-          sender: {
-            uuid: loggedInUser?.user?.profile?.uuid,
-            username: loggedInUser?.user?.profile?.username,
-          },
-          from: 'me',
-          type: 'text',
-          src: '',
-          deleted: false,
-          conversationUuid: activeConversation.uuid,
-          updatedAt: new Date().toString(),
-          createdAt: new Date().toString(),
-          // deleted: ,
-        },
-        loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+    const message = await axios
+      .post('/api/messages', {
+        message: data,
+        type: 'text',
+        src: '',
+        conversationUuid: activeConversation.uuid,
+        recipientUuid: profile.uuid,
+        recipientUsername: profile.username,
       })
-    )
+      .then(function (response) {
+        console.log('response:', response)
+        if (response.status === 200) {
+          dispatch(
+            addMessageToActiveConversation({
+              message: {
+                uuid: response.data.uuid as string,
+                content: data as string,
+                sender: {
+                  uuid: loggedInUser?.user?.profile?.uuid,
+                  username: loggedInUser?.user?.profile?.username,
+                },
+                from: 'me',
+                type: 'text',
+                src: '',
+                deleted: false,
+                conversationUuid: activeConversation.uuid,
+                updatedAt: new Date().toString(),
+                createdAt: new Date().toString(),
+                // deleted: ,
+              },
+              loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+            })
+          )
+        }
+
+        if (!response.status) {
+          toast({
+            title: `Error sending message.`,
+            position: 'bottom-right',
+            isClosable: true,
+            status: 'error',
+            duration: 5000,
+          })
+        }
+      })
+      .catch(function (error) {
+        console.log('error:', error)
+
+        toast({
+          title: `Error sending message.`,
+          position: 'bottom-right',
+          isClosable: true,
+          status: 'error',
+          duration: 5000,
+        })
+      })
   }
 
   return (
@@ -282,10 +277,10 @@ function Chat({ axios }) {
           {!isMobile && <Header></Header>}
 
           {videoFrameOpenState !== true ? (
-            <FileUpload>
-              <Messages />
-            </FileUpload>
+            // <FileUpload>
+            <Messages />
           ) : (
+            // </FileUpload>
             <Video
               conversationUuid={activeConversation.uuid}
               profile={loggedInUser.user?.profile}
@@ -306,10 +301,10 @@ function Chat({ axios }) {
           {!isMobile && <Header></Header>}
 
           {videoFrameOpenState !== true ? (
-            <FileUpload>
-              <Messages />
-            </FileUpload>
+            // <FileUpload>
+            <Messages />
           ) : (
+            // </FileUpload>
             <Video
               conversationUuid={activeConversation.uuid}
               profile={loggedInUser.user?.profile}

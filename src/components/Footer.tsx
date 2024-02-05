@@ -34,7 +34,12 @@ import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
 import AppInput from './AppComponents/AppInput'
 
-const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
+const Footer = ({
+  inputMessage,
+  setInputMessage,
+  handleSendMessage,
+  axios,
+}) => {
   const socketAuthObject = useSelector(getSocketAuthObject)
 
   const hiddenFileInput = React.useRef(null)
@@ -80,73 +85,52 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
   const handleClick = () => {
     ;(hiddenFileInput?.current as any).click()
   }
-  const handleChange = (event) => {
-    // uploadImageMutation({
-    //   variables: {
-    //     file: event.target.files[0],
-    //     conversationUuid: activeConversation.uuid,
-    //     profileUuid: loggedInUser.user.profile.uuid,
-    //   },
-    // })
-    //   .then(async (response) => {
-    //     if (activeConversation.type === 'pm') {
-    //       socket?.emit('private-chat-message', {
-    //         content:
-    //           loggedInUser.user?.profile?.username + ' sent you a message.',
-    //         from: loggedInUser.user?.profile?.uuid,
-    //         fromUsername: loggedInUser.user?.profile?.username,
-    //         to: activeConversee.uuid,
-    //         toUsername: activeConversee.username,
-    //         messageUuid: response.data?.uploadImage.uuid,
-    //         message: response.data?.uploadImage.content,
-    //         type: response.data?.uploadImage.type,
-    //         src: response.data?.uploadImage.src,
-    //         conversationUuid: activeConversation.uuid,
-    //       })
-    //     } else {
-    //       activeConversation.profiles.map((conversationProfile) => {
-    //         if (conversationProfile.uuid !== loggedInUser.user?.profile?.uuid) {
-    //           socket?.emit('private-chat-message', {
-    //             content:
-    //               loggedInUser.user?.profile?.username + ' sent you a message.',
-    //             from: loggedInUser.user?.profile?.uuid,
-    //             fromUsername: loggedInUser.user?.profile?.username,
-    //             to: conversationProfile.uuid,
-    //             toUsername: conversationProfile.username,
-    //             messageUuid: response.data?.uploadImage.uuid,
-    //             message: response.data?.uploadImage.content,
-    //             type: response.data?.uploadImage.type,
-    //             src: response.data?.uploadImage.src,
-    //             conversationUuid: activeConversation.uuid,
-    //           })
-    //         }
-    //       })
-    //     }
-    //
-    //     dispatch(
-    //       addMessageToActiveConversation({
-    //         message: {
-    //           uuid: response.data?.uploadImage.uuid as string,
-    //           content: response.data?.uploadImage.content as string,
-    //           from: 'me',
-    //           type: response.data?.uploadImage.type as string,
-    //           src: response.data?.uploadImage.src,
-    //           conversationUuid: activeConversation.uuid,
-    //           deleted: false,
-    //           sender: {
-    //             uuid: loggedInUser?.user?.profile?.uuid,
-    //             username: loggedInUser?.user?.profile?.username,
-    //           },
-    //           updatedAt: new Date().toString(),
-    //           createdAt: new Date().toString(),
-    //         },
-    //         loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-    //       })
-    //     )
-    //   })
-    //   .catch((error) => {
-    //     console.log('error:', error)
-    //   })
+  const handleChange = async (event) => {
+    console.log('event file:', event.target.files[0])
+
+    const formData = new FormData()
+    formData.append('file', event.target.files[0])
+    formData.append('conversationUuid', activeConversation.uuid)
+    formData.append('conversationType', activeConversation.type)
+
+    const participants = []
+    activeConversation.profiles.map((profile) => {
+      participants.push(profile.uuid)
+    })
+
+    formData.append('participantUuids', participants.join(','))
+
+    await axios
+      .post('/api/messages/uploadFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(async (response) => {
+        dispatch(
+          addMessageToActiveConversation({
+            message: {
+              uuid: response.data?.uploadImage.uuid as string,
+              content: response.data?.uploadImage.content as string,
+              from: 'me',
+              type: response.data?.uploadImage.type as string,
+              src: response.data?.uploadImage.src,
+              conversationUuid: activeConversation.uuid,
+              deleted: false,
+              sender: {
+                uuid: loggedInUser?.user?.profile?.uuid,
+                username: loggedInUser?.user?.profile?.username,
+              },
+              updatedAt: new Date().toString(),
+              createdAt: new Date().toString(),
+            },
+            loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+          })
+        )
+      })
+      .catch((error) => {
+        console.log('error:', error)
+      })
   }
 
   return (
@@ -159,7 +143,7 @@ const Footer = ({ inputMessage, setInputMessage, handleSendMessage }) => {
           border="none"
           borderBottom="1px solid #921A1C"
           borderRadius="none"
-          className=" box-content text-white w-3/4 ml-4 border-b"
+          className="box-content text-white w-3/4 ml-4 border-b"
           pl={isMobile ? '2' : '4'}
           outline={0}
           style={{ borderBottom: '1px solid black !important' }}

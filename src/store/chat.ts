@@ -124,7 +124,6 @@ const slice = createSlice({
       chat,
       action: PayloadAction<{ conversationUuid: string }>
     ) => {
-      console.log('action.payload.conversationUuid', action.payload)
       chat.conversations = chat.conversations?.filter(
         (conversation) => conversation.uuid != action.payload.conversationUuid
       )
@@ -405,14 +404,18 @@ const slice = createSlice({
         (call) => call.profileUuid === action.payload?.loggedInProfileUuid
       )
 
-      const messagesArray =
-        action.payload.conversation?.messages.map((message) => ({
-          ...message,
-          from:
-            message.sender.uuid === action.payload?.loggedInProfileUuid
-              ? 'me'
-              : 'other',
-        })) || []
+      const messagesArray: Message[] = []
+
+      action.payload.conversation?.messages.map((message) => {
+        const messageObject = { ...message }
+
+        messageObject.from =
+          messageObject.sender.uuid === action.payload?.loggedInProfileUuid
+            ? 'me'
+            : 'other'
+
+        messagesArray.push(messageObject)
+      })
 
       const sortedMessage = messagesArray.sort(
         (a, b) => (b.createdAt as any) - (a.createdAt as any)
