@@ -64,17 +64,6 @@ const Footer = ({
       socket.on('set-ongoing-call-for-conversation', () => {
         dispatch(setOngoingCall())
       })
-
-      socket.on('message-deleted', ({ messageUuid, conversationUuid }) => {
-        dispatch(
-          deleteMessageInStore({
-            uuid: messageUuid,
-            content: 'Message has been deleted.',
-            deleted: true,
-            conversationUuid: conversationUuid,
-          })
-        )
-      })
     }
 
     return () => {

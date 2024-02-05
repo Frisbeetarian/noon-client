@@ -15,6 +15,7 @@ import { setFriendFlagOnProfile } from '../../store/profiles'
 import {
   addConversation,
   addMessageToActiveConversation,
+  deleteMessageInStore,
   getActiveConversation,
   getActiveConversationSet,
   removeConversation,
@@ -106,14 +107,19 @@ function SocketControls({ axios }) {
         }
       )
 
-      // senderProfileUuid,
-      //   senderProfileUsername,
-      //   recipientUuid,
-      //   conversationUuid,
-      //   conversationType,
-      //   messageUuid,
-      //   messageType,
-      //   filePath,
+      socket.on('message-deleted', ({ messageUuid, conversationUuid }) => {
+        console.log('messageUuid:', messageUuid)
+        console.log('conversationUuid:', conversationUuid)
+
+        dispatch(
+          deleteMessageInStore({
+            uuid: messageUuid,
+            content: 'Message has been deleted.',
+            deleted: true,
+            conversationUuid: conversationUuid,
+          })
+        )
+      })
 
       socket.on(
         'send-file',
