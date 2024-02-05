@@ -181,25 +181,12 @@ const Messages = ({ axios }) => {
         if (response.status === 200) {
           dispatch(
             deleteMessageInStore({
-              uuid: item.uuid,
-              content: item.content,
+              uuid: response.data.uuid,
+              content: response.data.content,
               deleted: true,
               conversationUuid: activeConversation.uuid,
             })
           )
-
-          activeConversation.profiles.map((profile) => {
-            if (profile.uuid !== loggedInUser.user.profile.uuid) {
-              SocketManager.emit('message-deleted', {
-                messageUuid: item.uuid,
-                to: profile.uuid,
-                toUsername: profile.username,
-                fromUsername: loggedInUser.user.profile.username,
-                from: loggedInUser.user.profile.uuid,
-                conversationUuid: activeConversation.uuid,
-              })
-            }
-          })
         }
       })
       .catch((error) => {
@@ -338,7 +325,7 @@ const Messages = ({ axios }) => {
                                     await deleteMessageHandler(item)
                                   }}
                                 >
-                                  Unsend message
+                                  Delete message
                                 </MenuItem>
                               </MenuList>
                               {/*</Portal>*/}
@@ -380,7 +367,7 @@ const Messages = ({ axios }) => {
                                   await deleteMessageHandler(item)
                                 }}
                               >
-                                Unsend message
+                                Delete message
                               </MenuItem>
                             </MenuList>
                             {/*</Portal>*/}
@@ -494,7 +481,7 @@ const Messages = ({ axios }) => {
                                   await deleteMessageHandler(item)
                                 }}
                               >
-                                Unsend message
+                                Delete message
                               </MenuItem>
                             </MenuList>
                             {/*</Portal>*/}
@@ -537,7 +524,7 @@ const Messages = ({ axios }) => {
                                     deleteMessageHandler(item)
                                   }}
                                 >
-                                  Unsend message
+                                  Delete message
                                 </MenuItem>
                               </MenuList>
                               {/*</Portal>*/}
@@ -582,7 +569,7 @@ const Messages = ({ axios }) => {
                                   deleteMessageHandler(item)
                                 }}
                               >
-                                Unsend message
+                                Delete message
                               </MenuItem>
                             </MenuList>
                             {/*</Portal>*/}
