@@ -98,7 +98,7 @@ function CreateGroupSidebar({ axios }) {
 
                 participantsToSend.push(loggedInUser.user?.profile?.uuid)
 
-                axios
+                await axios
                   .post('/api/conversations', {
                     input: { ...values, type: 'group' },
                     participants: participantsToSend,
@@ -108,12 +108,35 @@ function CreateGroupSidebar({ axios }) {
                       dispatch(clearState())
                       dispatch(setCreateGroupComponent(false))
                       dispatch(toggleCreateGroupActive(false))
+
                       toast({
+                        id: 'create-group-toast',
                         title: `${values.name} has been created.`,
                         position: 'bottom-right',
                         isClosable: true,
                         status: 'success',
                         duration: 5000,
+                        render: () => (
+                          <Flex
+                            direction="column"
+                            color="white"
+                            p={3}
+                            bg="#4B0E10"
+                          >
+                            <Flex>
+                              <p>{values.name} has been created.</p>
+
+                              <CloseButton
+                                className="sticky top ml-4"
+                                size="sm"
+                                onClick={() => {
+                                  toast.close('create-group-toast')
+                                }}
+                                name="close button"
+                              />
+                            </Flex>
+                          </Flex>
+                        ),
                       })
                     }
                   })
@@ -142,7 +165,7 @@ function CreateGroupSidebar({ axios }) {
             }
           }}
         >
-          {({}) => (
+          {({ isSubmitting }) => (
             <Form className="flex w-full md:w-2/4">
               <Stack spacing={4}>
                 <p className="text-red-500 font-bold  text-lg md:text-md">
@@ -212,8 +235,8 @@ function CreateGroupSidebar({ axios }) {
                   <AppButton
                     className="w-3/5 ml-auto"
                     type="submit"
-                    loadingText="Submitting"
                     size="md"
+                    isLoading={isSubmitting}
                   >
                     Create group
                   </AppButton>

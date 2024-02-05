@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react'
 import {
   Box,
@@ -17,7 +16,6 @@ import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import * as Yup from 'yup'
-// import { useRegisterMutation } from '../../generated/graphql'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import {
@@ -25,7 +23,6 @@ import {
   setShowLoginComponent,
   setShowRegisterComponent,
 } from '../../store/ui'
-import withAxios from '../../utils/withAxios'
 import AppButton from '../AppComponents/AppButton'
 
 const RegisterSchema = Yup.object().shape({
@@ -44,11 +41,6 @@ function Register({ axios }) {
   const router = useRouter()
   const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState(false)
-
-  // const [
-  //   register,
-  //   // { loading: registerLoading }
-  // ] = useRegisterMutation()
 
   return (
     <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
@@ -71,14 +63,6 @@ function Register({ axios }) {
           validateOnChange={false}
           onSubmit={async (values, { setErrors }) => {
             const response = await axios.post('/api/users/register', values)
-            // const response = await axios.post('/api/users/register', {
-            //   method: 'POST',
-            //   headers: {
-            //     'Content-Type': 'application/json',
-            //   },
-            //   body: JSON.stringify({ options: values }),
-            // })
-            console.log('response: ', response)
 
             if (response && response.statusText === 'OK') {
               if (response.errors) {

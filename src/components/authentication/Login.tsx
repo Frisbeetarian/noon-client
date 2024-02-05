@@ -1,12 +1,9 @@
-// @ts-nocheck
 import React from 'react'
 import {
   Box,
-  Button,
   FormControl,
   FormLabel,
   Heading,
-  Link,
   Stack,
   Text,
 } from '@chakra-ui/react'

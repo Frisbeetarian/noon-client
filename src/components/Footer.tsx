@@ -95,9 +95,7 @@ const Footer = ({
 
     const participants = []
     activeConversation.profiles.map((profile) => {
-      // if (profile.uuid !== loggedInUser.user.profile.uuid) {
       participants.push(profile.uuid)
-      // }
     })
 
     formData.append('participantUuids', participants.join(','))

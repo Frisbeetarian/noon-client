@@ -120,7 +120,6 @@ function SocketControls({ axios }) {
         ({
           senderProfileUuid,
           senderProfileUsername,
-          recipientProfileUuid,
           conversationUuid,
           messageUuid,
           messageType,
@@ -149,7 +148,7 @@ function SocketControls({ axios }) {
                   username: senderProfileUsername,
                 },
                 from:
-                  loggedInUser.user.profile.uuid === recipientProfileUuid
+                  loggedInUser.user.profile.uuid === senderProfileUuid
                     ? 'me'
                     : 'other',
                 conversationUuid,
