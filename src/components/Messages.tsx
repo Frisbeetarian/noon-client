@@ -613,7 +613,7 @@ const Messages = ({ axios }) => {
                       <Flex
                         className="justify-end relative"
                         boxSize={!item.deleted ? 'sm' : ''}
-                        bg={!item.deleted ? 'red' : 'black'}
+                        bg={!item.deleted ? '' : 'black'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
                         my="1"

@@ -153,6 +153,31 @@ function Chat({ axios }) {
         recipientUsername: profile.username,
       })
       .then(function (response) {
+        console.log('response:', response)
+        if (response.status === 200) {
+          dispatch(
+            addMessageToActiveConversation({
+              message: {
+                uuid: response.data.uuid as string,
+                content: data as string,
+                sender: {
+                  uuid: loggedInUser?.user?.profile?.uuid,
+                  username: loggedInUser?.user?.profile?.username,
+                },
+                from: 'me',
+                type: 'text',
+                src: '',
+                deleted: false,
+                conversationUuid: activeConversation.uuid,
+                updatedAt: new Date().toString(),
+                createdAt: new Date().toString(),
+                // deleted: ,
+              },
+              loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+            })
+          )
+        }
+
         if (!response.status) {
           toast({
             title: `Error sending message.`,
@@ -174,28 +199,6 @@ function Chat({ axios }) {
           duration: 5000,
         })
       })
-
-    dispatch(
-      addMessageToActiveConversation({
-        message: {
-          uuid: message.data?.saveMessage?.uuid as string,
-          content: data as string,
-          sender: {
-            uuid: loggedInUser?.user?.profile?.uuid,
-            username: loggedInUser?.user?.profile?.username,
-          },
-          from: 'me',
-          type: 'text',
-          src: '',
-          deleted: false,
-          conversationUuid: activeConversation.uuid,
-          updatedAt: new Date().toString(),
-          createdAt: new Date().toString(),
-          // deleted: ,
-        },
-        loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-      })
-    )
   }
 
   return (
@@ -274,10 +277,10 @@ function Chat({ axios }) {
           {!isMobile && <Header></Header>}
 
           {videoFrameOpenState !== true ? (
-            <FileUpload>
-              <Messages />
-            </FileUpload>
+            // <FileUpload>
+            <Messages />
           ) : (
+            // </FileUpload>
             <Video
               conversationUuid={activeConversation.uuid}
               profile={loggedInUser.user?.profile}
@@ -298,10 +301,10 @@ function Chat({ axios }) {
           {!isMobile && <Header></Header>}
 
           {videoFrameOpenState !== true ? (
-            <FileUpload>
-              <Messages />
-            </FileUpload>
+            // <FileUpload>
+            <Messages />
           ) : (
+            // </FileUpload>
             <Video
               conversationUuid={activeConversation.uuid}
               profile={loggedInUser.user?.profile}

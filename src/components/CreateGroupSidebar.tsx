@@ -23,7 +23,7 @@ import GroupParticipant from './GroupParticipant'
 import { getSocketAuthObject } from '../store/sockets'
 import { clearState, getParticipants } from '../store/groups'
 import { getLoggedInUser } from '../store/users'
-import { setOngoingCall } from '../store/chat'
+import { addConversation, setOngoingCall } from '../store/chat'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import SocketManager from './SocketIo/SocketManager'
@@ -108,6 +108,13 @@ function CreateGroupSidebar({ axios }) {
                       dispatch(clearState())
                       dispatch(setCreateGroupComponent(false))
                       dispatch(toggleCreateGroupActive(false))
+
+                      dispatch(
+                        addConversation({
+                          conversation: response.data,
+                          loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+                        })
+                      )
 
                       toast({
                         id: 'create-group-toast',
