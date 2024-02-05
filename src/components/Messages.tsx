@@ -229,7 +229,7 @@ const Messages = ({ axios }) => {
           ? activeConversation.messages.map((item, index) => {
               if (item.from === 'me') {
                 return (
-                  <Flex key={index} className=" justify-end">
+                  <Flex key={index} className="justify-end">
                     {item.type === 'text' ? (
                       <Flex
                         bg="black"
@@ -303,7 +303,7 @@ const Messages = ({ axios }) => {
                           </Flex>
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
 
@@ -319,15 +319,25 @@ const Messages = ({ axios }) => {
                               />
 
                               {/*<Portal>*/}
-                              <MenuList maxW="100px">
+                              <AppMenuList
+                                maxW="100px"
+                                bg="black"
+                                className="bg-red-500 text-black"
+                                border="none"
+                                borderRadius="0"
+                              >
                                 <MenuItem
+                                  size="xs"
+                                  bg="black"
+                                  className="bg-red-500 text-black text-sm"
+                                  border="none"
                                   onClick={async () => {
                                     await deleteMessageHandler(item)
                                   }}
                                 >
                                   Delete message
                                 </MenuItem>
-                              </MenuList>
+                              </AppMenuList>
                               {/*</Portal>*/}
                             </Menu>
                           </div>
@@ -347,7 +357,7 @@ const Messages = ({ axios }) => {
                           <ReactAudioPlayer src={item.src} controls />
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
                         {!item.deleted ? (
@@ -360,16 +370,25 @@ const Messages = ({ axios }) => {
                               variant="none"
                             />
 
-                            {/*<Portal>*/}
-                            <MenuList>
+                            <AppMenuList
+                              maxW="100px"
+                              bg="black"
+                              className="bg-red-500 text-black"
+                              border="none"
+                              borderRadius="0"
+                            >
                               <MenuItem
+                                size="xs"
+                                bg="black"
+                                className="bg-red-500 text-black text-sm"
+                                border="none"
                                 onClick={async () => {
                                   await deleteMessageHandler(item)
                                 }}
                               >
                                 Delete message
                               </MenuItem>
-                            </MenuList>
+                            </AppMenuList>
                             {/*</Portal>*/}
                           </Menu>
                         ) : null}
@@ -395,14 +414,18 @@ const Messages = ({ axios }) => {
                         p="3"
                       >
                         <Text>
-                          {!item.deleted ? item.content : <i>{item.content}</i>}
+                          {!item.deleted ? (
+                            item.content
+                          ) : (
+                            <i className="text-gray-400">{item.content}</i>
+                          )}
                         </Text>
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex
                         className=" relative"
                         boxSize={!item.deleted ? 'sm' : ''}
-                        bg={!item.deleted ? '' : 'black'}
+                        bg={!item.deleted ? '' : 'gray.100'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
                         my="1"
@@ -418,7 +441,7 @@ const Messages = ({ axios }) => {
                           </Flex>
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
                       </Flex>
@@ -426,7 +449,7 @@ const Messages = ({ axios }) => {
                       <Flex
                         className="justify-end relative"
                         boxSize={!item.deleted ? '' : ''}
-                        bg={!item.deleted ? 'black' : 'black'}
+                        bg={!item.deleted ? 'black' : 'gray.100'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
                         my="1"
@@ -436,7 +459,7 @@ const Messages = ({ axios }) => {
                           <ReactAudioPlayer src={item.src} controls />
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
                       </Flex>
@@ -457,8 +480,10 @@ const Messages = ({ axios }) => {
                         minW="100px"
                         maxW="350px"
                         my="1"
-                        p="3"
-                        className="relative"
+                        pr={!item.deleted ? '0' : '3'}
+                        pl="3"
+                        py="2"
+                        className="relative justify-between"
                       >
                         <Text>
                           {!item.deleted ? item.content : <i>{item.content}</i>}
@@ -474,17 +499,24 @@ const Messages = ({ axios }) => {
                               variant="none"
                             />
 
-                            {/*<Portal>*/}
-                            <MenuList>
+                            <AppMenuList
+                              bg="black"
+                              className="bg-red-500 text-black"
+                              border="none"
+                              borderRadius="0"
+                            >
                               <MenuItem
+                                size="xs"
+                                bg="black"
+                                className="bg-red-500 text-black text-sm"
+                                border="none"
                                 onClick={async () => {
                                   await deleteMessageHandler(item)
                                 }}
                               >
                                 Delete message
                               </MenuItem>
-                            </MenuList>
-                            {/*</Portal>*/}
+                            </AppMenuList>
                           </Menu>
                         ) : null}
                       </Flex>
@@ -502,7 +534,7 @@ const Messages = ({ axios }) => {
                           <Image src={item.src} alt={item.content} />
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
 
@@ -518,15 +550,25 @@ const Messages = ({ axios }) => {
                               />
 
                               {/*<Portal>*/}
-                              <MenuList>
+                              <AppMenuList
+                                maxW="100px"
+                                bg="black"
+                                className="bg-red-500 text-black"
+                                border="none"
+                                borderRadius="0"
+                              >
                                 <MenuItem
+                                  size="xs"
+                                  bg="black"
+                                  className="bg-red-500 text-black text-sm"
+                                  border="none"
                                   onClick={async () => {
-                                    deleteMessageHandler(item)
+                                    await deleteMessageHandler(item)
                                   }}
                                 >
                                   Delete message
                                 </MenuItem>
-                              </MenuList>
+                              </AppMenuList>
                               {/*</Portal>*/}
                             </Menu>
                           </div>
@@ -548,7 +590,7 @@ const Messages = ({ axios }) => {
                           <ReactAudioPlayer src={item.src} controls />
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
 
@@ -563,15 +605,25 @@ const Messages = ({ axios }) => {
                             />
 
                             {/*<Portal>*/}
-                            <MenuList>
+                            <AppMenuList
+                              maxW="100px"
+                              bg="black"
+                              className="bg-red-500 text-black"
+                              border="none"
+                              borderRadius="0"
+                            >
                               <MenuItem
+                                size="xs"
+                                bg="black"
+                                className="bg-red-500 text-black text-sm"
+                                border="none"
                                 onClick={async () => {
-                                  deleteMessageHandler(item)
+                                  await deleteMessageHandler(item)
                                 }}
                               >
                                 Delete message
                               </MenuItem>
-                            </MenuList>
+                            </AppMenuList>
                             {/*</Portal>*/}
                           </Menu>
                         ) : null}
@@ -597,14 +649,18 @@ const Messages = ({ axios }) => {
                         p="3"
                       >
                         <Text>
-                          {!item.deleted ? item.content : <i>{item.content}</i>}
+                          {!item.deleted ? (
+                            item.content
+                          ) : (
+                            <i className="text-gray-400">{item.content}</i>
+                          )}
                         </Text>
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex
                         className="justify-end relative"
                         boxSize={!item.deleted ? 'sm' : ''}
-                        bg={!item.deleted ? '' : 'black'}
+                        bg={!item.deleted ? '' : 'gray.100'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
                         my="1"
@@ -616,7 +672,7 @@ const Messages = ({ axios }) => {
                           </Flex>
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
                       </Flex>
@@ -624,7 +680,7 @@ const Messages = ({ axios }) => {
                       <Flex
                         className="justify-end relative"
                         boxSize={!item.deleted ? 'sm' : ''}
-                        bg={!item.deleted ? 'red' : 'black'}
+                        bg={!item.deleted ? 'red' : 'gray.100'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
                         my="1"
@@ -634,7 +690,7 @@ const Messages = ({ axios }) => {
                           <ReactAudioPlayer src={item.src} controls />
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
                       </Flex>

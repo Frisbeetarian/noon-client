@@ -108,9 +108,6 @@ function SocketControls({ axios }) {
       )
 
       socket.on('message-deleted', ({ messageUuid, conversationUuid }) => {
-        console.log('messageUuid:', messageUuid)
-        console.log('conversationUuid:', conversationUuid)
-
         dispatch(
           deleteMessageInStore({
             uuid: messageUuid,
