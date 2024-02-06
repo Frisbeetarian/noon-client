@@ -32,7 +32,6 @@ import SocketManager from './SocketIo/SocketManager'
 import { getSocketAuthObject } from '../store/sockets'
 import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
-import AppInput from './AppComponents/AppInput'
 
 const Footer = ({
   inputMessage,
@@ -57,7 +56,7 @@ const Footer = ({
   //   // { loading: setPendingCallLoading }
   // ] = useSetPendingCallForConversationMutation()
 
-  const { recorderState, ...handlers }: UseRecorder = useRecorder()
+  const { recorderState, ...handlers }: UseRecorder = useRecorder(axios)
 
   useEffect(() => {
     if (socket) {
@@ -82,10 +81,14 @@ const Footer = ({
     formData.append('conversationUuid', activeConversation.uuid)
     formData.append('conversationType', activeConversation.type)
 
-    const participants = []
-    activeConversation.profiles.map((profile) => {
-      participants.push(profile.uuid)
-    })
+    // const participants = []
+    // activeConversation.profiles.map((profile) => {
+    //   participants.push(profile.uuid)
+    // })
+    const participants = activeConversation.profiles.map(
+      (profile) => profile.uuid
+    )
+    formData.append('participantUuids', participants.join(','))
 
     formData.append('participantUuids', participants.join(','))
 
@@ -96,26 +99,15 @@ const Footer = ({
         },
       })
       .then(async (response) => {
-        dispatch(
-          addMessageToActiveConversation({
-            message: {
-              uuid: response.data?.uploadImage.uuid as string,
-              content: response.data?.uploadImage.content as string,
-              from: 'me',
-              type: response.data?.uploadImage.type as string,
-              src: response.data?.uploadImage.src,
-              conversationUuid: activeConversation.uuid,
-              deleted: false,
-              sender: {
-                uuid: loggedInUser?.user?.profile?.uuid,
-                username: loggedInUser?.user?.profile?.username,
-              },
-              updatedAt: new Date().toString(),
-              createdAt: new Date().toString(),
-            },
-            loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+        if (response.status === 200) {
+          toast({
+            title: `File has been sent.`,
+            position: 'bottom-right',
+            isClosable: true,
+            status: 'error',
+            duration: 5000,
           })
-        )
+        }
       })
       .catch((error) => {
         console.log('error:', error)
@@ -167,7 +159,11 @@ const Footer = ({
         </Box>
 
         <Box className="xs:w-1/4 flex items-center justify-end mr-1 md:mr-2">
-          <RecorderControls recorderState={recorderState} handlers={handlers} />
+          <RecorderControls
+            recorderState={recorderState}
+            handlers={handlers}
+            axios={axios}
+          />
         </Box>
 
         <Box className="flex items-center justify-center xs:w-1/4 mr-1 md:mr-2">

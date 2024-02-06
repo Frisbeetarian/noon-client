@@ -14,7 +14,6 @@ const JitsiMeeting = dynamic(
 
 import { getLoggedInUser } from '../store/users'
 import { setVideoFrameForConversation } from '../store/video'
-import { useCancelPendingCallForConversationMutation } from '../generated/graphql'
 
 import {
   cancelPendingCall,
@@ -40,8 +39,8 @@ const Video = ({ conversationUuid, profile, email }) => {
     []
   )
 
-  const [cancelPendingCallForConversation] =
-    useCancelPendingCallForConversationMutation()
+  // const [cancelPendingCallForConversation] =
+  //   useCancelPendingCallForConversationMutation()
 
   const printEventOutput = (payload) => {
     updateLog((items) => [...items, JSON.stringify(payload)])
@@ -61,16 +60,16 @@ const Video = ({ conversationUuid, profile, email }) => {
     dispatch(
       cancelPendingCall({
         conversationUuid: activeConversation.uuid,
-        loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+        loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
       })
     )
 
-    await cancelPendingCallForConversation({
-      variables: {
-        conversationUuid: activeConversation.uuid,
-        profileUuid: loggedInUser.user?.profile?.uuid,
-      },
-    })
+    // await cancelPendingCallForConversation({
+    //   variables: {
+    //     conversationUuid: activeConversation.uuid,
+    //     profileUuid: loggedInUser.user?.profile?.uuid,
+    //   },
+    // })
   }
 
   const handleChatUpdates = (payload) => {

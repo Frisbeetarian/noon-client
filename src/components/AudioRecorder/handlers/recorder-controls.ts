@@ -20,8 +20,6 @@ export async function startRecording(setRecorderState: SetRecorder) {
 
 export function saveRecording(recorder: any) {
   if (recorder.state !== 'inactive') {
-    console.log('recorder state:', JSON.stringify(recorder))
-
     recorder.stop()
   }
 }

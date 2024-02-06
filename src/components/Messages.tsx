@@ -354,7 +354,7 @@ const Messages = ({ axios }) => {
                         p={!item.deleted ? '0' : '3'}
                       >
                         {!item.deleted ? (
-                          <ReactAudioPlayer src={item.src} controls />
+                          <ReactAudioPlayer style="" src={item.src} controls />
                         ) : (
                           <Text>
                             <i className="text-gray-400">{item.content}</i>

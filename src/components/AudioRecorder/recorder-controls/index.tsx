@@ -1,9 +1,10 @@
 // @ts-nocheck
+import { useSelector } from 'react-redux'
+import { Flex, Icon } from '@chakra-ui/react'
+import { ImMic, ImArrowRight, ImCancelCircle } from 'react-icons/im'
+
 import { formatMinutes, formatSeconds } from '../../../utils/formatTime'
 import { RecorderControlsProps } from '../types/recorder'
-import { Button, Flex, Icon } from '@chakra-ui/react'
-import { ImMic, ImArrowRight, ImCancelCircle } from 'react-icons/im'
-import { useSelector } from 'react-redux'
 import { getIsMobile } from '../../../store/ui'
 import AppButton from '../../AppComponents/AppButton'
 
