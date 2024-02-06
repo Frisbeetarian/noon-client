@@ -21,6 +21,7 @@ import {
   setShouldPauseCheckHasMore,
   getShouldPauseCheckHasMore,
   deleteMessageInStore,
+  addMessagesToConversation,
 } from '../store/chat'
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -49,27 +50,9 @@ const Messages = ({ axios }) => {
       : null
   )
 
-  // const [variables, setVariables] = useState({
-  //   limit: 20,
-  //   cursor:
-  //     activeConversation.messages.length !== 0
-  //       ? new Date(
-  //           activeConversation.messages[
-  //             activeConversation.messages.length - 1
-  //           ].createdAt
-  //         ).getTime()
-  //       : null,
-  //   conversationUuid: activeConversation.uuid,
-  // })
-
   const [currentPage, setCurrentPage] = useState(1)
-
-  // const oldestMessageTimestamp =
-  //   activeConversation.messages[activeConversation.messages.length - 1]
-  //     ?.createdAt
-  // const cursor = oldestMessageTimestamp
-  //   ? new Date(oldestMessageTimestamp).getTime()
-  //   : undefined
+  const [hasMore, setHasMore] = useState(true)
+  const [fetchMessages, setFetchMessages] = useState(false)
 
   const {
     data: messagesResponse,
@@ -80,17 +63,18 @@ const Messages = ({ axios }) => {
   } = useGetMessagesForConversationQuery(
     {
       conversationUuid: activeConversation.uuid,
-      limit: 20,
+      limit: 10,
       cursor: cursor,
     },
     {
-      skip: !activeConversation?.uuid,
+      skip: fetchMessages || !activeConversation?.uuid,
     }
   )
 
-  console.log('messagesResponse:', messagesResponse)
-
   const loadMoreMessages = () => {
+    setFetchMessages(true)
+
+    // console.log('messagesResponse:', messagesResponse)
     if (messagesResponse?.hasMore) {
       setCursor(
         new Date(
@@ -99,8 +83,30 @@ const Messages = ({ axios }) => {
           ].createdAt
         ).getTime()
       )
+      dispatch(
+        addMessagesToConversation({
+          conversationUuid: activeConversation.uuid,
+          messages: messagesResponse.messages,
+          loggedInProfileUuid: loggedInUser.user.profile.uuid,
+        })
+      )
+      // setHasMore(true)
+    } else {
+      // setHasMore(false)
     }
   }
+
+  useEffect(() => {
+    if (messagesResponse?.hasMore) {
+      setHasMore(true)
+    } else {
+      setHasMore(false)
+    }
+
+    if (messagesResponse && messagesResponse?.messages.length !== 0) {
+      console.log('messagesResponse:', messagesResponse)
+    }
+  }, [messagesResponse])
 
   const handleFetchMoreMessages = () => {
     if (hasNextPage) {
@@ -177,7 +183,7 @@ const Messages = ({ axios }) => {
       style={isMobile ? { height: '77.5vh' } : { height: '77.5vh' }}
     >
       <InfiniteScroll
-        dataLength={activeConversation.messages.length ?? 0}
+        dataLength={activeConversation.messages.length}
         next={loadMoreMessages}
         style={{
           display: 'flex',
@@ -185,7 +191,7 @@ const Messages = ({ axios }) => {
           overflowX: 'hidden',
         }}
         inverse={true}
-        hasMore={hasNextPage}
+        hasMore={hasMore}
         loader={<Spinner />}
         scrollableTarget="scrollableDiv"
       >
