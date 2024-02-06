@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
-import reducer from './reducer'
+import rootReducer from './reducer'
 import { createWrapper } from 'next-redux-wrapper'
+import { conversationsApiSlice } from './api/conversationsApiSlice'
 
 const makeStore = () =>
   configureStore({
-    reducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(conversationsApiSlice.middleware),
     devTools: true,
   })
 

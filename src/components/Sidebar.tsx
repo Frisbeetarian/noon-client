@@ -51,6 +51,7 @@ import ChatControlsAndSearchForMobile from './ChatControlsAndSearchForMobile'
 import SocketControls from './SocketIo/SocketControls'
 import withAxios from '../utils/withAxios'
 import AppMenuList from './AppComponents/AppMenuList'
+import { useGetConversationsQuery } from '../store/api/conversationsApiSlice'
 
 function Sidebar({ axios }) {
   const router = useRouter()
@@ -59,6 +60,7 @@ function Sidebar({ axios }) {
   const searchComponentState = useSelector(getSearchComponentState)
   const [innerHeight, setInnerHeight] = useState(0)
   const [areConversationsLoading, setAreConversationsLoading] = useState(true)
+  const { data: conversations, isLoading } = useGetConversationsQuery()
 
   const loggedInUser = useSelector(getLoggedInUser)
   const isConversationOpen = useSelector(getIsConversationOpen)
@@ -192,8 +194,10 @@ function Sidebar({ axios }) {
         className="flex-col pt-3 scroll-auto overflow-auto"
         style={{ flex: '0.875' }}
       >
-        {areConversationsLoading ? (
-          <Spinner />
+        {isLoading ? (
+          <Flex className="items-center justify-center">
+            <Spinner />
+          </Flex>
         ) : getConversationsFromStore &&
           getConversationsFromStore.length !== 0 ? (
           [...Object.values(getConversationsFromStore)].map((conversation, i) =>

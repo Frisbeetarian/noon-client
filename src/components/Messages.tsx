@@ -8,89 +8,97 @@ import {
   Menu,
   MenuButton,
   MenuItem,
-  MenuList,
   IconButton,
 } from '@chakra-ui/react'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
-// import {
-//   // PaginatedMessages,
-//   useCheckIfConversationHasMoreMessagesQuery,
-//   useClearUnreadMessagesForConversationMutation,
-//   useDeleteMessageMutation,
-//   useGetMessagesForConversationQuery,
-// } from '../generated/graphql'
 
 import {
   getActiveConversation,
   getActiveConversee,
   setActiveConversationHasMoreMessages,
-  setShouldPauseCheckHasMore,
-  getShouldPauseCheckHasMore,
   deleteMessageInStore,
+  addMessagesToConversation,
 } from '../store/chat'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
 import ReactAudioPlayer from 'react-audio-player'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import SocketManager from './SocketIo/SocketManager'
 import { getIsMobile } from '../store/ui'
-import { Message } from '../generated/graphql'
-import { getSocketAuthObject } from '../store/sockets'
 import withAxios from '../utils/withAxios'
 import AppMenuList from './AppComponents/AppMenuList'
-import AppAudioPlayer from './AudioRecorder/AppAudioPlayer'
+import { useGetMessagesForConversationQuery } from '../store/api/conversationsApiSlice'
 
 const Messages = ({ axios }) => {
   const dispatch = useDispatch()
-  const socketAuthObject = useSelector(getSocketAuthObject)
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
-  const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
   const isMobile = useSelector(getIsMobile)
+  const [cursor, setCursor] = useState(
+    activeConversation.messages.length !== 0
+      ? new Date(
+          activeConversation.messages[
+            activeConversation.messages.length - 1
+          ].createdAt
+        ).getTime()
+      : null
+  )
 
-  const [variables, setVariables] = useState({
-    limit: 20,
-    cursor:
-      activeConversation.messages.length !== 0
-        ? activeConversation.messages[activeConversation.messages.length - 1]
-            .createdAt
-        : null,
-    conversationUuid: activeConversation.uuid,
-  })
+  const [hasMore, setHasMore] = useState(true)
+  const [fetchMessages, setFetchMessages] = useState(false)
 
-  const [shouldPause, setShouldPause] = useState(true)
-  const [, setShouldCheckHasMorePause] = useState(false)
-  const [localMessages, setLocalMessages] = useState<Message[]>([])
+  const { data: messagesResponse } = useGetMessagesForConversationQuery(
+    {
+      conversationUuid: activeConversation.uuid,
+      limit: 10,
+      cursor: cursor,
+    },
+    {
+      skip: fetchMessages || !activeConversation?.uuid,
+    }
+  )
 
-  /*  const { data, loading } = useMeQuery({
-    pause: isServer(),
-    fetchPolicy: 'network-only',
-  })*/
+  const loadMoreMessages = () => {
+    setFetchMessages(true)
+    if (messagesResponse?.hasMore) {
+      setCursor(
+        new Date(
+          messagesResponse.messages[
+            messagesResponse.messages.length - 1
+          ].createdAt
+        ).getTime()
+      )
+    }
 
-  // const { data } = useGetMessagesForConversationQuery({
-  //   variables,
-  //   skip: shouldPause,
-  //   fetchPolicy: 'network-only',
-  // })
-  //
-  // let { data: hasMoreOnInit } = useCheckIfConversationHasMoreMessagesQuery({
-  //   variables: {
-  //     conversationUuid: activeConversation.uuid,
-  //   },
-  //   skip: shouldPauseCheckHasMore,
-  //   fetchPolicy: 'network-only',
-  // })
+    if (messagesResponse && messagesResponse.messages.length !== 0) {
+      dispatch(
+        addMessagesToConversation({
+          conversationUuid: activeConversation.uuid,
+          messages: messagesResponse.messages,
+          loggedInProfileUuid: loggedInUser.user.profile.uuid,
+        })
+      )
+
+      setFetchMessages(false)
+    }
+  }
+
+  useEffect(() => {
+    if (messagesResponse?.hasMore) {
+      setHasMore(true)
+    } else {
+      setHasMore(false)
+    }
+  }, [messagesResponse])
 
   async function handleCheckForHasMoreMessages() {
-    console.log('active conversation:', activeConversation)
-
     const hasMore = await axios.get(
       'api/conversations/' + activeConversation.uuid + '/checkMessages'
     )
 
+    setHasMore(hasMore)
     if (hasMore) {
       dispatch(setActiveConversationHasMoreMessages(hasMore.data))
     }
@@ -98,73 +106,9 @@ const Messages = ({ axios }) => {
 
   useEffect(() => {
     if (activeConversation) {
-      if (activeConversation.messages.length === 0) {
-        handleCheckForHasMoreMessages()
-      }
+      handleCheckForHasMoreMessages()
     }
-
-    return () => {
-      setShouldCheckHasMorePause(false)
-      // setLocalMessages([])
-    }
-  }, [activeConversation.messages])
-
-  // useEffect(() => {
-  //   if (data) {
-  //     setShouldCheckHasMorePause(true)
-  //     hasMoreOnInit = undefined
-  //
-  //     // @ts-ignore
-  //     setLocalMessages((prevState) => {
-  //       return [...prevState, ...data.getMessagesForConversation.messages]
-  //     })
-  //   }
-  //
-  //   return () => {
-  //     setShouldCheckHasMorePause(false)
-  //     setLocalMessages([])
-  //   }
-  // }, [data])
-
-  // TODO check how to initialize data
-  // useEffect(() => {
-  //   if (localMessages.length !== 0) {
-  //     dispatch(
-  //       addMessagesToConversation({
-  //         conversationUuid: activeConversation.uuid,
-  //         messages: localMessages,
-  //         loggedInProfileUuid: loggedInUser.user.profile.uuid,
-  //       })
-  //     )
-  //
-  //     dispatch(setShouldPauseCheckHasMore(true))
-  //   }
-  // }, [localMessages])
-  //
-  // useEffect(() => {
-  //   if (
-  //     activeConversation.unreadMessages &&
-  //     activeConversation.unreadMessages !== 0 &&
-  //     activeConversation.profileThatHasUnreadMessages ===
-  //       loggedInUser.user.profile.uuid
-  //   ) {
-  //     dispatch(clearUnreadMessagesForConversationInStore)
-  //   }
-  // }, [])
-
-  const fetchMoreMessage = () => {
-    setTimeout(() => {
-      setVariables({
-        conversationUuid: activeConversation.uuid,
-        limit: variables.limit,
-        cursor:
-          activeConversation.messages[activeConversation.messages.length - 1]
-            .createdAt,
-      })
-
-      setShouldPause(false)
-    }, 750)
-  }
+  }, [])
 
   const deleteMessageHandler = async (item) => {
     await axios
@@ -205,26 +149,17 @@ const Messages = ({ axios }) => {
       style={isMobile ? { height: '77.5vh' } : { height: '77.5vh' }}
     >
       <InfiniteScroll
-        dataLength={activeConversation.messages}
-        next={fetchMoreMessage}
+        dataLength={activeConversation.messages.length}
+        next={loadMoreMessages}
         style={{
           display: 'flex',
           flexDirection: 'column-reverse',
           overflowX: 'hidden',
         }}
         inverse={true}
-        hasMore={false}
-        // hasMore={
-        //   !shouldPauseCheckHasMore
-        //     ? !!hasMoreOnInit?.checkIfConversationHasMoreMessages
-        //     : !!data?.getMessagesForConversation
-        //     ? !!data?.getMessagesForConversation.hasMore
-        //     : true
-        // }
-        loader={
-          <h4 className="m-auto text-xl py-5 top-0 left-1/2">Loading...</h4>
-        }
+        hasMore={hasMore}
         scrollableTarget="scrollableDiv"
+        loader={null}
       >
         {activeConversation && activeConversation.type === 'pm'
           ? activeConversation.messages.map((item, index) => {

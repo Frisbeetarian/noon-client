@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -11,11 +12,7 @@ import {
   setLoggedInUser,
 } from '../../store/users'
 
-import {
-  setConversations,
-  getConversations,
-  addConversation,
-} from '../../store/chat'
+import { setConversations, addConversation } from '../../store/chat'
 
 import Chat from '../../components/Chat'
 import { withAxios } from '../../utils/withAxios'
@@ -31,11 +28,12 @@ import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
 import { CloseButton, Flex, useToast } from '@chakra-ui/react'
 import AppButton from '../../components/AppComponents/AppButton'
 import { setFriendFlagOnProfile } from '../../store/profiles'
+import { useGetConversationsQuery } from '../../store/api/conversationsApiSlice'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
   description: `Noon – Open source, secure, free communication platform.`,
-  image: 'https://noon.tube/static/images/muhammad-banner.png',
+  image: 'https://noon.tube/static/images/noon-banner.png',
   type: 'website',
 }
 function Noon({ axios }) {
@@ -46,10 +44,12 @@ function Noon({ axios }) {
   const isConversationOpen = useSelector(getIsConversationOpen)
   const createGroupActive = useSelector(getCreateGroupActive)
   const loggedInUser = useSelector(getLoggedInUser)
-  const conversations = useSelector(getConversations)
+  // const conversations = useSelector(getConversations)
   const toast = useToast()
   const [isCount, setIsCount] = useState(0)
   // const [activeToasts, setActiveToasts] = useState({})
+  // @ts-ignore
+  const { data: conversations } = useGetConversationsQuery()
 
   useEffect(() => {
     setMounted(true)
@@ -71,27 +71,15 @@ function Noon({ axios }) {
   }, [])
 
   useEffect(() => {
-    // if (!conversations) {
-    axios
-      .get('/api/conversations')
-      .then((response) => {
-        if (
-          (conversations === null || conversations.length === 0) &&
-          loggedInUser?.user?.profile?.uuid
-        ) {
-          dispatch(
-            setConversations({
-              conversationsToSend: response.data,
-              loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
-            })
-          )
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching conversations:', error.message)
-      })
-    // }
-  }, [loggedInUser])
+    if (conversations) {
+      dispatch(
+        setConversations({
+          conversationsToSend: conversations,
+          loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+        })
+      )
+    }
+  }, [conversations, dispatch])
 
   useEffect(() => {
     if (
@@ -190,46 +178,6 @@ function Noon({ axios }) {
       )
     }
   }, [loggedInUser.user.profile])
-
-  //
-  // const { data, loading: meLoading } = useMeQuery({
-  //   skip: isServer(),
-  //   fetchPolicy: 'network-only',
-  // })
-
-  // const loggedInUser = useSelector(getLoggedInUser)
-  // const conversations = useSelector(getConversations)
-
-  // const { data: fetchedConversations } = useGetConversationForLoggedInUserQuery(
-  //   { fetchPolicy: 'network-only' }
-  // )
-
-  // useEffect(() => {
-  //   if (!meLoading) {
-  //     if (!data?.me?.username) {
-  //       router.replace('/')
-  //     } else {
-  //       dispatch(setLoggedInUser(data.me as User))
-  //     }
-  //   }
-  // }, [meLoading, data?.me?.username])
-
-  // useEffect(() => {
-  //   if (
-  //     fetchedConversations?.getConversationForLoggedInUser &&
-  //     (conversations === null || conversations.length === 0) &&
-  //     loggedInUser?.user?.profile?.uuid
-  //   ) {
-  //     dispatch(
-  //       setConversations({
-  //         // @ts-ignore
-  //         conversationsToSend:
-  //           fetchedConversations?.getConversationForLoggedInUser,
-  //         loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
-  //       })
-  //     )
-  //   }
-  // }, [fetchedConversations, loggedInUser?.user?.profile?.uuid])
 
   if (!mounted) return null
 
