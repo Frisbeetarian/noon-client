@@ -40,6 +40,7 @@ import { Message } from '../generated/graphql'
 import { getSocketAuthObject } from '../store/sockets'
 import withAxios from '../utils/withAxios'
 import AppMenuList from './AppComponents/AppMenuList'
+import AppAudioPlayer from './AudioRecorder/AppAudioPlayer'
 
 const Messages = ({ axios }) => {
   const dispatch = useDispatch()
@@ -354,7 +355,12 @@ const Messages = ({ axios }) => {
                         p={!item.deleted ? '0' : '3'}
                       >
                         {!item.deleted ? (
-                          <ReactAudioPlayer style="" src={item.src} controls />
+                          // <AppAudioPlayer
+                          //   src={item.src}
+                          //   onPlay={(e) => console.log('Playing audio')}
+                          //   autoPlay={false}
+                          // />
+                          <ReactAudioPlayer src={item.src} controls />
                         ) : (
                           <Text>
                             <i className="text-gray-400">{item.content}</i>
