@@ -34,17 +34,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getLoggedInUser } from '../store/users'
 import ReactAudioPlayer from 'react-audio-player'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import SocketManager from './SocketIo/SocketManager'
 import { getIsMobile } from '../store/ui'
 import { Message } from '../generated/graphql'
 import { getSocketAuthObject } from '../store/sockets'
 import withAxios from '../utils/withAxios'
 import AppMenuList from './AppComponents/AppMenuList'
-import AppAudioPlayer from './AudioRecorder/AppAudioPlayer'
 
 const Messages = ({ axios }) => {
   const dispatch = useDispatch()
-  const socketAuthObject = useSelector(getSocketAuthObject)
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)

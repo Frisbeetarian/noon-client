@@ -17,7 +17,7 @@
     "@emotion/styled": "^11.10.5",
     "@graphql-codegen/add": "^3.2.1",
     "@jitsi/react-sdk": "^1.0.2",
-    "@reduxjs/toolkit": "^1.8.1",
+    "@reduxjs/toolkit": "^2.1.0",
     "@typescript-eslint/parser": "^5.47.1",
     "axios": "^1.2.2",
     "form-data": "^4.0.0",
