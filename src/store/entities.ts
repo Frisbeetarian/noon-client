@@ -1,4 +1,5 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from '@reduxjs/toolkit'
+
 import usersReducer from './users'
 import socketsReducer from './sockets'
 import uiReducer from './ui'
@@ -8,6 +9,7 @@ import searchReducer from './search'
 import groupsReducer from './groups'
 import videoReducer from './video'
 import filesReducer from './files'
+import { conversationsApiSlice } from './api/conversationsApiSlice'
 
 export default combineReducers({
   users: usersReducer,
@@ -19,4 +21,5 @@ export default combineReducers({
   groups: groupsReducer,
   video: videoReducer,
   files: filesReducer,
+  [conversationsApiSlice.reducerPath]: conversationsApiSlice.reducer,
 })

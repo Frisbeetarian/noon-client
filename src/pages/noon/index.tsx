@@ -31,6 +31,7 @@ import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
 import { CloseButton, Flex, useToast } from '@chakra-ui/react'
 import AppButton from '../../components/AppComponents/AppButton'
 import { setFriendFlagOnProfile } from '../../store/profiles'
+import { useGetConversationsQuery } from '../../store/api/conversationsApiSlice'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -46,10 +47,11 @@ function Noon({ axios }) {
   const isConversationOpen = useSelector(getIsConversationOpen)
   const createGroupActive = useSelector(getCreateGroupActive)
   const loggedInUser = useSelector(getLoggedInUser)
-  const conversations = useSelector(getConversations)
+  // const conversations = useSelector(getConversations)
   const toast = useToast()
   const [isCount, setIsCount] = useState(0)
   // const [activeToasts, setActiveToasts] = useState({})
+  const { data: conversations, error, isLoading } = useGetConversationsQuery()
 
   useEffect(() => {
     setMounted(true)
@@ -71,27 +73,38 @@ function Noon({ axios }) {
   }, [])
 
   useEffect(() => {
-    // if (!conversations) {
-    axios
-      .get('/api/conversations')
-      .then((response) => {
-        if (
-          (conversations === null || conversations.length === 0) &&
-          loggedInUser?.user?.profile?.uuid
-        ) {
-          dispatch(
-            setConversations({
-              conversationsToSend: response.data,
-              loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
-            })
-          )
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching conversations:', error.message)
-      })
-    // }
-  }, [loggedInUser])
+    if (conversations) {
+      dispatch(
+        setConversations({
+          conversationsToSend: conversations,
+          loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+        })
+      )
+    }
+  }, [conversations, dispatch])
+
+  // useEffect(() => {
+  //   // if (!conversations) {
+  //   axios
+  //     .get('/api/conversations')
+  //     .then((response) => {
+  //       if (
+  //         (conversations === null || conversations.length === 0) &&
+  //         loggedInUser?.user?.profile?.uuid
+  //       ) {
+  //         dispatch(
+  //           setConversations({
+  //             conversationsToSend: response.data,
+  //             loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+  //           })
+  //         )
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error fetching conversations:', error.message)
+  //     })
+  //   // }
+  // }, [loggedInUser])
 
   useEffect(() => {
     if (
@@ -190,46 +203,6 @@ function Noon({ axios }) {
       )
     }
   }, [loggedInUser.user.profile])
-
-  //
-  // const { data, loading: meLoading } = useMeQuery({
-  //   skip: isServer(),
-  //   fetchPolicy: 'network-only',
-  // })
-
-  // const loggedInUser = useSelector(getLoggedInUser)
-  // const conversations = useSelector(getConversations)
-
-  // const { data: fetchedConversations } = useGetConversationForLoggedInUserQuery(
-  //   { fetchPolicy: 'network-only' }
-  // )
-
-  // useEffect(() => {
-  //   if (!meLoading) {
-  //     if (!data?.me?.username) {
-  //       router.replace('/')
-  //     } else {
-  //       dispatch(setLoggedInUser(data.me as User))
-  //     }
-  //   }
-  // }, [meLoading, data?.me?.username])
-
-  // useEffect(() => {
-  //   if (
-  //     fetchedConversations?.getConversationForLoggedInUser &&
-  //     (conversations === null || conversations.length === 0) &&
-  //     loggedInUser?.user?.profile?.uuid
-  //   ) {
-  //     dispatch(
-  //       setConversations({
-  //         // @ts-ignore
-  //         conversationsToSend:
-  //           fetchedConversations?.getConversationForLoggedInUser,
-  //         loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
-  //       })
-  //     )
-  //   }
-  // }, [fetchedConversations, loggedInUser?.user?.profile?.uuid])
 
   if (!mounted) return null
 

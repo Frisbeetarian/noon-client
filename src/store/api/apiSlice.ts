@@ -9,8 +9,6 @@ export const apiSlice = createApi({
     getMessagesForConversation: builder.query<Message[], string>({
       query: (conversationUuid) => `messages/${conversationUuid}`,
     }),
-
-    // Add other endpoints here
   }),
 })
 
