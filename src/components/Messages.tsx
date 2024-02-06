@@ -39,16 +39,28 @@ const Messages = ({ axios }) => {
   const activeConversee = useSelector(getActiveConversee)
   const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
   const isMobile = useSelector(getIsMobile)
-  const [cursor, setCursor] = useState({
-    cursor:
-      activeConversation.messages.length !== 0
-        ? new Date(
-            activeConversation.messages[
-              activeConversation.messages.length - 1
-            ].createdAt
-          ).getTime()
-        : null,
-  })
+  const [cursor, setCursor] = useState(
+    activeConversation.messages.length !== 0
+      ? new Date(
+          activeConversation.messages[
+            activeConversation.messages.length - 1
+          ].createdAt
+        ).getTime()
+      : null
+  )
+
+  // const [variables, setVariables] = useState({
+  //   limit: 20,
+  //   cursor:
+  //     activeConversation.messages.length !== 0
+  //       ? new Date(
+  //           activeConversation.messages[
+  //             activeConversation.messages.length - 1
+  //           ].createdAt
+  //         ).getTime()
+  //       : null,
+  //   conversationUuid: activeConversation.uuid,
+  // })
 
   const [currentPage, setCurrentPage] = useState(1)
 
