@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { Message } from '../../utils/types'
 
 export const conversationsApiSlice = createApi({
   reducerPath: 'api/conversations',
@@ -9,6 +10,9 @@ export const conversationsApiSlice = createApi({
   endpoints: (builder) => ({
     getConversations: builder.query({
       query: () => '/conversations',
+    }),
+    getMessagesForConversation: builder.query<Message[], string>({
+      query: (conversationId) => `/conversations/${conversationId}/messages`,
     }),
   }),
 })

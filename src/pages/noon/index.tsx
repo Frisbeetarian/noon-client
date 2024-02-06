@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -11,11 +12,7 @@ import {
   setLoggedInUser,
 } from '../../store/users'
 
-import {
-  setConversations,
-  getConversations,
-  addConversation,
-} from '../../store/chat'
+import { setConversations, addConversation } from '../../store/chat'
 
 import Chat from '../../components/Chat'
 import { withAxios } from '../../utils/withAxios'
@@ -51,7 +48,8 @@ function Noon({ axios }) {
   const toast = useToast()
   const [isCount, setIsCount] = useState(0)
   // const [activeToasts, setActiveToasts] = useState({})
-  const { data: conversations, error, isLoading } = useGetConversationsQuery()
+  // @ts-ignore
+  const { data: conversations } = useGetConversationsQuery()
 
   useEffect(() => {
     setMounted(true)

@@ -8,18 +8,11 @@ import {
   Menu,
   MenuButton,
   MenuItem,
-  MenuList,
   IconButton,
+  Spinner,
 } from '@chakra-ui/react'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
-// import {
-//   // PaginatedMessages,
-//   useCheckIfConversationHasMoreMessagesQuery,
-//   useClearUnreadMessagesForConversationMutation,
-//   useDeleteMessageMutation,
-//   useGetMessagesForConversationQuery,
-// } from '../generated/graphql'
 
 import {
   getActiveConversation,
@@ -35,8 +28,6 @@ import { getLoggedInUser } from '../store/users'
 import ReactAudioPlayer from 'react-audio-player'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { getIsMobile } from '../store/ui'
-import { Message } from '../generated/graphql'
-import { getSocketAuthObject } from '../store/sockets'
 import withAxios from '../utils/withAxios'
 import AppMenuList from './AppComponents/AppMenuList'
 
@@ -59,8 +50,16 @@ const Messages = ({ axios }) => {
   })
 
   const [shouldPause, setShouldPause] = useState(true)
-  const [, setShouldCheckHasMorePause] = useState(false)
+  const [shouldCheckHasMorePause, setShouldCheckHasMorePause] = useState(false)
   const [localMessages, setLocalMessages] = useState<Message[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const handleFetchMoreMessages = () => {
+    if (hasNextPage) {
+      setCurrentPage(currentPage + 1)
+      fetchNextPage()
+    }
+  }
 
   /*  const { data, loading } = useMeQuery({
     pause: isServer(),
@@ -149,19 +148,19 @@ const Messages = ({ axios }) => {
   //   }
   // }, [])
 
-  const fetchMoreMessage = () => {
-    setTimeout(() => {
-      setVariables({
-        conversationUuid: activeConversation.uuid,
-        limit: variables.limit,
-        cursor:
-          activeConversation.messages[activeConversation.messages.length - 1]
-            .createdAt,
-      })
-
-      setShouldPause(false)
-    }, 750)
-  }
+  // const fetchMoreMessage = () => {
+  //   setTimeout(() => {
+  //     setVariables({
+  //       conversationUuid: activeConversation.uuid,
+  //       limit: variables.limit,
+  //       cursor:
+  //         activeConversation.messages[activeConversation.messages.length - 1]
+  //           .createdAt,
+  //     })
+  //
+  //     setShouldPause(false)
+  //   }, 750)
+  // }
 
   const deleteMessageHandler = async (item) => {
     await axios
@@ -192,6 +191,10 @@ const Messages = ({ axios }) => {
       })
   }
 
+  if (isLoading) {
+    return <Spinner />
+  }
+
   return (
     <Flex
       id="scrollableDiv"
@@ -202,25 +205,24 @@ const Messages = ({ axios }) => {
       style={isMobile ? { height: '77.5vh' } : { height: '77.5vh' }}
     >
       <InfiniteScroll
-        dataLength={activeConversation.messages}
-        next={fetchMoreMessage}
+        dataLength={activeConversation.messages.length ?? 0}
+        next={handleFetchMoreMessages}
+        // next={fetchMoreMessage}
         style={{
           display: 'flex',
           flexDirection: 'column-reverse',
           overflowX: 'hidden',
         }}
         inverse={true}
-        hasMore={false}
+        hasMore={!!hasNextPage}
+        loader={<Spinner />}
         // hasMore={
         //   !shouldPauseCheckHasMore
         //     ? !!hasMoreOnInit?.checkIfConversationHasMoreMessages
         //     : !!data?.getMessagesForConversation
         //     ? !!data?.getMessagesForConversation.hasMore
         //     : true
-        // }
-        loader={
-          <h4 className="m-auto text-xl py-5 top-0 left-1/2">Loading...</h4>
-        }
+        // loader={
         scrollableTarget="scrollableDiv"
       >
         {activeConversation && activeConversation.type === 'pm'
