@@ -91,10 +91,6 @@ const Messages = ({ axios }) => {
     } else {
       setHasMore(false)
     }
-
-    if (messagesResponse && messagesResponse?.messages.length !== 0) {
-      console.log('messagesResponse:', messagesResponse)
-    }
   }, [messagesResponse])
 
   async function handleCheckForHasMoreMessages() {
