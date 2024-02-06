@@ -36,7 +36,7 @@ import { useGetConversationsQuery } from '../../store/api/conversationsApiSlice'
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
   description: `Noon – Open source, secure, free communication platform.`,
-  image: 'https://noon.tube/static/images/muhammad-banner.png',
+  image: 'https://noon.tube/static/images/noon-banner.png',
   type: 'website',
 }
 function Noon({ axios }) {
@@ -82,29 +82,6 @@ function Noon({ axios }) {
       )
     }
   }, [conversations, dispatch])
-
-  // useEffect(() => {
-  //   // if (!conversations) {
-  //   axios
-  //     .get('/api/conversations')
-  //     .then((response) => {
-  //       if (
-  //         (conversations === null || conversations.length === 0) &&
-  //         loggedInUser?.user?.profile?.uuid
-  //       ) {
-  //         dispatch(
-  //           setConversations({
-  //             conversationsToSend: response.data,
-  //             loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
-  //           })
-  //         )
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error fetching conversations:', error.message)
-  //     })
-  //   // }
-  // }, [loggedInUser])
 
   useEffect(() => {
     if (

@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
 import rootReducer from './reducer'
 import { createWrapper } from 'next-redux-wrapper'
-// import { apiSlice } from './api/apiSlice'
 import { conversationsApiSlice } from './api/conversationsApiSlice'
+
 const makeStore = () =>
   configureStore({
     reducer: rootReducer,

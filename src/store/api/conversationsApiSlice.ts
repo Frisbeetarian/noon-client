@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 export const conversationsApiSlice = createApi({
   reducerPath: 'api/conversations',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:4020/api',
+    baseUrl: `${process.env.NEXT_PUBLIC_URL}/api`,
     credentials: 'include',
   }),
   endpoints: (builder) => ({

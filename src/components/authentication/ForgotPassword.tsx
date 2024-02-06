@@ -17,7 +17,6 @@ import {
   setShowRegisterComponent,
 } from '../../store/ui'
 import { useDispatch } from 'react-redux'
-import { useForgotPasswordMutation } from '../../generated/graphql'
 import * as Yup from 'yup'
 import { InputField } from '../InputField'
 
@@ -27,7 +26,7 @@ const ForgotPasswordSchema = Yup.object().shape({
 
 function ForgotPassword() {
   const [complete, setComplete] = useState(false)
-  const [forgotPassword] = useForgotPasswordMutation()
+  // const [forgotPassword] = useForgotPasswordMutation()
   const dispatch = useDispatch()
 
   return (
