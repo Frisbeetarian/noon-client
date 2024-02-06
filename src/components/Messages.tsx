@@ -30,6 +30,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { getIsMobile } from '../store/ui'
 import withAxios from '../utils/withAxios'
 import AppMenuList from './AppComponents/AppMenuList'
+import { useGetMessagesForConversationQuery } from '../store/api/conversationsApiSlice'
 
 const Messages = ({ axios }) => {
   const dispatch = useDispatch()
@@ -38,21 +39,56 @@ const Messages = ({ axios }) => {
   const activeConversee = useSelector(getActiveConversee)
   const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
   const isMobile = useSelector(getIsMobile)
-
-  const [variables, setVariables] = useState({
-    limit: 20,
+  const [cursor, setCursor] = useState({
     cursor:
       activeConversation.messages.length !== 0
-        ? activeConversation.messages[activeConversation.messages.length - 1]
-            .createdAt
+        ? new Date(
+            activeConversation.messages[
+              activeConversation.messages.length - 1
+            ].createdAt
+          ).getTime()
         : null,
-    conversationUuid: activeConversation.uuid,
   })
 
-  const [shouldPause, setShouldPause] = useState(true)
-  const [shouldCheckHasMorePause, setShouldCheckHasMorePause] = useState(false)
-  const [localMessages, setLocalMessages] = useState<Message[]>([])
   const [currentPage, setCurrentPage] = useState(1)
+
+  // const oldestMessageTimestamp =
+  //   activeConversation.messages[activeConversation.messages.length - 1]
+  //     ?.createdAt
+  // const cursor = oldestMessageTimestamp
+  //   ? new Date(oldestMessageTimestamp).getTime()
+  //   : undefined
+
+  const {
+    data: messagesResponse,
+    isLoading,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+  } = useGetMessagesForConversationQuery(
+    {
+      conversationUuid: activeConversation.uuid,
+      limit: 20,
+      cursor: cursor,
+    },
+    {
+      skip: !activeConversation?.uuid,
+    }
+  )
+
+  console.log('messagesResponse:', messagesResponse)
+
+  const loadMoreMessages = () => {
+    if (messagesResponse?.hasMore) {
+      setCursor(
+        new Date(
+          messagesResponse.messages[
+            messagesResponse.messages.length - 1
+          ].createdAt
+        ).getTime()
+      )
+    }
+  }
 
   const handleFetchMoreMessages = () => {
     if (hasNextPage) {
@@ -60,25 +96,6 @@ const Messages = ({ axios }) => {
       fetchNextPage()
     }
   }
-
-  /*  const { data, loading } = useMeQuery({
-    pause: isServer(),
-    fetchPolicy: 'network-only',
-  })*/
-
-  // const { data } = useGetMessagesForConversationQuery({
-  //   variables,
-  //   skip: shouldPause,
-  //   fetchPolicy: 'network-only',
-  // })
-  //
-  // let { data: hasMoreOnInit } = useCheckIfConversationHasMoreMessagesQuery({
-  //   variables: {
-  //     conversationUuid: activeConversation.uuid,
-  //   },
-  //   skip: shouldPauseCheckHasMore,
-  //   fetchPolicy: 'network-only',
-  // })
 
   async function handleCheckForHasMoreMessages() {
     console.log('active conversation:', activeConversation)
@@ -99,68 +116,11 @@ const Messages = ({ axios }) => {
       }
     }
 
-    return () => {
-      setShouldCheckHasMorePause(false)
-      // setLocalMessages([])
-    }
+    // return () => {
+    //   setShouldCheckHasMorePause(false)
+    //   // setLocalMessages([])
+    // }
   }, [activeConversation.messages])
-
-  // useEffect(() => {
-  //   if (data) {
-  //     setShouldCheckHasMorePause(true)
-  //     hasMoreOnInit = undefined
-  //
-  //     // @ts-ignore
-  //     setLocalMessages((prevState) => {
-  //       return [...prevState, ...data.getMessagesForConversation.messages]
-  //     })
-  //   }
-  //
-  //   return () => {
-  //     setShouldCheckHasMorePause(false)
-  //     setLocalMessages([])
-  //   }
-  // }, [data])
-
-  // TODO check how to initialize data
-  // useEffect(() => {
-  //   if (localMessages.length !== 0) {
-  //     dispatch(
-  //       addMessagesToConversation({
-  //         conversationUuid: activeConversation.uuid,
-  //         messages: localMessages,
-  //         loggedInProfileUuid: loggedInUser.user.profile.uuid,
-  //       })
-  //     )
-  //
-  //     dispatch(setShouldPauseCheckHasMore(true))
-  //   }
-  // }, [localMessages])
-  //
-  // useEffect(() => {
-  //   if (
-  //     activeConversation.unreadMessages &&
-  //     activeConversation.unreadMessages !== 0 &&
-  //     activeConversation.profileThatHasUnreadMessages ===
-  //       loggedInUser.user.profile.uuid
-  //   ) {
-  //     dispatch(clearUnreadMessagesForConversationInStore)
-  //   }
-  // }, [])
-
-  // const fetchMoreMessage = () => {
-  //   setTimeout(() => {
-  //     setVariables({
-  //       conversationUuid: activeConversation.uuid,
-  //       limit: variables.limit,
-  //       cursor:
-  //         activeConversation.messages[activeConversation.messages.length - 1]
-  //           .createdAt,
-  //     })
-  //
-  //     setShouldPause(false)
-  //   }, 750)
-  // }
 
   const deleteMessageHandler = async (item) => {
     await axios
@@ -191,7 +151,7 @@ const Messages = ({ axios }) => {
       })
   }
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return <Spinner />
   }
 
@@ -206,23 +166,15 @@ const Messages = ({ axios }) => {
     >
       <InfiniteScroll
         dataLength={activeConversation.messages.length ?? 0}
-        next={handleFetchMoreMessages}
-        // next={fetchMoreMessage}
+        next={loadMoreMessages}
         style={{
           display: 'flex',
           flexDirection: 'column-reverse',
           overflowX: 'hidden',
         }}
         inverse={true}
-        hasMore={!!hasNextPage}
+        hasMore={hasNextPage}
         loader={<Spinner />}
-        // hasMore={
-        //   !shouldPauseCheckHasMore
-        //     ? !!hasMoreOnInit?.checkIfConversationHasMoreMessages
-        //     : !!data?.getMessagesForConversation
-        //     ? !!data?.getMessagesForConversation.hasMore
-        //     : true
-        // loader={
         scrollableTarget="scrollableDiv"
       >
         {activeConversation && activeConversation.type === 'pm'

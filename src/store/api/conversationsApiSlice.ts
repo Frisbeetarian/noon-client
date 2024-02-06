@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { Message } from '../../utils/types'
 
 export const conversationsApiSlice = createApi({
   reducerPath: 'api/conversations',
@@ -11,10 +10,20 @@ export const conversationsApiSlice = createApi({
     getConversations: builder.query({
       query: () => '/conversations',
     }),
-    getMessagesForConversation: builder.query<Message[], string>({
-      query: (conversationId) => `/conversations/${conversationId}/messages`,
+    // getMessagesForConversation: builder.query<Message[], string>({
+    //   query: (conversationId) => `/conversations/${conversationId}/messages`,
+    // }),
+    getMessagesForConversation: builder.query({
+      query: ({ conversationUuid, limit = 20, cursor }) => {
+        let queryString = `/conversations/${conversationUuid}/messages?limit=${limit}`
+        if (cursor) {
+          queryString += `&cursor=${cursor}`
+        }
+        return queryString
+      },
     }),
   }),
 })
 
-export const { useGetConversationsQuery } = conversationsApiSlice
+export const { useGetConversationsQuery, useGetMessagesForConversationQuery } =
+  conversationsApiSlice
