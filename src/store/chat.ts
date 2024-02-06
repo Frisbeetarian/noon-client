@@ -249,17 +249,15 @@ const slice = createSlice({
       ) {
         const tempMessages = [...chat.activeConversation.messages]
 
-        Promise.all(
-          messages.map((message) => {
-            if (message.sender.uuid === loggedInProfileUuid) {
-              message = { ...message, from: 'me' }
-            } else {
-              message = { ...message, from: 'other' }
-            }
+        messages.map((message) => {
+          if (message.sender.uuid === loggedInProfileUuid) {
+            message = { ...message, from: 'me' }
+          } else {
+            message = { ...message, from: 'other' }
+          }
 
-            tempMessages.push(message)
-          })
-        )
+          tempMessages.push(message)
+        })
 
         const sortedMessages = tempMessages.sort(
           (a, b) => (b.createdAt as any) - (a.createdAt as any)
@@ -271,6 +269,7 @@ const slice = createSlice({
 
         if (conversation) {
           conversation.messages = [...sortedMessages]
+
           chat.activeConversation.messages = sortedMessages
         }
       }

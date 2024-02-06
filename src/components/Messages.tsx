@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Avatar,
   Flex,
@@ -83,6 +83,9 @@ const Messages = ({ axios }) => {
           ].createdAt
         ).getTime()
       )
+    }
+
+    if (messagesResponse && messagesResponse.messages.length !== 0) {
       dispatch(
         addMessagesToConversation({
           conversationUuid: activeConversation.uuid,
@@ -90,9 +93,8 @@ const Messages = ({ axios }) => {
           loggedInProfileUuid: loggedInUser.user.profile.uuid,
         })
       )
-      // setHasMore(true)
-    } else {
-      // setHasMore(false)
+
+      setFetchMessages(false)
     }
   }
 
@@ -108,20 +110,12 @@ const Messages = ({ axios }) => {
     }
   }, [messagesResponse])
 
-  const handleFetchMoreMessages = () => {
-    if (hasNextPage) {
-      setCurrentPage(currentPage + 1)
-      fetchNextPage()
-    }
-  }
-
   async function handleCheckForHasMoreMessages() {
-    console.log('active conversation:', activeConversation)
-
     const hasMore = await axios.get(
       'api/conversations/' + activeConversation.uuid + '/checkMessages'
     )
 
+    setHasMore(hasMore)
     if (hasMore) {
       dispatch(setActiveConversationHasMoreMessages(hasMore.data))
     }
@@ -129,16 +123,16 @@ const Messages = ({ axios }) => {
 
   useEffect(() => {
     if (activeConversation) {
-      if (activeConversation.messages.length === 0) {
-        handleCheckForHasMoreMessages()
-      }
+      // if (activeConversation.messages.length === 0) {
+      handleCheckForHasMoreMessages()
+      // }
     }
 
     // return () => {
     //   setShouldCheckHasMorePause(false)
     //   // setLocalMessages([])
     // }
-  }, [activeConversation.messages])
+  }, [])
 
   const deleteMessageHandler = async (item) => {
     await axios
@@ -169,10 +163,6 @@ const Messages = ({ axios }) => {
       })
   }
 
-  if (isLoading || isFetching) {
-    return <Spinner />
-  }
-
   return (
     <Flex
       id="scrollableDiv"
@@ -192,7 +182,6 @@ const Messages = ({ axios }) => {
         }}
         inverse={true}
         hasMore={hasMore}
-        loader={<Spinner />}
         scrollableTarget="scrollableDiv"
       >
         {activeConversation && activeConversation.type === 'pm'
