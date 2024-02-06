@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Avatar,
   Flex,
@@ -9,7 +9,6 @@ import {
   MenuButton,
   MenuItem,
   IconButton,
-  Spinner,
 } from '@chakra-ui/react'
 
 import { ChevronDownIcon } from '@chakra-ui/icons'
@@ -18,8 +17,6 @@ import {
   getActiveConversation,
   getActiveConversee,
   setActiveConversationHasMoreMessages,
-  setShouldPauseCheckHasMore,
-  getShouldPauseCheckHasMore,
   deleteMessageInStore,
   addMessagesToConversation,
 } from '../store/chat'
@@ -38,7 +35,6 @@ const Messages = ({ axios }) => {
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
-  const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
   const isMobile = useSelector(getIsMobile)
   const [cursor, setCursor] = useState(
     activeConversation.messages.length !== 0
@@ -50,17 +46,10 @@ const Messages = ({ axios }) => {
       : null
   )
 
-  const [currentPage, setCurrentPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
   const [fetchMessages, setFetchMessages] = useState(false)
 
-  const {
-    data: messagesResponse,
-    isLoading,
-    isFetching,
-    fetchNextPage,
-    hasNextPage,
-  } = useGetMessagesForConversationQuery(
+  const { data: messagesResponse } = useGetMessagesForConversationQuery(
     {
       conversationUuid: activeConversation.uuid,
       limit: 10,
@@ -73,8 +62,6 @@ const Messages = ({ axios }) => {
 
   const loadMoreMessages = () => {
     setFetchMessages(true)
-
-    // console.log('messagesResponse:', messagesResponse)
     if (messagesResponse?.hasMore) {
       setCursor(
         new Date(
@@ -123,15 +110,8 @@ const Messages = ({ axios }) => {
 
   useEffect(() => {
     if (activeConversation) {
-      // if (activeConversation.messages.length === 0) {
       handleCheckForHasMoreMessages()
-      // }
     }
-
-    // return () => {
-    //   setShouldCheckHasMorePause(false)
-    //   // setLocalMessages([])
-    // }
   }, [])
 
   const deleteMessageHandler = async (item) => {
@@ -183,6 +163,7 @@ const Messages = ({ axios }) => {
         inverse={true}
         hasMore={hasMore}
         scrollableTarget="scrollableDiv"
+        loader={null}
       >
         {activeConversation && activeConversation.type === 'pm'
           ? activeConversation.messages.map((item, index) => {
