@@ -22,10 +22,8 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 // } from '../generated/graphql'
 
 import {
-  clearUnreadMessagesForConversationInStore,
   getActiveConversation,
   getActiveConversee,
-  addMessagesToConversation,
   setActiveConversationHasMoreMessages,
   setShouldPauseCheckHasMore,
   getShouldPauseCheckHasMore,
@@ -41,6 +39,8 @@ import { getIsMobile } from '../store/ui'
 import { Message } from '../generated/graphql'
 import { getSocketAuthObject } from '../store/sockets'
 import withAxios from '../utils/withAxios'
+import AppMenuList from './AppComponents/AppMenuList'
+import AppAudioPlayer from './AudioRecorder/AppAudioPlayer'
 
 const Messages = ({ axios }) => {
   const dispatch = useDispatch()
@@ -49,18 +49,7 @@ const Messages = ({ axios }) => {
   const activeConversation = useSelector(getActiveConversation)
   const activeConversee = useSelector(getActiveConversee)
   const shouldPauseCheckHasMore = useSelector(getShouldPauseCheckHasMore)
-  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const isMobile = useSelector(getIsMobile)
-
-  // const [
-  //   clearUnreadMessagesForConversation,
-  //   // { loading: unreadMessagesLoading },
-  // ] = useClearUnreadMessagesForConversationMutation()
-  //
-  // const [
-  //   deleteMessage,
-  //   // { loading: deleteMessageLoading }
-  // ] = useDeleteMessageMutation()
 
   const [variables, setVariables] = useState({
     limit: 20,
@@ -178,37 +167,32 @@ const Messages = ({ axios }) => {
   }
 
   const deleteMessageHandler = async (item) => {
-    // const message = await deleteMessage({
-    //   variables: {
-    //     messageUuid: item.uuid,
-    //     conversationUuid: activeConversation.uuid,
-    //     from: loggedInUser.user.profile.uuid,
-    //     type: item.type,
-    //     src: item.src,
-    //   },
-    // })
-    //
-    // dispatch(
-    //   deleteMessageInStore({
-    //     uuid: message.data?.deleteMessage.uuid as string,
-    //     content: message.data?.deleteMessage.content as string,
-    //     deleted: message.data?.deleteMessage.deleted as boolean,
-    //     conversationUuid: activeConversation.uuid,
-    //   })
-    // )
-    //
-    // activeConversation.profiles.map((profile) => {
-    //   if (profile.uuid !== loggedInUser.user?.profile?.uuid) {
-    //     socket.emit('message-deleted', {
-    //       messageUuid: item.uuid,
-    //       to: profile.uuid,
-    //       toUsername: profile.username,
-    //       fromUsername: loggedInUser.user?.profile?.username,
-    //       from: loggedInUser.user.profile.uuid,
-    //       conversationUuid: activeConversation.uuid,
-    //     })
-    //   }
-    // })
+    await axios
+      .delete(
+        `/api/messages?messageUuid=${item.uuid}&conversationUuid=${activeConversation.uuid}&from=${loggedInUser.user.profile.uuid}&type=${item.type}&src=${item.src}.`,
+        {
+          conversationUuid: activeConversation.uuid,
+          messageUuid: item.uuid,
+          from: loggedInUser.user.profile.uuid,
+          type: item.type,
+          src: item.src,
+        }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch(
+            deleteMessageInStore({
+              uuid: response.data.uuid,
+              content: response.data.content,
+              deleted: true,
+              conversationUuid: activeConversation.uuid,
+            })
+          )
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 
   return (
@@ -246,7 +230,7 @@ const Messages = ({ axios }) => {
           ? activeConversation.messages.map((item, index) => {
               if (item.from === 'me') {
                 return (
-                  <Flex key={index} className=" justify-end">
+                  <Flex key={index} className="justify-end">
                     {item.type === 'text' ? (
                       <Flex
                         bg="black"
@@ -278,16 +262,24 @@ const Messages = ({ axios }) => {
                             />
 
                             {/*<Portal>*/}
-                            <MenuList>
+                            <AppMenuList
+                              bg="black"
+                              className="bg-red-500 text-black"
+                              border="none"
+                              borderRadius="0"
+                            >
                               <MenuItem
-                                className="text-red-500 bg-gray-500"
+                                size="xs"
+                                bg="black"
+                                className="bg-red-500 text-black text-sm"
+                                border="none"
                                 onClick={async () => {
                                   await deleteMessageHandler(item)
                                 }}
                               >
-                                Unsend message
+                                Delete message
                               </MenuItem>
-                            </MenuList>
+                            </AppMenuList>
                             {/*</Portal>*/}
                           </Menu>
                         ) : null}
@@ -312,7 +304,7 @@ const Messages = ({ axios }) => {
                           </Flex>
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
 
@@ -328,15 +320,25 @@ const Messages = ({ axios }) => {
                               />
 
                               {/*<Portal>*/}
-                              <MenuList maxW="100px">
+                              <AppMenuList
+                                maxW="100px"
+                                bg="black"
+                                className="bg-red-500 text-black"
+                                border="none"
+                                borderRadius="0"
+                              >
                                 <MenuItem
+                                  size="xs"
+                                  bg="black"
+                                  className="bg-red-500 text-black text-sm"
+                                  border="none"
                                   onClick={async () => {
                                     await deleteMessageHandler(item)
                                   }}
                                 >
-                                  Unsend message
+                                  Delete message
                                 </MenuItem>
-                              </MenuList>
+                              </AppMenuList>
                               {/*</Portal>*/}
                             </Menu>
                           </div>
@@ -353,10 +355,15 @@ const Messages = ({ axios }) => {
                         p={!item.deleted ? '0' : '3'}
                       >
                         {!item.deleted ? (
+                          // <AppAudioPlayer
+                          //   src={item.src}
+                          //   onPlay={(e) => console.log('Playing audio')}
+                          //   autoPlay={false}
+                          // />
                           <ReactAudioPlayer src={item.src} controls />
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
                         {!item.deleted ? (
@@ -369,16 +376,25 @@ const Messages = ({ axios }) => {
                               variant="none"
                             />
 
-                            {/*<Portal>*/}
-                            <MenuList>
+                            <AppMenuList
+                              maxW="100px"
+                              bg="black"
+                              className="bg-red-500 text-black"
+                              border="none"
+                              borderRadius="0"
+                            >
                               <MenuItem
+                                size="xs"
+                                bg="black"
+                                className="bg-red-500 text-black text-sm"
+                                border="none"
                                 onClick={async () => {
                                   await deleteMessageHandler(item)
                                 }}
                               >
-                                Unsend message
+                                Delete message
                               </MenuItem>
-                            </MenuList>
+                            </AppMenuList>
                             {/*</Portal>*/}
                           </Menu>
                         ) : null}
@@ -404,14 +420,18 @@ const Messages = ({ axios }) => {
                         p="3"
                       >
                         <Text>
-                          {!item.deleted ? item.content : <i>{item.content}</i>}
+                          {!item.deleted ? (
+                            item.content
+                          ) : (
+                            <i className="text-gray-400">{item.content}</i>
+                          )}
                         </Text>
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex
                         className=" relative"
                         boxSize={!item.deleted ? 'sm' : ''}
-                        bg={!item.deleted ? '' : 'black'}
+                        bg={!item.deleted ? '' : 'gray.100'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
                         my="1"
@@ -427,7 +447,7 @@ const Messages = ({ axios }) => {
                           </Flex>
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
                       </Flex>
@@ -435,7 +455,7 @@ const Messages = ({ axios }) => {
                       <Flex
                         className="justify-end relative"
                         boxSize={!item.deleted ? '' : ''}
-                        bg={!item.deleted ? 'black' : 'black'}
+                        bg={!item.deleted ? 'black' : 'gray.100'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
                         my="1"
@@ -445,7 +465,7 @@ const Messages = ({ axios }) => {
                           <ReactAudioPlayer src={item.src} controls />
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
                       </Flex>
@@ -466,8 +486,10 @@ const Messages = ({ axios }) => {
                         minW="100px"
                         maxW="350px"
                         my="1"
-                        p="3"
-                        className="relative"
+                        pr={!item.deleted ? '0' : '3'}
+                        pl="3"
+                        py="2"
+                        className="relative justify-between"
                       >
                         <Text>
                           {!item.deleted ? item.content : <i>{item.content}</i>}
@@ -483,17 +505,24 @@ const Messages = ({ axios }) => {
                               variant="none"
                             />
 
-                            {/*<Portal>*/}
-                            <MenuList>
+                            <AppMenuList
+                              bg="black"
+                              className="bg-red-500 text-black"
+                              border="none"
+                              borderRadius="0"
+                            >
                               <MenuItem
+                                size="xs"
+                                bg="black"
+                                className="bg-red-500 text-black text-sm"
+                                border="none"
                                 onClick={async () => {
                                   await deleteMessageHandler(item)
                                 }}
                               >
-                                Unsend message
+                                Delete message
                               </MenuItem>
-                            </MenuList>
-                            {/*</Portal>*/}
+                            </AppMenuList>
                           </Menu>
                         ) : null}
                       </Flex>
@@ -511,7 +540,7 @@ const Messages = ({ axios }) => {
                           <Image src={item.src} alt={item.content} />
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
 
@@ -527,15 +556,25 @@ const Messages = ({ axios }) => {
                               />
 
                               {/*<Portal>*/}
-                              <MenuList>
+                              <AppMenuList
+                                maxW="100px"
+                                bg="black"
+                                className="bg-red-500 text-black"
+                                border="none"
+                                borderRadius="0"
+                              >
                                 <MenuItem
+                                  size="xs"
+                                  bg="black"
+                                  className="bg-red-500 text-black text-sm"
+                                  border="none"
                                   onClick={async () => {
-                                    deleteMessageHandler(item)
+                                    await deleteMessageHandler(item)
                                   }}
                                 >
-                                  Unsend message
+                                  Delete message
                                 </MenuItem>
-                              </MenuList>
+                              </AppMenuList>
                               {/*</Portal>*/}
                             </Menu>
                           </div>
@@ -557,7 +596,7 @@ const Messages = ({ axios }) => {
                           <ReactAudioPlayer src={item.src} controls />
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
 
@@ -572,15 +611,25 @@ const Messages = ({ axios }) => {
                             />
 
                             {/*<Portal>*/}
-                            <MenuList>
+                            <AppMenuList
+                              maxW="100px"
+                              bg="black"
+                              className="bg-red-500 text-black"
+                              border="none"
+                              borderRadius="0"
+                            >
                               <MenuItem
+                                size="xs"
+                                bg="black"
+                                className="bg-red-500 text-black text-sm"
+                                border="none"
                                 onClick={async () => {
-                                  deleteMessageHandler(item)
+                                  await deleteMessageHandler(item)
                                 }}
                               >
-                                Unsend message
+                                Delete message
                               </MenuItem>
-                            </MenuList>
+                            </AppMenuList>
                             {/*</Portal>*/}
                           </Menu>
                         ) : null}
@@ -606,14 +655,18 @@ const Messages = ({ axios }) => {
                         p="3"
                       >
                         <Text>
-                          {!item.deleted ? item.content : <i>{item.content}</i>}
+                          {!item.deleted ? (
+                            item.content
+                          ) : (
+                            <i className="text-gray-400">{item.content}</i>
+                          )}
                         </Text>
                       </Flex>
                     ) : item.type === 'image' ? (
                       <Flex
                         className="justify-end relative"
                         boxSize={!item.deleted ? 'sm' : ''}
-                        bg={!item.deleted ? '' : 'black'}
+                        bg={!item.deleted ? '' : 'gray.100'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
                         my="1"
@@ -625,7 +678,7 @@ const Messages = ({ axios }) => {
                           </Flex>
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
                       </Flex>
@@ -633,7 +686,7 @@ const Messages = ({ axios }) => {
                       <Flex
                         className="justify-end relative"
                         boxSize={!item.deleted ? 'sm' : ''}
-                        bg={!item.deleted ? 'red' : 'black'}
+                        bg={!item.deleted ? 'red' : 'gray.100'}
                         minW={!item.deleted ? '100px' : ''}
                         maxW={!item.deleted ? '350px' : ''}
                         my="1"
@@ -643,7 +696,7 @@ const Messages = ({ axios }) => {
                           <ReactAudioPlayer src={item.src} controls />
                         ) : (
                           <Text>
-                            <i>{item.content}</i>
+                            <i className="text-gray-400">{item.content}</i>
                           </Text>
                         )}
                       </Flex>

@@ -8,6 +8,7 @@ import {
   Menu,
   MenuButton,
   MenuItem,
+  useToast,
 } from '@chakra-ui/react'
 import { EditIcon, HamburgerIcon } from '@chakra-ui/icons'
 import { getLoggedInUser, removeFriendEntry } from '../store/users'
@@ -31,6 +32,7 @@ import AppMenuList from './AppComponents/AppMenuList'
 
 function PrivateConversationListing({ conversation, i, axios }) {
   const [, setProfile] = useState()
+  const toast = useToast()
 
   // const router = useRouter()
   const dispatch = useDispatch()
@@ -166,42 +168,43 @@ function PrivateConversationListing({ conversation, i, axios }) {
               //   },
               // })
 
-              const response = await axios.post('/api/profiles/unfriend', {
-                profileUuid: conversation.conversee.uuid,
-                conversationUuid: conversation.uuid,
-              })
+              const response = await axios
+                .post('/api/profiles/unfriend', {
+                  profileUuid: conversation.conversee.uuid,
+                  conversationUuid: conversation.uuid,
+                })
+                .then((response) => {
+                  if (response.status === 200) {
+                    dispatch(
+                      removeFriendEntry({
+                        profileUuid: conversation.conversee.uuid,
+                        friends: loggedInUser.user?.profile?.friends,
+                      })
+                    )
 
-              if (response.status === 200) {
-                dispatch(
-                  removeFriendEntry({
-                    profileUuid: conversation.conversee.uuid,
-                    friends: loggedInUser.user?.profile?.friends,
+                    dispatch(
+                      removeConversation({
+                        conversationUuid: conversation.uuid,
+                      })
+                    )
+
+                    dispatch(setActiveConversationSet(false))
+                    dispatch(setActiveConversee(null))
+                    dispatch(setActiveConversation(null))
+                    dispatch(setShouldPauseCheckHasMore(false))
+                  }
+                })
+                .catch((error) => {
+                  console.error(error)
+
+                  toast({
+                    title: `Error unfriending profile.`,
+                    position: 'bottom-right',
+                    isClosable: true,
+                    status: 'error',
+                    duration: 5000,
                   })
-                )
-
-                dispatch(
-                  removeConversation({
-                    conversationUuid: conversation.uuid,
-                  })
-                )
-
-                dispatch(setActiveConversationSet(false))
-                dispatch(setActiveConversee(null))
-                dispatch(setActiveConversation(null))
-                dispatch(setShouldPauseCheckHasMore(false))
-              }
-
-              // if (unfriendResponse) {
-              //   socket.emit('unfriend', {
-              //     content:
-              //       loggedInUser.user?.profile?.username + ' unfriended you.',
-              //     from: loggedInUser.user?.profile?.uuid,
-              //     fromUsername: loggedInUser.user?.profile?.username,
-              //     to: conversation.conversee.uuid,
-              //     toUsername: conversation.conversee.username,
-              //     conversationUuid: conversation.uuid,
-              //   })
-              // }
+                })
             }}
           >
             Unfriend
