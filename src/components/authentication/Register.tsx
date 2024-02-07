@@ -49,7 +49,7 @@ function Register({ axios }) {
       maxW={'xlg'}
       py={12}
       px={6}
-      className="bg-blue-500"
+      className=" z-10"
     >
       {/*<Stack align={'start'}>*/}
       {/*  <Heading*/}
@@ -61,7 +61,11 @@ function Register({ axios }) {
       {/*  </Heading>*/}
       {/*</Stack>*/}
 
-      <Box boxShadow={'lg'} border={0} p={8} className="border">
+      <Box
+        boxShadow={'lg'}
+        p={8}
+        className="border border-red-500 z-10 border-dotted"
+      >
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           validationSchema={RegisterSchema}
@@ -83,7 +87,7 @@ function Register({ axios }) {
         >
           {({ isSubmitting }) => (
             <Form>
-              <Stack spacing={4} className="text-white">
+              <Stack spacing={8} className="text-white">
                 {/*<HStack>*/}
                 {/*<Box>*/}
                 <FormControl id="username" isRequired>
@@ -182,7 +186,7 @@ function Register({ axios }) {
       </Box>
 
       <Text
-        className="text-lg text-red-500 cursor-pointer"
+        className="text-xl text-red-500 cursor-pointer z-10"
         onClick={() => {
           dispatch(setShowLoginComponent(true))
           dispatch(setShowRegisterComponent(false))

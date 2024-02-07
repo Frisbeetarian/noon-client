@@ -29,12 +29,16 @@ function Login({ axios }) {
   const dispatch = useDispatch()
 
   return (
-    <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+    <Stack spacing={8} mx={'auto'} maxW={'xlg'} py={12} px={6} className="z-10">
       {/*<Stack align={'start'} className="text-red-500">*/}
       {/*  <Heading fontSize={'4xl'}>Login to your account</Heading>*/}
       {/*</Stack>*/}
 
-      <Box boxShadow={'lg'} border={0} p={8} className="border">
+      <Box
+        boxShadow={'lg'}
+        p={8}
+        className="border border-red-500 z-10 border-dotted"
+      >
         <Formik
           initialValues={{
             usernameOrEmail: '',
@@ -60,7 +64,7 @@ function Login({ axios }) {
         >
           {({ isSubmitting }) => (
             <Form>
-              <Stack spacing={4} className="text-white">
+              <Stack spacing={8} className="text-white">
                 <FormControl id="email" isRequired>
                   <FormLabel
                     style={{ fontSize: '1.1rem' }}
@@ -151,7 +155,7 @@ function Login({ axios }) {
       </Box>
 
       <Text
-        className="text-lg text-red-500 cursor-pointer"
+        className="text-xl text-red-500 cursor-pointer z-10"
         onClick={() => {
           dispatch(setShowRegisterComponent(true))
           dispatch(setShowLoginComponent(false))
