@@ -32,9 +32,6 @@ import { useGetConversationsQuery } from '../../store/api/conversationsApiSlice'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
-  description: `Noon – Open source, secure, free communication platform.`,
-  image: 'https://noon.tube/static/images/noon-banner.png',
-  type: 'website',
 }
 function Noon({ axios }) {
   const router = useRouter()
@@ -185,15 +182,6 @@ function Noon({ axios }) {
     <div className="flex" style={{ overflow: 'hidden' }}>
       <Head>
         <title>{meta.title}</title>
-        <meta name="robots" content="follow, index" />
-        <meta content={meta.description} name="description" />
-        <meta property="og:url" content={`https://noon.tube${router.asPath}`} />
-        <link rel="canonical" href={`https://noon.tube${router.asPath}`} />
-        <meta property="og:type" content={meta.type} />
-        <meta property="og:site_name" content="Noon" />
-        <meta property="og:description" content={meta.description} />
-        <meta property="og:title" content={meta.title} />
-        <meta property="og:image" content={meta.image} />
       </Head>
 
       {mounted && loggedInUser.user?.profile ? (

@@ -1,7 +1,7 @@
+// @ts-nocheck
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
-import { Friend, User } from '../generated/graphql'
-import { FriendRequest } from '../utils/types'
+import { Friend, FriendRequest, User } from '../utils/types'
 
 interface UsersState {
   user: User | Record<string, never> | null | undefined

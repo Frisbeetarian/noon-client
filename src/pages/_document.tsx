@@ -1,7 +1,20 @@
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document'
-// import { ColorModeScript } from '@chakra-ui/react'
+import React from 'react'
+
+const meta = {
+  title: 'Noon – Open source, secure, free communication platform.',
+  description: `Noon – Open source, secure, free communication platform.`,
+  image: 'https://noon.tube/static/images/noon-banner.png',
+  type: 'website',
+}
 
 export default class Document extends NextDocument {
+  // static async getInitialProps(ctx) {
+  //   const initialProps = await NextDocument.getInitialProps(ctx)
+  //   const { asPath } = ctx.ctx.router
+  //   return { ...initialProps, asPath }
+  // }
+
   render() {
     return (
       <Html lang="en">
@@ -46,6 +59,22 @@ export default class Document extends NextDocument {
             content="max-snippet:-1, max-image-preview:large, max-video-preview:-1"
             name="robots"
           />
+
+          <meta name="robots" content="follow, index" />
+          <meta content={meta.description} name="description" />
+          {/*<meta*/}
+          {/*  property="og:url"*/}
+          {/*  content={`https://noon.tube${this.props.asPath}`}*/}
+          {/*/>*/}
+          {/*<link*/}
+          {/*  rel="canonical"*/}
+          {/*  href={`https://noon.tube${this.props.asPath}`}*/}
+          {/*/>*/}
+          <meta property="og:type" content={meta.type} />
+          <meta property="og:site_name" content="Noon" />
+          <meta property="og:description" content={meta.description} />
+          <meta property="og:title" content={meta.title} />
+          <meta property="og:image" content={meta.image} />
         </Head>
 
         <body className="">

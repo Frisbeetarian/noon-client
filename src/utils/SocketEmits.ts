@@ -1,5 +1,6 @@
-import { Conversation, Profile, User } from '../generated/graphql'
+// @ts-nocheck
 import { Socket } from 'socket.io-client'
+import { Conversation, Profile, User } from './types'
 
 interface FriendshipRequestAccepted {
   loggedInUser: User

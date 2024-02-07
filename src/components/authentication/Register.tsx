@@ -4,8 +4,6 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Heading,
-  HStack,
   InputGroup,
   InputRightElement,
   Stack,
@@ -43,68 +41,81 @@ function Register({ axios }) {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-      <Stack align={'start'}>
-        <Heading fontSize={'4xl'} textAlign={'center'}>
-          Register
-        </Heading>
-      </Stack>
+    <Stack
+      spacing={8}
+      mx={'auto'}
+      maxW={'xlg'}
+      py={12}
+      px={6}
+      className=" z-10"
+    >
+      {/*<Stack align={'start'}>*/}
+      {/*  <Heading*/}
+      {/*    fontSize={'4xl'}*/}
+      {/*    textAlign={'center'}*/}
+      {/*    className="text-white"*/}
+      {/*  >*/}
+      {/*    Register*/}
+      {/*  </Heading>*/}
+      {/*</Stack>*/}
 
-      <Box
-        boxShadow={'lg'}
-        border={0}
-        p={8}
-        className="border bg-red-500 text-black"
-      >
+      <Box boxShadow={'lg'} p={8} className="border border-red-500 z-10">
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           validationSchema={RegisterSchema}
           validateOnBlur={false}
           validateOnChange={false}
           onSubmit={async (values, { setErrors }) => {
-            const response = await axios.post('/api/users/register', values)
-
-            if (response && response.statusText === 'OK') {
-              if (response.errors) {
-                setErrors(toErrorMap(response.errors))
-              } else if (response.data) {
-                router.replace('/noon')
-              }
-            } else {
-              console.error('Failed to register')
-            }
+            await axios
+              .post('/api/users/register', values)
+              .then((response) => {
+                if (response) {
+                  if (response.data.errors) {
+                    setErrors(toErrorMap(response.data.errors))
+                  } else if (response.data && response.statusText === 'OK') {
+                    router.replace('/noon')
+                  }
+                } else {
+                  console.error('Failed to register')
+                }
+              })
+              .catch((error) => {
+                console.error('Error registering:', error.message)
+              })
           }}
         >
           {({ isSubmitting }) => (
             <Form>
-              <Stack spacing={4}>
-                <HStack>
-                  <Box>
-                    <FormControl id="username" isRequired>
-                      <FormLabel
-                        requiredIndicator={
-                          <span
-                            style={{ color: 'text-black', marginLeft: '5px' }}
-                          >
-                            *
-                          </span>
-                        }
-                      >
-                        Username
-                      </FormLabel>
+              <Stack spacing={8} className="text-white">
+                {/*<HStack>*/}
+                {/*<Box>*/}
+                <FormControl id="username" isRequired>
+                  <FormLabel
+                    style={{ fontSize: '1.1rem' }}
+                    requiredIndicator={
+                      <span style={{ color: 'text-black', marginLeft: '5px' }}>
+                        *
+                      </span>
+                    }
+                  >
+                    Username
+                  </FormLabel>
 
-                      <InputField
-                        name="username"
-                        placeholder="Username"
-                        label=""
-                        color="white"
-                      />
-                    </FormControl>
-                  </Box>
-                </HStack>
+                  <InputField
+                    name="username"
+                    placeholder="Username"
+                    label=""
+                    color="white"
+                    // @ts-ignore
+                    size="lg"
+                  />
+                </FormControl>
+                {/*</Box>*/}
+                {/*</HStack>*/}
 
                 <FormControl id="email" isRequired>
                   <FormLabel
+                    style={{ fontSize: '1.1rem' }}
                     requiredIndicator={
                       <span style={{ color: 'text-black', marginLeft: '5px' }}>
                         *
@@ -119,11 +130,14 @@ function Register({ axios }) {
                     placeholder="Email address"
                     label=""
                     color="white"
+                    // @ts-ignore
+                    size="lg"
                   />
                 </FormControl>
 
                 <FormControl id="password" isRequired>
                   <FormLabel
+                    style={{ fontSize: '1.1rem' }}
                     requiredIndicator={
                       <span style={{ color: 'text-black', marginLeft: '5px' }}>
                         *
@@ -140,6 +154,8 @@ function Register({ axios }) {
                       placeholder="Password"
                       label=""
                       color="white"
+                      // @ts-ignore
+                      size="lg"
                     />
 
                     <InputRightElement h={'full'} className="mt-1">
@@ -157,7 +173,6 @@ function Register({ axios }) {
 
                 <Stack spacing={10} pt={2}>
                   <AppButton
-                    color="black"
                     className="w-1/2 ml-auto"
                     type="submit"
                     size="md"
@@ -173,7 +188,7 @@ function Register({ axios }) {
       </Box>
 
       <Text
-        className="text-lg text-red-500 cursor-pointer"
+        className="text-lg text-red-500 cursor-pointer z-10 menlo font-bold"
         onClick={() => {
           dispatch(setShowLoginComponent(true))
           dispatch(setShowRegisterComponent(false))

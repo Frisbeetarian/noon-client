@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  Box,
-  FormControl,
-  FormLabel,
-  Heading,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
+import { Box, FormControl, FormLabel, Stack, Text } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
@@ -36,12 +29,8 @@ function Login({ axios }) {
   const dispatch = useDispatch()
 
   return (
-    <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-      <Stack align={'start'} className="text-red-500">
-        <Heading fontSize={'4xl'}>Login to your account</Heading>
-      </Stack>
-
-      <Box boxShadow={'lg'} p={8} className="bg-red-500" border={0}>
+    <Stack spacing={8} mx={'auto'} maxW={'xlg'} py={12} px={6} className="z-10">
+      <Box boxShadow={'lg'} p={8} className="border border-red-500 z-10 ">
         <Formik
           initialValues={{
             usernameOrEmail: '',
@@ -52,24 +41,30 @@ function Login({ axios }) {
           validateOnBlur={false}
           validateOnChange={false}
           onSubmit={async (values, { setErrors }) => {
-            const response = await axios.post('/api/users/login', values)
-
-            if (response.data?.errors) {
-              setErrors(toErrorMap(response.data.errors))
-            } else if (response.data) {
-              if (typeof router.query.next === 'string') {
-                router.push(router.query.next)
-              } else {
-                router.replace('/noon')
-              }
-            }
+            await axios
+              .post('/api/users/login', values)
+              .then((response) => {
+                if (response.data?.errors) {
+                  setErrors(toErrorMap(response.data.errors))
+                } else if (response.data) {
+                  if (typeof router.query.next === 'string') {
+                    router.push(router.query.next)
+                  } else {
+                    router.replace('/noon')
+                  }
+                }
+              })
+              .catch((error) => {
+                console.error('Error logging in:', error.message)
+              })
           }}
         >
           {({ isSubmitting }) => (
             <Form>
-              <Stack spacing={4} className="text-black">
+              <Stack spacing={8} className="text-white">
                 <FormControl id="email" isRequired>
                   <FormLabel
+                    style={{ fontSize: '1.1rem' }}
                     requiredIndicator={
                       <span style={{ color: 'text-black', marginLeft: '5px' }}>
                         *
@@ -83,11 +78,14 @@ function Login({ axios }) {
                     name="usernameOrEmail"
                     label=""
                     color="white"
+                    // @ts-ignore
+                    size="lg"
                   />
                 </FormControl>
 
                 <FormControl id="password" isRequired>
                   <FormLabel
+                    style={{ fontSize: '1.1rem' }}
                     requiredIndicator={
                       <span style={{ color: 'text-black', marginLeft: '5px' }}>
                         *
@@ -103,6 +101,8 @@ function Login({ axios }) {
                     label=""
                     type="password"
                     color="white"
+                    // @ts-ignore
+                    size="lg"
                   />
                 </FormControl>
 
@@ -136,11 +136,10 @@ function Login({ axios }) {
                   {/*  Forgot password?*/}
                   {/*</Link>*/}
 
-                  <Stack>
+                  <Stack spacing={10} pt={2}>
                     <AppButton
-                      className="w-1/2 ml-auto mt-5"
+                      className="w-1/2 ml-auto mt-5 text-"
                       size="md"
-                      color="black"
                       type="submit"
                       isLoading={isSubmitting}
                     >
@@ -155,7 +154,7 @@ function Login({ axios }) {
       </Box>
 
       <Text
-        className="text-lg text-red-500 cursor-pointer"
+        className="text-lg text-red-500 cursor-pointer z-10 menlo font-bold"
         onClick={() => {
           dispatch(setShowRegisterComponent(true))
           dispatch(setShowLoginComponent(false))
