@@ -13,6 +13,7 @@ import {
   getShowLoginComponent,
   getShowRegisterComponent,
 } from '../store/ui'
+import AppParticles from '../components/AppComponents/AppParticles'
 
 const Onboarding = ({ axios }) => {
   const router = useRouter()
@@ -45,16 +46,20 @@ const Onboarding = ({ axios }) => {
   }, [userData, router])
 
   return (
-    <Flex className="flex-col justify-center items-center bg-black text-red-500 h-screen">
-      <p className="fixed top-12 text-5xl">NOON</p>
+    <>
+      <AppParticles />
 
-      <Flex minH={'100%'} align={'center'} justify={'center'}>
-        {showRegisterComponent && <Register axios={axios} />}
-        {showLoginComponent && <Login axios={axios} />}
+      <Flex className="flex-col justify-center items-center bg-black text-red-500 h-screen">
+        <p className="fixed top-12 text-5xl text-white">NOON</p>
 
-        {showForgotPasswordComponent && <ForgotPassword />}
+        <Flex minH={'100%'} align={'center'} justify={'center'}>
+          {showRegisterComponent && <Register axios={axios} />}
+          {showLoginComponent && <Login axios={axios} />}
+
+          {showForgotPasswordComponent && <ForgotPassword />}
+        </Flex>
       </Flex>
-    </Flex>
+    </>
   )
 }
 

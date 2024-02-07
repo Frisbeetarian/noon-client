@@ -43,19 +43,15 @@ function Register({ axios }) {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-      <Stack align={'start'}>
-        <Heading fontSize={'4xl'} textAlign={'center'}>
-          Register
-        </Heading>
-      </Stack>
-
-      <Box
-        boxShadow={'lg'}
-        border={0}
-        p={8}
-        className="border bg-red-500 text-black"
-      >
+    <Stack
+      spacing={8}
+      mx={'auto'}
+      maxW={'lg'}
+      py={12}
+      px={6}
+      className="text-white "
+    >
+      <Box boxShadow={'lg'} border={0} p={8} className="border  ">
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           validationSchema={RegisterSchema}
@@ -77,6 +73,16 @@ function Register({ axios }) {
         >
           {({ isSubmitting }) => (
             <Form>
+              {/*<Stack align={'start'}>*/}
+              {/*  <Heading*/}
+              {/*    fontSize={'4xl'}*/}
+              {/*    textAlign={'center'}*/}
+              {/*    className="text-white"*/}
+              {/*  >*/}
+              {/*    Register*/}
+              {/*  </Heading>*/}
+              {/*</Stack>*/}
+
               <Stack spacing={4}>
                 <HStack>
                   <Box>
