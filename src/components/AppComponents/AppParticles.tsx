@@ -92,7 +92,9 @@ const AppParticles = () => {
     return (
       <Particles
         id="tsparticles"
+        // @ts-ignore
         particlesLoaded={particlesLoaded}
+        // @ts-ignore
         options={options}
       />
     )

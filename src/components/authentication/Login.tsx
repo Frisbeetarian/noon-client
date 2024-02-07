@@ -78,6 +78,7 @@ function Login({ axios }) {
                     name="usernameOrEmail"
                     label=""
                     color="white"
+                    // @ts-ignore
                     size="lg"
                   />
                 </FormControl>
@@ -100,6 +101,7 @@ function Login({ axios }) {
                     label=""
                     type="password"
                     color="white"
+                    // @ts-ignore
                     size="lg"
                   />
                 </FormControl>

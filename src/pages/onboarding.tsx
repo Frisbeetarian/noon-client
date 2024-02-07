@@ -1,5 +1,5 @@
 import { Flex } from '@chakra-ui/react'
-import React, { Suspense, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import { isServer } from '../utils/isServer'

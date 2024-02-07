@@ -106,6 +106,7 @@ function Register({ axios }) {
                     placeholder="Username"
                     label=""
                     color="white"
+                    // @ts-ignore
                     size="lg"
                   />
                 </FormControl>
@@ -129,6 +130,7 @@ function Register({ axios }) {
                     placeholder="Email address"
                     label=""
                     color="white"
+                    // @ts-ignore
                     size="lg"
                   />
                 </FormControl>
@@ -152,6 +154,7 @@ function Register({ axios }) {
                       placeholder="Password"
                       label=""
                       color="white"
+                      // @ts-ignore
                       size="lg"
                     />
 

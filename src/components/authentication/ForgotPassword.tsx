@@ -42,7 +42,7 @@ function ForgotPassword() {
           initialValues={{ email: '' }}
           validationSchema={ForgotPasswordSchema}
           onSubmit={async (values) => {
-            await forgotPassword({ variables: values })
+            console.log('values:', values)
             setComplete(true)
           }}
         >
