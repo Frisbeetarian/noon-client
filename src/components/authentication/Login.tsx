@@ -63,6 +63,7 @@ function Login({ axios }) {
               <Stack spacing={4} className="text-white">
                 <FormControl id="email" isRequired>
                   <FormLabel
+                    style={{ fontSize: '1.1rem' }}
                     requiredIndicator={
                       <span style={{ color: 'text-black', marginLeft: '5px' }}>
                         *
@@ -76,11 +77,13 @@ function Login({ axios }) {
                     name="usernameOrEmail"
                     label=""
                     color="white"
+                    size="lg"
                   />
                 </FormControl>
 
                 <FormControl id="password" isRequired>
                   <FormLabel
+                    style={{ fontSize: '1.1rem' }}
                     requiredIndicator={
                       <span style={{ color: 'text-black', marginLeft: '5px' }}>
                         *
@@ -96,6 +99,7 @@ function Login({ axios }) {
                     label=""
                     type="password"
                     color="white"
+                    size="lg"
                   />
                 </FormControl>
 
@@ -131,7 +135,7 @@ function Login({ axios }) {
 
                   <Stack spacing={10} pt={2}>
                     <AppButton
-                      className="w-1/2 ml-auto mt-5"
+                      className="w-1/2 ml-auto mt-5 text-"
                       size="md"
                       type="submit"
                       isLoading={isSubmitting}

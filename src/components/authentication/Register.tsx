@@ -43,7 +43,14 @@ function Register({ axios }) {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+    <Stack
+      spacing={8}
+      mx={'auto'}
+      maxW={'xlg'}
+      py={12}
+      px={6}
+      className="bg-blue-500"
+    >
       {/*<Stack align={'start'}>*/}
       {/*  <Heading*/}
       {/*    fontSize={'4xl'}*/}
@@ -81,6 +88,7 @@ function Register({ axios }) {
                 {/*<Box>*/}
                 <FormControl id="username" isRequired>
                   <FormLabel
+                    style={{ fontSize: '1.1rem' }}
                     requiredIndicator={
                       <span style={{ color: 'text-black', marginLeft: '5px' }}>
                         *
@@ -95,6 +103,7 @@ function Register({ axios }) {
                     placeholder="Username"
                     label=""
                     color="white"
+                    size="lg"
                   />
                 </FormControl>
                 {/*</Box>*/}
@@ -102,6 +111,7 @@ function Register({ axios }) {
 
                 <FormControl id="email" isRequired>
                   <FormLabel
+                    style={{ fontSize: '1.1rem' }}
                     requiredIndicator={
                       <span style={{ color: 'text-black', marginLeft: '5px' }}>
                         *
@@ -116,11 +126,13 @@ function Register({ axios }) {
                     placeholder="Email address"
                     label=""
                     color="white"
+                    size="lg"
                   />
                 </FormControl>
 
                 <FormControl id="password" isRequired>
                   <FormLabel
+                    style={{ fontSize: '1.1rem' }}
                     requiredIndicator={
                       <span style={{ color: 'text-black', marginLeft: '5px' }}>
                         *
@@ -137,6 +149,7 @@ function Register({ axios }) {
                       placeholder="Password"
                       label=""
                       color="white"
+                      size="lg"
                     />
 
                     <InputRightElement h={'full'} className="mt-1">
