@@ -69,9 +69,6 @@ function Register({ axios }) {
             await axios
               .post('/api/users/register', values)
               .then((response) => {
-                // console.log('response', response)
-                console.log('response.errors', response.data.errors[0])
-
                 if (response) {
                   if (response.data.errors) {
                     setErrors(toErrorMap(response.data.errors))

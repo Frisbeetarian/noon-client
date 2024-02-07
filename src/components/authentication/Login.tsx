@@ -30,10 +30,6 @@ function Login({ axios }) {
 
   return (
     <Stack spacing={8} mx={'auto'} maxW={'xlg'} py={12} px={6} className="z-10">
-      {/*<Stack align={'start'} className="text-red-500">*/}
-      {/*  <Heading fontSize={'4xl'}>Login to your account</Heading>*/}
-      {/*</Stack>*/}
-
       <Box boxShadow={'lg'} p={8} className="border border-red-500 z-10 ">
         <Formik
           initialValues={{
@@ -45,17 +41,22 @@ function Login({ axios }) {
           validateOnBlur={false}
           validateOnChange={false}
           onSubmit={async (values, { setErrors }) => {
-            const response = await axios.post('/api/users/login', values)
-
-            if (response.data?.errors) {
-              setErrors(toErrorMap(response.data.errors))
-            } else if (response.data) {
-              if (typeof router.query.next === 'string') {
-                router.push(router.query.next)
-              } else {
-                router.replace('/noon')
-              }
-            }
+            await axios
+              .post('/api/users/login', values)
+              .then((response) => {
+                if (response.data?.errors) {
+                  setErrors(toErrorMap(response.data.errors))
+                } else if (response.data) {
+                  if (typeof router.query.next === 'string') {
+                    router.push(router.query.next)
+                  } else {
+                    router.replace('/noon')
+                  }
+                }
+              })
+              .catch((error) => {
+                console.error('Error logging in:', error.message)
+              })
           }}
         >
           {({ isSubmitting }) => (
