@@ -28,8 +28,6 @@ const Onboarding = ({ axios }) => {
   const showForgotPasswordComponent = useSelector(
     getShowForgotPasswordComponent
   )
-  // const [matcapTexture] = useMatcapTexture('CB4E88_F99AD6_F384C3_ED75B9')
-  // const { width: w, height: h } = useThree((state) => state.viewport)
 
   useEffect(() => {
     if (!isServer()) {
@@ -40,7 +38,6 @@ const Onboarding = ({ axios }) => {
         })
         .catch((error) => {
           console.error('Error fetching user data:', error.message)
-          // Handle error (e.g., redirect to login if unauthorized)
         })
     }
   }, [axios])
@@ -62,25 +59,6 @@ const Onboarding = ({ axios }) => {
       randomWait(),
       'NOON',
       2000,
-
-      // randomWait(),
-      // 'NOON\nN',
-      // randomWait(),
-      // 'NOON\nNO',
-      // randomWait(),
-      // 'NOON\nNOO',
-      // randomWait(),
-      // 'NOON\nNOON',
-      // 'NOON\nNOON\nN',
-      // randomWait(),
-      // 'NOON\nNOON\nNO',
-      // randomWait(),
-      // 'NOON\nNOON\nNOO',
-      // randomWait(),
-      // 'NOON\nNOON\nNOON',
-      // randomWait(),
-      // 'NOON\nNOON\nNOON\nNOON',
-      // randomWait(),
     ]
     return sequence
   }
@@ -96,44 +74,6 @@ const Onboarding = ({ axios }) => {
       <AppParticles />
 
       <Flex className="flex-col justify-center items-center bg-black text-red-500 h-screen">
-        {/*<p className="fixed top-12 text-5xl text-white noon-logo diagonal">*/}
-        {/*  NOON*/}
-        {/*</p>*/}
-
-        {/*<Flex*/}
-        {/*  className="absolute top-0 w-full justify-start "*/}
-        {/*  // style={{ width: '100vw', height: '100vh' }}*/}
-        {/*>*/}
-        {/*  <Canvas>*/}
-        {/*    <Suspense fallback={null}>*/}
-        {/*      <Text3D*/}
-        {/*        position={[-5, -1, 0]}*/}
-        {/*        font={rgpp}*/}
-        {/*        size={3}*/}
-        {/*        height={-0.4}*/}
-        {/*        color={'#921A1C'}*/}
-        {/*        lineHeight={0.9}*/}
-        {/*        letterSpacing={0.4}*/}
-        {/*        bevelThickness={-0.4}*/}
-        {/*        bevelEnabled={true}*/}
-        {/*        bevelSize={-0.4}*/}
-        {/*        //   bevelEnabled?: boolean;*/}
-        {/*        // bevelOffset?: number;*/}
-        {/*        // bevelSize?: number;*/}
-        {/*        // bevelThickness?: number;*/}
-        {/*        // curveSegments?: number;*/}
-        {/*        // font: Font;*/}
-        {/*        // height?: number;*/}
-        {/*        // size?: number;*/}
-        {/*        // lineHeight?: number;*/}
-        {/*        // letterSpacing?: number;*/}
-        {/*      >*/}
-        {/*        NOON*/}
-        {/*        <meshBasicMaterial color={'#921A1C'} />*/}
-        {/*      </Text3D>*/}
-        {/*    </Suspense>*/}
-        {/*  </Canvas>*/}
-        {/*</Flex>*/}
         <p className="fixed top-12 text-4xl text-red-500 leading-tight">
           <TypeAnimation
             sequence={generateRandomSequence()}

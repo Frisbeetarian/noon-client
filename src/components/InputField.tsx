@@ -67,7 +67,7 @@ export const InputField: React.FC<InputFieldProps> = ({
         }}
       />
       {error ? (
-        <FormErrorMessage color="text-red-500" className="text-red-500">
+        <FormErrorMessage color="white" className="text-white">
           {error}
         </FormErrorMessage>
       ) : null}

@@ -4,8 +4,6 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Heading,
-  HStack,
   InputGroup,
   InputRightElement,
   Stack,
@@ -68,18 +66,25 @@ function Register({ axios }) {
           validateOnBlur={false}
           validateOnChange={false}
           onSubmit={async (values, { setErrors }) => {
-            const response = await axios.post('/api/users/register', values)
-            console.log('response.errors', response.errors)
+            await axios
+              .post('/api/users/register', values)
+              .then((response) => {
+                // console.log('response', response)
+                console.log('response.errors', response.data.errors[0])
 
-            if (response) {
-              if (response.errors) {
-                setErrors(toErrorMap(response.errors))
-              } else if (response.data && response.statusText === 'OK') {
-                router.replace('/noon')
-              }
-            } else {
-              console.error('Failed to register')
-            }
+                if (response) {
+                  if (response.data.errors) {
+                    setErrors(toErrorMap(response.data.errors))
+                  } else if (response.data && response.statusText === 'OK') {
+                    router.replace('/noon')
+                  }
+                } else {
+                  console.error('Failed to register')
+                }
+              })
+              .catch((error) => {
+                console.error('Error registering:', error.message)
+              })
           }}
         >
           {({ isSubmitting }) => (
