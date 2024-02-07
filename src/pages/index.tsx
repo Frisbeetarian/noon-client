@@ -5,8 +5,11 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { isServer } from '../utils/isServer'
 import { withAxios } from '../utils/withAxios'
-// import Head from 'next/head'
+import Head from 'next/head'
 
+const meta = {
+  title: 'Noon – Open source, secure, free communication platform.',
+}
 const Index = ({ axios }) => {
   const router = useRouter()
   const [userData, setUserData] = useState(null)
@@ -48,18 +51,9 @@ const Index = ({ axios }) => {
 
   return (
     <>
-      {/*<Head>*/}
-      {/*  <title>{meta.title}</title>*/}
-      {/*  <meta name="robots" content="follow, index" />*/}
-      {/*  <meta content={meta.description} name="description" />*/}
-      {/*  <meta property="og:url" content={`https://noon.tube${router.asPath}`} />*/}
-      {/*  <link rel="canonical" href={`https://noon.tube${router.asPath}`} />*/}
-      {/*  <meta property="og:type" content={meta.type} />*/}
-      {/*  <meta property="og:site_name" content="Noon" />*/}
-      {/*  <meta property="og:description" content={meta.description} />*/}
-      {/*  <meta property="og:title" content={meta.title} />*/}
-      {/*  <meta property="og:image" content={meta.image} />*/}
-      {/*</Head>*/}
+      <Head>
+        <title>{meta.title}</title>
+      </Head>
 
       <Flex className="flex-col justify-center items-center bg-red-500 text-black h-screen">
         {loading && <p className="fixed top-12 text-5xl">Loading...</p>}

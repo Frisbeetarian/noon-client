@@ -15,13 +15,11 @@ import {
 } from '../store/ui'
 import AppParticles from '../components/AppComponents/AppParticles'
 import { TypeAnimation } from 'react-type-animation'
+import Head from 'next/head'
 
-import { Canvas } from '@react-three/fiber'
-import { Text3D } from '@react-three/drei'
-import rgp from './../../public/gt.json'
-import rgpp from './../../fonts/cute.json'
-import type { Font } from 'three-stdlib/loaders/FontLoader'
-
+const meta = {
+  title: 'Noon – Open source, secure, free communication platform.',
+}
 const Onboarding = ({ axios }) => {
   const router = useRouter()
   const [userData, setUserData] = useState(null)
@@ -91,6 +89,10 @@ const Onboarding = ({ axios }) => {
 
   return (
     <>
+      <Head>
+        <title>{meta.title}</title>
+      </Head>
+
       <AppParticles />
 
       <Flex className="flex-col justify-center items-center bg-black text-red-500 h-screen">
