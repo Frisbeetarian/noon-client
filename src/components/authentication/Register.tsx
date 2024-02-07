@@ -154,7 +154,6 @@ function Register({ axios }) {
 
                 <Stack spacing={10} pt={2}>
                   <AppButton
-                    color="black"
                     className="w-1/2 ml-auto"
                     type="submit"
                     size="md"

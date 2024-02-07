@@ -133,7 +133,6 @@ function Login({ axios }) {
                     <AppButton
                       className="w-1/2 ml-auto mt-5"
                       size="md"
-                      color="black"
                       type="submit"
                       isLoading={isSubmitting}
                     >
