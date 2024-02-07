@@ -52,7 +52,7 @@ function Register({ axios }) {
       {/*<Stack align={'start'}>*/}
       {/*  <Heading*/}
       {/*    fontSize={'4xl'}*/}
-      {/*    textAlign={'centr'}*/}
+      {/*    textAlign={'center'}*/}
       {/*    className="text-white"*/}
       {/*  >*/}
       {/*    Register*/}
