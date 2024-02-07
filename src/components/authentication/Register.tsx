@@ -61,11 +61,7 @@ function Register({ axios }) {
       {/*  </Heading>*/}
       {/*</Stack>*/}
 
-      <Box
-        boxShadow={'lg'}
-        p={8}
-        className="border border-red-500 z-10 border-dotted"
-      >
+      <Box boxShadow={'lg'} p={8} className="border border-red-500 z-10">
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           validationSchema={RegisterSchema}
@@ -73,11 +69,12 @@ function Register({ axios }) {
           validateOnChange={false}
           onSubmit={async (values, { setErrors }) => {
             const response = await axios.post('/api/users/register', values)
+            console.log('response.errors', response.errors)
 
-            if (response && response.statusText === 'OK') {
+            if (response) {
               if (response.errors) {
                 setErrors(toErrorMap(response.errors))
-              } else if (response.data) {
+              } else if (response.data && response.statusText === 'OK') {
                 router.replace('/noon')
               }
             } else {
@@ -186,7 +183,7 @@ function Register({ axios }) {
       </Box>
 
       <Text
-        className="text-xl text-red-500 cursor-pointer z-10"
+        className="text-lg text-red-500 cursor-pointer z-10 menlo font-bold"
         onClick={() => {
           dispatch(setShowLoginComponent(true))
           dispatch(setShowRegisterComponent(false))

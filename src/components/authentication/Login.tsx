@@ -34,11 +34,7 @@ function Login({ axios }) {
       {/*  <Heading fontSize={'4xl'}>Login to your account</Heading>*/}
       {/*</Stack>*/}
 
-      <Box
-        boxShadow={'lg'}
-        p={8}
-        className="border border-red-500 z-10 border-dotted"
-      >
+      <Box boxShadow={'lg'} p={8} className="border border-red-500 z-10 ">
         <Formik
           initialValues={{
             usernameOrEmail: '',
@@ -155,7 +151,7 @@ function Login({ axios }) {
       </Box>
 
       <Text
-        className="text-xl text-red-500 cursor-pointer z-10"
+        className="text-lg text-red-500 cursor-pointer z-10 menlo font-bold"
         onClick={() => {
           dispatch(setShowRegisterComponent(true))
           dispatch(setShowLoginComponent(false))
