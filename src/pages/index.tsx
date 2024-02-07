@@ -72,7 +72,7 @@ const Index = ({ axios }) => {
         <title>{meta.title}</title>
       </Head>
 
-      <Flex className="flex-col justify-center items-center bg-red-500 text-black h-screen">
+      <Flex className="flex-col justify-center items-center bg-black text-black h-screen">
         {/*{loading && <p className="fixed top-12 text-5xl">Loading...</p>}*/}
 
         {loading && (
