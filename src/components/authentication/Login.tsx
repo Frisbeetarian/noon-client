@@ -37,11 +37,11 @@ function Login({ axios }) {
 
   return (
     <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
-      <Stack align={'start'} className="text-red-500">
-        <Heading fontSize={'4xl'}>Login to your account</Heading>
-      </Stack>
+      {/*<Stack align={'start'} className="text-red-500">*/}
+      {/*  <Heading fontSize={'4xl'}>Login to your account</Heading>*/}
+      {/*</Stack>*/}
 
-      <Box boxShadow={'lg'} p={8} className="bg-red-500" border={0}>
+      <Box boxShadow={'lg'} border={0} p={8} className="border">
         <Formik
           initialValues={{
             usernameOrEmail: '',
@@ -67,7 +67,7 @@ function Login({ axios }) {
         >
           {({ isSubmitting }) => (
             <Form>
-              <Stack spacing={4} className="text-black">
+              <Stack spacing={4} className="text-white">
                 <FormControl id="email" isRequired>
                   <FormLabel
                     requiredIndicator={
@@ -136,7 +136,7 @@ function Login({ axios }) {
                   {/*  Forgot password?*/}
                   {/*</Link>*/}
 
-                  <Stack>
+                  <Stack spacing={10} pt={2}>
                     <AppButton
                       className="w-1/2 ml-auto mt-5"
                       size="md"

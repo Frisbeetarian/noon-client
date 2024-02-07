@@ -43,15 +43,18 @@ function Register({ axios }) {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <Stack
-      spacing={8}
-      mx={'auto'}
-      maxW={'lg'}
-      py={12}
-      px={6}
-      className="text-white "
-    >
-      <Box boxShadow={'lg'} border={0} p={8} className="border  ">
+    <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
+      {/*<Stack align={'start'}>*/}
+      {/*  <Heading*/}
+      {/*    fontSize={'4xl'}*/}
+      {/*    textAlign={'center'}*/}
+      {/*    className="text-white"*/}
+      {/*  >*/}
+      {/*    Register*/}
+      {/*  </Heading>*/}
+      {/*</Stack>*/}
+
+      <Box boxShadow={'lg'} border={0} p={8} className="border">
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           validationSchema={RegisterSchema}
@@ -73,41 +76,29 @@ function Register({ axios }) {
         >
           {({ isSubmitting }) => (
             <Form>
-              {/*<Stack align={'start'}>*/}
-              {/*  <Heading*/}
-              {/*    fontSize={'4xl'}*/}
-              {/*    textAlign={'center'}*/}
-              {/*    className="text-white"*/}
-              {/*  >*/}
-              {/*    Register*/}
-              {/*  </Heading>*/}
-              {/*</Stack>*/}
+              <Stack spacing={4} className="text-white">
+                {/*<HStack>*/}
+                {/*<Box>*/}
+                <FormControl id="username" isRequired>
+                  <FormLabel
+                    requiredIndicator={
+                      <span style={{ color: 'text-black', marginLeft: '5px' }}>
+                        *
+                      </span>
+                    }
+                  >
+                    Username
+                  </FormLabel>
 
-              <Stack spacing={4}>
-                <HStack>
-                  <Box>
-                    <FormControl id="username" isRequired>
-                      <FormLabel
-                        requiredIndicator={
-                          <span
-                            style={{ color: 'text-black', marginLeft: '5px' }}
-                          >
-                            *
-                          </span>
-                        }
-                      >
-                        Username
-                      </FormLabel>
-
-                      <InputField
-                        name="username"
-                        placeholder="Username"
-                        label=""
-                        color="white"
-                      />
-                    </FormControl>
-                  </Box>
-                </HStack>
+                  <InputField
+                    name="username"
+                    placeholder="Username"
+                    label=""
+                    color="white"
+                  />
+                </FormControl>
+                {/*</Box>*/}
+                {/*</HStack>*/}
 
                 <FormControl id="email" isRequired>
                   <FormLabel
