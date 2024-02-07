@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  Box,
-  FormControl,
-  FormLabel,
-  Heading,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
+import { Box, FormControl, FormLabel, Stack, Text } from '@chakra-ui/react'
 import { Field, Form, Formik } from 'formik'
 import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'

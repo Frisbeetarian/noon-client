@@ -96,6 +96,8 @@ const AppParticles = () => {
         options={options}
       />
     )
+  } else {
+    return null
   }
 }
 
