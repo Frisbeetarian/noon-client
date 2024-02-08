@@ -191,11 +191,20 @@ const Messages = ({ axios }) => {
                 {...commonProps}
                 src={item.src}
                 alt={item.content}
+                item={item}
+                deleteMessageHandler={deleteMessageHandler}
               />
             )
           } else if (item.type === 'audio') {
             return (
-              <AudioMessage key={item.uuid} {...commonProps} src={item.src} />
+              <AudioMessage
+                key={item.uuid}
+                {...commonProps}
+                content={item.content}
+                src={item.src}
+                item={item}
+                deleteMessageHandler={deleteMessageHandler}
+              />
             )
           }
         })}
