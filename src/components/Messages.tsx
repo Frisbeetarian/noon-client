@@ -1,16 +1,15 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
 import {
   Avatar,
   Flex,
   Text,
-  Image,
   Menu,
   MenuButton,
   MenuItem,
   IconButton,
 } from '@chakra-ui/react'
-
 import { ChevronDownIcon } from '@chakra-ui/icons'
 
 import {
@@ -220,7 +219,7 @@ const Messages = ({ axios }) => {
                           </Menu>
                         ) : null}
                       </Flex>
-                    ) : item.type === 'image' ? (
+                    ) : item.type === 'image' && !item.deleted ? (
                       <Flex
                         className="relative"
                         boxSize={!item.deleted ? 'sm' : ''}
