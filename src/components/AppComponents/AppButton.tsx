@@ -1,6 +1,8 @@
 import React, { forwardRef } from 'react'
 import { Button, ButtonProps } from '@chakra-ui/react'
+import { CheckIcon } from '@chakra-ui/icons'
 
+// @ts-ignore
 interface AppButtonProps extends ButtonProps {
   color?: string
   bg?: string
@@ -8,6 +10,7 @@ interface AppButtonProps extends ButtonProps {
   borderRadius?: string
   fontFamily?: string
   disabled?: boolean | undefined
+  rightIcon: typeof CheckIcon
   type?: 'button' | 'submit' | 'reset' | undefined
 }
 
@@ -21,6 +24,7 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
       fontFamily = 'Menlo',
       disabled = false,
       children,
+      rightIcon,
       type = 'button',
       ...rest
     },
@@ -35,6 +39,8 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
         borderRadius={borderRadius}
         fontFamily={fontFamily}
         isDisabled={disabled}
+        // @ts-ignore
+        rightIcon={rightIcon}
         type={type}
         {...rest}
       >

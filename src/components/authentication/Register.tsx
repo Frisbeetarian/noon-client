@@ -10,9 +10,8 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import { CheckIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import * as Yup from 'yup'
-import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 
 import { toErrorMap } from '../../utils/toErrorMap'
@@ -38,11 +37,9 @@ const RegisterSchema = Yup.object().shape({
 })
 
 function Register() {
-  const router = useRouter()
   const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState(false)
-  const [registerUser, { isLoading, isSuccess, isError, error }] =
-    useRegisterUserMutation()
+  const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation()
 
   const handleSubmit = async (values, { setErrors }) => {
     try {
@@ -52,7 +49,7 @@ function Register() {
         if (response.errors) {
           setErrors(toErrorMap(response.errors))
         } else if (response && isSuccess) {
-          router.replace('/noon')
+          // router.replace('/noon')
         }
       } else {
         console.error('Failed to register')
@@ -175,9 +172,10 @@ function Register() {
                     size="md"
                     isLoading={isSubmitting || isLoading}
                     disabled={isSuccess}
-                    rightIcon={isSuccess}
+                    // @ts-ignore
+                    rightIcon={isSuccess ? <CheckIcon color="white" /> : null}
                   >
-                    Register
+                    {isSuccess ? 'Registered' : 'Register'}
                   </AppButton>
                 </Stack>
               </Stack>
