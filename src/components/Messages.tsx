@@ -155,6 +155,7 @@ const Messages = ({ axios }) => {
           display: 'flex',
           flexDirection: 'column-reverse',
           overflowX: 'hidden',
+          overflowY: 'hidden',
         }}
         inverse={true}
         hasMore={hasMore}
