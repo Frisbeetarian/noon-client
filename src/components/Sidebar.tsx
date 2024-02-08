@@ -29,6 +29,7 @@ import {
   setActiveConversation,
   setActiveConversationSet,
   setActiveConversee,
+  setConversations,
   setShouldPauseCheckHasMore,
 } from '../store/chat'
 
@@ -61,21 +62,28 @@ function Sidebar({ axios }) {
   const searchComponentState = useSelector(getSearchComponentState)
   const [innerHeight, setInnerHeight] = useState(0)
   const [areConversationsLoading, setAreConversationsLoading] = useState(true)
-  const { data: conversations, isLoading } = useGetConversationsQuery()
+  const { data: conversations, isLoading } = useGetConversationsQuery(undefined)
   const [logoutUser] = useLogoutUserMutation()
 
   const loggedInUser = useSelector(getLoggedInUser)
   const isConversationOpen = useSelector(getIsConversationOpen)
-  const getConversationsFromStore = useSelector(getSortedConversations)
   // const activeConversation = useSelector(getActiveConversation)
 
   useEffect(() => {
-    setInnerHeight(window.innerHeight)
-
-    if (getConversationsFromStore) {
-      setAreConversationsLoading(false)
+    console.log('conversations:', conversations)
+    if (conversations && loggedInUser.user.username) {
+      dispatch(
+        setConversations({
+          conversationsToSend: conversations,
+          loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+        })
+      )
     }
-  }, [getConversationsFromStore])
+  }, [conversations, dispatch])
+
+  useEffect(() => {
+    setInnerHeight(window.innerHeight)
+  }, [])
 
   useEffect(() => {
     window.addEventListener('resize', () => {
@@ -200,9 +208,8 @@ function Sidebar({ axios }) {
           <Flex className="items-center justify-center">
             <Spinner />
           </Flex>
-        ) : getConversationsFromStore &&
-          getConversationsFromStore.length !== 0 ? (
-          [...Object.values(getConversationsFromStore)].map((conversation, i) =>
+        ) : conversations && conversations.length !== 0 ? (
+          conversations.map((conversation, i) =>
             !conversation ? null : (conversation as any).type === 'pm' ? (
               <PrivateConversationListing
                 key={i}
@@ -219,7 +226,7 @@ function Sidebar({ axios }) {
             )
           )
         ) : (
-          <p className="w-3/4 p-5 ">
+          <p className="w-3/4 p-5">
             No conversations yet. Use the search component to look for people to
             send friend requests to. Click on the search icon to search for
             profiles. Once you find the profile you want to befriend, send them

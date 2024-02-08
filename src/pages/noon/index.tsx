@@ -10,7 +10,7 @@ import {
   removeFriendRequestEntry,
 } from '../../store/users'
 
-import { setConversations, addConversation } from '../../store/chat'
+import { addConversation } from '../../store/chat'
 
 import Chat from '../../components/Chat'
 import { withAxios } from '../../utils/withAxios'
@@ -24,7 +24,6 @@ import CreateGroupSidebar from '../../components/CreateGroupSidebar'
 import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
 import AppButton from '../../components/AppComponents/AppButton'
 import { setFriendFlagOnProfile } from '../../store/profiles'
-import { useGetConversationsQuery } from '../../store/api/conversationsApiSlice'
 import Sidebar from '../../components/Sidebar'
 
 const meta = {
@@ -39,22 +38,10 @@ function Noon({ axios }) {
   const loggedInUser = useSelector(getLoggedInUser)
   const toast = useToast()
   const [isCount, setIsCount] = useState(0)
-  const { data: conversations } = useGetConversationsQuery(undefined)
 
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  useEffect(() => {
-    if (conversations && loggedInUser.user.username) {
-      dispatch(
-        setConversations({
-          conversationsToSend: conversations,
-          loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
-        })
-      )
-    }
-  }, [conversations, dispatch])
 
   useEffect(() => {
     if (
