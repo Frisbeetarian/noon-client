@@ -45,8 +45,7 @@ function Noon({ axios }) {
   const toast = useToast()
   const [isCount, setIsCount] = useState(0)
   // const [activeToasts, setActiveToasts] = useState({})
-  // @ts-ignore
-  const { data: conversations } = useGetConversationsQuery()
+  const { data: conversations } = useGetConversationsQuery(undefined)
 
   useEffect(() => {
     setMounted(true)

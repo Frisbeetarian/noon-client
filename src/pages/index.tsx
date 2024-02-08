@@ -1,12 +1,14 @@
 import { Flex } from '@chakra-ui/react'
-
-import React, { useEffect, useState } from 'react'
-
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { isServer } from '../utils/isServer'
-import { withAxios } from '../utils/withAxios'
 import Head from 'next/head'
 import { TypeAnimation } from 'react-type-animation'
+
+// import { isServer } from '../utils/isServer'
+import { withAxios } from '../utils/withAxios'
+import { useGetMeQuery } from '../store/api/usersApiSlice'
+import { setLoggedInUser } from '../store/users'
+import { useDispatch } from 'react-redux'
 
 interface IndexProps {
   axios: any
@@ -17,36 +19,19 @@ const meta = {
 }
 const Index: React.FC<IndexProps> = ({ axios }) => {
   const router = useRouter()
-  const [userData, setUserData] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const dispatch = useDispatch()
+  const { data: user, isLoading } = useGetMeQuery(undefined)
 
   useEffect(() => {
-    if (!isServer()) {
-      axios
-        .get('/api/users/me')
-        .then((response) => {
-          setUserData(response.data)
-          setLoading(false)
-        })
-        .catch((error) => {
-          console.error('Error fetching user data:', error)
-          setLoading(false)
-        })
-    } else {
-      setLoading(false)
-    }
-  }, [axios])
-
-  useEffect(() => {
-    if (!loading) {
-      // @ts-ignore
-      if (userData?.username) {
+    if (!isLoading) {
+      if (user?.username) {
+        dispatch(setLoggedInUser(user))
         router.replace('/noon')
       } else {
         router.replace('/onboarding')
       }
     }
-  }, [userData, loading, router])
+  }, [user, isLoading, router])
 
   const generateRandomSequence = () => {
     const sequence = [
