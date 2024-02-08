@@ -180,6 +180,8 @@ const Messages = ({ axios }) => {
                 key={item.uuid}
                 {...commonProps}
                 content={item.content}
+                item={item}
+                deleteMessageHandler={deleteMessageHandler}
               />
             )
           } else if (item.type === 'image') {
