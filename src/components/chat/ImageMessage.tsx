@@ -20,7 +20,6 @@ const ImageMessage = ({
   item,
   deleteMessageHandler,
 }) => {
-  console.log('item:', item)
   return (
     <Flex
       className="relative"

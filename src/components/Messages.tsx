@@ -201,8 +201,8 @@ const Messages = ({ axios }) => {
               <AudioMessage
                 key={item.uuid}
                 {...commonProps}
-                content={item.content}
                 src={item.src}
+                content={item.content}
                 item={item}
                 deleteMessageHandler={deleteMessageHandler}
               />
