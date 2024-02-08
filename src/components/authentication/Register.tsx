@@ -13,6 +13,7 @@ import { Form, Formik } from 'formik'
 import { CheckIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
+import { router } from 'next/client'
 
 import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
@@ -49,7 +50,7 @@ function Register() {
         if (response.errors) {
           setErrors(toErrorMap(response.errors))
         } else if (response && isSuccess) {
-          // router.replace('/noon')
+          router.replace('/noon')
         }
       } else {
         console.error('Failed to register')

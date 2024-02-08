@@ -12,6 +12,8 @@ import {
 } from '../../store/ui'
 import { useDispatch } from 'react-redux'
 import AppButton from '../AppComponents/AppButton'
+import { useLoginUserMutation } from '../../store/api/usersApiSlice'
+import { CheckIcon } from '@chakra-ui/icons'
 
 const LoginSchema = Yup.object().shape({
   usernameOrEmail: Yup.string()
@@ -24,9 +26,34 @@ const LoginSchema = Yup.object().shape({
     .required('Password is required.'),
 })
 
-function Login({ axios }) {
+function Login() {
   const router = useRouter()
   const dispatch = useDispatch()
+  const [loginUser, { isLoading, isSuccess }] = useLoginUserMutation()
+
+  const handleSubmit = async (values, { setErrors }) => {
+    try {
+      const response = await loginUser(values).unwrap()
+
+      if (response) {
+        if (response.errors) {
+          setErrors(toErrorMap(response.errors))
+        } else if (response && isSuccess) {
+          router.replace('/noon')
+        }
+      } else {
+        console.error('Failed to login')
+      }
+    } catch (error) {
+      // @ts-ignore
+      if (error?.errors) {
+        // @ts-ignore
+        setErrors(toErrorMap(error?.errors))
+      } else {
+        console.error('Error logging user in:', error)
+      }
+    }
+  }
 
   return (
     <Stack spacing={8} mx={'auto'} maxW={'xlg'} py={12} px={6} className="z-10">
@@ -40,24 +67,7 @@ function Login({ axios }) {
           validationSchema={LoginSchema}
           validateOnBlur={false}
           validateOnChange={false}
-          onSubmit={async (values, { setErrors }) => {
-            await axios
-              .post('/api/users/login', values)
-              .then((response) => {
-                if (response.data?.errors) {
-                  setErrors(toErrorMap(response.data.errors))
-                } else if (response.data) {
-                  if (typeof router.query.next === 'string') {
-                    router.push(router.query.next)
-                  } else {
-                    router.replace('/noon')
-                  }
-                }
-              })
-              .catch((error) => {
-                console.error('Error logging in:', error.message)
-              })
-          }}
+          onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
             <Form>
@@ -141,9 +151,12 @@ function Login({ axios }) {
                       className="w-1/2 ml-auto mt-5 text-"
                       size="md"
                       type="submit"
-                      isLoading={isSubmitting}
+                      isLoading={isSubmitting || isLoading}
+                      disabled={isSuccess}
+                      // @ts-ignore
+                      rightIcon={isSuccess ? <CheckIcon color="white" /> : null}
                     >
-                      Login
+                      {isSuccess ? 'Login' : 'Login'}
                     </AppButton>
                   </Stack>
                 </Stack>

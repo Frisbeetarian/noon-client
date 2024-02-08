@@ -4,7 +4,6 @@ import Head from 'next/head'
 import { Flex } from '@chakra-ui/react'
 import { TypeAnimation } from 'react-type-animation'
 
-import { withAxios } from '../utils/withAxios'
 import Register from '../components/authentication/Register'
 import Login from '../components/authentication/Login'
 import ForgotPassword from '../components/authentication/ForgotPassword'
@@ -18,7 +17,7 @@ import AppParticles from '../components/AppComponents/AppParticles'
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
 }
-const Onboarding = ({ axios }) => {
+const Onboarding = () => {
   const showRegisterComponent = useSelector(getShowRegisterComponent)
   const showLoginComponent = useSelector(getShowLoginComponent)
   const showForgotPasswordComponent = useSelector(
@@ -64,7 +63,7 @@ const Onboarding = ({ axios }) => {
 
         <Flex minH={'100%'} align={'center'} justify={'center'}>
           {showRegisterComponent && <Register />}
-          {showLoginComponent && <Login axios={axios} />}
+          {showLoginComponent && <Login />}
 
           {showForgotPasswordComponent && <ForgotPassword />}
         </Flex>
@@ -73,4 +72,4 @@ const Onboarding = ({ axios }) => {
   )
 }
 
-export default withAxios(Onboarding)
+export default Onboarding
