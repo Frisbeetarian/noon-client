@@ -10,18 +10,20 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
+import { CheckIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import * as Yup from 'yup'
+import { useDispatch } from 'react-redux'
+import { useRouter } from 'next/router'
+
 import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-import * as Yup from 'yup'
-import { useRouter } from 'next/router'
-import { useDispatch } from 'react-redux'
 import {
   setShowForgotPasswordComponent,
   setShowLoginComponent,
   setShowRegisterComponent,
 } from '../../store/ui'
 import AppButton from '../AppComponents/AppButton'
+import { useRegisterUserMutation } from '../../store/api/usersApiSlice'
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -35,10 +37,26 @@ const RegisterSchema = Yup.object().shape({
     .required('Password is required.'),
 })
 
-function Register({ axios }) {
-  const router = useRouter()
+function Register() {
   const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState(false)
+  const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation()
+  const router = useRouter()
+
+  const handleSubmit = async (values, { setErrors }) => {
+    try {
+      await registerUser(values).unwrap()
+      router.replace('/noon')
+    } catch (error) {
+      // @ts-ignore
+      if (error.data?.errors) {
+        // @ts-ignore
+        setErrors(toErrorMap(error.data.errors))
+      } else {
+        console.error('Error registering:', error)
+      }
+    }
+  }
 
   return (
     <Stack
@@ -49,46 +67,17 @@ function Register({ axios }) {
       px={6}
       className=" z-10"
     >
-      {/*<Stack align={'start'}>*/}
-      {/*  <Heading*/}
-      {/*    fontSize={'4xl'}*/}
-      {/*    textAlign={'center'}*/}
-      {/*    className="text-white"*/}
-      {/*  >*/}
-      {/*    Register*/}
-      {/*  </Heading>*/}
-      {/*</Stack>*/}
-
       <Box boxShadow={'lg'} p={8} className="border border-red-500 z-10">
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           validationSchema={RegisterSchema}
           validateOnBlur={false}
           validateOnChange={false}
-          onSubmit={async (values, { setErrors }) => {
-            await axios
-              .post('/api/users/register', values)
-              .then((response) => {
-                if (response) {
-                  if (response.data.errors) {
-                    setErrors(toErrorMap(response.data.errors))
-                  } else if (response.data && response.statusText === 'OK') {
-                    router.replace('/noon')
-                  }
-                } else {
-                  console.error('Failed to register')
-                }
-              })
-              .catch((error) => {
-                console.error('Error registering:', error.message)
-              })
-          }}
+          onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
             <Form>
               <Stack spacing={8} className="text-white">
-                {/*<HStack>*/}
-                {/*<Box>*/}
                 <FormControl id="username" isRequired>
                   <FormLabel
                     style={{ fontSize: '1.1rem' }}
@@ -110,8 +99,6 @@ function Register({ axios }) {
                     size="lg"
                   />
                 </FormControl>
-                {/*</Box>*/}
-                {/*</HStack>*/}
 
                 <FormControl id="email" isRequired>
                   <FormLabel
@@ -176,9 +163,12 @@ function Register({ axios }) {
                     className="w-1/2 ml-auto"
                     type="submit"
                     size="md"
-                    isLoading={isSubmitting}
+                    isLoading={isSubmitting || isLoading}
+                    disabled={isSuccess}
+                    // @ts-ignore
+                    rightIcon={isSuccess ? <CheckIcon color="white" /> : null}
                   >
-                    Register
+                    {isSuccess ? 'Registered' : 'Register'}
                   </AppButton>
                 </Stack>
               </Stack>

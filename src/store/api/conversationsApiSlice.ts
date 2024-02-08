@@ -10,9 +10,6 @@ export const conversationsApiSlice = createApi({
     getConversations: builder.query({
       query: () => '/conversations',
     }),
-    // getMessagesForConversation: builder.query<Message[], string>({
-    //   query: (conversationId) => `/conversations/${conversationId}/messages`,
-    // }),
     getMessagesForConversation: builder.query({
       query: ({ conversationUuid, limit = 20, cursor }) => {
         let queryString = `/conversations/${conversationUuid}/messages?limit=${limit}`

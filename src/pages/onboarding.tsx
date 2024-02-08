@@ -1,69 +1,42 @@
+import React from 'react'
+import { useSelector } from 'react-redux'
+import Head from 'next/head'
 import { Flex } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
+import { TypeAnimation } from 'react-type-animation'
 
-import { useRouter } from 'next/router'
-import { isServer } from '../utils/isServer'
-import { withAxios } from '../utils/withAxios'
 import Register from '../components/authentication/Register'
 import Login from '../components/authentication/Login'
 import ForgotPassword from '../components/authentication/ForgotPassword'
-import { useSelector } from 'react-redux'
 import {
   getShowForgotPasswordComponent,
   getShowLoginComponent,
   getShowRegisterComponent,
 } from '../store/ui'
 import AppParticles from '../components/AppComponents/AppParticles'
-import { TypeAnimation } from 'react-type-animation'
-import Head from 'next/head'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
 }
-const Onboarding = ({ axios }) => {
-  const router = useRouter()
-  const [userData, setUserData] = useState(null)
+const Onboarding = () => {
   const showRegisterComponent = useSelector(getShowRegisterComponent)
   const showLoginComponent = useSelector(getShowLoginComponent)
   const showForgotPasswordComponent = useSelector(
     getShowForgotPasswordComponent
   )
 
-  useEffect(() => {
-    if (!isServer()) {
-      axios
-        .get('/api/users/me')
-        .then((response) => {
-          setUserData(response.data)
-        })
-        .catch((error) => {
-          console.error('Error fetching user data:', error.message)
-        })
-    }
-  }, [axios])
+  const generateRandomSequence = (): (string | number)[] => [
+    'N',
+    randomWait(),
+    'NO',
+    randomWait(),
+    'NOO',
+    randomWait(),
+    'NOON',
+    2000,
+  ]
 
-  useEffect(() => {
-    // @ts-ignore
-    if (userData?.username) {
-      router.replace('/noon')
-    }
-  }, [userData, router])
-
-  const generateRandomSequence = () => {
-    const sequence = [
-      'N',
-      randomWait(),
-      'NO',
-      randomWait(),
-      'NOO',
-      randomWait(),
-      'NOON',
-      2000,
-    ]
-    return sequence
-  }
-
-  const randomWait = () => Math.floor(Math.random() * (1250 - 300 + 1)) + 300
+  const randomWait = (): number =>
+    Math.floor(Math.random() * (1250 - 300 + 1)) + 300
 
   return (
     <>
@@ -87,9 +60,10 @@ const Onboarding = ({ axios }) => {
             repeat={Infinity}
           />
         </p>
+
         <Flex minH={'100%'} align={'center'} justify={'center'}>
-          {showRegisterComponent && <Register axios={axios} />}
-          {showLoginComponent && <Login axios={axios} />}
+          {showRegisterComponent && <Register />}
+          {showLoginComponent && <Login />}
 
           {showForgotPasswordComponent && <ForgotPassword />}
         </Flex>
@@ -98,4 +72,4 @@ const Onboarding = ({ axios }) => {
   )
 }
 
-export default withAxios(Onboarding)
+export default Onboarding

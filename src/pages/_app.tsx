@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
+
 import theme from '../theme'
 import './index.css'
 import { wrapper } from '../store/store'
-
 import '../components/SocketIo/Messages.css'
 import '../components/AudioRecorder/recorder-controls/styles.css'
 import { setIsMobile } from '../store/ui'
-import { useDispatch } from 'react-redux'
+import { useAuthCheck } from '../hooks/useAuthCheck'
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }): React.JSX.Element {
+  useAuthCheck()
   const dispatch = useDispatch()
 
   useEffect(() => {

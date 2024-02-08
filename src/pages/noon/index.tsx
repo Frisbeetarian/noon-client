@@ -1,22 +1,19 @@
 // @ts-nocheck
-import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import Sidebar from '../../components/Sidebar'
+import Head from 'next/head'
+import { CloseButton, Flex, useToast } from '@chakra-ui/react'
 
-import { isServer } from '../../utils/isServer'
 import {
   addFriendEntry,
   getLoggedInUser,
   removeFriendRequestEntry,
-  setLoggedInUser,
 } from '../../store/users'
 
 import { setConversations, addConversation } from '../../store/chat'
 
 import Chat from '../../components/Chat'
 import { withAxios } from '../../utils/withAxios'
-import { useRouter } from 'next/router'
 import {
   getCreateGroupActive,
   getIsConversationOpen,
@@ -25,50 +22,31 @@ import {
 import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
 import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
-import { CloseButton, Flex, useToast } from '@chakra-ui/react'
 import AppButton from '../../components/AppComponents/AppButton'
 import { setFriendFlagOnProfile } from '../../store/profiles'
 import { useGetConversationsQuery } from '../../store/api/conversationsApiSlice'
+import Sidebar from '../../components/Sidebar'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
 }
 function Noon({ axios }) {
-  const router = useRouter()
   const dispatch = useDispatch()
   const [mounted, setMounted] = useState(false)
   const isMobile = useSelector(getIsMobile)
   const isConversationOpen = useSelector(getIsConversationOpen)
   const createGroupActive = useSelector(getCreateGroupActive)
   const loggedInUser = useSelector(getLoggedInUser)
-  // const conversations = useSelector(getConversations)
   const toast = useToast()
   const [isCount, setIsCount] = useState(0)
-  // const [activeToasts, setActiveToasts] = useState({})
-  // @ts-ignore
-  const { data: conversations } = useGetConversationsQuery()
+  const { data: conversations } = useGetConversationsQuery(undefined)
 
   useEffect(() => {
     setMounted(true)
-    if (!isServer()) {
-      axios
-        .get('/api/users/me')
-        .then((response) => {
-          if (response.data.username) {
-            dispatch(setLoggedInUser(response.data))
-          } else {
-            router.replace('/')
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching user data:', error)
-          router.replace('/')
-        })
-    }
   }, [])
 
   useEffect(() => {
-    if (conversations) {
+    if (conversations && loggedInUser.user.username) {
       dispatch(
         setConversations({
           conversationsToSend: conversations,
