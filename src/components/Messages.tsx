@@ -159,6 +159,7 @@ const Messages = ({ axios }) => {
           overflowX: 'hidden',
           overflowY: 'hidden',
         }}
+        className=""
         inverse={true}
         hasMore={hasMore}
         scrollableTarget="scrollableDiv"
