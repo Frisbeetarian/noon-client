@@ -8,18 +8,17 @@ import { withAxios } from '../utils/withAxios'
 import Head from 'next/head'
 import { TypeAnimation } from 'react-type-animation'
 
+interface IndexProps {
+  axios: any
+}
+
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
 }
-const Index = ({ axios }) => {
+const Index: React.FC<IndexProps> = ({ axios }) => {
   const router = useRouter()
   const [userData, setUserData] = useState(null)
   const [loading, setLoading] = useState(true)
-
-  // const { data, loading } = useMeQuery({
-  //   skip: isServe(),
-  //   fetchPolicy: 'network-only',
-  // })
 
   useEffect(() => {
     if (!isServer()) {
@@ -32,7 +31,6 @@ const Index = ({ axios }) => {
         .catch((error) => {
           console.error('Error fetching user data:', error)
           setLoading(false)
-          // Handle error (e.g., redirect to login if unauthoried)
         })
     } else {
       setLoading(false)
@@ -73,8 +71,6 @@ const Index = ({ axios }) => {
       </Head>
 
       <Flex className="flex-col justify-center items-center bg-black text-black h-screen">
-        {/*{loading && <p className="fixed top-12 text-5xl">Loading...</p>}*/}
-
         {loading && (
           <p className="fixed top-12 text-4xl text-red-500 leading-tight">
             <TypeAnimation
