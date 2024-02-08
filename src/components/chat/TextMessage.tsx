@@ -32,7 +32,7 @@ const TextMessage = ({
         {!isDeleted ? content : <i className="text-gray-400">{content}</i>}
       </Text>
 
-      {isMine ? (
+      {isMine && !isDeleted ? (
         <Menu>
           <MenuButton
             className="bg-black -mt-2 ml-2 -mr-2"

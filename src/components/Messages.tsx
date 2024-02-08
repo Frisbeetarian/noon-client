@@ -191,6 +191,7 @@ const Messages = ({ axios }) => {
                 {...commonProps}
                 src={item.src}
                 alt={item.content}
+                content={item.content}
                 item={item}
                 deleteMessageHandler={deleteMessageHandler}
               />
