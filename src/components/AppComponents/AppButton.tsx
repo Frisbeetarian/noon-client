@@ -10,7 +10,7 @@ interface AppButtonProps extends ButtonProps {
   borderRadius?: string
   fontFamily?: string
   disabled?: boolean | undefined
-  rightIcon: typeof CheckIcon
+  rightIcon?: typeof CheckIcon
   type?: 'button' | 'submit' | 'reset' | undefined
 }
 
@@ -24,7 +24,7 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
       fontFamily = 'Menlo',
       disabled = false,
       children,
-      rightIcon,
+      rightIcon = null,
       type = 'button',
       ...rest
     },

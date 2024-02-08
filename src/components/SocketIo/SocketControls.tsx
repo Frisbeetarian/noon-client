@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import { Socket } from 'socket.io-client'
+import { useDispatch, useSelector } from 'react-redux'
+import { CloseButton, Flex, useToast } from '@chakra-ui/react'
 
 import {
   addFriendEntry,
@@ -9,7 +10,6 @@ import {
   removeFriendRequestEntry,
 } from '../../store/users'
 
-import { CloseButton, Flex, useToast } from '@chakra-ui/react'
 import { setFriendFlagOnProfile } from '../../store/profiles'
 
 import {
@@ -27,14 +27,8 @@ import {
   setShouldPauseCheckHasMore,
 } from '../../store/chat'
 
-import { useDispatch, useSelector } from 'react-redux'
 import SocketManager from './SocketManager'
-// import { getSocketId } from '../../store/sockets'
 
-// import {
-//   useAcceptFriendRequestMutation,
-//   useUpdateUnreadMessagesForConversationMutation,
-// } from '../../generated/graphql'
 import { getSocketAuthObject } from '../../store/sockets'
 import AppButton from '../AppComponents/AppButton'
 import withAxios from '../../utils/withAxios'
@@ -46,28 +40,13 @@ function SocketControls({ axios }) {
   const activeConversationSet = useSelector(getActiveConversationSet)
   const activeConversation = useSelector(getActiveConversation)
   const socketAuthObject = useSelector(getSocketAuthObject)
-  let socket: Socket | null | undefined = null
-
-  // const [
-  //   acceptFriendRequest,
-  //   // {loading: acceptFriendRequestLoading}
-  // ] = useAcceptFriendRequestMutation()
-
-  // const [
-  //   updateUnreadMessagesForConversation,
-  //   // { loading: updateUnreadMessagesLoading },
-  // ] = useUpdateUnreadMessagesForConversationMutation()
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
 
   useEffect(() => {
-    if (socketAuthObject) {
-      socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
-    }
-
     if (socket) {
       socket.on(
         'send-message',
         ({ senderUuid, senderUsername, conversationUuid, message }) => {
-          console.log('message in socket controls:', message)
           // if (!message.trim().length) {
           //   return
           // }
@@ -203,12 +182,6 @@ function SocketControls({ axios }) {
                 <AppButton
                   className="mr-3"
                   onClick={async () => {
-                    // const acceptFriendshipResponse = await acceptFriendRequest({
-                    //   variables: {
-                    //     profileUuid: senderUuid,
-                    //   },
-                    // })
-
                     const response = await axios.post(
                       '/api/profiles/acceptFriendRequest',
                       {
