@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { useGetMeQuery } from '../store/api/usersApiSlice'
 import { useDispatch } from 'react-redux'
+
 import { setLoggedInUser } from '../store/users'
+import { useGetMeQuery } from '../store/api/usersApiSlice'
 
 export const useAuthCheck = () => {
   const { data: user, isLoading } = useGetMeQuery(undefined)
