@@ -4,20 +4,14 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { TypeAnimation } from 'react-type-animation'
 
-// import { isServer } from '../utils/isServer'
-import { withAxios } from '../utils/withAxios'
 import { useGetMeQuery } from '../store/api/usersApiSlice'
 import { setLoggedInUser } from '../store/users'
 import { useDispatch } from 'react-redux'
 
-interface IndexProps {
-  axios: any
-}
-
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
 }
-const Index: React.FC<IndexProps> = ({ axios }) => {
+const Index = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const { data: user, isLoading } = useGetMeQuery(undefined)
@@ -33,21 +27,19 @@ const Index: React.FC<IndexProps> = ({ axios }) => {
     }
   }, [user, isLoading, router])
 
-  const generateRandomSequence = () => {
-    const sequence = [
-      'N',
-      randomWait(),
-      'NO',
-      randomWait(),
-      'NOO',
-      randomWait(),
-      'NOON',
-      2000,
-    ]
-    return sequence
-  }
+  const generateRandomSequence = (): (string | number)[] => [
+    'N',
+    randomWait(),
+    'NO',
+    randomWait(),
+    'NOO',
+    randomWait(),
+    'NOON',
+    2000,
+  ]
 
-  const randomWait = () => Math.floor(Math.random() * (1250 - 300 + 1)) + 300
+  const randomWait = (): number =>
+    Math.floor(Math.random() * (1250 - 300 + 1)) + 300
 
   return (
     <>
@@ -56,7 +48,7 @@ const Index: React.FC<IndexProps> = ({ axios }) => {
       </Head>
 
       <Flex className="flex-col justify-center items-center bg-black text-black h-screen">
-        {loading && (
+        {isLoading && (
           <p className="fixed top-12 text-4xl text-red-500 leading-tight">
             <TypeAnimation
               sequence={generateRandomSequence()}
@@ -75,4 +67,4 @@ const Index: React.FC<IndexProps> = ({ axios }) => {
     </>
   )
 }
-export default withAxios(Index)
+export default Index

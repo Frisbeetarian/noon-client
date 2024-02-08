@@ -49,21 +49,19 @@ const Onboarding = ({ axios }) => {
     }
   }, [userData, router])
 
-  const generateRandomSequence = () => {
-    const sequence = [
-      'N',
-      randomWait(),
-      'NO',
-      randomWait(),
-      'NOO',
-      randomWait(),
-      'NOON',
-      2000,
-    ]
-    return sequence
-  }
+  const generateRandomSequence = (): (string | number)[] => [
+    'N',
+    randomWait(),
+    'NO',
+    randomWait(),
+    'NOO',
+    randomWait(),
+    'NOON',
+    2000,
+  ]
 
-  const randomWait = () => Math.floor(Math.random() * (1250 - 300 + 1)) + 300
+  const randomWait = (): number =>
+    Math.floor(Math.random() * (1250 - 300 + 1)) + 300
 
   return (
     <>
