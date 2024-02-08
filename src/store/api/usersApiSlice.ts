@@ -6,9 +6,11 @@ export const usersApiSlice = createApi({
     baseUrl: `${process.env.NEXT_PUBLIC_URL}/api`,
     credentials: 'include',
   }),
+  tagTypes: ['User'],
   endpoints: (builder) => ({
     getMe: builder.query({
       query: () => '/users/me',
+      providesTags: ['User'],
     }),
   }),
 })

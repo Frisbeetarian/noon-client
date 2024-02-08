@@ -87,8 +87,6 @@ function Register({ axios }) {
           {({ isSubmitting }) => (
             <Form>
               <Stack spacing={8} className="text-white">
-                {/*<HStack>*/}
-                {/*<Box>*/}
                 <FormControl id="username" isRequired>
                   <FormLabel
                     style={{ fontSize: '1.1rem' }}
@@ -110,8 +108,6 @@ function Register({ axios }) {
                     size="lg"
                   />
                 </FormControl>
-                {/*</Box>*/}
-                {/*</HStack>*/}
 
                 <FormControl id="email" isRequired>
                   <FormLabel
