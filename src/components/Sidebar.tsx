@@ -61,16 +61,14 @@ function Sidebar({ axios }) {
   const isMobile: number = useSelector(getIsMobile)
   const searchComponentState = useSelector(getSearchComponentState)
   const [innerHeight, setInnerHeight] = useState(0)
-  const [areConversationsLoading, setAreConversationsLoading] = useState(true)
   const { data: conversations, isLoading } = useGetConversationsQuery(undefined)
   const [logoutUser] = useLogoutUserMutation()
 
   const loggedInUser = useSelector(getLoggedInUser)
   const isConversationOpen = useSelector(getIsConversationOpen)
-  // const activeConversation = useSelector(getActiveConversation)
+  const getConversationsFromStore = useSelector(getSortedConversations)
 
   useEffect(() => {
-    console.log('conversations:', conversations)
     if (conversations && loggedInUser.user.username) {
       dispatch(
         setConversations({
@@ -208,8 +206,9 @@ function Sidebar({ axios }) {
           <Flex className="items-center justify-center">
             <Spinner />
           </Flex>
-        ) : conversations && conversations.length !== 0 ? (
-          conversations.map((conversation, i) =>
+        ) : getConversationsFromStore &&
+          getConversationsFromStore.length !== 0 ? (
+          [...Object.values(getConversationsFromStore)].map((conversation, i) =>
             !conversation ? null : (conversation as any).type === 'pm' ? (
               <PrivateConversationListing
                 key={i}
@@ -226,7 +225,7 @@ function Sidebar({ axios }) {
             )
           )
         ) : (
-          <p className="w-3/4 p-5">
+          <p className="w-3/4 p-5 ">
             No conversations yet. Use the search component to look for people to
             send friend requests to. Click on the search icon to search for
             profiles. Once you find the profile you want to befriend, send them
