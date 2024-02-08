@@ -45,22 +45,13 @@ function Register() {
 
   const handleSubmit = async (values, { setErrors }) => {
     try {
-      const response = await registerUser(values).unwrap()
-
-      if (response) {
-        if (response.errors) {
-          setErrors(toErrorMap(response.errors))
-        } else {
-          router.replace('/noon')
-        }
-      } else {
-        console.error('Failed to register')
-      }
+      await registerUser(values).unwrap()
+      router.replace('/noon')
     } catch (error) {
       // @ts-ignore
-      if (error?.errors) {
+      if (error.data?.errors) {
         // @ts-ignore
-        setErrors(toErrorMap(error?.errors))
+        setErrors(toErrorMap(error.data.errors))
       } else {
         console.error('Error registering:', error)
       }
