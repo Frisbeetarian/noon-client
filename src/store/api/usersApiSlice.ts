@@ -28,8 +28,19 @@ export const usersApiSlice = createApi({
       }),
       invalidatesTags: ['User'],
     }),
+    logoutUser: builder.mutation({
+      query: () => ({
+        url: '/users/logout',
+        method: 'POST',
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
 })
 
-export const { useGetMeQuery, useRegisterUserMutation, useLoginUserMutation } =
-  usersApiSlice
+export const {
+  useGetMeQuery,
+  useRegisterUserMutation,
+  useLoginUserMutation,
+  useLogoutUserMutation,
+} = usersApiSlice
