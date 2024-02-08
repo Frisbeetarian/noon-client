@@ -1,3 +1,0 @@
-mutation Unfriend($profileUuid: String!, $conversationUuid: String!) {
-    unfriend(profileUuid: $profileUuid, conversationUuid: $conversationUuid)
-}

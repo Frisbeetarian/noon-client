@@ -1,3 +1,0 @@
-query CheckIfConversationHasMoreMessages($conversationUuid: String!) {
-  checkIfConversationHasMoreMessages(conversationUuid: $conversationUuid)
-}

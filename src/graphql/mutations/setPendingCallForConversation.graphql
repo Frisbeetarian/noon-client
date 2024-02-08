@@ -1,3 +1,0 @@
-mutation SetPendingCallForConversation($conversationUuid: String!, $profileUuid: String!) {
-    setPendingCallForConversation(conversationUuid: $conversationUuid, profileUuid: $profileUuid)
-}

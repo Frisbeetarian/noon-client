@@ -1,4 +1,0 @@
-fragment RegularProfile on Profile {
-    uuid
-    username
-}

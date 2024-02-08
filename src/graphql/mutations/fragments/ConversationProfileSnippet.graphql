@@ -1,4 +1,0 @@
-fragment ConversationProfileSnippet on Profile {
-    uuid
-    username
-}

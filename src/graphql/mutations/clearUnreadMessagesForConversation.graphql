@@ -1,3 +1,0 @@
-mutation ClearUnreadMessagesForConversation($conversationUuid: String!, $profileUuid: String!) {
-    clearUnreadMessagesForConversation(conversationUuid: $conversationUuid, profileUuid: $profileUuid)
-}

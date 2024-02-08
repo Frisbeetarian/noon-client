@@ -1,6 +1,0 @@
-query GetProfileByUserId($userId: Int!) {
-    getProfileByUserId(userId: $userId) {
-        uuid
-        username
-    }
-}

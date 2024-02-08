@@ -1,5 +1,0 @@
-fragment FriendshipRequestSnippet on FriendshipRequest {
-    uuid
-    username
-    reverse
-}

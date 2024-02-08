@@ -1,9 +1,0 @@
-fragment ConversationToProfileSnippet on ConversationToProfile {
-    uuid
-    unreadMessages
-    profileThatHasUnreadMessages
-    profile{
-        uuid
-        username
-    }
-}

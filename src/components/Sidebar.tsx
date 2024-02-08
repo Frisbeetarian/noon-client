@@ -1,16 +1,6 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLogoutMutation } from '../generated/graphql'
-
-import { getLoggedInUser } from '../store/users'
-import {
-  SettingsIcon,
-  HamburgerIcon,
-  EditIcon,
-  SearchIcon,
-} from '@chakra-ui/icons'
-
+import { useRouter } from 'next/router'
 import {
   Avatar,
   Flex,
@@ -22,19 +12,16 @@ import {
   MenuList,
   Spinner,
 } from '@chakra-ui/react'
-
 import {
-  // getActiveConversation,
-  getSortedConversations,
-  setActiveConversation,
-  setActiveConversationSet,
-  setActiveConversee,
-  setShouldPauseCheckHasMore,
-} from '../store/chat'
+  SettingsIcon,
+  HamburgerIcon,
+  EditIcon,
+  SearchIcon,
+} from '@chakra-ui/icons'
 
+import { getLoggedInUser } from '../store/users'
+import { getSortedConversations, setConversations } from '../store/chat'
 import SocketConnector from './SocketIo/SocketConnector'
-import { useRouter } from 'next/router'
-
 import {
   getIsConversationOpen,
   getIsMobile,
@@ -44,7 +31,6 @@ import {
   setSearchComponent,
   toggleCreateGroupActive,
 } from '../store/ui'
-
 import PrivateConversationListing from './PrivateConversationListing'
 import GroupConversationListing from './GroupConversationListing'
 import ChatControlsAndSearchForMobile from './ChatControlsAndSearchForMobile'
@@ -60,22 +46,27 @@ function Sidebar({ axios }) {
   const isMobile: number = useSelector(getIsMobile)
   const searchComponentState = useSelector(getSearchComponentState)
   const [innerHeight, setInnerHeight] = useState(0)
-  const [areConversationsLoading, setAreConversationsLoading] = useState(true)
-  const { data: conversations, isLoading } = useGetConversationsQuery()
-  const [logoutUser] = useLogoutUserMutation()
+  const { data: conversations, isLoading } = useGetConversationsQuery(undefined)
+  const [logoutUser] = useLogoutUserMutation(undefined)
 
   const loggedInUser = useSelector(getLoggedInUser)
   const isConversationOpen = useSelector(getIsConversationOpen)
   const getConversationsFromStore = useSelector(getSortedConversations)
-  // const activeConversation = useSelector(getActiveConversation)
+
+  useEffect(() => {
+    if (conversations && loggedInUser.user.username) {
+      dispatch(
+        setConversations({
+          conversationsToSend: conversations,
+          loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
+        })
+      )
+    }
+  }, [conversations, dispatch])
 
   useEffect(() => {
     setInnerHeight(window.innerHeight)
-
-    if (getConversationsFromStore) {
-      setAreConversationsLoading(false)
-    }
-  }, [getConversationsFromStore])
+  }, [])
 
   useEffect(() => {
     window.addEventListener('resize', () => {
@@ -107,7 +98,7 @@ function Sidebar({ axios }) {
         style={{ flex: '0.051' }}
       >
         <Flex className="w-full items-center">
-          <Heading className="w-full px-4 py-4 md:py-0 text-white">
+          <Heading className="w-full px-4 py-4 md:py-0 text-red-500">
             NOON
           </Heading>
 
@@ -186,12 +177,6 @@ function Sidebar({ axios }) {
         ) : null}
       </Flex>
 
-      {/*{areConversationsLoading ? (*/}
-      {/*  <Flex className="flex-col items-center justify-center">*/}
-      {/*    <p className="text-white">Loading conversations...</p>*/}
-      {/*  </Flex>*/}
-      {/*) : (*/}
-
       <Flex
         className="flex-col pt-3 scroll-auto overflow-auto"
         style={{ flex: '0.875' }}
@@ -254,7 +239,7 @@ function Sidebar({ axios }) {
                 border="none"
                 onClick={async () => {
                   try {
-                    await logoutUser().unwrap()
+                    await logoutUser(undefined).unwrap()
                     router.replace('/onboarding')
                   } catch (error) {
                     console.error('Error logging out:', error)

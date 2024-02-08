@@ -1,4 +1,0 @@
-fragment FriendSnippet on Friend {
-    uuid
-    username
-}

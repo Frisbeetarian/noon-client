@@ -1,6 +1,9 @@
 {
   "name": "noon-client",
   "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "author": "Muhammad Sulayman Haydar",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -52,7 +55,6 @@
     "uuid": "^9.0.1",
     "yup": "^1.3.3"
   },
-  "license": "MIT",
   "devDependencies": {
     "@next/font": "^13.1.1",
     "@tailwindcss/typography": "^0.5.10",

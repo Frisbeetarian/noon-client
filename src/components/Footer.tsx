@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useEffect } from 'react'
-import { Flex, Input, Button, Box, Icon } from '@chakra-ui/react'
+import { Flex, Input, Button, Box, Icon, useToast } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -43,13 +43,14 @@ const Footer = ({
 
   const hiddenFileInput = React.useRef(null)
   const dispatch = useDispatch()
+  const toast = useToast()
+
   const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const isMobile = useSelector(getIsMobile)
 
   const activeConversation = useSelector(getActiveConversation)
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversee = useSelector(getActiveConversee)
-  // const [uploadImageMutation] = useUploadImageMutation()
 
   // const [
   //   setPendingCallForConversation,
@@ -88,8 +89,6 @@ const Footer = ({
     const participants = activeConversation.profiles.map(
       (profile) => profile.uuid
     )
-    formData.append('participantUuids', participants.join(','))
-
     formData.append('participantUuids', participants.join(','))
 
     await axios
