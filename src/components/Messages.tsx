@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Flex } from '@chakra-ui/react'
 import { useDispatch, useSelector } from 'react-redux'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 import {
   getActiveConversation,
@@ -8,9 +9,7 @@ import {
   deleteMessageInStore,
   addMessagesToConversation,
 } from '../store/chat'
-
 import { getLoggedInUser } from '../store/users'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import { getIsMobile } from '../store/ui'
 import withAxios from '../utils/withAxios'
 import { useGetMessagesForConversationQuery } from '../store/api/conversationsApiSlice'

@@ -1,3 +1,5 @@
+import React from 'react'
+import Image from 'next/image'
 import {
   Flex,
   IconButton,
@@ -6,10 +8,9 @@ import {
   MenuButton,
   MenuItem,
 } from '@chakra-ui/react'
-import Image from 'next/image'
 import { ChevronDownIcon } from '@chakra-ui/icons'
+
 import AppMenuList from '../AppComponents/AppMenuList'
-import React from 'react'
 
 const ImageMessage = ({
   src,
