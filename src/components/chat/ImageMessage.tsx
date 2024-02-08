@@ -26,15 +26,27 @@ const ImageMessage = ({
       className="relative"
       alignSelf={isMine ? 'flex-end' : 'flex-start'}
       justifyContent={isMine ? 'flex-end' : 'flex-start'}
-      minW="200px"
-      maxW="350px"
       my="1"
       bg={isDeleted ? 'black' : 'transparent'}
       p={isDeleted ? '3' : '0'}
+      style={{ position: 'relative' }}
     >
       {!isDeleted ? (
-        <Flex style={{ position: 'relative', width: '100%', height: '300px' }}>
-          <Image src={src} alt={alt} layout="fill" objectFit="cover" />
+        <Flex
+          style={{
+            position: 'relative',
+            width: '100%',
+            height: 'auto',
+          }}
+        >
+          <Image
+            src={src}
+            alt={alt}
+            layout="intrinsic"
+            objectFit="cover"
+            width={300}
+            height={300}
+          />
         </Flex>
       ) : (
         <Text className="">
