@@ -11,6 +11,8 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { EditIcon, HamburgerIcon } from '@chakra-ui/icons'
+import { useDispatch, useSelector } from 'react-redux'
+
 import { getLoggedInUser, removeFriendEntry } from '../store/users'
 import {
   getActiveConversation,
@@ -27,25 +29,15 @@ import {
   setSearchComponent,
 } from '../store/ui'
 import { setVideoFrameForConversation } from '../store/video'
-import { useDispatch, useSelector } from 'react-redux'
 import AppMenuList from './AppComponents/AppMenuList'
 
 function PrivateConversationListing({ conversation, i, axios }) {
   const [, setProfile] = useState()
   const toast = useToast()
-
-  // const router = useRouter()
   const dispatch = useDispatch()
-
   const loggedInUser = useSelector(getLoggedInUser)
-
   const activeConversation = useSelector(getActiveConversation)
   const isMobile = useSelector(getIsMobile)
-
-  // const [
-  //   unfriend,
-  //   // { loading: unfriendLoading }
-  // ] = useUnfriendMutation()
 
   function setActiveConverseeFunction(profile, conversation) {
     dispatch(
@@ -161,14 +153,7 @@ function PrivateConversationListing({ conversation, i, axios }) {
             border="none"
             icon={<EditIcon />}
             onClick={async () => {
-              // const unfriendResponse = await unfriend({
-              //   variables: {
-              //     profileUuid: conversation.conversee.uuid,
-              //     conversationUuid: conversation.uuid,
-              //   },
-              // })
-
-              const response = await axios
+              await axios
                 .post('/api/profiles/unfriend', {
                   profileUuid: conversation.conversee.uuid,
                   conversationUuid: conversation.uuid,
