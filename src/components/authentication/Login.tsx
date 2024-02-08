@@ -33,24 +33,15 @@ function Login() {
 
   const handleSubmit = async (values, { setErrors }) => {
     try {
-      const response = await loginUser(values).unwrap()
-
-      if (response) {
-        if (response.errors) {
-          setErrors(toErrorMap(response.errors))
-        } else {
-          router.replace('/noon')
-        }
-      } else {
-        console.error('Failed to login')
-      }
+      await loginUser(values).unwrap()
+      router.replace('/noon')
     } catch (error) {
       // @ts-ignore
-      if (error?.errors) {
+      if (error.data?.errors) {
         // @ts-ignore
-        setErrors(toErrorMap(error?.errors))
+        setErrors(toErrorMap(error.data.errors))
       } else {
-        console.error('Error logging user in:', error)
+        console.error('Error logging use in:', error)
       }
     }
   }
