@@ -13,7 +13,7 @@ import { Form, Formik } from 'formik'
 import { CheckIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
-import { router } from 'next/client'
+import { useRouter } from 'next/router'
 
 import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
@@ -41,6 +41,7 @@ function Register() {
   const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState(false)
   const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation()
+  const router = useRouter()
 
   const handleSubmit = async (values, { setErrors }) => {
     try {

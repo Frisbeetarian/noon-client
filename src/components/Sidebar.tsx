@@ -52,6 +52,7 @@ import SocketControls from './SocketIo/SocketControls'
 import withAxios from '../utils/withAxios'
 import AppMenuList from './AppComponents/AppMenuList'
 import { useGetConversationsQuery } from '../store/api/conversationsApiSlice'
+import { useLogoutUserMutation } from '../store/api/usersApiSlice'
 
 function Sidebar({ axios }) {
   const router = useRouter()
@@ -61,6 +62,7 @@ function Sidebar({ axios }) {
   const [innerHeight, setInnerHeight] = useState(0)
   const [areConversationsLoading, setAreConversationsLoading] = useState(true)
   const { data: conversations, isLoading } = useGetConversationsQuery()
+  const [logoutUser] = useLogoutUserMutation()
 
   const loggedInUser = useSelector(getLoggedInUser)
   const isConversationOpen = useSelector(getIsConversationOpen)
@@ -251,18 +253,13 @@ function Sidebar({ axios }) {
                 className="bg-black"
                 border="none"
                 onClick={async () => {
-                  await axios
-                    .post('/api/users/logout')
-                    .then((response) => {
-                      if (response.status === 200) {
-                        router.push('/')
-                      }
-                    })
-                    .catch((error) => {
-                      console.error('Error logging out:', error)
-                    })
+                  try {
+                    await logoutUser().unwrap()
+                    router.replace('/')
+                  } catch (error) {
+                    console.error('Error logging out:', error)
+                  }
                 }}
-                // isLoading={fetching}
               >
                 Logout
               </MenuItem>
