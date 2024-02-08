@@ -38,7 +38,7 @@ function Login() {
       if (response) {
         if (response.errors) {
           setErrors(toErrorMap(response.errors))
-        } else if (response && isSuccess) {
+        } else {
           router.replace('/noon')
         }
       } else {
