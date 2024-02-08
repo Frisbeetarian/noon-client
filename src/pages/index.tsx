@@ -1,6 +1,6 @@
-import { Flex } from '@chakra-ui/react'
-import Reactfrom 'react'
+import React from 'react'
 import Head from 'next/head'
+import { Flex } from '@chakra-ui/react'
 import { TypeAnimation } from 'react-type-animation'
 
 const meta = {
