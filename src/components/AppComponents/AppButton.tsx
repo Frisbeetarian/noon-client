@@ -34,7 +34,7 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
         border={border}
         borderRadius={borderRadius}
         fontFamily={fontFamily}
-        disabled={disabled}
+        isDisabled={disabled}
         type={type}
         {...rest}
       >

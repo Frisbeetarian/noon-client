@@ -10,18 +10,20 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
-import { toErrorMap } from '../../utils/toErrorMap'
-import { InputField } from '../InputField'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import * as Yup from 'yup'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
+
+import { toErrorMap } from '../../utils/toErrorMap'
+import { InputField } from '../InputField'
 import {
   setShowForgotPasswordComponent,
   setShowLoginComponent,
   setShowRegisterComponent,
 } from '../../store/ui'
 import AppButton from '../AppComponents/AppButton'
+import { useRegisterUserMutation } from '../../store/api/usersApiSlice'
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -35,10 +37,36 @@ const RegisterSchema = Yup.object().shape({
     .required('Password is required.'),
 })
 
-function Register({ axios }) {
+function Register() {
   const router = useRouter()
   const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState(false)
+  const [registerUser, { isLoading, isSuccess, isError, error }] =
+    useRegisterUserMutation()
+
+  const handleSubmit = async (values, { setErrors }) => {
+    try {
+      const response = await registerUser(values).unwrap()
+
+      if (response) {
+        if (response.errors) {
+          setErrors(toErrorMap(response.errors))
+        } else if (response && isSuccess) {
+          router.replace('/noon')
+        }
+      } else {
+        console.error('Failed to register')
+      }
+    } catch (error) {
+      // @ts-ignore
+      if (error?.errors) {
+        // @ts-ignore
+        setErrors(toErrorMap(error?.errors))
+      } else {
+        console.error('Error registering:', error)
+      }
+    }
+  }
 
   return (
     <Stack
@@ -49,40 +77,13 @@ function Register({ axios }) {
       px={6}
       className=" z-10"
     >
-      {/*<Stack align={'start'}>*/}
-      {/*  <Heading*/}
-      {/*    fontSize={'4xl'}*/}
-      {/*    textAlign={'center'}*/}
-      {/*    className="text-white"*/}
-      {/*  >*/}
-      {/*    Register*/}
-      {/*  </Heading>*/}
-      {/*</Stack>*/}
-
       <Box boxShadow={'lg'} p={8} className="border border-red-500 z-10">
         <Formik
           initialValues={{ email: '', username: '', password: '' }}
           validationSchema={RegisterSchema}
           validateOnBlur={false}
           validateOnChange={false}
-          onSubmit={async (values, { setErrors }) => {
-            await axios
-              .post('/api/users/register', values)
-              .then((response) => {
-                if (response) {
-                  if (response.data.errors) {
-                    setErrors(toErrorMap(response.data.errors))
-                  } else if (response.data && response.statusText === 'OK') {
-                    router.replace('/noon')
-                  }
-                } else {
-                  console.error('Failed to register')
-                }
-              })
-              .catch((error) => {
-                console.error('Error registering:', error.message)
-              })
-          }}
+          onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
             <Form>
@@ -172,7 +173,9 @@ function Register({ axios }) {
                     className="w-1/2 ml-auto"
                     type="submit"
                     size="md"
-                    isLoading={isSubmitting}
+                    isLoading={isSubmitting || isLoading}
+                    disabled={isSuccess}
+                    rightIcon={isSuccess}
                   >
                     Register
                   </AppButton>

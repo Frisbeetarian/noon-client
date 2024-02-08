@@ -63,7 +63,7 @@ const Onboarding = ({ axios }) => {
         </p>
 
         <Flex minH={'100%'} align={'center'} justify={'center'}>
-          {showRegisterComponent && <Register axios={axios} />}
+          {showRegisterComponent && <Register />}
           {showLoginComponent && <Login axios={axios} />}
 
           {showForgotPasswordComponent && <ForgotPassword />}

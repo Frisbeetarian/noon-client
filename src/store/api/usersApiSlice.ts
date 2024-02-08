@@ -12,7 +12,7 @@ export const usersApiSlice = createApi({
       query: () => '/users/me',
       providesTags: ['User'],
     }),
-    register: builder.mutation({
+    registerUser: builder.mutation({
       query: (userData) => ({
         url: '/users/register',
         method: 'POST',
@@ -23,4 +23,4 @@ export const usersApiSlice = createApi({
   }),
 })
 
-export const { useGetMeQuery } = usersApiSlice
+export const { useGetMeQuery, useRegisterUserMutation } = usersApiSlice
