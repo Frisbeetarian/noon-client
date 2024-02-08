@@ -1,5 +1,0 @@
-query GetProfiles {
-    getProfiles {
-        ...ProfileSnippet
-    }
-}

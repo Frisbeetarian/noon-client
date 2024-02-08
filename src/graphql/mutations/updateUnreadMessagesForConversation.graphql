@@ -1,3 +1,0 @@
-mutation UpdateUnreadMessagesForConversation($conversationUuid: String!, $profileUuid: String!) {
-    updateUnreadMessagesForConversation(conversationUuid: $conversationUuid, profileUuid: $profileUuid)
-}
