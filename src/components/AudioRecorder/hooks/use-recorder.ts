@@ -3,12 +3,7 @@ import { startRecording, saveRecording } from '../handlers/recorder-controls'
 import { useSelector } from 'react-redux'
 import { useToast } from '@chakra-ui/react'
 
-import {
-  Recorder,
-  Interval,
-  AudioTrack,
-  MediaRecorderEvent,
-} from '../types/recorder'
+import { Recorder, Interval, MediaRecorderEvent } from '../types/recorder'
 
 import { getActiveConversation } from '../../../store/chat'
 
@@ -24,7 +19,6 @@ const initialState = {
 
 export default function useRecorder(axios) {
   const [recorderState, setRecorderState] = useState<Recorder>(initialState)
-  // const [recordings, setRecordings] = useState<Audio[]>([])
   const activeConversation = useSelector(getActiveConversation)
   const toast = useToast()
 
@@ -105,27 +99,30 @@ export default function useRecorder(axios) {
         )
         formData.append('participantUuids', participants.join(','))
 
-        if (recorder.stream.active) {
-          await axios
-            .post('/api/messages/uploadVoiceRecording', formData, {
+        try {
+          const response = await axios.post(
+            '/api/messages/uploadVoiceRecording',
+            formData,
+            {
               headers: {
                 'Content-Type': 'multipart/form-data',
               },
-            })
-            .then(async (response) => {
-              if (response.status === 200) {
-                toast({
-                  title: `Voice note has been sent.`,
-                  position: 'bottom-right',
-                  isClosable: true,
-                  status: 'error',
-                  duration: 5000,
-                })
-              }
-            })
-            .catch((error) => {
-              console.log('error:', error)
-            })
+            }
+          )
+
+          if (response.status !== 200) {
+            throw new Error('Failed to upload the voice note.')
+          }
+        } catch (error) {
+          toast({
+            title: 'Error uploading voice note',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+            position: 'bottom-right',
+          })
+        } finally {
+          setRecorderState(initialState)
         }
 
         setRecorderState((prevState: Recorder) => {
@@ -142,10 +139,7 @@ export default function useRecorder(axios) {
     }
 
     return () => {
-      if (recorder)
-        recorder.stream
-          .getAudioTracks()
-          .forEach((track: AudioTrack) => track.stop())
+      recorder?.stream.getAudioTracks().forEach((track) => track.stop())
     }
   }, [recorderState.mediaRecorder])
 
