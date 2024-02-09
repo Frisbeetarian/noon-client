@@ -71,7 +71,7 @@ const slice = createSlice({
         search.profiles = profilesArray
       }
     },
-    setLoading: (search, action: PayloadAction<boolean>) => {
+    setSearchLoading: (search, action: PayloadAction<boolean>) => {
       search.loading = action.payload
     },
   },
@@ -92,5 +92,5 @@ export const getSearchIsLoading = createSelector(
   (search) => search.loading
 )
 
-export const { setProfiles, setSearchQuery, setLoading } = slice.actions
+export const { setProfiles, setSearchQuery, setSearchLoading } = slice.actions
 export default slice.reducer

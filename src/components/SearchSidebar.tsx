@@ -11,7 +11,11 @@ import { SearchIcon } from '@chakra-ui/icons'
 
 import { getSearchComponentState, setSearchComponent } from '../store/ui'
 import SearchController from './SearchController'
-import { getSearchQuery, setSearchQuery } from '../store/search'
+import {
+  getSearchQuery,
+  setSearchLoading,
+  setSearchQuery,
+} from '../store/search'
 import withAxios from '../utils/withAxios'
 
 function SearchSidebar() {
@@ -59,6 +63,7 @@ function SearchSidebar() {
                   setSearchInput(
                     (e.target as any).value as React.SetStateAction<null>
                   )
+                  dispatch(setSearchLoading(true))
                 }
               }
             }}

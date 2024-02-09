@@ -32,6 +32,7 @@ import SocketManager from './SocketManager'
 import { getSocketAuthObject } from '../../store/sockets'
 import AppButton from '../AppComponents/AppButton'
 import withAxios from '../../utils/withAxios'
+import { setSearchLoading } from '../../store/search'
 
 function SocketControls({ axios }) {
   const dispatch = useDispatch()
@@ -432,6 +433,8 @@ function SocketControls({ axios }) {
             loggedInUser: loggedInUser.user,
           })
         )
+
+        dispatch(setSearchLoading(false))
       })
     }
 
