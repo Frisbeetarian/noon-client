@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   CloseButton,
   Flex,
@@ -6,12 +7,10 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react'
-
-import { useDispatch, useSelector } from 'react-redux'
-import { getSearchComponentState, setSearchComponent } from '../store/ui'
-
-import SearchController from './SearchController'
 import { SearchIcon } from '@chakra-ui/icons'
+
+import { getSearchComponentState, setSearchComponent } from '../store/ui'
+import SearchController from './SearchController'
 import { getSearchQuery, setSearchQuery } from '../store/search'
 import withAxios from '../utils/withAxios'
 
@@ -27,7 +26,7 @@ function SearchSidebar() {
         className="flex-col items-start justify-start"
         style={{ flex: '0.7' }}
       >
-        <p className="text-xl mt-4 mb-4">Search Results</p>
+        <p className="text-xl mt-4 mb-4">Search for profiles</p>
       </Flex>
 
       <Flex className="flex-col items-center relative" style={{ flex: '0.3' }}>
@@ -40,9 +39,11 @@ function SearchSidebar() {
           <Input
             autoFocus
             type="text"
-            className="m-0 focus:bg-base-100 bg-transparent outline-0 pl-2"
+            className="m-0  bg-transparent  pl-2 text-white"
             placeholder="Search for profiles..."
             size="md"
+            border={0}
+            borderBottom="1px solid #921A1C"
             style={{
               padding: searchComponentState.inputPadding,
               transition: 'all .5s',
