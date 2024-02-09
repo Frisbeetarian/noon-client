@@ -188,6 +188,7 @@ const Footer = ({
           <AppButton
             size={isMobile ? 'sm' : 'md'}
             title="Start call"
+            isDisabled={true}
             onClick={async () => {
               dispatch(setVideoFrameForConversation(true))
 
