@@ -101,31 +101,22 @@ const Footer = ({
       const participants = activeConversation.profiles.map(
         (profile) => profile.uuid
       )
+
       formData.append('participantUuids', participants.join(','))
 
-      await axios
-        .post('/api/messages/uploadFile', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(async (response) => {
-          console.log('response:', response)
-        })
-        .catch((error) => {
-          toast({
-            title: 'Error uploading file',
-            description: error.message,
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-            position: 'bottom-right',
-          })
-        })
+      const response = await axios.post('/api/messages/uploadFile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+
+      if (response.status !== 200) {
+        throw new Error('Failed to upload the file. Please try again.')
+      }
     } catch (error) {
       toast({
         title: 'Error uploading file',
-        description: error.message,
+        description: error.response?.data?.message || error.message,
         status: 'error',
         duration: 5000,
         isClosable: true,
