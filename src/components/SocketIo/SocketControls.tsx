@@ -10,7 +10,7 @@ import {
   removeFriendRequestEntry,
 } from '../../store/users'
 
-import { setFriendFlagOnProfile } from '../../store/profiles'
+import { addProfiles, setFriendFlagOnProfile } from '../../store/profiles'
 
 import {
   addConversation,
@@ -424,6 +424,15 @@ function SocketControls({ axios }) {
           )
         }
       )
+
+      socket.on('search-results', (profiles) => {
+        dispatch(
+          addProfiles({
+            profiles: profiles,
+            loggedInUser: loggedInUser.user,
+          })
+        )
+      })
     }
 
     return () => {
@@ -437,6 +446,8 @@ function SocketControls({ axios }) {
         socket.off('left-group')
         socket.off('send-message')
         socket.off('send-message-to-group')
+        socket.off('message-deleted')
+        socket.off('search-results')
       }
     }
   }, [socket, socketAuthObject])

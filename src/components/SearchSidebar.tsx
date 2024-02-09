@@ -64,7 +64,7 @@ function SearchSidebar() {
           />
         </InputGroup>
 
-        <Flex className="w-full" style={{ flex: '1' }}>
+        <Flex className="w-full " style={{ flex: '1' }}>
           <SearchController />
         </Flex>
       </Flex>
