@@ -5,6 +5,7 @@ import { User } from '../utils/types'
 interface SearchState {
   query: string | null
   profiles: ProfilePayload[] | null | undefined
+  loading: boolean
 }
 
 interface AddProfilesPayload {
@@ -27,6 +28,7 @@ interface ProfilePayload {
 const initialState: SearchState = {
   query: null,
   profiles: null,
+  loading: false,
 }
 
 const slice = createSlice({
@@ -69,6 +71,9 @@ const slice = createSlice({
         search.profiles = profilesArray
       }
     },
+    setSearchLoading: (search, action: PayloadAction<boolean>) => {
+      search.loading = action.payload
+    },
   },
 })
 
@@ -82,5 +87,10 @@ export const getProfiles = createSelector(
   (search) => search.profiles
 )
 
-export const { setProfiles, setSearchQuery } = slice.actions
+export const getSearchIsLoading = createSelector(
+  (state) => state.entities.search,
+  (search) => search.loading
+)
+
+export const { setProfiles, setSearchQuery, setSearchLoading } = slice.actions
 export default slice.reducer

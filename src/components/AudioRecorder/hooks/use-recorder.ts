@@ -1,41 +1,25 @@
-// @ts-nocheck
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { startRecording, saveRecording } from '../handlers/recorder-controls'
-import {
-  Recorder,
-  Interval,
-  AudioTrack,
-  MediaRecorderEvent,
-} from '../types/recorder'
+import { useSelector } from 'react-redux'
+import { useToast } from '@chakra-ui/react'
 
-import { getActiveConversation, getActiveConversee } from '../../../store/chat'
+import { Recorder, Interval, MediaRecorderEvent } from '../types/recorder'
 
-import { useDispatch, useSelector } from 'react-redux'
-import { getLoggedInUser } from '../../../store/users'
-import SocketManager from '../../SocketIo/SocketManager'
-import { getSocketAuthObject } from '../../../store/sockets'
-import { CloseButton, Flex, useToast } from '@chakra-ui/react'
+import { getActiveConversation } from '../../../store/chat'
 
-const initialState: Recorder = {
+const initialState = {
   recordingMinutes: 0,
   recordingSeconds: 0,
   initRecording: false,
   mediaStream: null,
   mediaRecorder: null,
   audio: null,
+  isUploading: false,
 }
 
 export default function useRecorder(axios) {
-  const socketAuthObject = useSelector(getSocketAuthObject)
   const [recorderState, setRecorderState] = useState<Recorder>(initialState)
-  // const [recordings, setRecordings] = useState<Audio[]>([])
-
-  const dispatch = useDispatch()
-  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
-
   const activeConversation = useSelector(getActiveConversation)
-  const loggedInUser = useSelector(getLoggedInUser)
-  const activeConversee = useSelector(getActiveConversee)
   const toast = useToast()
 
   useEffect(() => {
@@ -102,6 +86,7 @@ export default function useRecorder(axios) {
       }
 
       recorder.onstop = async () => {
+        setRecorderState((prev) => ({ ...prev, isUploading: true }))
         const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' })
 
         const formData = new FormData()
@@ -114,27 +99,30 @@ export default function useRecorder(axios) {
         )
         formData.append('participantUuids', participants.join(','))
 
-        if (recorder.stream.active) {
-          await axios
-            .post('/api/messages/uploadVoiceRecording', formData, {
+        try {
+          const response = await axios.post(
+            '/api/messages/uploadVoiceRecording',
+            formData,
+            {
               headers: {
                 'Content-Type': 'multipart/form-data',
               },
-            })
-            .then(async (response) => {
-              if (response.status === 200) {
-                toast({
-                  title: `Voice note has been sent.`,
-                  position: 'bottom-right',
-                  isClosable: true,
-                  status: 'error',
-                  duration: 5000,
-                })
-              }
-            })
-            .catch((error) => {
-              console.log('error:', error)
-            })
+            }
+          )
+
+          if (response.status !== 200) {
+            throw new Error('Failed to upload the voice note.')
+          }
+        } catch (error) {
+          toast({
+            title: 'Error uploading voice note',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+            position: 'bottom-right',
+          })
+        } finally {
+          setRecorderState(initialState)
         }
 
         setRecorderState((prevState: Recorder) => {
@@ -151,10 +139,7 @@ export default function useRecorder(axios) {
     }
 
     return () => {
-      if (recorder)
-        recorder.stream
-          .getAudioTracks()
-          .forEach((track: AudioTrack) => track.stop())
+      recorder?.stream.getAudioTracks().forEach((track) => track.stop())
     }
   }, [recorderState.mediaRecorder])
 

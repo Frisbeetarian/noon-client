@@ -10,7 +10,7 @@ import {
   removeFriendRequestEntry,
 } from '../../store/users'
 
-import { setFriendFlagOnProfile } from '../../store/profiles'
+import { addProfiles, setFriendFlagOnProfile } from '../../store/profiles'
 
 import {
   addConversation,
@@ -32,6 +32,7 @@ import SocketManager from './SocketManager'
 import { getSocketAuthObject } from '../../store/sockets'
 import AppButton from '../AppComponents/AppButton'
 import withAxios from '../../utils/withAxios'
+import { setSearchLoading } from '../../store/search'
 
 function SocketControls({ axios }) {
   const dispatch = useDispatch()
@@ -424,6 +425,17 @@ function SocketControls({ axios }) {
           )
         }
       )
+
+      socket.on('search-results', (profiles) => {
+        dispatch(
+          addProfiles({
+            profiles: profiles,
+            loggedInUser: loggedInUser.user,
+          })
+        )
+
+        dispatch(setSearchLoading(false))
+      })
     }
 
     return () => {
@@ -437,6 +449,8 @@ function SocketControls({ axios }) {
         socket.off('left-group')
         socket.off('send-message')
         socket.off('send-message-to-group')
+        socket.off('message-deleted')
+        socket.off('search-results')
       }
     }
   }, [socket, socketAuthObject])

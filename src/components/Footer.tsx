@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Flex, Input, Button, Box, Icon, useToast } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
 
@@ -41,9 +41,10 @@ const Footer = ({
 }) => {
   const socketAuthObject = useSelector(getSocketAuthObject)
 
-  const hiddenFileInput = React.useRef(null)
+  const hiddenFileInput = useRef(null)
   const dispatch = useDispatch()
   const toast = useToast()
+  const [isUploading, setIsUploading] = useState(false)
 
   const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const isMobile = useSelector(getIsMobile)
@@ -75,48 +76,62 @@ const Footer = ({
     ;(hiddenFileInput?.current as any).click()
   }
   const handleChange = async (event) => {
-    console.log('event file:', event.target.files[0])
+    const file = event.target.files[0]
+    console.log('event file:', file)
 
-    const formData = new FormData()
-    formData.append('file', event.target.files[0])
-    formData.append('conversationUuid', activeConversation.uuid)
-    formData.append('conversationType', activeConversation.type)
+    if (file.size > 1048576) {
+      toast({
+        title: 'File is too large',
+        description: 'Please select a file smaller than 1MB.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom-right',
+      })
+      return
+    }
+    setIsUploading(true)
 
-    // const participants = []
-    // activeConversation.profiles.map((profile) => {
-    //   participants.push(profile.uuid)
-    // })
-    const participants = activeConversation.profiles.map(
-      (profile) => profile.uuid
-    )
-    formData.append('participantUuids', participants.join(','))
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('conversationUuid', activeConversation.uuid)
+      formData.append('conversationType', activeConversation.type)
 
-    await axios
-      .post('/api/messages/uploadFile', formData, {
+      const participants = activeConversation.profiles.map(
+        (profile) => profile.uuid
+      )
+
+      formData.append('participantUuids', participants.join(','))
+
+      const response = await axios.post('/api/messages/uploadFile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-      .then(async (response) => {
-        if (response.status === 200) {
-          toast({
-            title: `File has been sent.`,
-            position: 'bottom-right',
-            isClosable: true,
-            status: 'error',
-            duration: 5000,
-          })
-        }
+
+      if (response.status !== 200) {
+        throw new Error('Failed to upload the file. Please try again.')
+      }
+    } catch (error) {
+      toast({
+        title: 'Error uploading file',
+        description: error.response?.data?.message || error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom-right',
       })
-      .catch((error) => {
-        console.log('error:', error)
-      })
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   return (
     <Flex className="bg-black items-center box-content h-full  justify-between">
       <Box className="w-1/2 md:w-3/6 relative z-10">
         <Input
+          autoFocus
           type="search"
           size={isMobile ? 'xd' : 'md'}
           placeholder="Type message..."
@@ -126,7 +141,9 @@ const Footer = ({
           className="box-content text-white w-3/4 ml-4 border-b"
           pl={isMobile ? '2' : '4'}
           outline={0}
-          style={{ borderBottom: '1px solid black !important' }}
+          _focus={{
+            borderBottom: '1px solid white !important',
+          }}
           sx={{
             '::placeholder': {
               color: 'white',
@@ -144,7 +161,12 @@ const Footer = ({
 
       <Flex className="w-1/2 md:w-2/6 justify-end ">
         <Box className="xs:w-1/4 flex items-center justify-end mr-1 md:mr-2">
-          <AppButton size={isMobile ? 'sm' : 'md'} onClick={handleClick}>
+          <AppButton
+            size={isMobile ? 'sm' : 'md'}
+            onClick={handleClick}
+            isLoading={isUploading}
+            isDisabled={isUploading}
+          >
             <Icon as={ImUpload2} />
           </AppButton>
 
@@ -169,6 +191,7 @@ const Footer = ({
           <AppButton
             size={isMobile ? 'sm' : 'md'}
             title="Start call"
+            isDisabled={true}
             onClick={async () => {
               dispatch(setVideoFrameForConversation(true))
 

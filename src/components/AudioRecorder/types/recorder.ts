@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { Dispatch, SetStateAction } from 'react'
 
 export type Recorder = {
@@ -14,6 +15,7 @@ export type UseRecorder = {
   startRecording: () => void
   cancelRecording: () => void
   saveRecording: () => void
+  axios: typeof axios
 }
 
 export type RecorderControlsProps = {
