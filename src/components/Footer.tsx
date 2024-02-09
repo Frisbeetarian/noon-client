@@ -75,17 +75,26 @@ const Footer = ({
     ;(hiddenFileInput?.current as any).click()
   }
   const handleChange = async (event) => {
-    console.log('event file:', event.target.files[0])
+    const file = event.target.files[0]
+    console.log('event file:', file)
+
+    if (file.size > 1048576) {
+      toast({
+        title: 'File is too large',
+        description: 'Please select a file smaller than 1MB.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom-right',
+      })
+      return
+    }
 
     const formData = new FormData()
-    formData.append('file', event.target.files[0])
+    formData.append('file', file)
     formData.append('conversationUuid', activeConversation.uuid)
     formData.append('conversationType', activeConversation.type)
 
-    // const participants = []
-    // activeConversation.profiles.map((profile) => {
-    //   participants.push(profile.uuid)
-    // })
     const participants = activeConversation.profiles.map(
       (profile) => profile.uuid
     )
