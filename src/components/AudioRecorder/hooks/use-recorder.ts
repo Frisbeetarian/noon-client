@@ -12,13 +12,14 @@ import {
 
 import { getActiveConversation } from '../../../store/chat'
 
-const initialState: Recorder = {
+const initialState = {
   recordingMinutes: 0,
   recordingSeconds: 0,
   initRecording: false,
   mediaStream: null,
   mediaRecorder: null,
   audio: null,
+  isUploading: false,
 }
 
 export default function useRecorder(axios) {
@@ -91,6 +92,7 @@ export default function useRecorder(axios) {
       }
 
       recorder.onstop = async () => {
+        setRecorderState((prev) => ({ ...prev, isUploading: true }))
         const blob = new Blob(chunks, { type: 'audio/ogg; codecs=opus' })
 
         const formData = new FormData()
