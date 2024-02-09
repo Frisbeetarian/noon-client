@@ -54,6 +54,9 @@ function SearchSidebar() {
               position: searchComponentState.containerDisplay,
               right: 0,
             }}
+            _focus={{
+              borderBottom: '1px solid white !important',
+            }}
             onKeyPress={(e) => {
               if (e.key === 'Enter') {
                 if ((e.target as HTMLInputElement).value !== searchQuery) {

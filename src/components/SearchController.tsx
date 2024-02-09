@@ -43,7 +43,7 @@ function SearchController({ axios }) {
   return (
     <>
       {searchLoading ? (
-        <Flex className="items-center justify-center">
+        <Flex className="items-center justify-center w-full my-5">
           <Spinner />
         </Flex>
       ) : (
