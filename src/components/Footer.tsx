@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Flex, Input, Button, Box, Icon, useToast } from '@chakra-ui/react'
 import { PhoneIcon } from '@chakra-ui/icons'
 
@@ -41,9 +41,10 @@ const Footer = ({
 }) => {
   const socketAuthObject = useSelector(getSocketAuthObject)
 
-  const hiddenFileInput = React.useRef(null)
+  const hiddenFileInput = useRef(null)
   const dispatch = useDispatch()
   const toast = useToast()
+  const [isUploading, setIsUploading] = useState(false)
 
   const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const isMobile = useSelector(getIsMobile)
@@ -89,37 +90,50 @@ const Footer = ({
       })
       return
     }
+    setIsUploading(true)
 
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('conversationUuid', activeConversation.uuid)
-    formData.append('conversationType', activeConversation.type)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('conversationUuid', activeConversation.uuid)
+      formData.append('conversationType', activeConversation.type)
 
-    const participants = activeConversation.profiles.map(
-      (profile) => profile.uuid
-    )
-    formData.append('participantUuids', participants.join(','))
+      const participants = activeConversation.profiles.map(
+        (profile) => profile.uuid
+      )
+      formData.append('participantUuids', participants.join(','))
 
-    await axios
-      .post('/api/messages/uploadFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then(async (response) => {
-        if (response.status === 200) {
+      await axios
+        .post('/api/messages/uploadFile', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then(async (response) => {
+          console.log('response:', response)
+        })
+        .catch((error) => {
           toast({
-            title: `File has been sent.`,
-            position: 'bottom-right',
-            isClosable: true,
+            title: 'Error uploading file',
+            description: error.message,
             status: 'error',
             duration: 5000,
+            isClosable: true,
+            position: 'bottom-right',
           })
-        }
+        })
+    } catch (error) {
+      toast({
+        title: 'Error uploading file',
+        description: error.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom-right',
       })
-      .catch((error) => {
-        console.log('error:', error)
-      })
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   return (
@@ -153,7 +167,12 @@ const Footer = ({
 
       <Flex className="w-1/2 md:w-2/6 justify-end ">
         <Box className="xs:w-1/4 flex items-center justify-end mr-1 md:mr-2">
-          <AppButton size={isMobile ? 'sm' : 'md'} onClick={handleClick}>
+          <AppButton
+            size={isMobile ? 'sm' : 'md'}
+            onClick={handleClick}
+            isLoading={isUploading}
+            isDisabled={isUploading}
+          >
             <Icon as={ImUpload2} />
           </AppButton>
 
