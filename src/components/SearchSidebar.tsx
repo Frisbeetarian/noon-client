@@ -24,7 +24,7 @@ function SearchSidebar() {
   return (
     <div className="search-sidebar bg-black md:w-3/4 xl:w-2/5">
       <Flex
-        className="flex-col items-start justify-start "
+        className="flex-col items-start justify-start"
         style={{ flex: '0.7' }}
       >
         <p className="text-xl mt-4 mb-4">Search Results</p>
@@ -38,6 +38,7 @@ function SearchSidebar() {
           />
 
           <Input
+            autoFocus
             type="text"
             className="m-0 focus:bg-base-100 bg-transparent outline-0 pl-2"
             placeholder="Search for profiles..."
