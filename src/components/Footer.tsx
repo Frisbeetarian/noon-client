@@ -131,6 +131,7 @@ const Footer = ({
     <Flex className="bg-black items-center box-content h-full  justify-between">
       <Box className="w-1/2 md:w-3/6 relative z-10">
         <Input
+          autoFocus
           type="search"
           size={isMobile ? 'xd' : 'md'}
           placeholder="Type message..."
@@ -140,7 +141,9 @@ const Footer = ({
           className="box-content text-white w-3/4 ml-4 border-b"
           pl={isMobile ? '2' : '4'}
           outline={0}
-          style={{ borderBottom: '1px solid black !important' }}
+          _focus={{
+            borderBottom: '1px solid white !important',
+          }}
           sx={{
             '::placeholder': {
               color: 'white',

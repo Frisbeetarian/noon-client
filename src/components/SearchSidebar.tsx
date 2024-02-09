@@ -44,7 +44,7 @@ function SearchSidebar() {
             autoFocus
             type="text"
             className="m-0  bg-transparent  pl-2 text-white"
-            placeholder="Search for profiles..."
+            placeholder="Search..."
             size="md"
             border={0}
             borderBottom="1px solid #921A1C"
@@ -56,6 +56,11 @@ function SearchSidebar() {
             }}
             _focus={{
               borderBottom: '1px solid white !important',
+            }}
+            sx={{
+              '::placeholder': {
+                color: 'white',
+              },
             }}
             onKeyPress={(e) => {
               if (e.key === 'Enter') {
