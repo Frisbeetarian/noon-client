@@ -1,6 +1,8 @@
-// @ts-nocheck
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { startRecording, saveRecording } from '../handlers/recorder-controls'
+import { useSelector } from 'react-redux'
+import { useToast } from '@chakra-ui/react'
+
 import {
   Recorder,
   Interval,
@@ -8,13 +10,7 @@ import {
   MediaRecorderEvent,
 } from '../types/recorder'
 
-import { getActiveConversation, getActiveConversee } from '../../../store/chat'
-
-import { useDispatch, useSelector } from 'react-redux'
-import { getLoggedInUser } from '../../../store/users'
-import SocketManager from '../../SocketIo/SocketManager'
-import { getSocketAuthObject } from '../../../store/sockets'
-import { CloseButton, Flex, useToast } from '@chakra-ui/react'
+import { getActiveConversation } from '../../../store/chat'
 
 const initialState: Recorder = {
   recordingMinutes: 0,
@@ -26,16 +22,9 @@ const initialState: Recorder = {
 }
 
 export default function useRecorder(axios) {
-  const socketAuthObject = useSelector(getSocketAuthObject)
   const [recorderState, setRecorderState] = useState<Recorder>(initialState)
   // const [recordings, setRecordings] = useState<Audio[]>([])
-
-  const dispatch = useDispatch()
-  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
-
   const activeConversation = useSelector(getActiveConversation)
-  const loggedInUser = useSelector(getLoggedInUser)
-  const activeConversee = useSelector(getActiveConversee)
   const toast = useToast()
 
   useEffect(() => {
