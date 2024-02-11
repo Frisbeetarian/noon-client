@@ -56,7 +56,7 @@ const AppParticles = () => {
         },
         links: {
           color: '#921A1C',
-          distance: 500,
+          distance: Math.floor(Math.random() * (800 - 250 + 1)) + 250,
           enable: true,
           opacity: 1,
           width: 0.5,
