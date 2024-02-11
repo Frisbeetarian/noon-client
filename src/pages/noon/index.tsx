@@ -72,7 +72,11 @@ function Noon({ axios }) {
                       className="sticky top ml-4"
                       size="sm"
                       onClick={() => {
-                        toast.close(friendRequest.uuid + 'friend-request')
+                        toast.close(
+                          friendRequest.uuid +
+                            'friend-request' +
+                            loggedInUser.user.uuid
+                        )
                       }}
                       name="close button"
                     />

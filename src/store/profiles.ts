@@ -52,9 +52,6 @@ const slice = createSlice({
             (friend) => friend.uuid === updatedProfile.uuid
           )
 
-          console.log('loggedInUser.profile:', loggedInUser.profile)
-          console.log('updatedProfile.uuid:', updatedProfile.uuid)
-
           const friendshipRequestCheck =
             loggedInUser.profile.friendshipRequests?.find(
               (request) => request.uuid === updatedProfile.uuid
@@ -132,10 +129,9 @@ export const getProfiles = createSelector(
   (profiles) => profiles || []
 )
 
-// Create a selector to get profiles by name
 export const getProfilesByName = createSelector(
   getProfiles,
-  (_, name) => name, // Second argument to the selector function will be the name
+  (_, name) => name,
   (profiles, name) => {
     // Filter the profiles by name
     return profiles.filter((profile) =>
@@ -144,7 +140,6 @@ export const getProfilesByName = createSelector(
   }
 )
 
-// Create a selector to get profiles by username
 export const getProfilesByUsername = createSelector(
   getProfiles,
   (_, username) => username,
