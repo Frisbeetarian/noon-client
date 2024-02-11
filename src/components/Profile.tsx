@@ -102,11 +102,7 @@ function Profile({ profile, axios }) {
       {profile.hasSentFriendshipRequestToProfile ? (
         <Flex position="relative">
           <AppButton disabled={true}>Friendship request sent</AppButton>
-          <AppButton
-            className="absolute"
-            colorScheme="red"
-            onClick={handleCancelFriendRequest}
-          >
+          <AppButton colorScheme="red" onClick={handleCancelFriendRequest}>
             Cancel
           </AppButton>
         </Flex>

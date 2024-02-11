@@ -16,6 +16,8 @@ interface ProfilePayload {
   username: string
   userId: string
   name: string
+  friends: []
+  friendshipRequests: []
   isAFriend: boolean
   hasFriendshipRequestFromLoggedInProfile: boolean
   hasSentFriendshipRequestToProfile: boolean
@@ -46,13 +48,17 @@ const slice = createSlice({
         updatedProfiles.forEach((profile) => {
           const updatedProfile = { ...profile }
 
-          const isFriend = loggedInUser.friends?.some(
+          const isFriend = loggedInUser.profile.friends?.some(
             (friend) => friend.uuid === updatedProfile.uuid
           )
 
-          const friendshipRequestCheck = loggedInUser.friendshipRequests?.find(
-            (request) => request.uuid === updatedProfile.uuid
-          )
+          console.log('loggedInUser.profile:', loggedInUser.profile)
+          console.log('updatedProfile.uuid:', updatedProfile.uuid)
+
+          const friendshipRequestCheck =
+            loggedInUser.profile.friendshipRequests?.find(
+              (request) => request.uuid === updatedProfile.uuid
+            )
 
           updatedProfile.isAFriend = isFriend
           updatedProfile.hasFriendshipRequestFromLoggedInProfile =

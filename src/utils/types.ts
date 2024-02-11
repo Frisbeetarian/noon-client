@@ -15,6 +15,8 @@ export type UserResponse = {
 export type ProfileInUser = {
   uuid: string
   username: string
+  friends: Friend[]
+  friendshipRequests: FriendshipRequest[]
 }
 
 export type ProfileInConversation = {
