@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Avatar, Box, Button, Flex, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Flex, useToast, Button } from '@chakra-ui/react'
 import { ChatIcon } from '@chakra-ui/icons'
 
 import {
@@ -20,130 +20,115 @@ function Profile({ profile, axios }) {
   const loggedInUser = useSelector(getLoggedInUser)
   const toast = useToast()
 
+  const handleCancelFriendRequest = useCallback(async () => {
+    try {
+      const response = await axios.post('/api/profiles/cancelFriendRequest', {
+        profileUuid: profile.uuid,
+      })
+
+      if (response.status === 200) {
+        dispatch(
+          cancelFriendshipRequestSentOnProfile({ profileUuid: profile.uuid })
+        )
+        dispatch(
+          removeFriendRequestEntry({
+            profileUuid: profile.uuid,
+            friendRequests: loggedInUser.user?.friendshipRequests,
+          })
+        )
+      }
+    } catch (error) {
+      console.error('Failed to cancel friend request:', error)
+    }
+  }, [axios, dispatch, loggedInUser.user?.friendshipRequests, profile.uuid])
+
+  const handleSendFriendRequest = useCallback(async () => {
+    try {
+      const response = await axios.post('/api/profiles/sendFriendRequest', {
+        profileUuid: profile.uuid,
+      })
+
+      if (response.status === 200) {
+        dispatch(
+          setFriendshipRequestSentOnProfile({ profileUuid: profile.uuid })
+        )
+        dispatch(
+          addFriendRequestEntry({
+            uuid: profile.uuid,
+            username: profile.username,
+            reverse: false,
+          })
+        )
+      }
+    } catch (error) {
+      console.error('Failed to send friend request:', error)
+    }
+  }, [axios, dispatch, profile.uuid, profile.username])
+
+  const handleAcceptFriendRequest = useCallback(() => {
+    dispatch(
+      removeFriendRequestEntry({
+        profileUuid: profile.uuid,
+        friendRequests: loggedInUser.user?.friendshipRequests,
+      })
+    )
+    dispatch(
+      addFriendEntry({
+        uuid: profile.uuid,
+        username: profile.username,
+      })
+    )
+    toast.close(profile.uuid)
+  }, [
+    dispatch,
+    loggedInUser.user?.friendshipRequests,
+    profile.uuid,
+    profile.username,
+    toast,
+  ])
+
   return (
     <Flex
       key={profile.uuid}
-      className="items-center w-full justify-between relative h-12 my-5"
-      style={{ flex: '1' }}
+      alignItems="center"
+      justifyContent="space-between"
+      className="w-full h-12 my-5 relative"
     >
-      <Flex className="items-center ">
-        <Avatar name={profile.username} size="sm" className="mr-2">
-          {/*<AvatarBadge boxSize="1.25em" bg="red.500"></AvatarBadge>*/}
-        </Avatar>
-
+      <Flex alignItems="center">
+        <Avatar name={profile.username} size="sm" mr={2} />
         <p>{profile.username}</p>
       </Flex>
 
       {profile.hasSentFriendshipRequestToProfile ? (
-        <Flex className="relative">
+        <Flex position="relative">
+          <AppButton disabled={true}>Friendship request sent</AppButton>
           <AppButton
-            color="#921A1C"
-            bg="black"
-            borderRadius="0"
-            fontFamily="Menlo"
-            disabled={true}
-            onClick={() => console.log('Button clicked')}
-          >
-            Friendship request sent
-          </AppButton>
-
-          <AppButton
-            disabled={false}
             className="absolute"
-            borderRadius="0"
-            fontFamily="Menlo"
-            color="white"
-            bg="#921A1C"
-            onClick={async () => {
-              const response = await axios.post(
-                '/api/profiles/cancelFriendRequest',
-                { profileUuid: profile.uuid }
-              )
-
-              if (response.status === 200) {
-                dispatch(
-                  cancelFriendshipRequestSentOnProfile({
-                    profileUuid: profile.uuid,
-                  })
-                )
-
-                dispatch(
-                  removeFriendRequestEntry({
-                    profileUuid: profile.uuid,
-                    friendRequests: loggedInUser.user?.friendshipRequests,
-                  })
-                )
-              }
-            }}
+            colorScheme="red"
+            onClick={handleCancelFriendRequest}
           >
             Cancel
           </AppButton>
         </Flex>
       ) : profile.hasFriendshipRequestFromLoggedInProfile ? (
-        <Flex className="justify-end mt-3">
+        <Flex justifyContent="end" mt={3}>
           <Button
-            className="mr-3 bg-green-500"
-            variant="green"
-            onClick={async () => {
-              dispatch(
-                removeFriendRequestEntry({
-                  profileUuid: profile.uuid,
-                  friendRequests: loggedInUser.user?.friendshipRequests,
-                })
-              )
-
-              dispatch(
-                addFriendEntry({
-                  uuid: profile.uuid,
-                  username: profile.username,
-                })
-              )
-
-              toast.close(profile.uuid)
-            }}
+            colorScheme="green"
+            mr={3}
+            onClick={handleAcceptFriendRequest}
           >
             Accept
           </Button>
-          <Button className="bg-red-500" variant="tomato">
-            Reject
-          </Button>
+          <Button colorScheme="red">Reject</Button>
         </Flex>
       ) : (
         <Box>
           {profile.isAFriend ? (
-            <Flex className="w-full z-40 h-full cursor-pointer">
-              <ChatIcon
-                className="mr-3 mt-1"
-                onClick={() => {
-                  // setActiveConverseeFunction(profile)
-                }}
-              />
+            <Flex cursor="pointer" w="full" h="full" alignItems="center">
+              <ChatIcon onClick={() => {}} mr={3} mt={1} />
             </Flex>
           ) : (
-            <AppButton
-              onClick={async () => {
-                const response = await axios.post(
-                  '/api/profiles/sendFriendRequest',
-                  { profileUuid: profile.uuid }
-                )
-
-                if (response.status === 200) {
-                  dispatch(
-                    setFriendshipRequestSentOnProfile({
-                      profileUuid: profile.uuid,
-                    })
-                  )
-
-                  dispatch(
-                    addFriendRequestEntry({
-                      uuid: profile.uuid,
-                      username: profile.username,
-                      reverse: false,
-                    })
-                  )
-                }
-              }}
-            >
+            <AppButton onClick={handleSendFriendRequest}>
               Send friend request
             </AppButton>
           )}

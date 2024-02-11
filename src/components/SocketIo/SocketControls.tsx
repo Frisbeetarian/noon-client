@@ -427,14 +427,14 @@ function SocketControls({ axios }) {
       )
 
       socket.on('search-results', (profiles) => {
+        dispatch(setSearchLoading(false))
+
         dispatch(
           addProfiles({
             profiles: profiles,
             loggedInUser: loggedInUser.user,
           })
         )
-
-        dispatch(setSearchLoading(false))
       })
     }
 

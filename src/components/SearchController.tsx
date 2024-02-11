@@ -38,7 +38,7 @@ function SearchController({ axios }) {
         })
       )
     }
-  }, [loggedInUser, searchQuery])
+  }, [searchQuery])
 
   return (
     <>

@@ -44,7 +44,6 @@ const slice = createSlice({
         )
 
         updatedProfiles.forEach((profile) => {
-          // Clone the profile to avoid directly mutating the state
           const updatedProfile = { ...profile }
 
           const isFriend = loggedInUser.friends?.some(
