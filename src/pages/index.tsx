@@ -11,6 +11,7 @@ import {
   getShowLoginComponent,
   getShowRegisterComponent,
 } from '../store/ui'
+import AppParticles from '../components/AppComponents/AppParticles'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -42,7 +43,7 @@ const Index = () => {
       </Head>
 
       <Flex className="flex-col justify-center items-center bg-black text-red-500 h-screen">
-        <p className="fixed top-12 text-4xl text-red-500 leading-tight">
+        <p className="fixed top-12 text-4xl text-red-500 leading-tight z-10">
           <TypeAnimation
             sequence={generateRandomSequence()}
             wrapper="span"
@@ -55,13 +56,14 @@ const Index = () => {
             repeat={Infinity}
           />
         </p>
-
         <Flex minH={'100%'} align={'center'} justify={'center'}>
           {showRegisterComponent && <Register />}
           {showLoginComponent && <Login />}
 
           {showForgotPasswordComponent && <ForgotPassword />}
         </Flex>
+
+        <AppParticles />
       </Flex>
     </>
   )
