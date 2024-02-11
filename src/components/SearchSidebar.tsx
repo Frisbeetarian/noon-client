@@ -43,7 +43,7 @@ function SearchSidebar() {
           <Input
             autoFocus
             type="text"
-            className="m-0  bg-transparent  pl-2 text-white"
+            className="m-0 bg-transparent pl-2 text-white"
             placeholder="Search..."
             size="md"
             border={0}

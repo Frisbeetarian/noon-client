@@ -1,52 +1,24 @@
-// @ts-nocheck
 import React from 'react'
-import { Avatar, Box, Button, Flex, useToast } from '@chakra-ui/react'
-
 import { useDispatch, useSelector } from 'react-redux'
+import { Avatar, Box, Button, Flex, useToast } from '@chakra-ui/react'
 import { ChatIcon } from '@chakra-ui/icons'
+
 import {
   cancelFriendshipRequestSentOnProfile,
   setFriendshipRequestSentOnProfile,
 } from '../store/profiles'
-
 import {
   getLoggedInUser,
   addFriendRequestEntry,
   removeFriendRequestEntry,
   addFriendEntry,
 } from '../store/users'
-
-import { addConversation } from '../store/chat'
-import { emitFriendshipRequestAccepted } from '../utils/SocketEmits'
-import SocketManager from './SocketIo/SocketManager'
-import { getSocketAuthObject } from '../store/sockets'
 import AppButton from './AppComponents/AppButton'
 
 function Profile({ profile, axios }) {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
-  const socketAuthObject = useSelector(getSocketAuthObject)
-
-  // const [
-  //   acceptFriendRequest,
-  //   // { loading: acceptFriendRequestLoading }
-  // ] = useAcceptFriendRequestMutation()
-
-  // const [, refuseFriendRequest] = useRefuseFriendRequestMutation()
-  // const [
-  //   cancelFriendRequest,
-  //   // { loading: cancelFriendRequestLoading }
-  // ] = useCancelFriendRequestMutation()
-
-  // const [
-  //   sendFriendRequest,
-  //   // { loading: sendFriendRequestLoading }
-  // ] = useSendFriendRequestMutation()
-  // const socket = useSelector(getSocket)
-
-  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const toast = useToast()
-  // const toastIdRef = React.useRef()
 
   return (
     <Flex
@@ -64,14 +36,6 @@ function Profile({ profile, axios }) {
 
       {profile.hasSentFriendshipRequestToProfile ? (
         <Flex className="relative">
-          {/*<Button*/}
-          {/*  disabled={true}*/}
-          {/*  className="relative text-green-500 p-0"*/}
-          {/*  borderRadius="0"*/}
-          {/*  fontFamily="Menlo"*/}
-          {/*  bg="#921A1C"*/}
-          {/*></Button>*/}
-
           <AppButton
             color="#921A1C"
             bg="black"
@@ -121,12 +85,6 @@ function Profile({ profile, axios }) {
             className="mr-3 bg-green-500"
             variant="green"
             onClick={async () => {
-              // const acceptFriendshipResponse = await acceptFriendRequest({
-              //   variables: {
-              //     profileUuid: profile.uuid,
-              //   },
-              // })
-
               dispatch(
                 removeFriendRequestEntry({
                   profileUuid: profile.uuid,
@@ -141,26 +99,7 @@ function Profile({ profile, axios }) {
                 })
               )
 
-              // dispatch(
-              //   addConversation({
-              //     conversation:
-              //       acceptFriendshipResponse.data?.acceptFriendRequest,
-              //     loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-              //   })
-              // )
-
-              // if (acceptFriendshipResponse) {
-              //   emitFriendshipRequestAccepted({
-              //     loggedInUser,
-              //     profile,
-              //     conversation:
-              //       acceptFriendshipResponse.data?.acceptFriendRequest,
-              //     socket,
-              //   })
-              // }
-              // if (toastIdRef.current) {
               toast.close(profile.uuid)
-              // }
             }}
           >
             Accept
