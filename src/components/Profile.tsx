@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Avatar, Box, Flex, useToast, Button } from '@chakra-ui/react'
 import { ChatIcon } from '@chakra-ui/icons'
@@ -19,9 +19,12 @@ function Profile({ profile, axios }) {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
   const toast = useToast()
+  const [isFriendRequestLoading, setIsFriendRequestLoading] = useState(false)
+  const [isCancelRequestLoading, setIsCancelRequestLoading] = useState(false)
 
   const handleCancelFriendRequest = useCallback(async () => {
     try {
+      setIsCancelRequestLoading(true)
       const response = await axios.post('/api/profiles/cancelFriendRequest', {
         profileUuid: profile.uuid,
       })
@@ -36,14 +39,18 @@ function Profile({ profile, axios }) {
             friendRequests: loggedInUser.user?.friendshipRequests,
           })
         )
+
+        setIsCancelRequestLoading(false)
       }
     } catch (error) {
       console.error('Failed to cancel friend request:', error)
+      setIsCancelRequestLoading(false)
     }
   }, [axios, dispatch, loggedInUser.user?.friendshipRequests, profile.uuid])
 
   const handleSendFriendRequest = useCallback(async () => {
     try {
+      setIsFriendRequestLoading(true)
       const response = await axios.post('/api/profiles/sendFriendRequest', {
         profileUuid: profile.uuid,
       })
@@ -59,9 +66,12 @@ function Profile({ profile, axios }) {
             reverse: false,
           })
         )
+
+        setIsFriendRequestLoading(false)
       }
     } catch (error) {
       console.error('Failed to send friend request:', error)
+      setIsFriendRequestLoading(false)
     }
   }, [axios, dispatch, profile.uuid, profile.username])
 
@@ -102,7 +112,11 @@ function Profile({ profile, axios }) {
       {profile.hasSentFriendshipRequestToProfile ? (
         <Flex position="relative">
           <AppButton disabled={true}>Friendship request sent</AppButton>
-          <AppButton colorScheme="red" onClick={handleCancelFriendRequest}>
+          <AppButton
+            colorScheme="red"
+            onClick={handleCancelFriendRequest}
+            isLoading={isCancelRequestLoading}
+          >
             Cancel
           </AppButton>
         </Flex>
@@ -124,7 +138,10 @@ function Profile({ profile, axios }) {
               <ChatIcon onClick={() => {}} mr={3} mt={1} />
             </Flex>
           ) : (
-            <AppButton onClick={handleSendFriendRequest}>
+            <AppButton
+              onClick={handleSendFriendRequest}
+              isLoading={isFriendRequestLoading}
+            >
               Send friend request
             </AppButton>
           )}

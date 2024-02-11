@@ -23,7 +23,10 @@ import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
 import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
 import AppButton from '../../components/AppComponents/AppButton'
-import { setFriendFlagOnProfile } from '../../store/profiles'
+import {
+  cancelFriendshipRequestSentOnProfile,
+  setFriendFlagOnProfile,
+} from '../../store/profiles'
 import Sidebar from '../../components/Sidebar'
 
 const meta = {
@@ -134,7 +137,47 @@ function Noon({ axios }) {
                       Accept
                     </AppButton>
 
-                    <AppButton bg="black">Reject</AppButton>
+                    <AppButton
+                      bg="black"
+                      onClick={async () => {
+                        try {
+                          const response = await axios.post(
+                            '/api/profiles/cancelFriendRequest',
+                            {
+                              profileUuid: friendRequest.uuid,
+                            }
+                          )
+
+                          if (response.status === 200) {
+                            dispatch(
+                              cancelFriendshipRequestSentOnProfile({
+                                profileUuid: friendRequest.uuid,
+                              })
+                            )
+                            dispatch(
+                              removeFriendRequestEntry({
+                                profileUuid: friendRequest.uuid,
+                                friendRequests:
+                                  loggedInUser.user?.friendshipRequests,
+                              })
+                            )
+                          }
+                        } catch (error) {
+                          console.error(
+                            'Failed to cancel friend request:',
+                            error
+                          )
+                        }
+
+                        toast.close(
+                          friendRequest.uuid +
+                            'friend-request' +
+                            loggedInUser.user.uuid
+                        )
+                      }}
+                    >
+                      Reject
+                    </AppButton>
                   </Flex>
                 </Flex>
               ),
