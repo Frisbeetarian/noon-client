@@ -2,11 +2,25 @@ import React from 'react'
 import Head from 'next/head'
 import { Flex } from '@chakra-ui/react'
 import { TypeAnimation } from 'react-type-animation'
+import Register from '../components/authentication/Register'
+import Login from '../components/authentication/Login'
+import ForgotPassword from '../components/authentication/ForgotPassword'
+import { useSelector } from 'react-redux'
+import {
+  getShowForgotPasswordComponent,
+  getShowLoginComponent,
+  getShowRegisterComponent,
+} from '../store/ui'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
 }
 const Index = () => {
+  const showRegisterComponent = useSelector(getShowRegisterComponent)
+  const showLoginComponent = useSelector(getShowLoginComponent)
+  const showForgotPasswordComponent = useSelector(
+    getShowForgotPasswordComponent
+  )
   const generateRandomSequence = (): (string | number)[] => [
     'N',
     randomWait(),
@@ -27,7 +41,7 @@ const Index = () => {
         <title>{meta.title}</title>
       </Head>
 
-      <Flex className="flex-col justify-center items-center bg-black text-black h-screen">
+      <Flex className="flex-col justify-center items-center bg-black text-red-500 h-screen">
         <p className="fixed top-12 text-4xl text-red-500 leading-tight">
           <TypeAnimation
             sequence={generateRandomSequence()}
@@ -41,6 +55,13 @@ const Index = () => {
             repeat={Infinity}
           />
         </p>
+
+        <Flex minH={'100%'} align={'center'} justify={'center'}>
+          {showRegisterComponent && <Register />}
+          {showLoginComponent && <Login />}
+
+          {showForgotPasswordComponent && <ForgotPassword />}
+        </Flex>
       </Flex>
     </>
   )

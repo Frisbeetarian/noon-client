@@ -240,7 +240,7 @@ function Sidebar({ axios }) {
                 onClick={async () => {
                   try {
                     await logoutUser(undefined).unwrap()
-                    router.replace('/onboarding')
+                    router.replace('/')
                   } catch (error) {
                     console.error('Error logging out:', error)
                   }

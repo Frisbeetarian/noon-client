@@ -11,17 +11,19 @@ export const useAuthCheck = () => {
   const router = useRouter()
 
   useEffect(() => {
+    console.log('user:', user)
+
     if (!isLoading) {
       if (user?.username) {
         dispatch(setLoggedInUser(user))
         if (router.pathname === '/') {
           router.replace('/noon')
         }
-      } else if (router.pathname !== '/onboarding') {
-        router.replace('/onboarding')
+      } else {
+        router.replace('/')
       }
     }
-  }, [user, isLoading, router, dispatch])
+  }, [user, isLoading, dispatch])
 
   return { user, isLoading }
 }
