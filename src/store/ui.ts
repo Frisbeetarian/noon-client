@@ -10,6 +10,7 @@ interface UIState {
   search: UISearchState
   authentication: UIAuthenticationState
   createGroup: UICreateGroupState
+  particlesInitialized: boolean
 }
 
 interface UISearchState {
@@ -35,6 +36,7 @@ const initialState: UIState = {
   chatContainerHeight: '87.5vh',
   isMobile: false,
   isConversationOpen: false,
+  particlesInitialized: false,
   search: {
     searchActive: false,
     containerDisplay: 'relative',
@@ -87,6 +89,9 @@ const slice = createSlice({
       ui.search.containerDisplay = action.payload.containerDisplay
       ui.search.containerHeight = action.payload.containerHeight
       ui.search.inputPadding = action.payload.inputPadding
+    },
+    setParticlesInitialized: (state, action) => {
+      state.particlesInitialized = action.payload
     },
   },
 })
@@ -146,6 +151,11 @@ export const getShowForgotPasswordComponent = createSelector(
   (ui) => ui.authentication.showForgotPasswordComponent
 )
 
+export const getParticlesInitialized = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.particlesInitialized
+)
+
 export const {
   setShowRegisterComponent,
   setShowLoginComponent,
@@ -157,6 +167,7 @@ export const {
   setSearchComponent,
   setChatContainerHeight,
   toggleCreateGroupActive,
+  setParticlesInitialized,
 } = slice.actions
 
 export default slice.reducer
