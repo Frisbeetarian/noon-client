@@ -7,6 +7,7 @@ import Login from '../components/authentication/Login'
 import ForgotPassword from '../components/authentication/ForgotPassword'
 import { useSelector } from 'react-redux'
 import {
+  getParticlesInitialized,
   getShowForgotPasswordComponent,
   getShowLoginComponent,
   getShowRegisterComponent,
@@ -22,6 +23,8 @@ const Index = () => {
   const showForgotPasswordComponent = useSelector(
     getShowForgotPasswordComponent
   )
+  const particlesInitialized = useSelector(getParticlesInitialized)
+
   const generateRandomSequence = (): (string | number)[] => [
     'N',
     randomWait(),
@@ -56,12 +59,19 @@ const Index = () => {
             repeat={Infinity}
           />
         </p>
-        <Flex minH={'100%'} align={'center'} justify={'center'}>
-          {showRegisterComponent && <Register />}
-          {showLoginComponent && <Login />}
+        {particlesInitialized && (
+          <Flex
+            minH={'100%'}
+            align={'center'}
+            justify={'center'}
+            className="z-10"
+          >
+            {showRegisterComponent && <Register />}
+            {showLoginComponent && <Login />}
 
-          {showForgotPasswordComponent && <ForgotPassword />}
-        </Flex>
+            {showForgotPasswordComponent && <ForgotPassword />}
+          </Flex>
+        )}
 
         <AppParticles />
       </Flex>

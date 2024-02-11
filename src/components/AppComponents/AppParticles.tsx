@@ -1,8 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Particles, { initParticlesEngine } from '@tsparticles/react'
 import { loadSlim } from '@tsparticles/slim'
+import { setParticlesInitialized } from '../../store/ui'
+import { useDispatch } from 'react-redux'
 
 const AppParticles = () => {
+  const dispatch = useDispatch()
   const [init, setInit] = useState(false)
 
   useEffect(() => {
@@ -13,8 +16,8 @@ const AppParticles = () => {
     })
   }, [])
 
-  const particlesLoaded = (container) => {
-    console.log(container)
+  const particlesLoaded = () => {
+    dispatch(setParticlesInitialized(true))
   }
 
   const options = useMemo(
