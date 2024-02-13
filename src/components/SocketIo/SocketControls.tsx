@@ -224,29 +224,12 @@ function SocketControls({ axios }) {
             })
           )
 
-          toast({
+          showAppAlert({
             id: senderUuid,
             title: `${senderUsername} accepted your friend request.`,
-            position: 'bottom-right',
+            status: 'info',
             isClosable: true,
-            status: 'success',
             duration: 5000,
-            render: () => (
-              <Flex direction="column" color="white" p={3} bg="#4B0E10">
-                <Flex>
-                  <p>{senderUsername} accepted your friend request.</p>
-
-                  <CloseButton
-                    className="sticky top ml-4"
-                    size="sm"
-                    onClick={() => {
-                      toast.close(senderUuid)
-                    }}
-                    name="close button"
-                  />
-                </Flex>
-              </Flex>
-            ),
           })
         }
       )

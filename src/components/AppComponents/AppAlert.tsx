@@ -10,7 +10,7 @@ interface AppAlertProps {
   onReject?: () => void
   username?: string
   status?: 'success' | 'error' | 'warning' | 'info'
-  duration?: number | null
+  duration?: number | null | undefined
   customRender?: boolean
 }
 
