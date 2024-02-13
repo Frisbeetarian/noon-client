@@ -265,21 +265,16 @@ function Noon({ axios }) {
         </SocketConnectionProvider>
       ) : null}
 
-      {alerts.map(
-        (alert) => (
-          console.log('alert:', alert),
-          (
-            <AppAlert
-              key={alert.id}
-              id={alert.id}
-              title={alert.title}
-              onAccept={() => alert.onAccept()}
-              onReject={() => alert.onReject()}
-              customRender={true}
-            />
-          )
-        )
-      )}
+      {alerts.map((alert) => (
+        <AppAlert
+          key={alert.id}
+          id={alert.id}
+          title={alert.title}
+          onAccept={() => alert.onAccept()}
+          onReject={() => alert.onReject()}
+          customRender={true}
+        />
+      ))}
     </div>
   )
 }
