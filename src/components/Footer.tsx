@@ -6,13 +6,7 @@ import { PhoneIcon } from '@chakra-ui/icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { ImUpload2 } from 'react-icons/im'
 
-import {
-  addMessageToActiveConversation,
-  deleteMessageInStore,
-  getActiveConversation,
-  getActiveConversee,
-  setOngoingCall,
-} from '../store/chat'
+import { getActiveConversation, getActiveConversee } from '../store/chat'
 
 import { setVideoFrameForConversation } from '../store/video'
 
@@ -23,10 +17,6 @@ import useRecorder from './AudioRecorder/hooks/use-recorder'
 import { getIsMobile } from '../store/ui'
 
 import { getLoggedInUser } from '../store/users'
-import {
-  useSetPendingCallForConversationMutation,
-  useUploadImageMutation,
-} from '../generated/graphql'
 
 import SocketManager from './SocketIo/SocketManager'
 import { getSocketAuthObject } from '../store/sockets'
@@ -53,24 +43,19 @@ const Footer = ({
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversee = useSelector(getActiveConversee)
 
-  // const [
-  //   setPendingCallForConversation,
-  //   // { loading: setPendingCallLoading }
-  // ] = useSetPendingCallForConversationMutation()
-
   const { recorderState, ...handlers }: UseRecorder = useRecorder(axios)
 
-  useEffect(() => {
-    if (socket) {
-      socket.on('set-ongoing-call-for-conversation', () => {
-        dispatch(setOngoingCall())
-      })
-    }
-
-    return () => {
-      if (socket) socket.off('set-ongoing-call-for-conversation')
-    }
-  }, [activeConversee])
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.on('set-ongoing-call-for-conversation', () => {
+  //       dispatch(setOngoingCall())
+  //     })
+  //   }
+  //
+  //   return () => {
+  //     if (socket) socket.off('set-ongoing-call-for-conversation')
+  //   }
+  // }, [activeConversee])
 
   const handleClick = () => {
     ;(hiddenFileInput?.current as any).click()

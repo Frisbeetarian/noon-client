@@ -9,7 +9,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useDisclosure,
   useToast,
 } from '@chakra-ui/react'
 import Footer from './Footer'
@@ -22,24 +21,13 @@ import {
 
 import { getVideoFrameOpenState } from '../store/video'
 import { useDispatch, useSelector } from 'react-redux'
-import { getSocketId } from '../store/sockets'
 
 import Header from './Header'
 import Messages from './Messages'
 
 import { getLoggedInUser } from '../store/users'
 
-// import {
-//   useSaveMessageMutation,
-//   useSaveGroupMessageMutation,
-// } from '../generated/graphql'
-
-import {
-  getCreateGroupComponent,
-  // getChatContainerHeight,
-  getIsMobile,
-  // getIsSearchActive,
-} from '../store/ui'
+import { getCreateGroupComponent, getIsMobile } from '../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 
@@ -50,7 +38,6 @@ import AppButton from './AppComponents/AppButton'
 function Chat({ axios }) {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
-  const isCreateGroupOpen = useSelector(getCreateGroupComponent)
   const isMobile = useSelector(getIsMobile)
   const [innerHeight, setInnerHeight] = useState(0)
 
@@ -62,16 +49,6 @@ function Chat({ axios }) {
   const profile = useSelector(getActiveConversee)
   const [isOpen, setIsOpen] = useState(false)
   const toast = useToast()
-
-  // const [
-  //   saveMessage,
-  //   // { loading: saveMessageLoading }
-  // ] = useSaveMessageMutation()
-
-  // const [
-  //   saveGroupMessage,
-  //   // { loading: saveGroupLoading }
-  // ] = useSaveGroupMessageMutation()
 
   useEffect(() => {
     setInnerHeight(window.innerHeight)
@@ -141,7 +118,7 @@ function Chat({ axios }) {
     const data = inputMessage
     setInputMessage('')
 
-    const message = await axios
+    await axios
       .post('/api/messages', {
         message: data,
         type: 'text',
@@ -151,7 +128,6 @@ function Chat({ axios }) {
         recipientUsername: profile.username,
       })
       .then(function (response) {
-        console.log('response:', response)
         if (response.status === 200) {
           dispatch(
             addMessageToActiveConversation({
@@ -251,18 +227,6 @@ function Chat({ axios }) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
-      {/*{isCreateGroupOpen ? (*/}
-      {/*  <Flex*/}
-      {/*    className="flex-col p-0 box-content"*/}
-      {/*    style={{*/}
-      {/*      height: isMobile ? '77.5vh' : '90vh',*/}
-      {/*      transition: 'all .5s',*/}
-      {/*    }}*/}
-      {/*  >*/}
-      {/*    <CreateGroup />*/}
-      {/*  </Flex>*/}
-      {/*) : null}*/}
 
       {activeConversation && activeConversation.type === 'group' ? (
         <Flex
