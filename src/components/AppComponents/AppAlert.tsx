@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useEffect } from 'react'
 import { CloseButton, Flex, useToast } from '@chakra-ui/react'
 
 import AppButton from './AppButton'
@@ -21,7 +21,7 @@ const AppAlert = forwardRef<HTMLButtonElement, AppAlertProps>(
     onAccept,
     onReject,
     username,
-    render,
+    render = null,
     status = 'success',
     duration = null,
   }) => {
@@ -63,7 +63,7 @@ const AppAlert = forwardRef<HTMLButtonElement, AppAlertProps>(
       })
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
       showToast()
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
