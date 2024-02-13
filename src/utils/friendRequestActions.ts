@@ -45,4 +45,45 @@ const acceptFriendRequest = async ({
   }
 }
 
-export { acceptFriendRequest }
+const rejectFriendRequest = async ({
+  axios,
+  dispatch,
+  friendRequest,
+  setAlerts,
+  loggedInUser,
+  cancelFriendshipRequestSentOnProfile,
+  removeFriendRequestEntry,
+}) => {
+  try {
+    const response = await axios.post('/api/profiles/cancelFriendRequest', {
+      profileUuid: friendRequest.uuid,
+    })
+
+    if (response.status === 200) {
+      dispatch(
+        cancelFriendshipRequestSentOnProfile({
+          profileUuid: friendRequest.uuid,
+        })
+      )
+      dispatch(
+        removeFriendRequestEntry({
+          profileUuid: friendRequest.uuid,
+          friendRequests: loggedInUser.user?.friendshipRequests,
+        })
+      )
+
+      // Remove alert from state
+      setAlerts((currentAlerts) =>
+        currentAlerts.filter(
+          (alert) =>
+            alert.id !==
+            friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid
+        )
+      )
+    }
+  } catch (error) {
+    console.error('Failed to cancel friend request:', error)
+  }
+}
+
+export { acceptFriendRequest, rejectFriendRequest }

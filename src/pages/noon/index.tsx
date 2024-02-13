@@ -29,7 +29,10 @@ import {
 } from '../../store/profiles'
 import Sidebar from '../../components/Sidebar'
 import AppAlert from '../../components/AppComponents/AppAlert'
-import { acceptFriendRequest } from '../../utils/friendRequestActions'
+import {
+  acceptFriendRequest,
+  rejectFriendRequest,
+} from '../../utils/friendRequestActions'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -64,37 +67,17 @@ function Noon({ axios }) {
     })
   }
 
-  const handleReject = async (friendRequest) => {
-    try {
-      const response = await axios.post('/api/profiles/cancelFriendRequest', {
-        profileUuid: friendRequest.uuid,
-      })
-
-      if (response.status === 200) {
-        dispatch(
-          cancelFriendshipRequestSentOnProfile({
-            profileUuid: friendRequest.uuid,
-          })
-        )
-        dispatch(
-          removeFriendRequestEntry({
-            profileUuid: friendRequest.uuid,
-            friendRequests: loggedInUser.user?.friendshipRequests,
-          })
-        )
-      }
-    } catch (error) {
-      console.error('Failed to cancel friend request:', error)
-    }
-
-    // Remove alert from state
-    setAlerts((currentAlerts) =>
-      currentAlerts.filter(
-        (alert) =>
-          alert.id !==
-          friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid
-      )
-    )
+  const handleRejectFriendRequest = (friendRequest) => {
+    rejectFriendRequest({
+      axios,
+      dispatch,
+      friendRequest,
+      setAlerts,
+      loggedInUser,
+      setFriendFlagOnProfile,
+      cancelFriendshipRequestSentOnProfile,
+      removeFriendRequestEntry,
+    })
   }
 
   useEffect(() => {
@@ -110,7 +93,7 @@ function Noon({ axios }) {
           id: friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid,
           title: `${friendRequest.username} sent you a friend request.`,
           onAccept: async () => handleAcceptFriendRequest(friendRequest),
-          onReject: async () => handleReject(friendRequest),
+          onReject: async () => handleRejectFriendRequest(friendRequest),
           username: friendRequest.username,
         }))
 
