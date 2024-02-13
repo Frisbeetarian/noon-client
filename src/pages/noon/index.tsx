@@ -33,6 +33,7 @@ import {
   acceptFriendRequest,
   rejectFriendRequest,
 } from '../../utils/friendRequestActions'
+import useAppAlert from '../../hooks/useAppAlert'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -46,8 +47,7 @@ function Noon({ axios }) {
   const createGroupActive = useSelector(getCreateGroupActive)
   const loggedInUser = useSelector(getLoggedInUser)
   const toast = useToast()
-  const [isCount, setIsCount] = useState(0)
-  const [alerts, setAlerts] = useState([])
+  const showAppAlert = useAppAlert()
 
   useEffect(() => {
     setMounted(true)
@@ -91,17 +91,18 @@ function Noon({ axios }) {
       loggedInUser.user?.profile?.friendshipRequests &&
       loggedInUser.user?.profile?.friendshipRequests.length !== 0
     ) {
-      const newAlerts = loggedInUser.user.profile.friendshipRequests
-        .filter((friendRequest) => friendRequest.reverse)
-        .map((friendRequest) => ({
+      loggedInUser.user.profile.friendshipRequests.forEach((friendRequest) => {
+        if (!friendRequest.reverse) return
+        showAppAlert({
           id: friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid,
           title: `${friendRequest.username} sent you a friend request.`,
-          onAccept: async () => handleAcceptFriendRequest(friendRequest),
-          onReject: async () => handleRejectFriendRequest(friendRequest),
-          username: friendRequest.username,
-        }))
-
-      setAlerts(newAlerts)
+          status: 'info', // 'success', 'error', 'warning', 'info'
+          duration: 5000,
+          onAccept: () => handleAcceptFriendRequest(friendRequest),
+          onReject: () => handleRejectFriendRequest(friendRequest),
+          customRender: true,
+        })
+      })
     }
   }, [loggedInUser.user.profile])
 
@@ -264,17 +265,6 @@ function Noon({ axios }) {
           {createGroupActive && <CreateGroupSidebar />}
         </SocketConnectionProvider>
       ) : null}
-
-      {alerts.map((alert) => (
-        <AppAlert
-          key={alert.id}
-          id={alert.id}
-          title={alert.title}
-          onAccept={() => alert.onAccept()}
-          onReject={() => alert.onReject()}
-          customRender={true}
-        />
-      ))}
     </div>
   )
 }
