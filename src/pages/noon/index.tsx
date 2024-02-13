@@ -58,7 +58,6 @@ function Noon({ axios }) {
       axios,
       dispatch,
       friendRequest,
-      setAlerts,
       loggedInUser,
       setFriendFlagOnProfile,
       removeFriendRequestEntry,
@@ -74,7 +73,6 @@ function Noon({ axios }) {
       axios,
       dispatch,
       friendRequest,
-      setAlerts,
       loggedInUser,
       setFriendFlagOnProfile,
       cancelFriendshipRequestSentOnProfile,
@@ -94,10 +92,10 @@ function Noon({ axios }) {
       loggedInUser.user.profile.friendshipRequests.forEach((friendRequest) => {
         if (!friendRequest.reverse) return
         showAppAlert({
-          id: friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid,
+          id: friendRequest.uuid + 'friend-request',
           title: `${friendRequest.username} sent you a friend request.`,
           status: 'info', // 'success', 'error', 'warning', 'info'
-          duration: 5000,
+          duration: null,
           onAccept: () => handleAcceptFriendRequest(friendRequest),
           onReject: () => handleRejectFriendRequest(friendRequest),
           customRender: true,

@@ -24,8 +24,6 @@ const useAppAlert = () => {
 
     if (customRender) {
       renderProps.render = ({ onClose }) => (
-        // Your custom render logic here, using onClose to close the toast
-        // You might need to adjust this part to fit your actual AppAlert component structure
         <Flex
           direction="column"
           color="white"
