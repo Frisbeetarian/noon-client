@@ -32,6 +32,7 @@ import Sidebar from '../../components/Sidebar'
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
 }
+
 function Noon({ axios }) {
   const dispatch = useDispatch()
   const [mounted, setMounted] = useState(false)

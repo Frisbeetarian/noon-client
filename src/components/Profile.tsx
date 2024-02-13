@@ -20,11 +20,14 @@ function Profile({ profile, axios }) {
   const loggedInUser = useSelector(getLoggedInUser)
   const toast = useToast()
   const [isFriendRequestLoading, setIsFriendRequestLoading] = useState(false)
-  const [isCancelRequestLoading, setIsCancelRequestLoading] = useState(false)
+  const [isCancelFriendRequestLoading, setIsCancelFriendRequestLoading] =
+    useState(false)
+  const [isAcceptFriendRequestLoading, setIsAcceptFriendRequestLoading] =
+    useState(false)
 
   const handleCancelFriendRequest = useCallback(async () => {
     try {
-      setIsCancelRequestLoading(true)
+      setIsCancelFriendRequestLoading(true)
       const response = await axios.post('/api/profiles/cancelFriendRequest', {
         profileUuid: profile.uuid,
       })
@@ -40,11 +43,11 @@ function Profile({ profile, axios }) {
           })
         )
 
-        setIsCancelRequestLoading(false)
+        setIsCancelFriendRequestLoading(false)
       }
     } catch (error) {
       console.error('Failed to cancel friend request:', error)
-      setIsCancelRequestLoading(false)
+      setIsCancelFriendRequestLoading(false)
     }
   }, [axios, dispatch, loggedInUser.user?.friendshipRequests, profile.uuid])
 
@@ -75,13 +78,18 @@ function Profile({ profile, axios }) {
     }
   }, [axios, dispatch, profile.uuid, profile.username])
 
-  const handleAcceptFriendRequest = useCallback(() => {
+  const handleAcceptFriendRequest = useCallback(async () => {
+    const response = await axios.post('/api/profiles/acceptFriendRequest', {
+      profileUuid: profile.uuid,
+    })
+
     dispatch(
       removeFriendRequestEntry({
         profileUuid: profile.uuid,
         friendRequests: loggedInUser.user?.friendshipRequests,
       })
     )
+
     dispatch(
       addFriendEntry({
         uuid: profile.uuid,
@@ -115,7 +123,7 @@ function Profile({ profile, axios }) {
           <AppButton
             colorScheme="red"
             onClick={handleCancelFriendRequest}
-            isLoading={isCancelRequestLoading}
+            isLoading={isCancelFriendRequestLoading}
           >
             Cancel
           </AppButton>
