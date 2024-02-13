@@ -37,13 +37,6 @@ const acceptFriendRequest = async ({
         })
       )
 
-      setAlerts((currentAlerts) =>
-        currentAlerts.filter(
-          (alert) =>
-            alert.id !==
-            friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid
-        )
-      )
       if (toast) {
         toast.close(toastId)
       }
@@ -80,14 +73,6 @@ const rejectFriendRequest = async ({
           profileUuid: friendRequest.uuid,
           friendRequests: loggedInUser.user?.friendshipRequests,
         })
-      )
-
-      setAlerts((currentAlerts) =>
-        currentAlerts.filter(
-          (alert) =>
-            alert.id !==
-            friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid
-        )
       )
 
       if (toast) {
