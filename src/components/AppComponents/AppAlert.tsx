@@ -9,9 +9,9 @@ interface AppAlertProps {
   onAccept?: () => void
   onReject?: () => void
   username?: string
-  render: () => JSX.Element
   status?: 'success' | 'error' | 'warning' | 'info'
   duration?: number | null
+  customRender?: boolean
 }
 
 const AppAlert = forwardRef<HTMLButtonElement, AppAlertProps>(
@@ -20,10 +20,9 @@ const AppAlert = forwardRef<HTMLButtonElement, AppAlertProps>(
     title,
     onAccept,
     onReject,
-    username,
-    render = null,
     status = 'success',
     duration = null,
+    customRender,
   }) => {
     const toast = useToast()
 
@@ -59,7 +58,7 @@ const AppAlert = forwardRef<HTMLButtonElement, AppAlertProps>(
         isClosable: true,
         status,
         duration,
-        render: render || defaultRender,
+        render: customRender ? defaultRender : null,
       })
     }
 

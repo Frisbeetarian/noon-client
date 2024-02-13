@@ -64,6 +64,8 @@ function Noon({ axios }) {
       removeFriendRequestEntry,
       addFriendEntry,
       addConversation,
+      toastId: friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid,
+      toast,
     })
   }
 
@@ -77,6 +79,8 @@ function Noon({ axios }) {
       setFriendFlagOnProfile,
       cancelFriendshipRequestSentOnProfile,
       removeFriendRequestEntry,
+      toastId: friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid,
+      toast,
     })
   }
 
@@ -271,6 +275,7 @@ function Noon({ axios }) {
               title={alert.title}
               onAccept={() => alert.onAccept()}
               onReject={() => alert.onReject()}
+              customRender={true}
             />
           )
         )
