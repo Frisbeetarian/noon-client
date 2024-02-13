@@ -7,6 +7,7 @@ const useAppAlert = () => {
   const showAppAlert = ({
     id,
     title,
+    description = null,
     onAccept,
     onReject,
     status = 'success',
@@ -16,6 +17,7 @@ const useAppAlert = () => {
     const renderProps = {
       id,
       title,
+      description,
       status,
       duration,
       position: 'bottom-right',
@@ -30,9 +32,14 @@ const useAppAlert = () => {
           p={3}
           bg={status === 'error' ? 'red.500' : '#4B0E10'}
         >
-          <Flex justifyContent="space-between" alignItems="center">
+          <Flex className="flex-col" justifyContent="space-between">
             <p>{title}</p>
-            <CloseButton size="sm" onClick={onClose} />
+            <p>{description}</p>
+            <CloseButton
+              className="absolute top-0 right-0 mt-4 mr-4"
+              size="sm"
+              onClick={onClose}
+            />
           </Flex>
           {(onAccept || onReject) && (
             <Flex className="justify-end mt-3">

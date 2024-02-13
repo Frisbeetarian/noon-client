@@ -22,6 +22,7 @@ import SocketManager from './SocketIo/SocketManager'
 import { getSocketAuthObject } from '../store/sockets'
 import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
+import useAppAlert from '../hooks/useAppAlert'
 
 const Footer = ({
   inputMessage,
@@ -34,6 +35,7 @@ const Footer = ({
   const hiddenFileInput = useRef(null)
   const dispatch = useDispatch()
   const toast = useToast()
+  const showAppAlert = useAppAlert()
   const [isUploading, setIsUploading] = useState(false)
 
   const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
@@ -65,13 +67,12 @@ const Footer = ({
     console.log('event file:', file)
 
     if (file.size > 1048576) {
-      toast({
+      showAppAlert({
         title: 'File is too large',
         description: 'Please select a file smaller than 1MB.',
         status: 'error',
         duration: 5000,
         isClosable: true,
-        position: 'bottom-right',
       })
       return
     }
