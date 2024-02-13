@@ -24,7 +24,6 @@ import { getLoggedInUser } from '../store/users'
 import { addConversation, setOngoingCall } from '../store/chat'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
-import SocketManager from './SocketIo/SocketManager'
 import AppButton from './AppComponents/AppButton'
 import withAxios from '../utils/withAxios'
 import { InputField } from './InputField'
@@ -45,7 +44,6 @@ function CreateGroupSidebar({ axios }) {
   const [zeroFriendsError, setZeroFriendsError] = useState(false)
   const toast = useToast()
   const isMobile = useSelector(getIsMobile)
-  const socketAuthObject = useSelector(getSocketAuthObject)
   const showAppAlert = useAppAlert()
 
   useEffect(() => {
