@@ -8,7 +8,8 @@ interface AppAlertProps {
   title?: string
   onAccept?: () => void
   onReject?: () => void
-  username?: string
+  senderUuid?: string
+  senderUsername?: string
   status?: 'success' | 'error' | 'warning' | 'info'
   duration?: number | null | undefined
   customRender?: boolean
@@ -22,11 +23,13 @@ const AppAlert = forwardRef<HTMLButtonElement, AppAlertProps>(
     onReject,
     status = 'success',
     duration = null,
-    customRender,
+    customRender = false,
+    senderUuid,
+    senderUsername,
   }) => {
     const toast = useToast()
 
-    const defaultRender = () => (
+    const customizedRender = () => (
       <Flex
         direction="column"
         color="white"
@@ -50,6 +53,23 @@ const AppAlert = forwardRef<HTMLButtonElement, AppAlertProps>(
       </Flex>
     )
 
+    const defaultRender = () => (
+      <Flex direction="column" color="white" p={3} bg="#4B0E10">
+        <Flex>
+          <p>{title}felwkjfbewkjfbew</p>
+
+          <CloseButton
+            className="sticky top ml-4 mb-10"
+            size="sm"
+            onClick={() => {
+              toast.close(senderUuid)
+            }}
+            name="close button"
+          />
+        </Flex>
+      </Flex>
+    )
+
     const showToast = () => {
       toast({
         id,
@@ -58,7 +78,7 @@ const AppAlert = forwardRef<HTMLButtonElement, AppAlertProps>(
         isClosable: true,
         status,
         duration,
-        render: customRender ? defaultRender : null,
+        render: customRender ? customizedRender : defaultRender,
       })
     }
 

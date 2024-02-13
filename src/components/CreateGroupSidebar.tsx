@@ -2,12 +2,10 @@
 import React, { useEffect, useState } from 'react'
 import {
   Box,
-  Button,
   CloseButton,
   Flex,
   FormControl,
   HStack,
-  Input,
   Stack,
   useToast,
 } from '@chakra-ui/react'
@@ -28,9 +26,9 @@ import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import SocketManager from './SocketIo/SocketManager'
 import AppButton from './AppComponents/AppButton'
-import AppInput from './AppComponents/AppInput'
 import withAxios from '../utils/withAxios'
 import { InputField } from './InputField'
+import useAppAlert from '../hooks/useAppAlert'
 
 const createGroupSchema = Yup.object().shape({
   name: Yup.string()
@@ -48,34 +46,20 @@ function CreateGroupSidebar({ axios }) {
   const toast = useToast()
   const isMobile = useSelector(getIsMobile)
   const socketAuthObject = useSelector(getSocketAuthObject)
-  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
-
-  // const [
-  //   createGroupConversation,
-  //   // { loading: createGroupConversationLoading }
-  // ] = useCreateGroupConversationMutation()
+  const showAppAlert = useAppAlert()
 
   useEffect(() => {
     setFriends(loggedInUser?.user?.profile?.friends)
 
-    if (socket) {
-      socket.on('set-ongoing-call-for-conversation', () => {
-        dispatch(
-          setOngoingCall()
-          //   {
-          //   uuid: '',
-          //   initiator: {
-          //     uuid: from,
-          //     username: fromUsername,
-          //   },
-          // }
-        )
-      })
-    }
-
-    return () => {
-      if (socket) socket.off('set-ongoing-call-for-conversation')
-    }
+    // if (socket) {
+    //   socket.on('set-ongoing-call-for-conversation', () => {
+    //     dispatch(setOngoingCall())
+    //   })
+    // }
+    //
+    // return () => {
+    //   if (socket) socket.off('set-ongoing-call-for-conversation')
+    // }
   }, [])
 
   return (
@@ -116,39 +100,17 @@ function CreateGroupSidebar({ axios }) {
                         })
                       )
 
-                      toast({
+                      showAppAlert({
                         id: 'create-group-toast',
                         title: `${values.name} has been created.`,
-                        position: 'bottom-right',
-                        isClosable: true,
                         status: 'success',
+                        isClosable: true,
                         duration: 5000,
-                        render: () => (
-                          <Flex
-                            direction="column"
-                            color="white"
-                            p={3}
-                            bg="#4B0E10"
-                          >
-                            <Flex>
-                              <p>{values.name} has been created.</p>
-
-                              <CloseButton
-                                className="sticky top ml-4"
-                                size="sm"
-                                onClick={() => {
-                                  toast.close('create-group-toast')
-                                }}
-                                name="close button"
-                              />
-                            </Flex>
-                          </Flex>
-                        ),
                       })
                     }
                   })
                   .catch((error) => {
-                    console.error('An error occurred:', error)
+                    console.error('An error occurred:', error.message)
                     toast({
                       title: `Error creating group.`,
                       position: 'bottom-right',
@@ -182,13 +144,6 @@ function CreateGroupSidebar({ axios }) {
                 <HStack className="pl-1">
                   <Box>
                     <FormControl id="name" isRequired>
-                      {/*<AppInput*/}
-                      {/*  name="name"*/}
-                      {/*  placeholder="Name"*/}
-                      {/*  label="Group name"*/}
-                      {/*  type="text"*/}
-                      {/*/>*/}
-
                       <InputField
                         name="name"
                         placeholder="Name"
@@ -199,13 +154,6 @@ function CreateGroupSidebar({ axios }) {
                 </HStack>
 
                 <FormControl id="description" className="pl-1">
-                  {/*<AppInput*/}
-                  {/*  name="description"*/}
-                  {/*  placeholder="Description"*/}
-                  {/*  label="Group description"*/}
-                  {/*  required={false}*/}
-                  {/*/>*/}
-
                   <InputField
                     name="description"
                     placeholder="Description"
@@ -262,7 +210,6 @@ function CreateGroupSidebar({ axios }) {
                 <GroupParticipant
                   key={friend.uuid}
                   participant={friend}
-                  // className="mb-3 box-content cursor-pointer"
                 ></GroupParticipant>
               ))
             ) : (

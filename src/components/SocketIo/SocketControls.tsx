@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CloseButton, Flex, useToast } from '@chakra-ui/react'
+import { useToast } from '@chakra-ui/react'
 
 import {
   addFriendEntry,
@@ -34,7 +34,6 @@ import {
 import SocketManager from './SocketManager'
 
 import { getSocketAuthObject } from '../../store/sockets'
-import AppButton from '../AppComponents/AppButton'
 import withAxios from '../../utils/withAxios'
 import { setSearchLoading } from '../../store/search'
 import useAppAlert from '../../hooks/useAppAlert'
@@ -242,30 +241,14 @@ function SocketControls({ axios }) {
           })
         )
 
-        toast.close(senderUuid + 'friend-request')
-        toast({
+        showAppAlert({
           id: senderUuid,
-          title: `${senderUsername} has cancelled the friend request.`,
-          position: 'bottom-right',
+          title: `${senderUsername} cancelled your friend request.`,
+          status: 'info',
           isClosable: true,
-          status: 'error',
           duration: 5000,
-          render: () => (
-            <Flex direction="column" color="white" p={3} bg="#4B0E10">
-              <Flex>
-                <p>{senderUsername} has cancelled the friend request.</p>
-
-                <CloseButton
-                  className="sticky top ml-4"
-                  size="sm"
-                  onClick={() => {
-                    toast.close(senderUuid)
-                  }}
-                  name="close button"
-                />
-              </Flex>
-            </Flex>
-          ),
+          senderUuid,
+          senderUsername,
         })
       })
 
