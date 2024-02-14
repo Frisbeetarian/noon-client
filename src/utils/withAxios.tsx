@@ -3,6 +3,7 @@ import axios from 'axios'
 import { NextPageContext } from 'next'
 
 import { rateLimitDetected } from '../store/ui'
+import store from '../store/store'
 
 const createAxiosInstance = (ctx?: NextPageContext) => {
   // console.log('next public url env: ', process.env.NEXT_PUBLIC_URL)
@@ -19,17 +20,16 @@ const createAxiosInstance = (ctx?: NextPageContext) => {
   axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
-      console.log('error from hoc:', error)
+      console.log('error from hoc:', error.response)
 
       if (error.response && error.response.status === 429) {
-        const { wrapper } = ctx
-
-        if (wrapper) {
-          wrapper.dispatch(
+        if (store) {
+          store.dispatch(
             rateLimitDetected({
               isRateLimited: true,
               message: error.data.error,
               retryAfter: error.data.retryAfter,
+              refresh: new Date().getTime(),
             })
           )
         }
