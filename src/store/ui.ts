@@ -172,6 +172,21 @@ export const getParticlesInitialized = createSelector(
   (ui) => ui.particlesInitialized
 )
 
+export const getIsRateLimited = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.isRateLimited
+)
+
+export const getRateLimitedMessage = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.rateLimitedMessage
+)
+
+export const getRetryAfter = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.retryAfter
+)
+
 export const {
   setShowRegisterComponent,
   setShowLoginComponent,
