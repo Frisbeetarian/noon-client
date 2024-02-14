@@ -1,5 +1,4 @@
 import { rateLimitDetected, resetRateLimit } from '../ui'
-import { store } from '../store'
 
 const rateLimitMiddleware = (store) => (next) => (action) => {
   if (action.type.endsWith('rejected')) {
