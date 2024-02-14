@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
 
 import theme from '../theme'
@@ -7,12 +7,28 @@ import './index.css'
 import { wrapper } from '../store/store'
 import '../components/SocketIo/Messages.css'
 import '../components/AudioRecorder/recorder-controls/styles.css'
-import { setIsMobile } from '../store/ui'
+import { getRateLimited, setIsMobile } from '../store/ui'
 import { useAuthCheck } from '../hooks/useAuthCheck'
+import useAppAlert from '../hooks/useAppAlert'
 
 function MyApp({ Component, pageProps }): React.JSX.Element {
   useAuthCheck()
   const dispatch = useDispatch()
+  const rateLimitedPayload = useSelector(getRateLimited)
+  const showAppAlert = useAppAlert()
+
+  useEffect(() => {
+    if (rateLimitedPayload.isRateLimited) {
+      showAppAlert({
+        id: 'rate-limit',
+        title: rateLimitedPayload.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        customRender: true,
+      })
+    }
+  }, [rateLimitedPayload.refresh])
 
   useEffect(() => {
     const vh = window.innerHeight * 0.01

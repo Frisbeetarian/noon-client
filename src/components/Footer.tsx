@@ -100,14 +100,16 @@ const Footer = ({
         throw new Error('Failed to upload the file. Please try again.')
       }
     } catch (error) {
-      toast({
-        title: 'Error uploading file',
-        description: error.response?.data?.message || error.message,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom-right',
-      })
+      if (error?.response?.status !== 429) {
+        toast({
+          title: 'Error uploading file',
+          description: error.response?.data?.message || error.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+          position: 'bottom-right',
+        })
+      }
     } finally {
       setIsUploading(false)
     }

@@ -11,6 +11,7 @@ interface UIState {
   authentication: UIAuthenticationState
   createGroup: UICreateGroupState
   particlesInitialized: boolean
+  rateLimited: UIRateLimitState
 }
 
 interface UISearchState {
@@ -30,6 +31,13 @@ interface UICreateGroupState {
   active: boolean
 }
 
+interface UIRateLimitState {
+  isRateLimited: boolean
+  message: string
+  retryAfter: number
+  refresh: number
+}
+
 const initialState: UIState = {
   chatComponent: 'closed',
   createGroupComponentOpen: false,
@@ -37,6 +45,12 @@ const initialState: UIState = {
   isMobile: false,
   isConversationOpen: false,
   particlesInitialized: false,
+  rateLimited: {
+    isRateLimited: false,
+    message: '',
+    retryAfter: 0,
+    refresh: new Date().getTime(),
+  },
   search: {
     searchActive: false,
     containerDisplay: 'relative',
@@ -92,6 +106,18 @@ const slice = createSlice({
     },
     setParticlesInitialized: (state, action) => {
       state.particlesInitialized = action.payload
+    },
+    rateLimitDetected: (state, action: PayloadAction<UIRateLimitState>) => {
+      state.rateLimited.isRateLimited = true
+      state.rateLimited.message = action.payload.message
+      state.rateLimited.retryAfter = action.payload.retryAfter
+      state.rateLimited.refresh = action.payload.refresh
+    },
+    resetRateLimit: (state) => {
+      state.rateLimited.isRateLimited = false
+      state.rateLimited.message = ''
+      state.rateLimited.retryAfter = 0
+      state.rateLimited.refresh = new Date().getTime()
     },
   },
 })
@@ -156,6 +182,11 @@ export const getParticlesInitialized = createSelector(
   (ui) => ui.particlesInitialized
 )
 
+export const getRateLimited = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.rateLimited
+)
+
 export const {
   setShowRegisterComponent,
   setShowLoginComponent,
@@ -168,6 +199,8 @@ export const {
   setChatContainerHeight,
   toggleCreateGroupActive,
   setParticlesInitialized,
+  rateLimitDetected,
+  resetRateLimit,
 } = slice.actions
 
 export default slice.reducer

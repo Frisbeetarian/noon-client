@@ -1,9 +1,8 @@
-import axios from 'axios'
 import React from 'react'
 import { NextPageContext } from 'next'
+import axios from 'axios'
 
 const createAxiosInstance = (ctx?: NextPageContext) => {
-  // console.log('next public url env: ', process.env.NEXT_PUBLIC_URL)
   const axiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_URL,
     withCredentials: true,
@@ -14,12 +13,34 @@ const createAxiosInstance = (ctx?: NextPageContext) => {
     },
   })
 
+  axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      console.log('error from hoc:', error.response)
+
+      if (error.response && error.response.status === 429) {
+        // store.dispatch(
+        //   rateLimitDetected({
+        //     isRateLimited: true,
+        //     message: error.data.error,
+        //     retryAfter: error.data.retryAfter,
+        //     refresh: new Date().getTime(),
+        //   })
+        // )
+      } else {
+        // store.dispatch(resetRateLimit())
+      }
+
+      return Promise.reject(error)
+    }
+  )
+
   return axiosInstance
 }
 
 export const withAxios = (PageComponent) => {
   const WithAxiosComponent = ({ ...props }) => {
-    const axiosInstance = props.axios || createAxiosInstance()
+    const axiosInstance = props.axios || createAxiosInstance(props.ctx)
 
     return <PageComponent {...props} axios={axiosInstance} />
   }
@@ -35,7 +56,7 @@ export const withAxios = (PageComponent) => {
       })
     }
 
-    return { ...pageProps, axios: axiosInstance }
+    return { ...pageProps, axios: axiosInstance, dispatch: ctx.store?.dispatch }
   }
 
   return WithAxiosComponent

@@ -106,7 +106,15 @@ function Chat({ axios }) {
         }
       })
       .catch((error) => {
-        console.log('error:', error.message)
+        if (error.response.status !== 429) {
+          toast({
+            title: `Error sending message.`,
+            position: 'bottom-right',
+            isClosable: true,
+            status: 'error',
+            duration: 5000,
+          })
+        }
       })
   }
 
@@ -151,8 +159,9 @@ function Chat({ axios }) {
             })
           )
         }
-
-        if (!response.status) {
+      })
+      .catch(function (error) {
+        if (error?.response?.status !== 429) {
           toast({
             title: `Error sending message.`,
             position: 'bottom-right',
@@ -161,17 +170,6 @@ function Chat({ axios }) {
             duration: 5000,
           })
         }
-      })
-      .catch(function (error) {
-        console.log('error:', error)
-
-        toast({
-          title: `Error sending message.`,
-          position: 'bottom-right',
-          isClosable: true,
-          status: 'error',
-          duration: 5000,
-        })
       })
   }
 

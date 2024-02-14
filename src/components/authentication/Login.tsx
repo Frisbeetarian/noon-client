@@ -1,19 +1,21 @@
 import React from 'react'
+import { useRouter } from 'next/router'
+import { useDispatch } from 'react-redux'
+import * as Yup from 'yup'
 import { Box, FormControl, FormLabel, Stack, Text } from '@chakra-ui/react'
+import { CheckIcon } from '@chakra-ui/icons'
 import { Field, Form, Formik } from 'formik'
+
 import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
-import * as Yup from 'yup'
-import { useRouter } from 'next/router'
 import {
   setShowForgotPasswordComponent,
   setShowLoginComponent,
   setShowRegisterComponent,
 } from '../../store/ui'
-import { useDispatch } from 'react-redux'
 import AppButton from '../AppComponents/AppButton'
 import { useLoginUserMutation } from '../../store/api/usersApiSlice'
-import { CheckIcon } from '@chakra-ui/icons'
+import useAppAlert from '../../hooks/useAppAlert'
 
 const LoginSchema = Yup.object().shape({
   usernameOrEmail: Yup.string()
@@ -30,18 +32,18 @@ function Login() {
   const router = useRouter()
   const dispatch = useDispatch()
   const [loginUser, { isLoading, isSuccess }] = useLoginUserMutation()
+  const showAppAlert = useAppAlert()
 
   const handleSubmit = async (values, { setErrors }) => {
     try {
       await loginUser(values).unwrap()
       router.replace('/noon')
     } catch (error) {
-      // @ts-ignore
       if (error.data?.errors) {
         // @ts-ignore
         setErrors(toErrorMap(error.data.errors))
       } else {
-        console.error('Error logging use in:', error)
+        console.error('Error logging user in:', error)
       }
     }
   }

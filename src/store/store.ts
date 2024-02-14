@@ -4,6 +4,7 @@ import { createWrapper } from 'next-redux-wrapper'
 import rootReducer from './reducer'
 import { usersApiSlice } from './api/usersApiSlice'
 import { conversationsApiSlice } from './api/conversationsApiSlice'
+import rateLimitMiddleware from './middleware/rateLimitMiddleware'
 
 const makeStore = () =>
   configureStore({
@@ -11,7 +12,8 @@ const makeStore = () =>
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware()
         .concat(usersApiSlice.middleware)
-        .concat(conversationsApiSlice.middleware),
+        .concat(conversationsApiSlice.middleware)
+        .concat(rateLimitMiddleware),
     devTools: true,
   })
 
