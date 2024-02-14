@@ -23,12 +23,12 @@ function MyApp({ Component, pageProps }): React.JSX.Element {
         id: 'rate-limit',
         title: rateLimitedPayload.message,
         status: 'error',
-        duration: null,
+        duration: 5000,
         isClosable: true,
         customRender: true,
       })
     }
-  }, [rateLimitedPayload])
+  }, [rateLimitedPayload.refresh])
 
   useEffect(() => {
     const vh = window.innerHeight * 0.01

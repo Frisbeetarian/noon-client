@@ -12,6 +12,7 @@ const rateLimitMiddleware = (store) => (next) => (action) => {
           isRateLimited: true,
           message: action.payload.data.error,
           retryAfter: action.payload.data.retryAfter,
+          refresh: new Date(),
         })
       )
     }
