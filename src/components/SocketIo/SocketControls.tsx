@@ -14,6 +14,8 @@ import {
   addProfiles,
   cancelFriendshipRequestSentOnProfile,
   setFriendFlagOnProfile,
+  setFriendshipRequestSentOnProfile,
+  setHasFriendshipRequestFromLoggedInProfile,
 } from '../../store/profiles'
 
 import {
@@ -163,6 +165,12 @@ function SocketControls({ axios }) {
             uuid: senderUuid,
             username: senderUsername,
             reverse: true,
+          })
+        )
+
+        dispatch(
+          setHasFriendshipRequestFromLoggedInProfile({
+            profileUuid: senderUuid,
           })
         )
 
