@@ -39,16 +39,16 @@ function Login() {
       await loginUser(values).unwrap()
       router.replace('/noon')
     } catch (error) {
-      if (error.status === 429) {
-        showAppAlert({
-          id: 'rate-limit',
-          title: error.data.error,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-          customRender: true,
-        })
-      }
+      // if (error.status === 429) {
+      //   showAppAlert({
+      //     id: 'rate-limit',
+      //     title: error.data.error,
+      //     status: 'error',
+      //     duration: 5000,
+      //     isClosable: true,
+      //     customRender: true,
+      //   })
+      // }
 
       // @ts-ignore
       if (error.data?.errors) {

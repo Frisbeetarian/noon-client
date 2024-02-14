@@ -106,6 +106,7 @@ const slice = createSlice({
       state.particlesInitialized = action.payload
     },
     rateLimitDetected: (state, action: PayloadAction<UIRateLimitState>) => {
+      console.log('payload in rate limit:', action.payload)
       state.rateLimited.isRateLimited = true
       state.rateLimited.message = action.payload.message
       state.rateLimited.retryAfter = action.payload.retryAfter

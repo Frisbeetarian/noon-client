@@ -3,12 +3,15 @@ import { rateLimitDetected } from '../ui'
 const rateLimitMiddleware = (store) => (next) => (action) => {
   if (action.type.endsWith('rejected')) {
     const error = action.error
-    if (error && error.status === 429) {
+
+    if (error && action.payload.status === 429) {
+      console.log('rateLimitMiddleware: ', action)
+
       store.dispatch(
         rateLimitDetected({
           isRateLimited: true,
-          message: error.data.error,
-          retryAfter: error.data.retryAfter,
+          message: action.payload.data.error,
+          retryAfter: action.payload.data.retryAfter,
         })
       )
     }
