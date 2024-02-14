@@ -14,3 +14,5 @@ const rateLimitMiddleware = (store) => (next) => (action) => {
   }
   return next(action)
 }
+
+export default rateLimitMiddleware
