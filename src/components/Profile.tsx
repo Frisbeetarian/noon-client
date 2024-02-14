@@ -7,6 +7,7 @@ import {
   cancelFriendshipRequestSentOnProfile,
   setFriendFlagOnProfile,
   setFriendshipRequestSentOnProfile,
+  unsetHasFriendshipRequestFromLoggedInProfile,
 } from '../store/profiles'
 import {
   getLoggedInUser,
@@ -17,6 +18,7 @@ import {
 import AppButton from './AppComponents/AppButton'
 import {
   acceptFriendRequest,
+  cancelFriendRequest,
   rejectFriendRequest,
 } from '../utils/friendRequestActions'
 import { addConversation } from '../store/chat'
@@ -28,6 +30,8 @@ function Profile({ profile, axios }) {
   const [isFriendRequestLoading, setIsFriendRequestLoading] = useState(false)
   const [isCancelFriendRequestLoading, setIsCancelFriendRequestLoading] =
     useState(false)
+  const [isRejectFriendRequestLoading, setIsRejectFriendRequestLoading] =
+    useState(false)
   const [isAcceptFriendRequestLoading, setIsAcceptFriendRequestLoading] =
     useState(false)
 
@@ -35,7 +39,7 @@ function Profile({ profile, axios }) {
     try {
       setIsCancelFriendRequestLoading(true)
 
-      await rejectFriendRequest({
+      await cancelFriendRequest({
         axios,
         dispatch,
         friendRequest: {
@@ -53,6 +57,31 @@ function Profile({ profile, axios }) {
       setIsCancelFriendRequestLoading(false)
     } finally {
       setIsCancelFriendRequestLoading(false)
+    }
+  }, [axios, dispatch, loggedInUser.user?.friendshipRequests, profile.uuid])
+
+  const handleRejectFriendRequest = useCallback(async () => {
+    try {
+      setIsRejectFriendRequestLoading(true)
+
+      await rejectFriendRequest({
+        axios,
+        dispatch,
+        friendRequest: {
+          uuid: profile.uuid,
+          username: profile.username,
+        },
+        loggedInUser,
+        unsetHasFriendshipRequestFromLoggedInProfile,
+        removeFriendRequestEntry,
+      })
+
+      setIsRejectFriendRequestLoading(false)
+    } catch (error) {
+      console.error('Failed to cancel friend request:', error)
+      setIsRejectFriendRequestLoading(false)
+    } finally {
+      setIsRejectFriendRequestLoading(false)
     }
   }, [axios, dispatch, loggedInUser.user?.friendshipRequests, profile.uuid])
 
@@ -149,8 +178,8 @@ function Profile({ profile, axios }) {
           </AppButton>
           <AppButton
             bg="black"
-            onClick={handleCancelFriendRequest}
-            isLoading={isCancelFriendRequestLoading}
+            onClick={handleRejectFriendRequest}
+            isLoading={isRejectFriendRequestLoading}
           >
             Reject
           </AppButton>
