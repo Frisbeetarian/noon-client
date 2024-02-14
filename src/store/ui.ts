@@ -35,7 +35,7 @@ interface UIRateLimitState {
   isRateLimited: boolean
   message: string
   retryAfter: number
-  refresh: Date
+  refresh: number
 }
 
 const initialState: UIState = {
@@ -49,7 +49,7 @@ const initialState: UIState = {
     isRateLimited: false,
     message: '',
     retryAfter: 0,
-    refresh: new Date(),
+    refresh: new Date().getTime(),
   },
   search: {
     searchActive: false,
@@ -117,7 +117,7 @@ const slice = createSlice({
       state.rateLimited.isRateLimited = false
       state.rateLimited.message = ''
       state.rateLimited.retryAfter = 0
-      state.rateLimited.refresh = new Date()
+      state.rateLimited.refresh = new Date().getTime()
     },
   },
 })

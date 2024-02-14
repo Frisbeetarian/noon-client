@@ -10,6 +10,7 @@ const useAppAlert = () => {
     description = null,
     onAccept,
     onReject,
+    isClosable = true,
     status = 'success',
     duration = 5000,
     customRender = true,
@@ -21,7 +22,7 @@ const useAppAlert = () => {
       status,
       duration,
       position: 'bottom-right',
-      isClosable: true,
+      isClosable,
     }
 
     if (customRender) {
