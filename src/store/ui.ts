@@ -11,9 +11,7 @@ interface UIState {
   authentication: UIAuthenticationState
   createGroup: UICreateGroupState
   particlesInitialized: boolean
-  isRateLimited: boolean
-  rateLimitedMessage: string
-  retryAfter: number | null
+  rateLimited: UIRateLimitState
 }
 
 interface UISearchState {
@@ -33,6 +31,12 @@ interface UICreateGroupState {
   active: boolean
 }
 
+interface UIRateLimitState {
+  isRateLimited: boolean
+  message: string
+  retryAfter: number
+}
+
 const initialState: UIState = {
   chatComponent: 'closed',
   createGroupComponentOpen: false,
@@ -40,9 +44,11 @@ const initialState: UIState = {
   isMobile: false,
   isConversationOpen: false,
   particlesInitialized: false,
-  isRateLimited: false,
-  rateLimitedMessage: '',
-  retryAfter: null,
+  rateLimited: {
+    isRateLimited: false,
+    message: '',
+    retryAfter: 0,
+  },
   search: {
     searchActive: false,
     containerDisplay: 'relative',
@@ -99,15 +105,15 @@ const slice = createSlice({
     setParticlesInitialized: (state, action) => {
       state.particlesInitialized = action.payload
     },
-    rateLimitDetected: (state, action) => {
-      state.isRateLimited = true
-      state.rateLimitedMessage = action.payload.message
-      state.retryAfter = action.payload.retryAfter
+    rateLimitDetected: (state, action: PayloadAction<UIRateLimitState>) => {
+      state.rateLimited.isRateLimited = true
+      state.rateLimited.message = action.payload.message
+      state.rateLimited.retryAfter = action.payload.retryAfter
     },
     resetRateLimit: (state) => {
-      state.isRateLimited = false
-      state.rateLimitedMessage = ''
-      state.retryAfter = null
+      state.rateLimited.isRateLimited = false
+      state.rateLimited.message = ''
+      state.rateLimited.retryAfter = 0
     },
   },
 })
@@ -172,19 +178,9 @@ export const getParticlesInitialized = createSelector(
   (ui) => ui.particlesInitialized
 )
 
-export const getIsRateLimited = createSelector(
+export const getRateLimited = createSelector(
   (state) => state.entities.ui,
-  (ui) => ui.isRateLimited
-)
-
-export const getRateLimitedMessage = createSelector(
-  (state) => state.entities.ui,
-  (ui) => ui.rateLimitedMessage
-)
-
-export const getRetryAfter = createSelector(
-  (state) => state.entities.ui,
-  (ui) => ui.retryAfter
+  (ui) => ui.rateLimited
 )
 
 export const {
