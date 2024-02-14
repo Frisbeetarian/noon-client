@@ -5,8 +5,6 @@ const rateLimitMiddleware = (store) => (next) => (action) => {
     const error = action.error
 
     if (error && action.payload.status === 429) {
-      console.log('rateLimitMiddleware: ', action)
-
       store.dispatch(
         rateLimitDetected({
           isRateLimited: true,
