@@ -72,7 +72,6 @@ function Noon({ axios }) {
       dispatch,
       friendRequest,
       loggedInUser,
-      setFriendFlagOnProfile,
       cancelFriendshipRequestSentOnProfile,
       removeFriendRequestEntry,
       toastId: friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid,
