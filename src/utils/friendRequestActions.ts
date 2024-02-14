@@ -78,6 +78,8 @@ const rejectFriendRequest = async ({
       if (toast) {
         toast.close(toastId)
       }
+
+      return response
     }
   } catch (error) {
     console.error('Failed to cancel friend request:', error)

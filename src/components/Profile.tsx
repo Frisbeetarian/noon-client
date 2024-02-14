@@ -15,7 +15,10 @@ import {
   addFriendEntry,
 } from '../store/users'
 import AppButton from './AppComponents/AppButton'
-import { acceptFriendRequest } from '../utils/friendRequestActions'
+import {
+  acceptFriendRequest,
+  rejectFriendRequest,
+} from '../utils/friendRequestActions'
 import { addConversation } from '../store/chat'
 
 function Profile({ profile, axios }) {
@@ -31,21 +34,23 @@ function Profile({ profile, axios }) {
   const handleCancelFriendRequest = useCallback(async () => {
     try {
       setIsCancelFriendRequestLoading(true)
-      const response = await axios.post('/api/profiles/cancelFriendRequest', {
-        profileUuid: profile.uuid,
+
+      const response = rejectFriendRequest({
+        axios,
+        dispatch,
+        friendRequest: {
+          uuid: profile.uuid,
+          username: profile.username,
+        },
+        loggedInUser,
+        setFriendFlagOnProfile,
+        cancelFriendshipRequestSentOnProfile,
+        removeFriendRequestEntry,
       })
 
       if (response.status === 200) {
-        dispatch(
-          cancelFriendshipRequestSentOnProfile({ profileUuid: profile.uuid })
-        )
-        dispatch(
-          removeFriendRequestEntry({
-            profileUuid: profile.uuid,
-            friendRequests: loggedInUser.user?.friendshipRequests,
-          })
-        )
-
+        setIsCancelFriendRequestLoading(false)
+      } else {
         setIsCancelFriendRequestLoading(false)
       }
     } catch (error) {
@@ -135,10 +140,20 @@ function Profile({ profile, axios }) {
         </Flex>
       ) : profile.hasFriendshipRequestFromLoggedInProfile ? (
         <Flex justifyContent="end" mt={3}>
-          <AppButton mr={3} onClick={handleAcceptFriendRequest}>
+          <AppButton
+            mr={3}
+            onClick={handleAcceptFriendRequest}
+            isLoading={isAcceptFriendRequestLoading}
+          >
             Accept
           </AppButton>
-          <AppButton bg="black">Reject</AppButton>
+          <AppButton
+            bg="black"
+            onClick={handleCancelFriendRequest}
+            isLoading={isCancelFriendRequestLoading}
+          >
+            Reject
+          </AppButton>
         </Flex>
       ) : (
         <Box>
