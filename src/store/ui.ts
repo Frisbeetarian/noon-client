@@ -11,6 +11,9 @@ interface UIState {
   authentication: UIAuthenticationState
   createGroup: UICreateGroupState
   particlesInitialized: boolean
+  isRateLimited: boolean
+  rateLimitedMessage: string
+  retryAfter: number | null
 }
 
 interface UISearchState {
@@ -37,6 +40,9 @@ const initialState: UIState = {
   isMobile: false,
   isConversationOpen: false,
   particlesInitialized: false,
+  isRateLimited: false,
+  rateLimitedMessage: '',
+  retryAfter: null,
   search: {
     searchActive: false,
     containerDisplay: 'relative',
@@ -92,6 +98,16 @@ const slice = createSlice({
     },
     setParticlesInitialized: (state, action) => {
       state.particlesInitialized = action.payload
+    },
+    rateLimitDetected: (state, action) => {
+      state.isRateLimited = true
+      state.rateLimitedMessage = action.payload.message
+      state.retryAfter = action.payload.retryAfter
+    },
+    resetRateLimit: (state) => {
+      state.isRateLimited = false
+      state.rateLimitedMessage = ''
+      state.retryAfter = null
     },
   },
 })
@@ -168,6 +184,8 @@ export const {
   setChatContainerHeight,
   toggleCreateGroupActive,
   setParticlesInitialized,
+  rateLimitDetected,
+  resetRateLimit,
 } = slice.actions
 
 export default slice.reducer
