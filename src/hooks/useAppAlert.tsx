@@ -32,14 +32,12 @@ const useAppAlert = () => {
           p={3}
           bg={status === 'error' ? 'red.500' : '#4B0E10'}
         >
-          <Flex className="flex-col" justifyContent="space-between">
-            <p>{title}</p>
-            <p>{description}</p>
-            <CloseButton
-              className="absolute top-0 right-0 mt-4 mr-4"
-              size="sm"
-              onClick={onClose}
-            />
+          <Flex className="" justifyContent="space-between">
+            <Flex className="flex-col mr-2">
+              <p>{title}</p>
+              <p>{description}</p>
+            </Flex>
+            <CloseButton className="-mt-2 -mr-2" size="sm" onClick={onClose} />
           </Flex>
           {(onAccept || onReject) && (
             <Flex className="justify-end mt-3">
