@@ -1,24 +1,25 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import Particles, { initParticlesEngine } from '@tsparticles/react'
 import { loadSlim } from '@tsparticles/slim'
-import { setParticlesInitialized } from '../../store/ui'
-import { useDispatch } from 'react-redux'
+import {
+  getParticlesInitialized,
+  setParticlesInitialized,
+} from '../../store/ui'
+import { useDispatch, useSelector } from 'react-redux'
 
 const AppParticles = () => {
   const dispatch = useDispatch()
-  const [init, setInit] = useState(false)
+  const particlesInitialized = useSelector(getParticlesInitialized)
 
   useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine)
-    }).then(() => {
-      setInit(true)
-    })
-  }, [])
-
-  const particlesLoaded = () => {
-    dispatch(setParticlesInitialized(true))
-  }
+    if (!particlesInitialized) {
+      initParticlesEngine(async (engine) => {
+        await loadSlim(engine)
+      }).then(() => {
+        dispatch(setParticlesInitialized(true))
+      })
+    }
+  }, [particlesInitialized])
 
   const options = useMemo(
     () => ({
@@ -55,7 +56,7 @@ const AppParticles = () => {
         },
         links: {
           color: '#921A1C',
-          distance: 500,
+          distance: Math.floor(Math.random() * (800 - 250 + 1)) + 250,
           enable: true,
           opacity: 1,
           width: 0.5,
@@ -91,12 +92,10 @@ const AppParticles = () => {
     []
   )
 
-  if (init) {
+  if (particlesInitialized) {
     return (
       <Particles
         id="tsparticles"
-        // @ts-ignore
-        particlesLoaded={particlesLoaded}
         // @ts-ignore
         options={options}
       />

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Head from 'next/head'
-import { CloseButton, Flex, useToast } from '@chakra-ui/react'
+import { useToast } from '@chakra-ui/react'
 
 import {
   addFriendEntry,
@@ -22,13 +22,21 @@ import {
 import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
 import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
-import AppButton from '../../components/AppComponents/AppButton'
-import { setFriendFlagOnProfile } from '../../store/profiles'
+import {
+  cancelFriendshipRequestSentOnProfile,
+  setFriendFlagOnProfile,
+} from '../../store/profiles'
 import Sidebar from '../../components/Sidebar'
+import {
+  acceptFriendRequest,
+  rejectFriendRequest,
+} from '../../utils/friendRequestActions'
+import useAppAlert from '../../hooks/useAppAlert'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
 }
+
 function Noon({ axios }) {
   const dispatch = useDispatch()
   const [mounted, setMounted] = useState(false)
@@ -37,11 +45,40 @@ function Noon({ axios }) {
   const createGroupActive = useSelector(getCreateGroupActive)
   const loggedInUser = useSelector(getLoggedInUser)
   const toast = useToast()
-  const [isCount, setIsCount] = useState(0)
+  const showAppAlert = useAppAlert()
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  const handleAcceptFriendRequest = (friendRequest) => {
+    acceptFriendRequest({
+      axios,
+      dispatch,
+      friendRequest,
+      loggedInUser,
+      setFriendFlagOnProfile,
+      removeFriendRequestEntry,
+      addFriendEntry,
+      addConversation,
+      toastId: friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid,
+      toast,
+    })
+  }
+
+  const handleRejectFriendRequest = (friendRequest) => {
+    rejectFriendRequest({
+      axios,
+      dispatch,
+      friendRequest,
+      loggedInUser,
+      setFriendFlagOnProfile,
+      cancelFriendshipRequestSentOnProfile,
+      removeFriendRequestEntry,
+      toastId: friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid,
+      toast,
+    })
+  }
 
   useEffect(() => {
     if (
@@ -50,94 +87,18 @@ function Noon({ axios }) {
       loggedInUser.user?.profile?.friendshipRequests &&
       loggedInUser.user?.profile?.friendshipRequests.length !== 0
     ) {
-      loggedInUser?.user?.profile?.friendshipRequests.forEach(
-        (friendRequest) => {
-          if (friendRequest.reverse) {
-            setIsCount(isCount + 1)
-
-            toast({
-              id:
-                friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid,
-              title: `${friendRequest.username} sent you a friend request.`,
-              position: 'bottom-right',
-              isClosable: true,
-              status: 'success',
-              duration: null,
-              render: () => (
-                <Flex direction="column" color="white" p={3} bg="#4B0E10">
-                  <Flex>
-                    <p>{friendRequest.username} sent you a friend request.</p>
-
-                    <CloseButton
-                      className="sticky top ml-4"
-                      size="sm"
-                      onClick={() => {
-                        toast.close(friendRequest.uuid + 'friend-request')
-                      }}
-                      name="close button"
-                    />
-                  </Flex>
-
-                  <Flex className="justify-end mt-3">
-                    <AppButton
-                      className="mr-3"
-                      onClick={async () => {
-                        const response = await axios.post(
-                          '/api/profiles/acceptFriendRequest',
-                          {
-                            profileUuid: friendRequest.uuid,
-                          }
-                        )
-
-                        if (response.status === 200) {
-                          dispatch(
-                            setFriendFlagOnProfile({
-                              profileUuid: friendRequest.uuid,
-                            })
-                          )
-
-                          dispatch(
-                            removeFriendRequestEntry({
-                              profileUuid: friendRequest.uuid,
-                              friendRequests:
-                                loggedInUser.user?.profile.friendshipRequests,
-                            })
-                          )
-
-                          dispatch(
-                            addFriendEntry({
-                              uuid: friendRequest.uuid,
-                              username: friendRequest.username,
-                            })
-                          )
-
-                          dispatch(
-                            addConversation({
-                              conversation: response.data,
-                              loggedInProfileUuid:
-                                loggedInUser.user?.profile?.uuid,
-                            })
-                          )
-
-                          toast.close(
-                            friendRequest.uuid +
-                              'friend-request' +
-                              loggedInUser.user.uuid
-                          )
-                        }
-                      }}
-                    >
-                      Accept
-                    </AppButton>
-
-                    <AppButton bg="black">Reject</AppButton>
-                  </Flex>
-                </Flex>
-              ),
-            })
-          }
-        }
-      )
+      loggedInUser.user.profile.friendshipRequests.forEach((friendRequest) => {
+        if (!friendRequest.reverse) return
+        showAppAlert({
+          id: friendRequest.uuid + 'friend-request',
+          title: `${friendRequest.username} sent you a friend request.`,
+          status: 'info', // 'success', 'error', 'warning', 'info'
+          duration: null,
+          onAccept: () => handleAcceptFriendRequest(friendRequest),
+          onReject: () => handleRejectFriendRequest(friendRequest),
+          customRender: true,
+        })
+      })
     }
   }, [loggedInUser.user.profile])
 

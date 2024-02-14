@@ -16,6 +16,8 @@ interface ProfilePayload {
   username: string
   userId: string
   name: string
+  friends: []
+  friendshipRequests: []
   isAFriend: boolean
   hasFriendshipRequestFromLoggedInProfile: boolean
   hasSentFriendshipRequestToProfile: boolean
@@ -44,16 +46,16 @@ const slice = createSlice({
         )
 
         updatedProfiles.forEach((profile) => {
-          // Clone the profile to avoid directly mutating the state
           const updatedProfile = { ...profile }
 
-          const isFriend = loggedInUser.friends?.some(
+          const isFriend = loggedInUser.profile.friends?.some(
             (friend) => friend.uuid === updatedProfile.uuid
           )
 
-          const friendshipRequestCheck = loggedInUser.friendshipRequests?.find(
-            (request) => request.uuid === updatedProfile.uuid
-          )
+          const friendshipRequestCheck =
+            loggedInUser.profile.friendshipRequests?.find(
+              (request) => request.uuid === updatedProfile.uuid
+            )
 
           updatedProfile.isAFriend = isFriend
           updatedProfile.hasFriendshipRequestFromLoggedInProfile =
@@ -127,10 +129,9 @@ export const getProfiles = createSelector(
   (profiles) => profiles || []
 )
 
-// Create a selector to get profiles by name
 export const getProfilesByName = createSelector(
   getProfiles,
-  (_, name) => name, // Second argument to the selector function will be the name
+  (_, name) => name,
   (profiles, name) => {
     // Filter the profiles by name
     return profiles.filter((profile) =>
@@ -139,7 +140,6 @@ export const getProfilesByName = createSelector(
   }
 )
 
-// Create a selector to get profiles by username
 export const getProfilesByUsername = createSelector(
   getProfiles,
   (_, username) => username,

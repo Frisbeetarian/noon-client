@@ -72,9 +72,9 @@ const Index = () => {
             {showForgotPasswordComponent && <ForgotPassword />}
           </Flex>
         )}
-
-        <AppParticles />
       </Flex>
+
+      <AppParticles />
     </>
   )
 }

@@ -6,13 +6,7 @@ import { PhoneIcon } from '@chakra-ui/icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { ImUpload2 } from 'react-icons/im'
 
-import {
-  addMessageToActiveConversation,
-  deleteMessageInStore,
-  getActiveConversation,
-  getActiveConversee,
-  setOngoingCall,
-} from '../store/chat'
+import { getActiveConversation, getActiveConversee } from '../store/chat'
 
 import { setVideoFrameForConversation } from '../store/video'
 
@@ -23,15 +17,12 @@ import useRecorder from './AudioRecorder/hooks/use-recorder'
 import { getIsMobile } from '../store/ui'
 
 import { getLoggedInUser } from '../store/users'
-import {
-  useSetPendingCallForConversationMutation,
-  useUploadImageMutation,
-} from '../generated/graphql'
 
 import SocketManager from './SocketIo/SocketManager'
 import { getSocketAuthObject } from '../store/sockets'
 import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
+import useAppAlert from '../hooks/useAppAlert'
 
 const Footer = ({
   inputMessage,
@@ -44,6 +35,7 @@ const Footer = ({
   const hiddenFileInput = useRef(null)
   const dispatch = useDispatch()
   const toast = useToast()
+  const showAppAlert = useAppAlert()
   const [isUploading, setIsUploading] = useState(false)
 
   const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
@@ -53,24 +45,19 @@ const Footer = ({
   const loggedInUser = useSelector(getLoggedInUser)
   const activeConversee = useSelector(getActiveConversee)
 
-  // const [
-  //   setPendingCallForConversation,
-  //   // { loading: setPendingCallLoading }
-  // ] = useSetPendingCallForConversationMutation()
-
   const { recorderState, ...handlers }: UseRecorder = useRecorder(axios)
 
-  useEffect(() => {
-    if (socket) {
-      socket.on('set-ongoing-call-for-conversation', () => {
-        dispatch(setOngoingCall())
-      })
-    }
-
-    return () => {
-      if (socket) socket.off('set-ongoing-call-for-conversation')
-    }
-  }, [activeConversee])
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.on('set-ongoing-call-for-conversation', () => {
+  //       dispatch(setOngoingCall())
+  //     })
+  //   }
+  //
+  //   return () => {
+  //     if (socket) socket.off('set-ongoing-call-for-conversation')
+  //   }
+  // }, [activeConversee])
 
   const handleClick = () => {
     ;(hiddenFileInput?.current as any).click()
@@ -80,13 +67,12 @@ const Footer = ({
     console.log('event file:', file)
 
     if (file.size > 1048576) {
-      toast({
+      showAppAlert({
         title: 'File is too large',
         description: 'Please select a file smaller than 1MB.',
         status: 'error',
         duration: 5000,
         isClosable: true,
-        position: 'bottom-right',
       })
       return
     }

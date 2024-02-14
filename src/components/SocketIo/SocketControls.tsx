@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CloseButton, Flex, useToast } from '@chakra-ui/react'
+import { useToast } from '@chakra-ui/react'
 
 import {
   addFriendEntry,
@@ -10,7 +10,11 @@ import {
   removeFriendRequestEntry,
 } from '../../store/users'
 
-import { addProfiles, setFriendFlagOnProfile } from '../../store/profiles'
+import {
+  addProfiles,
+  cancelFriendshipRequestSentOnProfile,
+  setFriendFlagOnProfile,
+} from '../../store/profiles'
 
 import {
   addConversation,
@@ -30,9 +34,13 @@ import {
 import SocketManager from './SocketManager'
 
 import { getSocketAuthObject } from '../../store/sockets'
-import AppButton from '../AppComponents/AppButton'
 import withAxios from '../../utils/withAxios'
 import { setSearchLoading } from '../../store/search'
+import useAppAlert from '../../hooks/useAppAlert'
+import {
+  acceptFriendRequest,
+  rejectFriendRequest,
+} from '../../utils/friendRequestActions'
 
 function SocketControls({ axios }) {
   const dispatch = useDispatch()
@@ -42,6 +50,7 @@ function SocketControls({ axios }) {
   const activeConversation = useSelector(getActiveConversation)
   const socketAuthObject = useSelector(getSocketAuthObject)
   const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
+  const showAppAlert = useAppAlert()
 
   useEffect(() => {
     if (socket) {
@@ -157,123 +166,36 @@ function SocketControls({ axios }) {
           })
         )
 
-        toast({
+        showAppAlert({
           id: senderUuid + 'friend-request',
           title: `${senderUsername} sent you a friend request.`,
-          position: 'bottom-right',
-          isClosable: true,
-          status: 'success',
+          status: 'info',
           duration: null,
-          render: () => (
-            <Flex direction="column" color="white" p={3} bg="#4B0E10">
-              <Flex>
-                <p>{senderUsername} sent you a friend request.</p>
-
-                <CloseButton
-                  className="sticky top ml-4"
-                  size="sm"
-                  onClick={() => {
-                    toast.close(senderUuid + 'friend-request')
-                  }}
-                  name="close button"
-                />
-              </Flex>
-
-              <Flex className="justify-end mt-3">
-                <AppButton
-                  className="mr-3"
-                  onClick={async () => {
-                    const response = await axios.post(
-                      '/api/profiles/acceptFriendRequest',
-                      {
-                        profileUuid: senderUuid,
-                      }
-                    )
-
-                    if (response.status === 200) {
-                      dispatch(
-                        setFriendFlagOnProfile({
-                          profileUuid: senderUuid,
-                        })
-                      )
-
-                      dispatch(
-                        removeFriendRequestEntry({
-                          profileUuid: senderUuid,
-                          friendRequests: loggedInUser.user?.friendshipRequests,
-                        })
-                      )
-
-                      dispatch(
-                        addFriendEntry({
-                          uuid: senderUuid,
-                          username: senderUsername,
-                        })
-                      )
-
-                      dispatch(
-                        addConversation({
-                          conversation: response.data,
-                          loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-                        })
-                      )
-
-                      toast.close(senderUuid + 'friend-request')
-                    }
-
-                    // dispatch(
-                    //   setFriendFlagOnProfile({
-                    //     profileUuid: senderUuid,
-                    //   })
-                    // )
-                    //
-                    // dispatch(
-                    //   removeFriendRequestEntry({
-                    //     profileUuid: senderUuid,
-                    //     friendRequests: loggedInUser.user?.friendshipRequests,
-                    //   })
-                    // )
-                    //
-                    // dispatch(
-                    //   addFriendEntry({
-                    //     uuid: senderUuid,
-                    //     username: senderUsername,
-                    //   })
-                    // )
-
-                    // dispatch(
-                    //   addConversation({
-                    //     // @ts-ignore
-                    //     conversation:
-                    //       acceptFriendshipResponse.data?.acceptFriendRequest,
-                    //     loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-                    //   })
-                    // )
-
-                    // if (acceptFriendshipResponse) {
-                    //   socket?.emit('friendship-request-accepted', {
-                    //     content:
-                    //       loggedInUser.user?.profile?.username +
-                    //       ' accepted your friend request.',
-                    //     from: loggedInUser.user?.profile?.uuid,
-                    //     fromUsername: loggedInUser.user?.profile?.username,
-                    //     to: senderUuid,
-                    //     toUsername: senderUsername,
-                    //     conversation:
-                    //       acceptFriendshipResponse.data?.acceptFriendRequest,
-                    //   })
-                    // }
-
-                    // toast.close(senderUuid)
-                  }}
-                >
-                  Accept
-                </AppButton>
-
-                <AppButton bg="black">Reject</AppButton>
-              </Flex>
-            </Flex>
-          ),
+          onAccept: () =>
+            acceptFriendRequest({
+              axios,
+              dispatch,
+              friendRequest: { uuid: senderUuid, username: senderUsername },
+              loggedInUser,
+              setFriendFlagOnProfile,
+              removeFriendRequestEntry,
+              addFriendEntry,
+              addConversation,
+              toastId: senderUuid.uuid + 'friend-request',
+              toast,
+            }),
+          onReject: () =>
+            rejectFriendRequest({
+              axios,
+              dispatch,
+              friendRequest: { uuid: senderUuid, username: senderUsername },
+              loggedInUser,
+              cancelFriendshipRequestSentOnProfile,
+              removeFriendRequestEntry,
+              toastId: senderUuid.uuid + 'friend-request',
+              toast,
+            }),
+          customRender: true,
         })
       })
 
@@ -301,29 +223,12 @@ function SocketControls({ axios }) {
             })
           )
 
-          toast({
+          showAppAlert({
             id: senderUuid,
             title: `${senderUsername} accepted your friend request.`,
-            position: 'bottom-right',
+            status: 'info',
             isClosable: true,
-            status: 'success',
             duration: 5000,
-            render: () => (
-              <Flex direction="column" color="white" p={3} bg="#4B0E10">
-                <Flex>
-                  <p>{senderUsername} accepted your friend request.</p>
-
-                  <CloseButton
-                    className="sticky top ml-4"
-                    size="sm"
-                    onClick={() => {
-                      toast.close(senderUuid)
-                    }}
-                    name="close button"
-                  />
-                </Flex>
-              </Flex>
-            ),
           })
         }
       )
@@ -336,30 +241,14 @@ function SocketControls({ axios }) {
           })
         )
 
-        toast.close(senderUuid + 'friend-request')
-        toast({
+        showAppAlert({
           id: senderUuid,
-          title: `${senderUsername} has cancelled the friend request.`,
-          position: 'bottom-right',
+          title: `${senderUsername} cancelled your friend request.`,
+          status: 'info',
           isClosable: true,
-          status: 'error',
           duration: 5000,
-          render: () => (
-            <Flex direction="column" color="white" p={3} bg="#4B0E10">
-              <Flex>
-                <p>{senderUsername} has cancelled the friend request.</p>
-
-                <CloseButton
-                  className="sticky top ml-4"
-                  size="sm"
-                  onClick={() => {
-                    toast.close(senderUuid)
-                  }}
-                  name="close button"
-                />
-              </Flex>
-            </Flex>
-          ),
+          senderUuid,
+          senderUsername,
         })
       })
 
@@ -427,14 +316,14 @@ function SocketControls({ axios }) {
       )
 
       socket.on('search-results', (profiles) => {
+        dispatch(setSearchLoading(false))
+
         dispatch(
           addProfiles({
             profiles: profiles,
             loggedInUser: loggedInUser.user,
           })
         )
-
-        dispatch(setSearchLoading(false))
       })
     }
 

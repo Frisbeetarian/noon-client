@@ -1,209 +1,154 @@
-// @ts-nocheck
-import React from 'react'
-import { Avatar, Box, Button, Flex, useToast } from '@chakra-ui/react'
-
+import React, { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Avatar, Box, Flex, useToast, Button } from '@chakra-ui/react'
 import { ChatIcon } from '@chakra-ui/icons'
+
 import {
   cancelFriendshipRequestSentOnProfile,
   setFriendshipRequestSentOnProfile,
 } from '../store/profiles'
-
 import {
   getLoggedInUser,
   addFriendRequestEntry,
   removeFriendRequestEntry,
   addFriendEntry,
 } from '../store/users'
-
-import { addConversation } from '../store/chat'
-import { emitFriendshipRequestAccepted } from '../utils/SocketEmits'
-import SocketManager from './SocketIo/SocketManager'
-import { getSocketAuthObject } from '../store/sockets'
 import AppButton from './AppComponents/AppButton'
 
 function Profile({ profile, axios }) {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
-  const socketAuthObject = useSelector(getSocketAuthObject)
-
-  // const [
-  //   acceptFriendRequest,
-  //   // { loading: acceptFriendRequestLoading }
-  // ] = useAcceptFriendRequestMutation()
-
-  // const [, refuseFriendRequest] = useRefuseFriendRequestMutation()
-  // const [
-  //   cancelFriendRequest,
-  //   // { loading: cancelFriendRequestLoading }
-  // ] = useCancelFriendRequestMutation()
-
-  // const [
-  //   sendFriendRequest,
-  //   // { loading: sendFriendRequestLoading }
-  // ] = useSendFriendRequestMutation()
-  // const socket = useSelector(getSocket)
-
-  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const toast = useToast()
-  // const toastIdRef = React.useRef()
+  const [isFriendRequestLoading, setIsFriendRequestLoading] = useState(false)
+  const [isCancelFriendRequestLoading, setIsCancelFriendRequestLoading] =
+    useState(false)
+  const [isAcceptFriendRequestLoading, setIsAcceptFriendRequestLoading] =
+    useState(false)
+
+  const handleCancelFriendRequest = useCallback(async () => {
+    try {
+      setIsCancelFriendRequestLoading(true)
+      const response = await axios.post('/api/profiles/cancelFriendRequest', {
+        profileUuid: profile.uuid,
+      })
+
+      if (response.status === 200) {
+        dispatch(
+          cancelFriendshipRequestSentOnProfile({ profileUuid: profile.uuid })
+        )
+        dispatch(
+          removeFriendRequestEntry({
+            profileUuid: profile.uuid,
+            friendRequests: loggedInUser.user?.friendshipRequests,
+          })
+        )
+
+        setIsCancelFriendRequestLoading(false)
+      }
+    } catch (error) {
+      console.error('Failed to cancel friend request:', error)
+      setIsCancelFriendRequestLoading(false)
+    }
+  }, [axios, dispatch, loggedInUser.user?.friendshipRequests, profile.uuid])
+
+  const handleSendFriendRequest = useCallback(async () => {
+    try {
+      setIsFriendRequestLoading(true)
+      const response = await axios.post('/api/profiles/sendFriendRequest', {
+        profileUuid: profile.uuid,
+      })
+
+      if (response.status === 200) {
+        dispatch(
+          setFriendshipRequestSentOnProfile({ profileUuid: profile.uuid })
+        )
+        dispatch(
+          addFriendRequestEntry({
+            uuid: profile.uuid,
+            username: profile.username,
+            reverse: false,
+          })
+        )
+
+        setIsFriendRequestLoading(false)
+      }
+    } catch (error) {
+      console.error('Failed to send friend request:', error)
+      setIsFriendRequestLoading(false)
+    }
+  }, [axios, dispatch, profile.uuid, profile.username])
+
+  const handleAcceptFriendRequest = useCallback(async () => {
+    const response = await axios.post('/api/profiles/acceptFriendRequest', {
+      profileUuid: profile.uuid,
+    })
+
+    dispatch(
+      removeFriendRequestEntry({
+        profileUuid: profile.uuid,
+        friendRequests: loggedInUser.user?.friendshipRequests,
+      })
+    )
+
+    dispatch(
+      addFriendEntry({
+        uuid: profile.uuid,
+        username: profile.username,
+      })
+    )
+    toast.close(profile.uuid)
+  }, [
+    dispatch,
+    loggedInUser.user?.friendshipRequests,
+    profile.uuid,
+    profile.username,
+    toast,
+  ])
 
   return (
     <Flex
       key={profile.uuid}
-      className="items-center w-full justify-between relative h-12 my-5"
-      style={{ flex: '1' }}
+      alignItems="center"
+      justifyContent="space-between"
+      className="w-full h-12 my-5 relative"
     >
-      <Flex className="items-center ">
-        <Avatar name={profile.username} size="sm" className="mr-2">
-          {/*<AvatarBadge boxSize="1.25em" bg="red.500"></AvatarBadge>*/}
-        </Avatar>
-
+      <Flex alignItems="center">
+        <Avatar name={profile.username} size="sm" mr={2} />
         <p>{profile.username}</p>
       </Flex>
 
       {profile.hasSentFriendshipRequestToProfile ? (
-        <Flex className="relative">
-          {/*<Button*/}
-          {/*  disabled={true}*/}
-          {/*  className="relative text-green-500 p-0"*/}
-          {/*  borderRadius="0"*/}
-          {/*  fontFamily="Menlo"*/}
-          {/*  bg="#921A1C"*/}
-          {/*></Button>*/}
-
+        <Flex position="relative">
+          <AppButton disabled={true}>Friendship request sent</AppButton>
           <AppButton
-            color="#921A1C"
-            bg="black"
-            borderRadius="0"
-            fontFamily="Menlo"
-            disabled={true}
-            onClick={() => console.log('Button clicked')}
-          >
-            Friendship request sent
-          </AppButton>
-
-          <AppButton
-            disabled={false}
-            className="absolute"
-            borderRadius="0"
-            fontFamily="Menlo"
-            color="white"
-            bg="#921A1C"
-            onClick={async () => {
-              const response = await axios.post(
-                '/api/profiles/cancelFriendRequest',
-                { profileUuid: profile.uuid }
-              )
-
-              if (response.status === 200) {
-                dispatch(
-                  cancelFriendshipRequestSentOnProfile({
-                    profileUuid: profile.uuid,
-                  })
-                )
-
-                dispatch(
-                  removeFriendRequestEntry({
-                    profileUuid: profile.uuid,
-                    friendRequests: loggedInUser.user?.friendshipRequests,
-                  })
-                )
-              }
-            }}
+            colorScheme="red"
+            onClick={handleCancelFriendRequest}
+            isLoading={isCancelFriendRequestLoading}
           >
             Cancel
           </AppButton>
         </Flex>
       ) : profile.hasFriendshipRequestFromLoggedInProfile ? (
-        <Flex className="justify-end mt-3">
+        <Flex justifyContent="end" mt={3}>
           <Button
-            className="mr-3 bg-green-500"
-            variant="green"
-            onClick={async () => {
-              // const acceptFriendshipResponse = await acceptFriendRequest({
-              //   variables: {
-              //     profileUuid: profile.uuid,
-              //   },
-              // })
-
-              dispatch(
-                removeFriendRequestEntry({
-                  profileUuid: profile.uuid,
-                  friendRequests: loggedInUser.user?.friendshipRequests,
-                })
-              )
-
-              dispatch(
-                addFriendEntry({
-                  uuid: profile.uuid,
-                  username: profile.username,
-                })
-              )
-
-              // dispatch(
-              //   addConversation({
-              //     conversation:
-              //       acceptFriendshipResponse.data?.acceptFriendRequest,
-              //     loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-              //   })
-              // )
-
-              // if (acceptFriendshipResponse) {
-              //   emitFriendshipRequestAccepted({
-              //     loggedInUser,
-              //     profile,
-              //     conversation:
-              //       acceptFriendshipResponse.data?.acceptFriendRequest,
-              //     socket,
-              //   })
-              // }
-              // if (toastIdRef.current) {
-              toast.close(profile.uuid)
-              // }
-            }}
+            colorScheme="green"
+            mr={3}
+            onClick={handleAcceptFriendRequest}
           >
             Accept
           </Button>
-          <Button className="bg-red-500" variant="tomato">
-            Reject
-          </Button>
+          <Button colorScheme="red">Reject</Button>
         </Flex>
       ) : (
         <Box>
           {profile.isAFriend ? (
-            <Flex className="w-full z-40 h-full cursor-pointer">
-              <ChatIcon
-                className="mr-3 mt-1"
-                onClick={() => {
-                  // setActiveConverseeFunction(profile)
-                }}
-              />
+            <Flex cursor="pointer" w="full" h="full" alignItems="center">
+              <ChatIcon onClick={() => {}} mr={3} mt={1} />
             </Flex>
           ) : (
             <AppButton
-              onClick={async () => {
-                const response = await axios.post(
-                  '/api/profiles/sendFriendRequest',
-                  { profileUuid: profile.uuid }
-                )
-
-                if (response.status === 200) {
-                  dispatch(
-                    setFriendshipRequestSentOnProfile({
-                      profileUuid: profile.uuid,
-                    })
-                  )
-
-                  dispatch(
-                    addFriendRequestEntry({
-                      uuid: profile.uuid,
-                      username: profile.username,
-                      reverse: false,
-                    })
-                  )
-                }
-              }}
+              onClick={handleSendFriendRequest}
+              isLoading={isFriendRequestLoading}
             >
               Send friend request
             </AppButton>

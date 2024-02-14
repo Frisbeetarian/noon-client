@@ -11,8 +11,6 @@ export const useAuthCheck = () => {
   const router = useRouter()
 
   useEffect(() => {
-    console.log('user:', user)
-
     if (!isLoading) {
       if (user?.username) {
         dispatch(setLoggedInUser(user))
