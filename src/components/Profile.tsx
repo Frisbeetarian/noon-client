@@ -5,6 +5,7 @@ import { ChatIcon } from '@chakra-ui/icons'
 
 import {
   cancelFriendshipRequestSentOnProfile,
+  setFriendFlagOnProfile,
   setFriendshipRequestSentOnProfile,
 } from '../store/profiles'
 import {
@@ -14,6 +15,8 @@ import {
   addFriendEntry,
 } from '../store/users'
 import AppButton from './AppComponents/AppButton'
+import { acceptFriendRequest } from '../utils/friendRequestActions'
+import { addConversation } from '../store/chat'
 
 function Profile({ profile, axios }) {
   const dispatch = useDispatch()
@@ -79,24 +82,27 @@ function Profile({ profile, axios }) {
   }, [axios, dispatch, profile.uuid, profile.username])
 
   const handleAcceptFriendRequest = useCallback(async () => {
-    const response = await axios.post('/api/profiles/acceptFriendRequest', {
-      profileUuid: profile.uuid,
-    })
+    setIsAcceptFriendRequestLoading(true)
 
-    dispatch(
-      removeFriendRequestEntry({
-        profileUuid: profile.uuid,
-        friendRequests: loggedInUser.user?.friendshipRequests,
-      })
-    )
-
-    dispatch(
-      addFriendEntry({
+    const response = acceptFriendRequest({
+      axios,
+      dispatch,
+      friendRequest: {
         uuid: profile.uuid,
         username: profile.username,
-      })
-    )
-    toast.close(profile.uuid)
+      },
+      loggedInUser,
+      setFriendFlagOnProfile,
+      removeFriendRequestEntry,
+      addFriendEntry,
+      addConversation,
+    })
+
+    if (response.status === 200) {
+      setIsAcceptFriendRequestLoading(false)
+    } else {
+      setIsAcceptFriendRequestLoading(false)
+    }
   }, [
     dispatch,
     loggedInUser.user?.friendshipRequests,
@@ -121,7 +127,6 @@ function Profile({ profile, axios }) {
         <Flex position="relative">
           <AppButton disabled={true}>Friendship request sent</AppButton>
           <AppButton
-            colorScheme="red"
             onClick={handleCancelFriendRequest}
             isLoading={isCancelFriendRequestLoading}
           >
@@ -130,14 +135,10 @@ function Profile({ profile, axios }) {
         </Flex>
       ) : profile.hasFriendshipRequestFromLoggedInProfile ? (
         <Flex justifyContent="end" mt={3}>
-          <Button
-            colorScheme="green"
-            mr={3}
-            onClick={handleAcceptFriendRequest}
-          >
+          <AppButton mr={3} onClick={handleAcceptFriendRequest}>
             Accept
-          </Button>
-          <Button colorScheme="red">Reject</Button>
+          </AppButton>
+          <AppButton bg="black">Reject</AppButton>
         </Flex>
       ) : (
         <Box>

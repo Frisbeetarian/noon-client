@@ -39,6 +39,8 @@ const acceptFriendRequest = async ({
       if (toast) {
         toast.close(toastId)
       }
+
+      return response
     }
   } catch (error) {
     console.error('Failed to accept friend request:', error)
