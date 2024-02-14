@@ -162,13 +162,13 @@ function Chat({ axios }) {
       })
       .catch(function (error) {
         if (error?.response?.status !== 429) {
-          // toast({
-          //   title: `Error sending message.`,
-          //   position: 'bottom-right',
-          //   isClosable: true,
-          //   status: 'error',
-          //   duration: 5000,
-          // })
+          toast({
+            title: `Error sending message.`,
+            position: 'bottom-right',
+            isClosable: true,
+            status: 'error',
+            duration: 5000,
+          })
         }
       })
   }

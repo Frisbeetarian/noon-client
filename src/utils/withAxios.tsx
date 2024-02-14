@@ -1,11 +1,8 @@
 import React from 'react'
-import axios from 'axios'
 import { NextPageContext } from 'next'
-import { rateLimitDetected, resetRateLimit } from '../store/ui'
-import { store } from '../store/store'
+import axios from 'axios'
 
 const createAxiosInstance = (ctx?: NextPageContext) => {
-  // console.log('next public url env: ', process.env.NEXT_PUBLIC_URL)
   const axiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_URL,
     withCredentials: true,
@@ -22,16 +19,16 @@ const createAxiosInstance = (ctx?: NextPageContext) => {
       console.log('error from hoc:', error.response)
 
       if (error.response && error.response.status === 429) {
-        store.dispatch(
-          rateLimitDetected({
-            isRateLimited: true,
-            message: error.data.error,
-            retryAfter: error.data.retryAfter,
-            refresh: new Date().getTime(),
-          })
-        )
+        // store.dispatch(
+        //   rateLimitDetected({
+        //     isRateLimited: true,
+        //     message: error.data.error,
+        //     retryAfter: error.data.retryAfter,
+        //     refresh: new Date().getTime(),
+        //   })
+        // )
       } else {
-        store.dispatch(resetRateLimit())
+        // store.dispatch(resetRateLimit())
       }
 
       return Promise.reject(error)
