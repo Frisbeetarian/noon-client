@@ -229,6 +229,8 @@ function SocketControls({ axios }) {
             status: 'info',
             isClosable: true,
             duration: 5000,
+            customRender: true,
+            description: `You are now friends with ${senderUsername}.`,
           })
         }
       )

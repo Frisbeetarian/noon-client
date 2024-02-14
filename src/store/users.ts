@@ -31,9 +31,9 @@ const slice = createSlice({
       }
     },
     addFriendRequestEntry: (users, action: PayloadAction<FriendRequest>) => {
-      if (users.user?.friendshipRequests) {
-        users.user.friendshipRequests = [
-          ...users.user.friendshipRequests,
+      if (users.user && users.user.profile.friendshipRequests) {
+        users.user.profile.friendshipRequests = [
+          ...users.user.profile.friendshipRequests,
           action.payload,
         ]
       } else {
