@@ -1,4 +1,5 @@
-import { rateLimitDetected } from '../ui'
+import { rateLimitDetected, resetRateLimit } from '../ui'
+import { store } from '../store'
 
 const rateLimitMiddleware = (store) => (next) => (action) => {
   if (action.type.endsWith('rejected')) {
@@ -13,6 +14,8 @@ const rateLimitMiddleware = (store) => (next) => (action) => {
           refresh: new Date().getTime(),
         })
       )
+    } else {
+      store.dispatch(resetRateLimit())
     }
   }
   return next(action)

@@ -100,7 +100,7 @@ const Footer = ({
         throw new Error('Failed to upload the file. Please try again.')
       }
     } catch (error) {
-      if (error.response.status !== 429) {
+      if (error?.response?.status !== 429) {
         toast({
           title: 'Error uploading file',
           description: error.response?.data?.message || error.message,
