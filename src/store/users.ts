@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
 import { Friend, FriendRequest, User } from '../utils/types'
@@ -31,9 +30,9 @@ const slice = createSlice({
       }
     },
     addFriendRequestEntry: (users, action: PayloadAction<FriendRequest>) => {
-      if (users.user?.friendshipRequests) {
-        users.user.friendshipRequests = [
-          ...users.user.friendshipRequests,
+      if (users.user && users.user.profile.friendshipRequests) {
+        users.user.profile.friendshipRequests = [
+          ...users.user.profile.friendshipRequests,
           action.payload,
         ]
       } else {
@@ -71,11 +70,6 @@ const slice = createSlice({
     },
   },
 })
-
-// selector
-export const getUser = (state, action) => {
-  return state.entities.users.filter((user) => user.id === action.id)
-}
 
 export const getLoggedInUser = createSelector(
   (state) => state.entities.users,

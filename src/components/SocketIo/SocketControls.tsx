@@ -14,6 +14,8 @@ import {
   addProfiles,
   cancelFriendshipRequestSentOnProfile,
   setFriendFlagOnProfile,
+  setFriendshipRequestSentOnProfile,
+  setHasFriendshipRequestFromLoggedInProfile,
 } from '../../store/profiles'
 
 import {
@@ -166,6 +168,12 @@ function SocketControls({ axios }) {
           })
         )
 
+        dispatch(
+          setHasFriendshipRequestFromLoggedInProfile({
+            profileUuid: senderUuid,
+          })
+        )
+
         showAppAlert({
           id: senderUuid + 'friend-request',
           title: `${senderUsername} sent you a friend request.`,
@@ -213,6 +221,7 @@ function SocketControls({ axios }) {
             addFriendEntry({
               uuid: senderUuid,
               username: senderUsername,
+              name: senderUsername,
             })
           )
 
@@ -229,6 +238,8 @@ function SocketControls({ axios }) {
             status: 'info',
             isClosable: true,
             duration: 5000,
+            customRender: true,
+            description: `You are now friends with ${senderUsername}.`,
           })
         }
       )
@@ -342,7 +353,7 @@ function SocketControls({ axios }) {
         socket.off('search-results')
       }
     }
-  }, [socket, socketAuthObject])
+  }, [socket, socketAuthObject, loggedInUser])
 
   return null
 }

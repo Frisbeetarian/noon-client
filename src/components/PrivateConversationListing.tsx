@@ -30,6 +30,7 @@ import {
 } from '../store/ui'
 import { setVideoFrameForConversation } from '../store/video'
 import AppMenuList from './AppComponents/AppMenuList'
+import { AiOutlineUser } from 'react-icons/ai'
 
 function PrivateConversationListing({ conversation, i, axios }) {
   const [, setProfile] = useState()
@@ -117,7 +118,9 @@ function PrivateConversationListing({ conversation, i, axios }) {
             key={i}
             name={conversation.conversee.username}
             size="sm"
-            className="mr-2"
+            className="mr-2 text-white "
+            bg="red.500"
+            icon={<AiOutlineUser fontSize="1rem" />}
           >
             {conversation.unreadMessages &&
             conversation.unreadMessages !== 0 &&
@@ -128,7 +131,6 @@ function PrivateConversationListing({ conversation, i, axios }) {
               </AvatarBadge>
             ) : null}
           </Avatar>
-
           <p>{conversation.conversee.username}</p>
         </Flex>
       ) : null}

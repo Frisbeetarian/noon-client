@@ -33,39 +33,36 @@ const slice = createSlice({
   name: 'profiles',
   initialState,
   reducers: {
-    addProfiles: (profiles, action: PayloadAction<AddProfilesPayload>) => {
-      profiles.list = []
-
+    addProfiles: (state, action: PayloadAction<AddProfilesPayload>) => {
       const { profiles: incomingProfiles, loggedInUser } = action.payload
 
-      if (incomingProfiles == null) {
-        profiles.list = []
-      } else {
-        const updatedProfiles = incomingProfiles.filter(
-          (profile) => profile.uuid !== loggedInUser.profile.uuid
-        )
+      if (!incomingProfiles) {
+        state.list = []
+        return
+      }
 
-        updatedProfiles.forEach((profile) => {
-          const updatedProfile = { ...profile }
-
+      const filteredAndUpdatedProfiles = incomingProfiles
+        .filter((profile) => profile.uuid !== loggedInUser.profile.uuid)
+        .map((profile) => {
           const isFriend = loggedInUser.profile.friends?.some(
-            (friend) => friend.uuid === updatedProfile.uuid
+            (friend) => friend.uuid === profile.uuid
           )
-
           const friendshipRequestCheck =
             loggedInUser.profile.friendshipRequests?.find(
-              (request) => request.uuid === updatedProfile.uuid
+              (request) => request.uuid === profile.uuid
             )
 
-          updatedProfile.isAFriend = isFriend
-          updatedProfile.hasFriendshipRequestFromLoggedInProfile =
-            friendshipRequestCheck?.reverse || false
-          updatedProfile.hasSentFriendshipRequestToProfile =
-            !!friendshipRequestCheck && !friendshipRequestCheck.reverse
-
-          profiles.list.push(updatedProfile)
+          return {
+            ...profile,
+            isAFriend: isFriend,
+            hasFriendshipRequestFromLoggedInProfile:
+              friendshipRequestCheck?.reverse || false,
+            hasSentFriendshipRequestToProfile:
+              !!friendshipRequestCheck && !friendshipRequestCheck.reverse,
+          }
         })
-      }
+
+      state.list = filteredAndUpdatedProfiles
     },
     setFriendshipRequestSentOnProfile: (profiles, action) => {
       const profile = profiles.list.find(

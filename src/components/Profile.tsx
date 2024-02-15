@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Avatar, Box, Flex, useToast, Button } from '@chakra-ui/react'
+import { Avatar, Box, Flex, useToast } from '@chakra-ui/react'
 import { ChatIcon } from '@chakra-ui/icons'
 
 import {
   cancelFriendshipRequestSentOnProfile,
   setFriendFlagOnProfile,
   setFriendshipRequestSentOnProfile,
+  unsetHasFriendshipRequestFromLoggedInProfile,
 } from '../store/profiles'
 import {
   getLoggedInUser,
@@ -17,6 +18,7 @@ import {
 import AppButton from './AppComponents/AppButton'
 import {
   acceptFriendRequest,
+  cancelFriendRequest,
   rejectFriendRequest,
 } from '../utils/friendRequestActions'
 import { addConversation } from '../store/chat'
@@ -28,6 +30,8 @@ function Profile({ profile, axios }) {
   const [isFriendRequestLoading, setIsFriendRequestLoading] = useState(false)
   const [isCancelFriendRequestLoading, setIsCancelFriendRequestLoading] =
     useState(false)
+  const [isRejectFriendRequestLoading, setIsRejectFriendRequestLoading] =
+    useState(false)
   const [isAcceptFriendRequestLoading, setIsAcceptFriendRequestLoading] =
     useState(false)
 
@@ -35,7 +39,7 @@ function Profile({ profile, axios }) {
     try {
       setIsCancelFriendRequestLoading(true)
 
-      const response = rejectFriendRequest({
+      await cancelFriendRequest({
         axios,
         dispatch,
         friendRequest: {
@@ -43,19 +47,41 @@ function Profile({ profile, axios }) {
           username: profile.username,
         },
         loggedInUser,
-        setFriendFlagOnProfile,
         cancelFriendshipRequestSentOnProfile,
         removeFriendRequestEntry,
       })
 
-      if (response.status === 200) {
-        setIsCancelFriendRequestLoading(false)
-      } else {
-        setIsCancelFriendRequestLoading(false)
-      }
+      setIsCancelFriendRequestLoading(false)
     } catch (error) {
       console.error('Failed to cancel friend request:', error)
       setIsCancelFriendRequestLoading(false)
+    } finally {
+      setIsCancelFriendRequestLoading(false)
+    }
+  }, [axios, dispatch, loggedInUser.user?.friendshipRequests, profile.uuid])
+
+  const handleRejectFriendRequest = useCallback(async () => {
+    try {
+      setIsRejectFriendRequestLoading(true)
+
+      await rejectFriendRequest({
+        axios,
+        dispatch,
+        friendRequest: {
+          uuid: profile.uuid,
+          username: profile.username,
+        },
+        loggedInUser,
+        unsetHasFriendshipRequestFromLoggedInProfile,
+        removeFriendRequestEntry,
+      })
+
+      setIsRejectFriendRequestLoading(false)
+    } catch (error) {
+      console.error('Failed to cancel friend request:', error)
+      setIsRejectFriendRequestLoading(false)
+    } finally {
+      setIsRejectFriendRequestLoading(false)
     }
   }, [axios, dispatch, loggedInUser.user?.friendshipRequests, profile.uuid])
 
@@ -87,25 +113,28 @@ function Profile({ profile, axios }) {
   }, [axios, dispatch, profile.uuid, profile.username])
 
   const handleAcceptFriendRequest = useCallback(async () => {
-    setIsAcceptFriendRequestLoading(true)
+    try {
+      setIsAcceptFriendRequestLoading(true)
 
-    const response = acceptFriendRequest({
-      axios,
-      dispatch,
-      friendRequest: {
-        uuid: profile.uuid,
-        username: profile.username,
-      },
-      loggedInUser,
-      setFriendFlagOnProfile,
-      removeFriendRequestEntry,
-      addFriendEntry,
-      addConversation,
-    })
+      await acceptFriendRequest({
+        axios,
+        dispatch,
+        friendRequest: {
+          uuid: profile.uuid,
+          username: profile.username,
+        },
+        loggedInUser,
+        setFriendFlagOnProfile,
+        removeFriendRequestEntry,
+        addFriendEntry,
+        addConversation,
+      })
 
-    if (response.status === 200) {
       setIsAcceptFriendRequestLoading(false)
-    } else {
+    } catch (error) {
+      console.error('Failed to accept friend request:', error)
+      setIsAcceptFriendRequestLoading(false)
+    } finally {
       setIsAcceptFriendRequestLoading(false)
     }
   }, [
@@ -124,7 +153,7 @@ function Profile({ profile, axios }) {
       className="w-full h-12 my-5 relative"
     >
       <Flex alignItems="center">
-        <Avatar name={profile.username} size="sm" mr={2} />
+        <Avatar name={profile.username} size="sm" mr={2} bg="red.500" />
         <p>{profile.username}</p>
       </Flex>
 
@@ -149,8 +178,8 @@ function Profile({ profile, axios }) {
           </AppButton>
           <AppButton
             bg="black"
-            onClick={handleCancelFriendRequest}
-            isLoading={isCancelFriendRequestLoading}
+            onClick={handleRejectFriendRequest}
+            isLoading={isRejectFriendRequestLoading}
           >
             Reject
           </AppButton>
@@ -159,7 +188,7 @@ function Profile({ profile, axios }) {
         <Box>
           {profile.isAFriend ? (
             <Flex cursor="pointer" w="full" h="full" alignItems="center">
-              <ChatIcon onClick={() => {}} mr={3} mt={1} />
+              <ChatIcon mr={3} mt={1} />
             </Flex>
           ) : (
             <AppButton

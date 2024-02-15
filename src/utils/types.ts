@@ -50,6 +50,7 @@ export interface Auth {
 export type Friend = {
   uuid: string
   username: string
+  name: string
 }
 
 export type FriendshipRequest = {

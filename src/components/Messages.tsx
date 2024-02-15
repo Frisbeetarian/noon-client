@@ -165,6 +165,7 @@ const Messages = ({ axios }) => {
                 {...commonProps}
                 content={item.content}
                 item={item}
+                conversationType={activeConversation.type}
                 deleteMessageHandler={deleteMessageHandler}
               />
             )
@@ -177,6 +178,7 @@ const Messages = ({ axios }) => {
                 alt={item.content}
                 content={item.content}
                 item={item}
+                conversationType={activeConversation.type}
                 deleteMessageHandler={deleteMessageHandler}
               />
             )
@@ -188,6 +190,7 @@ const Messages = ({ axios }) => {
                 src={item.src}
                 content={item.content}
                 item={item}
+                conversationType={activeConversation.type}
                 deleteMessageHandler={deleteMessageHandler}
               />
             )

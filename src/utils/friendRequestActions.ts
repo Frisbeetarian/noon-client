@@ -27,6 +27,7 @@ const acceptFriendRequest = async ({
         addFriendEntry({
           uuid: friendRequest.uuid,
           username: friendRequest.username,
+          name: friendRequest.username,
         })
       )
       dispatch(
@@ -37,6 +38,7 @@ const acceptFriendRequest = async ({
       )
 
       if (toast) {
+        // @ts-ignore
         toast.close(toastId)
       }
 
@@ -47,7 +49,7 @@ const acceptFriendRequest = async ({
   }
 }
 
-const rejectFriendRequest = async ({
+const cancelFriendRequest = async ({
   axios,
   dispatch,
   friendRequest,
@@ -68,6 +70,7 @@ const rejectFriendRequest = async ({
           profileUuid: friendRequest.uuid,
         })
       )
+
       dispatch(
         removeFriendRequestEntry({
           profileUuid: friendRequest.uuid,
@@ -76,6 +79,7 @@ const rejectFriendRequest = async ({
       )
 
       if (toast) {
+        // @ts-ignore
         toast.close(toastId)
       }
 
@@ -86,4 +90,45 @@ const rejectFriendRequest = async ({
   }
 }
 
-export { acceptFriendRequest, rejectFriendRequest }
+const rejectFriendRequest = async ({
+  axios,
+  dispatch,
+  friendRequest,
+  loggedInUser,
+  unsetHasFriendshipRequestFromLoggedInProfile,
+  removeFriendRequestEntry,
+  toastId = null,
+  toast = null,
+}) => {
+  try {
+    const response = await axios.post('/api/profiles/cancelFriendRequest', {
+      profileUuid: friendRequest.uuid,
+    })
+
+    if (response.status === 200) {
+      dispatch(
+        unsetHasFriendshipRequestFromLoggedInProfile({
+          profileUuid: friendRequest.uuid,
+        })
+      )
+
+      dispatch(
+        removeFriendRequestEntry({
+          profileUuid: friendRequest.uuid,
+          friendRequests: loggedInUser.user?.friendshipRequests,
+        })
+      )
+
+      if (toast) {
+        // @ts-ignore
+        toast.close(toastId)
+      }
+
+      return response
+    }
+  } catch (error) {
+    console.error('Failed to cancel friend request:', error)
+  }
+}
+
+export { acceptFriendRequest, cancelFriendRequest, rejectFriendRequest }

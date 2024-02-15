@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  Avatar,
   Flex,
   IconButton,
   Menu,
@@ -9,12 +10,14 @@ import {
 } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import AppMenuList from '../AppComponents/AppMenuList'
+import { AiOutlineUser } from 'react-icons/ai'
 
 const TextMessage = ({
   content,
   isMine,
   isDeleted,
   item,
+  conversationType,
   deleteMessageHandler,
 }) => {
   return (
@@ -25,12 +28,27 @@ const TextMessage = ({
       alignSelf={isMine ? 'flex-end' : 'flex-start'}
       justifyContent={isMine ? 'flex-end' : 'flex-start'}
       maxW="350px"
-      my="1"
-      p="3"
+      my={1}
+      p={3}
     >
-      <Text>
-        {!isDeleted ? content : <i className="text-gray-400">{content}</i>}
-      </Text>
+      {conversationType === 'group' && !isMine ? (
+        <Flex>
+          <Avatar
+            className="mr-2"
+            size="xs"
+            bg="black"
+            name={item.sender.username}
+            icon={<AiOutlineUser fontSize="1.5rem" />}
+          />
+          <Text className="bg-gray-100">
+            {!isDeleted ? content : <i className="text-gray-400">{content}</i>}
+          </Text>
+        </Flex>
+      ) : (
+        <Text className=" ">
+          {!isDeleted ? content : <i className="text-gray-400">{content}</i>}
+        </Text>
+      )}
 
       {isMine && !isDeleted ? (
         <Menu>
