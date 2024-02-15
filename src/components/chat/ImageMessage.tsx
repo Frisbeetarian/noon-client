@@ -7,10 +7,12 @@ import {
   Menu,
   MenuButton,
   MenuItem,
+  Avatar,
 } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 
 import AppMenuList from '../AppComponents/AppMenuList'
+import { AiOutlineUser } from 'react-icons/ai'
 
 const ImageMessage = ({
   src,
@@ -19,6 +21,7 @@ const ImageMessage = ({
   isDeleted,
   content,
   item,
+  conversationType,
   deleteMessageHandler,
 }) => {
   return (
@@ -31,6 +34,18 @@ const ImageMessage = ({
       p={isDeleted ? '3' : '0'}
       style={{ position: 'relative' }}
     >
+      {conversationType === 'group' && !isMine ? (
+        <Flex>
+          <Avatar
+            className="mr-2"
+            size="xs"
+            bg="black"
+            name="item.sender.username"
+            icon={<AiOutlineUser fontSize="1.5rem" />}
+          />
+        </Flex>
+      ) : null}
+
       {!isDeleted ? (
         <Flex
           style={{
