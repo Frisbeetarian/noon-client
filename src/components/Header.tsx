@@ -85,6 +85,7 @@ const Header = () => {
       <Flex className="items-center px-1 md:px-3">
         <Avatar
           size={isMobile ? 'sm' : 'md'}
+          bg="black"
           name={
             activeConversation.type === 'pm'
               ? activeConversee.username
@@ -93,7 +94,10 @@ const Header = () => {
         >
           {activeConversation.type === 'pm' ? (
             <AvatarBadge
-              boxSize={isMobile ? '1.1em' : '1.25em'}
+              className="-mt-1 mr-1"
+              outline="0"
+              border="2px solid black"
+              boxSize={isMobile ? '1.1em' : '1.1em'}
               bg={online !== 'true' ? 'yellow.500' : 'green.500'}
             />
           ) : null}
