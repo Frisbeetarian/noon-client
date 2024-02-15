@@ -37,6 +37,7 @@ const acceptFriendRequest = async ({
       )
 
       if (toast) {
+        // @ts-ignore
         toast.close(toastId)
       }
 
@@ -77,6 +78,7 @@ const cancelFriendRequest = async ({
       )
 
       if (toast) {
+        // @ts-ignore
         toast.close(toastId)
       }
 
@@ -117,6 +119,7 @@ const rejectFriendRequest = async ({
       )
 
       if (toast) {
+        // @ts-ignore
         toast.close(toastId)
       }
 

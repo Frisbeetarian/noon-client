@@ -26,6 +26,7 @@ const useAppAlert = () => {
     }
 
     if (customRender) {
+      // @ts-ignore
       renderProps.render = ({ onClose }) => (
         <Flex
           direction="column"
@@ -46,6 +47,7 @@ const useAppAlert = () => {
                 <AppButton
                   className="mr-3"
                   onClick={() => {
+                    // @ts-ignore
                     onAccept()
                     onClose()
                   }}
@@ -57,6 +59,7 @@ const useAppAlert = () => {
                 <AppButton
                   bg="black"
                   onClick={() => {
+                    // @ts-ignore
                     onReject()
                     onClose()
                   }}
@@ -70,6 +73,7 @@ const useAppAlert = () => {
       )
     }
 
+    // @ts-ignore
     toast(renderProps)
   }
 

@@ -25,6 +25,7 @@ import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
 import {
   cancelFriendshipRequestSentOnProfile,
   setFriendFlagOnProfile,
+  unsetHasFriendshipRequestFromLoggedInProfile,
 } from '../../store/profiles'
 import Sidebar from '../../components/Sidebar'
 import {
@@ -72,7 +73,7 @@ function Noon({ axios }) {
       dispatch,
       friendRequest,
       loggedInUser,
-      cancelFriendshipRequestSentOnProfile,
+      unsetHasFriendshipRequestFromLoggedInProfile,
       removeFriendRequestEntry,
       toastId: friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid,
       toast,

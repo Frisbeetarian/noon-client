@@ -204,7 +204,7 @@ function Sidebar({ axios }) {
             )
           )
         ) : (
-          <p className="w-3/4 p-5 ">
+          <p className="w-3/4 p-5">
             No conversations yet. Use the search component to look for people to
             send friend requests to. Click on the search icon to search for
             profiles. Once you find the profile you want to befriend, send them
