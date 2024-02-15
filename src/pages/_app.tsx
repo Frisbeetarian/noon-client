@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
 
 import theme from '../theme'
 import './index.css'
@@ -67,7 +67,13 @@ function MyApp({ Component, pageProps }): React.JSX.Element {
   return (
     <React.StrictMode>
       <ChakraProvider resetCSS theme={theme}>
-        <Component {...pageProps} />
+        <ColorModeProvider
+          options={{
+            useSystemColorMode: true,
+          }}
+        >
+          <Component {...pageProps} />
+        </ColorModeProvider>
       </ChakraProvider>
     </React.StrictMode>
   )

@@ -37,7 +37,6 @@ const Footer = ({
   const toast = useToast()
   const showAppAlert = useAppAlert()
   const [isUploading, setIsUploading] = useState(false)
-
   const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const isMobile = useSelector(getIsMobile)
 

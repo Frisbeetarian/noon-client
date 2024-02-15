@@ -20,6 +20,7 @@
     "@emotion/styled": "^11.11.0",
     "@jitsi/react-sdk": "^1.4.0",
     "@reduxjs/toolkit": "^2.1.0",
+    "@signalapp/libsignal-client": "^0.40.0",
     "@tsparticles/engine": "^3.2.1",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.2.1",
@@ -62,7 +63,9 @@
     "@types/node": "^20.11.16",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.10",
+    "@types/three": "^0.161.2",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
+    "@typescript-eslint/parser": "^5.47.1",
     "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
     "eslint-config-next": "^13.1.1",
@@ -70,8 +73,6 @@
     "postcss": "^8.4.34",
     "prettier": "^3.2.5",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5.3.3",
-    "@types/three": "^0.161.2",
-    "@typescript-eslint/parser": "^5.47.1"
+    "typescript": "^5.3.3"
   }
 }
