@@ -17,10 +17,10 @@ export default function RecorderControls({
   const isMobile = useSelector(getIsMobile)
 
   return (
-    <Flex className="items-center rounded  relative z-20">
-      <Flex className="items-center py-0">
+    <Flex className="items-center rounded relative z-20 ">
+      <Flex className="items-center py-0 ">
         {initRecording && (
-          <Flex className="">
+          <Flex className="items-center border px-2 border-red-500 rounded-none">
             <Flex className="">
               <button
                 className="mb-1 p-2 cursor-pointer text-red-500 hover:text-red-500"
@@ -32,8 +32,8 @@ export default function RecorderControls({
               </button>
             </Flex>
 
-            <Flex className="mx-2 items-center text-lg bg-green-300 rounded p-1 px-2">
-              {initRecording && <div className="recording-indicator"></div>}
+            <Flex className="mx-2 items-center text-lg bg-red-500 rounded p-1 px-2 h-8 rounded-none">
+              {/*{initRecording && <div className="recording-indicator"></div>}*/}
               <span>{formatMinutes(recordingMinutes)}</span>
               <span>:</span>
               <span>{formatSeconds(recordingSeconds)}</span>
@@ -45,7 +45,7 @@ export default function RecorderControls({
       <Flex className="items-center">
         {initRecording ? (
           <button
-            className="text-green-600"
+            className="text-red-500 ml-2"
             title="Save recording"
             disabled={recordingSeconds === 0}
             onClick={saveRecording}
