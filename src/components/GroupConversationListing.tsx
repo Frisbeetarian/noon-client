@@ -34,6 +34,12 @@ import {
 } from '../store/ui'
 import withAxios from '../utils/withAxios'
 import AppMenuList from './AppComponents/AppMenuList'
+import {
+  AiOutlineCi,
+  AiOutlineClear,
+  AiOutlineGroup,
+  AiOutlineUser,
+} from 'react-icons/ai'
 // import toast from '../store/middleware/toast'
 
 function GroupConversationListing({ conversation, i, axios }) {
@@ -94,7 +100,13 @@ function GroupConversationListing({ conversation, i, axios }) {
           setActiveGroup(conversation)
         }}
       >
-        <Avatar key={i} name={conversation.name} size="sm" className="mr-2">
+        <Avatar
+          key={i}
+          icon={<AiOutlineGroup fontSize="1rem" />}
+          size="sm"
+          className="mr-2"
+          bg="red.500"
+        >
           {conversation.unreadMessages &&
           conversation.unreadMessages !== 0 &&
           conversation.profileThatHasUnreadMessages ===
