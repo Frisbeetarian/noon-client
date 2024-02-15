@@ -40,7 +40,7 @@ const ImageMessage = ({
             className="mr-2"
             size="xs"
             bg="black"
-            name="item.sender.username"
+            name={item.sender.username}
             icon={<AiOutlineUser fontSize="1.5rem" />}
           />
         </Flex>
