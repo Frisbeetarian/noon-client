@@ -39,6 +39,7 @@ import withAxios from '../utils/withAxios'
 import AppMenuList from './AppComponents/AppMenuList'
 import { useGetConversationsQuery } from '../store/api/conversationsApiSlice'
 import { useLogoutUserMutation } from '../store/api/usersApiSlice'
+import { AiOutlineUser } from 'react-icons/ai'
 
 function Sidebar({ axios }) {
   const router = useRouter()
@@ -219,7 +220,11 @@ function Sidebar({ axios }) {
         style={{ flex: '0.075' }}
       >
         <Flex className="items-center px-2">
-          <Avatar size="md" />
+          <Avatar
+            size="md"
+            bg="red.500"
+            icon={<AiOutlineUser fontSize="1.5rem" />}
+          />
           <p className="ml-2 text-lg text-white">
             {loggedInUser.user?.profile?.username}
           </p>
