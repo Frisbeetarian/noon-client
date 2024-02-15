@@ -165,6 +165,7 @@ const Messages = ({ axios }) => {
                 {...commonProps}
                 content={item.content}
                 item={item}
+                conversationType={activeConversation.type}
                 deleteMessageHandler={deleteMessageHandler}
               />
             )

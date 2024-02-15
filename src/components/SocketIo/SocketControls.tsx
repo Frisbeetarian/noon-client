@@ -59,9 +59,9 @@ function SocketControls({ axios }) {
       socket.on(
         'send-message',
         ({ senderUuid, senderUsername, conversationUuid, message }) => {
-          if (!message.trim().length) {
-            return
-          }
+          // if (!message.trim().length) {
+          //   return
+          // }
 
           const data = message
           if (

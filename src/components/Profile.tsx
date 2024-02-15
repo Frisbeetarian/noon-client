@@ -153,7 +153,7 @@ function Profile({ profile, axios }) {
       className="w-full h-12 my-5 relative"
     >
       <Flex alignItems="center">
-        <Avatar name={profile.username} size="sm" mr={2} />
+        <Avatar name={profile.username} size="sm" mr={2} bg="red.500" />
         <p>{profile.username}</p>
       </Flex>
 
