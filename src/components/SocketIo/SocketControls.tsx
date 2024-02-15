@@ -59,9 +59,9 @@ function SocketControls({ axios }) {
       socket.on(
         'send-message',
         ({ senderUuid, senderUsername, conversationUuid, message }) => {
-          // if (!message.trim().length) {
-          //   return
-          // }
+          if (!message.trim().length) {
+            return
+          }
 
           const data = message
           if (
@@ -221,6 +221,7 @@ function SocketControls({ axios }) {
             addFriendEntry({
               uuid: senderUuid,
               username: senderUsername,
+              name: senderUsername,
             })
           )
 
@@ -352,7 +353,7 @@ function SocketControls({ axios }) {
         socket.off('search-results')
       }
     }
-  }, [socket, socketAuthObject])
+  }, [socket, socketAuthObject, loggedInUser])
 
   return null
 }

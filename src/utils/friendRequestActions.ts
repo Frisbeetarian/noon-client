@@ -27,6 +27,7 @@ const acceptFriendRequest = async ({
         addFriendEntry({
           uuid: friendRequest.uuid,
           username: friendRequest.username,
+          name: friendRequest.username,
         })
       )
       dispatch(
