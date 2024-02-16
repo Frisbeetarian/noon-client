@@ -54,6 +54,13 @@ function Register() {
           values.password
         )
 
+      await KeyManagement.storeEncryptedKey({
+        encryptedPrivateKey:
+          KeyManagement.arrayBufferToBase64(encryptedPrivateKey),
+        iv,
+        salt,
+      })
+
       const registrationValues = { ...values, publicKey }
 
       await registerUser(registrationValues).unwrap()

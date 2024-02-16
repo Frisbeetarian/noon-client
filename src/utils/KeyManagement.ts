@@ -41,6 +41,16 @@ export default class KeyManagement {
     return window.btoa(binary)
   }
 
+  static base64ToArrayBuffer(base64) {
+    const binaryString = window.atob(base64)
+    const len = binaryString.length
+    const bytes = new Uint8Array(len)
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i)
+    }
+    return bytes.buffer
+  }
+
   static async encryptPrivateKey(privateKey, password) {
     const enc = new TextEncoder()
     const keyMaterial = await window.crypto.subtle.importKey(
