@@ -125,20 +125,16 @@ function Chat({ axios }) {
       return
     }
 
-    const data = inputMessage
-    const recipientPublicKey = await KeyManagement.importPublicKey(
-      loggedInUser.user.publicKey
-    )
-    const encryptedData = await MessageUtility.encryptMessage(
-      inputMessage,
-      recipientPublicKeyBase64
+    const encryptedMessage = await MessageUtility.encryptMessage(
+      loggedInUser.user.publicKey,
+      inputMessage
     )
 
     setInputMessage('')
 
     await axios
       .post('/api/messages', {
-        message: data,
+        message: encryptedMessage,
         type: 'text',
         src: '',
         conversationUuid: activeConversation.uuid,
@@ -151,7 +147,7 @@ function Chat({ axios }) {
             addMessageToActiveConversation({
               message: {
                 uuid: response.data.uuid as string,
-                content: data as string,
+                content: encryptedMessage as string,
                 sender: {
                   uuid: loggedInUser?.user?.profile?.uuid,
                   username: loggedInUser?.user?.profile?.username,

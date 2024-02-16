@@ -2,12 +2,11 @@ import KeyManagement from './KeyManagement'
 
 export default class MessageUtility {
   static async encryptMessage(
-    message: string | undefined,
-    publicKeyBase64: any
+    publicKeyBase64: any,
+    message: string | undefined
   ) {
     const publicKey = await KeyManagement.importPublicKey(publicKeyBase64)
-    const encoder = new TextEncoder()
-    const encodedMessage = encoder.encode(message)
+    const encodedMessage = new TextEncoder().encode(message)
     const encryptedMessage = await window.crypto.subtle.encrypt(
       {
         name: 'RSA-OAEP',
