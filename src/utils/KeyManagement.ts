@@ -101,7 +101,7 @@ export default class KeyManagement {
 
   static async storeEncryptedKey(encryptedKeyData) {
     const dbPromise = this.openDatabase()
-    const db = await dbPromise
+    const db: any = await dbPromise
 
     const tx = db.transaction('keys', 'readwrite')
     const store = tx.objectStore('keys')
@@ -118,12 +118,13 @@ export default class KeyManagement {
 
   static openDatabase() {
     return new Promise((resolve, reject) => {
-      const request = indexedDB.open('MyDatabase', 1)
+      const request = indexedDB.open('noon-db', 1)
 
       request.onerror = () => reject(request.error)
       request.onsuccess = () => resolve(request.result)
 
       request.onupgradeneeded = (event) => {
+        // @ts-ignore
         const db = event.target.result
         if (!db.objectStoreNames.contains('keys')) {
           db.createObjectStore('keys', { keyPath: 'id' })
