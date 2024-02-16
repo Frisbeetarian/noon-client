@@ -88,4 +88,37 @@ export default class KeyManagement {
       salt: this.arrayBufferToBase64(salt),
     }
   }
+
+  static async storeEncryptedKey(encryptedKeyData) {
+    const dbPromise = this.openDatabase()
+    const db = await dbPromise
+
+    const tx = db.transaction('keys', 'readwrite')
+    const store = tx.objectStore('keys')
+    await store.put({
+      id: 'userPrivateKey',
+      encryptedPrivateKey: encryptedKeyData.encryptedPrivateKey,
+      iv: encryptedKeyData.iv,
+      salt: encryptedKeyData.salt,
+    })
+
+    await tx.complete
+    db.close()
+  }
+
+  static openDatabase() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('MyDatabase', 1)
+
+      request.onerror = () => reject(request.error)
+      request.onsuccess = () => resolve(request.result)
+
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result
+        if (!db.objectStoreNames.contains('keys')) {
+          db.createObjectStore('keys', { keyPath: 'id' })
+        }
+      }
+    })
+  }
 }
