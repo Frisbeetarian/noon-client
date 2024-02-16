@@ -1,4 +1,4 @@
-class KeyManagement {
+export default class KeyManagement {
   static async generateKeyPair() {
     try {
       const keyPair = await window.crypto.subtle.generateKey(
