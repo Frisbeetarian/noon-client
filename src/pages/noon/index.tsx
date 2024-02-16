@@ -8,6 +8,7 @@ import {
   addFriendEntry,
   getLoggedInUser,
   removeFriendRequestEntry,
+  setFriendsPublicKey,
 } from '../../store/users'
 
 import { addConversation } from '../../store/chat'
@@ -51,6 +52,29 @@ function Noon({ axios }) {
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  useEffect(() => {
+    if (loggedInUser.user?.profile?.friends) {
+      fetchFriendsPublicKey()
+    }
+  }, [loggedInUser.user])
+
+  const fetchFriendsPublicKey = async () => {
+    if (!loggedInUser.user?.profile?.friends) return
+
+    try {
+      const friendsPublicKey = await axios.get(`api/users/publicKeys`)
+      if (
+        friendsPublicKey &&
+        friendsPublicKey.data &&
+        friendsPublicKey.data.length !== 0
+      ) {
+        dispatch(setFriendsPublicKey(friendsPublicKey.data))
+      }
+    } catch (error) {
+      console.error('Error fetching friends public keys:', error.message)
+    }
+  }
 
   const handleAcceptFriendRequest = (friendRequest) => {
     acceptFriendRequest({
