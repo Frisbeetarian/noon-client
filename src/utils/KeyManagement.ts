@@ -18,6 +18,23 @@ export default class KeyManagement {
     }
   }
 
+  static async importPublicKey(publicKeyBase64) {
+    const publicKeyBuffer = this.base64ToArrayBuffer(publicKeyBase64)
+
+    const publicKey = await window.crypto.subtle.importKey(
+      'spki',
+      publicKeyBuffer,
+      {
+        name: 'RSA-OAEP',
+        hash: { name: 'SHA-256' },
+      },
+      true,
+      ['encrypt']
+    )
+
+    return publicKey
+  }
+
   static async exportPublicKey(key) {
     try {
       const exported = await window.crypto.subtle.exportKey(

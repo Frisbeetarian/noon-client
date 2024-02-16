@@ -34,6 +34,8 @@ import ChatControlsAndSearch from './ChatControlsAndSearch'
 import Video from './Video'
 import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
+import MessageUtility from '../utils/MessageManagement'
+import KeyManagement from '../utils/KeyManagement'
 
 function Chat({ axios }) {
   const dispatch = useDispatch()
@@ -124,6 +126,13 @@ function Chat({ axios }) {
     }
 
     const data = inputMessage
+    const recipientPublicKey = await KeyManagement.importPublicKey(
+      loggedInUser.user.publicKey
+    )
+    const encryptedData = await MessageUtility.encryptMessage(
+      inputMessage,
+      recipientPublicKeyBase64
+    )
 
     setInputMessage('')
 

@@ -5,6 +5,7 @@ export type User = {
   profile: ProfileInUser
   friendshipRequests: FriendshipRequest[]
   friends: Friend[]
+  publicKey: string
 }
 
 export type UserResponse = {

@@ -1,7 +1,10 @@
 import KeyManagement from './KeyManagement'
 
 export default class MessageUtility {
-  static async encryptMessage(message, publicKeyBase64) {
+  static async encryptMessage(
+    message: string | undefined,
+    publicKeyBase64: any
+  ) {
     const publicKey = await KeyManagement.importPublicKey(publicKeyBase64)
     const encoder = new TextEncoder()
     const encodedMessage = encoder.encode(message)
