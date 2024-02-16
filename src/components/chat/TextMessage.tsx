@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Avatar,
   Flex,
@@ -11,6 +11,7 @@ import {
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import AppMenuList from '../AppComponents/AppMenuList'
 import { AiOutlineUser } from 'react-icons/ai'
+import MessageUtility from '../../utils/MessageManagement'
 
 const TextMessage = ({
   content,
@@ -20,6 +21,26 @@ const TextMessage = ({
   conversationType,
   deleteMessageHandler,
 }) => {
+  const [decryptedContent, setDecryptedContent] = useState('')
+
+  useEffect(() => {
+    const decryptAndSetContent = async () => {
+      if (!isDeleted) {
+        try {
+          const decrypted = await MessageUtility.decryptMessage(content)
+          setDecryptedContent(decrypted)
+        } catch (error) {
+          console.error('Decryption error:', error)
+          setDecryptedContent('Failed to decrypt message')
+        }
+      } else {
+        setDecryptedContent(content)
+      }
+    }
+
+    decryptAndSetContent()
+  }, [content, isDeleted])
+
   return (
     <Flex
       className="relative"
@@ -41,12 +62,20 @@ const TextMessage = ({
             icon={<AiOutlineUser fontSize="1.5rem" />}
           />
           <Text className="bg-gray-100">
-            {!isDeleted ? content : <i className="text-gray-400">{content}</i>}
+            {!isDeleted ? (
+              decryptedContent
+            ) : (
+              <i className="text-gray-400">{decryptedContent}</i>
+            )}
           </Text>
         </Flex>
       ) : (
         <Text className=" ">
-          {!isDeleted ? content : <i className="text-gray-400">{content}</i>}
+          {!isDeleted ? (
+            decryptedContent
+          ) : (
+            <i className="text-gray-400">{decryptedContent}</i>
+          )}
         </Text>
       )}
 
