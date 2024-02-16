@@ -132,4 +132,58 @@ export default class KeyManagement {
       }
     })
   }
+
+  static async decryptPrivateKey(
+    encryptedPrivateKeyBase64,
+    ivBase64,
+    saltBase64,
+    password
+  ) {
+    const encryptedPrivateKey = this.base64ToArrayBuffer(
+      encryptedPrivateKeyBase64
+    )
+    const iv = this.base64ToArrayBuffer(ivBase64)
+    const salt = this.base64ToArrayBuffer(saltBase64)
+
+    const enc = new TextEncoder()
+    const keyMaterial = await window.crypto.subtle.importKey(
+      'raw',
+      enc.encode(password),
+      { name: 'PBKDF2' },
+      false,
+      ['deriveKey']
+    )
+
+    const key = await window.crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt: salt,
+        iterations: 100000,
+        hash: 'SHA-256',
+      },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['decrypt']
+    )
+
+    const decryptedPrivateKeyArrayBuffer = await window.crypto.subtle.decrypt(
+      {
+        name: 'AES-GCM',
+        iv: iv,
+      },
+      key,
+      encryptedPrivateKey
+    )
+
+    const privateKey = await window.crypto.subtle.importKey(
+      'pkcs8',
+      decryptedPrivateKeyArrayBuffer,
+      { name: 'RSA-OAEP', hash: 'SHA-256' },
+      true,
+      ['decrypt']
+    )
+
+    return privateKey
+  }
 }
