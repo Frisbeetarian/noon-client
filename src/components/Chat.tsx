@@ -124,6 +124,7 @@ function Chat({ axios }) {
     }
 
     const data = inputMessage
+
     setInputMessage('')
 
     await axios

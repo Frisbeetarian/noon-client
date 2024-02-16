@@ -51,7 +51,7 @@ export type Friend = {
   uuid: string
   username: string
   name: string
-  publicKey: string
+  publicKey?: string
 }
 
 export type FriendshipRequest = {
