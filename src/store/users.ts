@@ -84,6 +84,18 @@ const slice = createSlice({
         })
       }
     },
+    setFriendPublicKey: (
+      users,
+      action: PayloadAction<{ uuid: string; publicKey: string }>
+    ) => {
+      if (users.user && users.user.profile && users.user.profile.friends) {
+        users.user.profile.friends.find((friend) => {
+          if (friend.uuid === action.payload.uuid) {
+            friend.publicKey = action.payload.publicKey
+          }
+        })
+      }
+    },
   },
 })
 
@@ -99,5 +111,6 @@ export const {
   addFriendEntry,
   removeFriendEntry,
   setFriendsPublicKey,
+  setFriendPublicKey,
 } = slice.actions
 export default slice.reducer
