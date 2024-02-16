@@ -17,7 +17,8 @@ export default class MessageUtility {
     return KeyManagement.arrayBufferToBase64(encryptedMessage)
   }
 
-  static async decryptMessage(encryptedMessageBase64, password) {
+  static async decryptMessage(encryptedMessageBase64, password = '1234') {
+    // @ts-ignore
     const { encryptedPrivateKey, iv, salt } =
       await KeyManagement.fetchEncryptedPrivateKeyDetails()
     const privateKey = await KeyManagement.decryptPrivateKey(

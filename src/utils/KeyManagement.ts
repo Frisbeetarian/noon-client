@@ -115,6 +115,34 @@ export default class KeyManagement {
     }
   }
 
+  static async fetchEncryptedPrivateKeyDetails() {
+    const dbPromise = this.openDatabase()
+    const db = await dbPromise
+
+    return new Promise((resolve, reject) => {
+      // @ts-ignore
+      const transaction = db.transaction('keys', 'readonly')
+      const store = transaction.objectStore('keys')
+      const request = store.get('userPrivateKey')
+
+      request.onerror = function () {
+        reject(request.error)
+      }
+
+      request.onsuccess = function () {
+        if (request.result) {
+          resolve({
+            encryptedPrivateKey: request.result.encryptedPrivateKey,
+            iv: request.result.iv,
+            salt: request.result.salt,
+          })
+        } else {
+          reject(new Error('No encrypted private key details found.'))
+        }
+      }
+    })
+  }
+
   static async storeEncryptedKey(encryptedKeyData) {
     const dbPromise = this.openDatabase()
     const db: any = await dbPromise
