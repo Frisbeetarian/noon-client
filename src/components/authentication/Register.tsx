@@ -48,6 +48,12 @@ function Register() {
     try {
       const keyPair = await KeyManagement.generateKeyPair()
       const publicKey = await KeyManagement.exportPublicKey(keyPair.publicKey)
+      const { encryptedPrivateKey, iv, salt } =
+        await KeyManagement.encryptPrivateKey(
+          keyPair.privateKey,
+          values.password
+        )
+
       const registrationValues = { ...values, publicKey }
 
       await registerUser(registrationValues).unwrap()
