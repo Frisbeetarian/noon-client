@@ -139,11 +139,11 @@ export default class KeyManagement {
     })
   }
 
-  static setDecryptedKEK(decryptedKEK) {
+  static setDecryptedKEK(decryptedKEK: CryptoKey) {
     this.masterKey = decryptedKEK
   }
 
-  static clearSessionKey() {
+  static clearKeys() {
     this.sessionKey = null
   }
 
