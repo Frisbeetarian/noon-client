@@ -97,6 +97,31 @@ export default class KeyManagement {
     )
   }
 
+  static async fetchEncryptedKEKDetails() {
+    const dbPromise = this.openDatabase()
+    const db = await dbPromise
+
+    return new Promise((resolve, reject) => {
+      // @ts-ignore
+      const transaction = db.transaction('keys', 'readonly')
+      const store = transaction.objectStore('keys')
+      const request = store.get('encryptedKEK')
+
+      request.onerror = () => reject(request.error)
+      request.onsuccess = () => {
+        if (request.result) {
+          resolve(request.result)
+        } else {
+          reject(new Error('No encrypted KEK details found.'))
+        }
+      }
+    })
+  }
+
+  static setDecryptedKEK(decryptedKEK) {
+    this.masterKey = decryptedKEK
+  }
+
   static clearSessionKey() {
     this.sessionKey = null
   }

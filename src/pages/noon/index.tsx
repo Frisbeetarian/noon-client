@@ -35,6 +35,7 @@ import {
 import useAppAlert from '../../hooks/useAppAlert'
 import PasswordPromptModal from '../../components/PasswordPromptModal'
 import { useValidatePasswordMutation } from '../../store/api/usersApiSlice'
+import KeyManagement from '../../utils/KeyManagement'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -109,7 +110,18 @@ function Noon({ axios }) {
   }
 
   const handlePasswordSubmit = async (password) => {
-    await validatePassword({ password }).unwrap()
+    const response = await validatePassword({ password }).unwrap()
+
+    if (response.status === 200) {
+      const decryptedKEK = await KeyManagement.decryptAndSetMasterKey(
+        encryptedKEKDetails,
+        password
+      )
+
+      KeyManagement.setDecryptedKEK(decryptedKEK)
+
+      onClose()
+    }
   }
 
   useEffect(() => {

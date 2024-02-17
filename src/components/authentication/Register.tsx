@@ -66,7 +66,6 @@ function Register() {
       const response = await registerUser(registrationValues).unwrap()
 
       if (response.status === 200) {
-        const sessionKey = await KeyManagement.deriveSessionKey(values.password)
         router.replace('/noon')
       }
     } catch (error) {
