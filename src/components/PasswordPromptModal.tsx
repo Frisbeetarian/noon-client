@@ -28,7 +28,9 @@ const PasswordPromptModal = ({ isOpen, onSubmit, isLoading }) => {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader className="bg-black p-5 ">Password Required</ModalHeader>
+        <ModalHeader className="bg-black p-5 text-white">
+          Password Required
+        </ModalHeader>
         <ModalBody className="bg-black p-5 text-white">
           <FormControl>
             <FormLabel htmlFor="password">

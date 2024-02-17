@@ -24,7 +24,6 @@ import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
 import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
 import {
-  cancelFriendshipRequestSentOnProfile,
   setFriendFlagOnProfile,
   unsetHasFriendshipRequestFromLoggedInProfile,
 } from '../../store/profiles'
@@ -35,7 +34,7 @@ import {
 } from '../../utils/friendRequestActions'
 import useAppAlert from '../../hooks/useAppAlert'
 import PasswordPromptModal from '../../components/PasswordPromptModal'
-import { useDeriveSessionKeyMutation } from '../../store/api/usersApiSlice'
+import { useValidatePasswordMutation } from '../../store/api/usersApiSlice'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -51,8 +50,8 @@ function Noon({ axios }) {
   const toast = useToast()
   const showAppAlert = useAppAlert()
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true })
-  const [deriveSessionKey, { isLoading, isSuccess, isError }] =
-    useDeriveSessionKeyMutation()
+  const [validatePassword, { isLoading, isSuccess, isError }] =
+    useValidatePasswordMutation()
 
   useEffect(() => {
     setMounted(true)
@@ -110,7 +109,7 @@ function Noon({ axios }) {
   }
 
   const handlePasswordSubmit = async (password) => {
-    await deriveSessionKey({ password }).unwrap()
+    await validatePassword({ password }).unwrap()
   }
 
   useEffect(() => {
