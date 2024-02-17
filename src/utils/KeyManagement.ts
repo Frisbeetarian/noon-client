@@ -54,6 +54,7 @@ export default class KeyManagement {
     const dbPromise = this.openDatabase()
     const db = await dbPromise
 
+    // @ts-ignore
     const tx = db.transaction('keys', 'readwrite')
     const store = tx.objectStore('keys')
 
@@ -184,10 +185,7 @@ export default class KeyManagement {
 
   static async exportPublicKey(key) {
     try {
-      const exported = await window.crypto.subtle.exportKey(
-        'spki', // Subject Public Key Info format
-        key
-      )
+      const exported = await window.crypto.subtle.exportKey('spki', key)
       return this.arrayBufferToBase64(exported)
     } catch (error) {
       console.error('Error exporting public key:', error)
@@ -224,6 +222,7 @@ export default class KeyManagement {
       'pkcs8',
       privateKey
     )
+
     const iv = window.crypto.getRandomValues(new Uint8Array(12))
     const encryptedPrivateKey = await window.crypto.subtle.encrypt(
       { name: 'AES-GCM', iv: iv },

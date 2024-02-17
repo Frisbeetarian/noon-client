@@ -65,8 +65,7 @@ function Register() {
         await KeyManagement.encryptPrivateKey(keyPair.privateKey)
 
       await KeyManagement.storeEncryptedKey({
-        encryptedPrivateKey:
-          KeyManagement.arrayBufferToBase64(encryptedPrivateKey),
+        encryptedPrivateKey: encryptedPrivateKey,
         iv,
         salt,
       })
