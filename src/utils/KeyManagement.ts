@@ -50,6 +50,26 @@ export default class KeyManagement {
     }
   }
 
+  static async storeEncryptedKEK(encryptedKEKDetails) {
+    const dbPromise = this.openDatabase()
+    const db = await dbPromise
+
+    const tx = db.transaction('keys', 'readwrite')
+    const store = tx.objectStore('keys')
+
+    await store.put({
+      id: 'encryptedMasterKey',
+      encryptedMasterKey: encryptedKEKDetails.encryptedMasterKey,
+      iv: encryptedKEKDetails.iv,
+      salt: encryptedKEKDetails.salt,
+    })
+
+    await tx.complete
+
+    // @ts-ignore
+    db.close()
+  }
+
   static async decryptAndSetMasterKey(
     encryptedMKDetails: {
       encryptedMasterKey: ArrayBuffer
