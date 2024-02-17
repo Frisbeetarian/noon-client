@@ -48,11 +48,21 @@ function Register() {
     try {
       const keyPair = await KeyManagement.generateKeyPair()
       const publicKey = await KeyManagement.exportPublicKey(keyPair.publicKey)
+
+      const {
+        encryptedMasterKey,
+        iv: kekIV,
+        salt: kekSalt,
+      } = await KeyManagement.generateAndEncryptMasterKey(values.password)
+      await KeyManagement.storeEncryptedKEK({
+        encryptedMasterKey:
+          KeyManagement.arrayBufferToBase64(encryptedMasterKey),
+        iv: kekIV,
+        salt: kekSalt,
+      })
+
       const { encryptedPrivateKey, iv, salt } =
-        await KeyManagement.encryptPrivateKey(
-          keyPair.privateKey,
-          values.password
-        )
+        await KeyManagement.encryptPrivateKey(keyPair.privateKey)
 
       await KeyManagement.storeEncryptedKey({
         encryptedPrivateKey:
