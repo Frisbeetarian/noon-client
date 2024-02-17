@@ -160,8 +160,6 @@ export default class KeyManagement {
   }
 
   static base64ToArrayBuffer(base64) {
-    // console.log('base64:', base64)
-
     const binaryString = window.atob(base64)
 
     const len = binaryString.length
