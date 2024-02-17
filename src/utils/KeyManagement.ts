@@ -3,18 +3,23 @@ export default class KeyManagement {
   static masterKey: CryptoKey | null = null
   static encryptedMasterKey: ArrayBuffer | null = null
 
-  static async deriveSessionKey(password) {
+  static async generateAndEncryptMasterKey(password: string) {
+    this.masterKey = await window.crypto.subtle.generateKey(
+      { name: 'AES-GCM', length: 256 },
+      true,
+      ['encrypt', 'decrypt']
+    )
+
     const enc = new TextEncoder()
-    const passwordBuffer = enc.encode(password)
-    const salt = window.crypto.getRandomValues(new Uint8Array(16))
     const keyMaterial = await window.crypto.subtle.importKey(
       'raw',
-      passwordBuffer,
-      { name: 'PBKDF2' },
+      enc.encode(password),
+      'PBKDF2',
       false,
       ['deriveBits', 'deriveKey']
     )
-    const sessionKey = await window.crypto.subtle.deriveKey(
+    const salt = window.crypto.getRandomValues(new Uint8Array(16))
+    const kek = await window.crypto.subtle.deriveKey(
       {
         name: 'PBKDF2',
         salt: salt,
@@ -23,13 +28,27 @@ export default class KeyManagement {
       },
       keyMaterial,
       { name: 'AES-GCM', length: 256 },
-      true,
+      false,
       ['encrypt', 'decrypt']
     )
 
-    // @ts-ignore
-    this.sessionKey = sessionKey
-    return sessionKey
+    const exportedMK = await window.crypto.subtle.exportKey(
+      'raw',
+      this.masterKey
+    )
+    const iv = window.crypto.getRandomValues(new Uint8Array(12))
+    this.encryptedMasterKey = await window.crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv: iv },
+      kek,
+      exportedMK
+    )
+
+    // Return encrypted MK details for storage
+    return {
+      encryptedMasterKey: this.encryptedMasterKey,
+      iv: this.arrayBufferToBase64(iv),
+      salt: this.arrayBufferToBase64(salt),
+    }
   }
 
   static clearSessionKey() {
