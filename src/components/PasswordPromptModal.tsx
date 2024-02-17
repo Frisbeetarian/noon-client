@@ -12,16 +12,20 @@ import {
   Input,
 } from '@chakra-ui/react'
 
-const PasswordPromptModal = ({ isOpen, onClose, onSubmit }) => {
+const PasswordPromptModal = ({ isOpen, onSubmit, isLoading }) => {
   const [password, setPassword] = useState('')
 
   const handleSubmit = () => {
     onSubmit(password)
-    onClose()
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {}}
+      closeOnOverlayClick={false}
+      isCentered
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Password Required</ModalHeader>
@@ -39,11 +43,8 @@ const PasswordPromptModal = ({ isOpen, onClose, onSubmit }) => {
           </FormControl>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
+          <Button mr={3} onClick={handleSubmit} isLoading={isLoading}>
             Submit
-          </Button>
-          <Button variant="ghost" onClick={onClose}>
-            Cancel
           </Button>
         </ModalFooter>
       </ModalContent>

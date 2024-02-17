@@ -35,6 +35,7 @@ import {
 } from '../../utils/friendRequestActions'
 import useAppAlert from '../../hooks/useAppAlert'
 import PasswordPromptModal from '../../components/PasswordPromptModal'
+import { useDeriveSessionKeyMutation } from '../../store/api/usersApiSlice'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -50,6 +51,8 @@ function Noon({ axios }) {
   const toast = useToast()
   const showAppAlert = useAppAlert()
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true })
+  const [deriveSessionKey, { isLoading, isSuccess, isError }] =
+    useDeriveSessionKeyMutation()
 
   useEffect(() => {
     setMounted(true)
@@ -106,7 +109,9 @@ function Noon({ axios }) {
     })
   }
 
-  const handlePasswordSubmit = async (password) => {}
+  const handlePasswordSubmit = async (password) => {
+    await deriveSessionKey({ password }).unwrap()
+  }
 
   useEffect(() => {
     if (
@@ -152,6 +157,7 @@ function Noon({ axios }) {
         isOpen={isOpen}
         onClose={onClose}
         onSubmit={handlePasswordSubmit}
+        isLoading={isLoading}
       />
     </div>
   )
