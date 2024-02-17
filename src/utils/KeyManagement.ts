@@ -1,4 +1,39 @@
 export default class KeyManagement {
+  static sessionKey = null
+
+  static async deriveSessionKey(password) {
+    const enc = new TextEncoder()
+    const passwordBuffer = enc.encode(password)
+    const salt = window.crypto.getRandomValues(new Uint8Array(16))
+    const keyMaterial = await window.crypto.subtle.importKey(
+      'raw',
+      passwordBuffer,
+      { name: 'PBKDF2' },
+      false,
+      ['deriveBits', 'deriveKey']
+    )
+    const sessionKey = await window.crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt: salt,
+        iterations: 100000,
+        hash: 'SHA-256',
+      },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      true,
+      ['encrypt', 'decrypt']
+    )
+
+    // @ts-ignore
+    this.sessionKey = sessionKey
+    return sessionKey
+  }
+
+  static clearSessionKey() {
+    this.sessionKey = null
+  }
+
   static async generateKeyPair() {
     try {
       const keyPair = await window.crypto.subtle.generateKey(
@@ -58,7 +93,10 @@ export default class KeyManagement {
   }
 
   static base64ToArrayBuffer(base64) {
+    // console.log('base64:', base64)
+
     const binaryString = window.atob(base64)
+
     const len = binaryString.length
     const bytes = new Uint8Array(len)
     for (let i = 0; i < len; i++) {
@@ -91,13 +129,11 @@ export default class KeyManagement {
       ['encrypt', 'decrypt']
     )
 
-    // Export the private key
     const exportedPrivateKey = await window.crypto.subtle.exportKey(
       'pkcs8',
       privateKey
     )
 
-    // Encrypt the exported private key
     const iv = window.crypto.getRandomValues(new Uint8Array(12))
     const encryptedPrivateKey = await window.crypto.subtle.encrypt(
       {

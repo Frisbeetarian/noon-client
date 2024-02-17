@@ -25,7 +25,7 @@ const TextMessage = ({
 
   useEffect(() => {
     const decryptAndSetContent = async () => {
-      if (!isDeleted) {
+      if (!isDeleted && content) {
         try {
           const decrypted = await MessageUtility.decryptMessage(content)
           setDecryptedContent(decrypted)

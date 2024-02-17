@@ -21,15 +21,19 @@ export default class MessageUtility {
     // @ts-ignore
     const { encryptedPrivateKey, iv, salt } =
       await KeyManagement.fetchEncryptedPrivateKeyDetails()
+
     const privateKey = await KeyManagement.decryptPrivateKey(
       encryptedPrivateKey,
       iv,
       salt,
       password
     )
+    console.log('encryptedMessageBase64:', encryptedMessageBase64)
+
     const encryptedMessage = KeyManagement.base64ToArrayBuffer(
       encryptedMessageBase64
     )
+
     const decryptedMessage = await window.crypto.subtle.decrypt(
       {
         name: 'RSA-OAEP',
@@ -37,7 +41,10 @@ export default class MessageUtility {
       privateKey,
       encryptedMessage
     )
-    // Decode and return the decrypted message
+
+    console.log('private key:', privateKey)
+    console.log('decryptedMessage:', decryptedMessage)
+
     const decoder = new TextDecoder()
     return decoder.decode(decryptedMessage)
   }

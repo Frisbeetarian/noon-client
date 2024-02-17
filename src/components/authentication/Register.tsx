@@ -63,8 +63,12 @@ function Register() {
 
       const registrationValues = { ...values, publicKey }
 
-      await registerUser(registrationValues).unwrap()
-      router.replace('/noon')
+      const response = await registerUser(registrationValues).unwrap()
+
+      if (response.status === 200) {
+        const sessionKey = await KeyManagement.deriveSessionKey(values.password)
+        router.replace('/noon')
+      }
     } catch (error) {
       // @ts-ignore
       if (error.data?.errors) {
