@@ -43,12 +43,58 @@ export default class KeyManagement {
       exportedMK
     )
 
-    // Return encrypted MK details for storage
     return {
       encryptedMasterKey: this.encryptedMasterKey,
       iv: this.arrayBufferToBase64(iv),
       salt: this.arrayBufferToBase64(salt),
     }
+  }
+
+  static async decryptAndSetMasterKey(
+    encryptedMKDetails: {
+      encryptedMasterKey: ArrayBuffer
+      iv: string
+      salt: string
+    },
+    password: string
+  ) {
+    const enc = new TextEncoder()
+    const keyMaterial = await window.crypto.subtle.importKey(
+      'raw',
+      enc.encode(password),
+      'PBKDF2',
+      false,
+      ['deriveBits', 'deriveKey']
+    )
+
+    const salt = this.base64ToArrayBuffer(encryptedMKDetails.salt)
+    const kek = await window.crypto.subtle.deriveKey(
+      {
+        name: 'PBKDF2',
+        salt: salt,
+        iterations: 100000,
+        hash: 'SHA-256',
+      },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['decrypt']
+    )
+
+    const iv = this.base64ToArrayBuffer(encryptedMKDetails.iv)
+    const decryptedMK = await window.crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: iv },
+      kek,
+      encryptedMKDetails.encryptedMasterKey
+    )
+
+    this.masterKey = await window.crypto.subtle.importKey(
+      'raw',
+      decryptedMK,
+      { name: 'AES-GCM', length: 256 },
+      true,
+      ['encrypt', 'decrypt']
+    )
   }
 
   static clearSessionKey() {
