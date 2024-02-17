@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Head from 'next/head'
-import { useToast } from '@chakra-ui/react'
+import { useDisclosure, useToast } from '@chakra-ui/react'
 
 import {
   addFriendEntry,
@@ -34,6 +34,7 @@ import {
   rejectFriendRequest,
 } from '../../utils/friendRequestActions'
 import useAppAlert from '../../hooks/useAppAlert'
+import PasswordPromptModal from '../../components/PasswordPromptModal'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -48,6 +49,7 @@ function Noon({ axios }) {
   const loggedInUser = useSelector(getLoggedInUser)
   const toast = useToast()
   const showAppAlert = useAppAlert()
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true })
 
   useEffect(() => {
     setMounted(true)
@@ -104,6 +106,8 @@ function Noon({ axios }) {
     })
   }
 
+  const handlePasswordSubmit = async (password) => {}
+
   useEffect(() => {
     if (
       loggedInUser &&
@@ -143,6 +147,12 @@ function Noon({ axios }) {
           {createGroupActive && <CreateGroupSidebar />}
         </SocketConnectionProvider>
       ) : null}
+
+      <PasswordPromptModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onSubmit={handlePasswordSubmit}
+      />
     </div>
   )
 }
