@@ -6,11 +6,11 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  Button,
   FormControl,
   FormLabel,
   Input,
 } from '@chakra-ui/react'
+import AppButton from './AppComponents/AppButton'
 
 const PasswordPromptModal = ({ isOpen, onSubmit, isLoading }) => {
   const [password, setPassword] = useState('')
@@ -28,24 +28,43 @@ const PasswordPromptModal = ({ isOpen, onSubmit, isLoading }) => {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Password Required</ModalHeader>
-        <ModalBody>
+        <ModalHeader className="bg-black p-5 ">Password Required</ModalHeader>
+        <ModalBody className="bg-black p-5 text-white">
           <FormControl>
             <FormLabel htmlFor="password">
               Enter your password to continue:
             </FormLabel>
             <Input
+              autoFocus
+              className="m-0 bg-transparent pl-2 text-white"
+              size="md"
               id="password"
               type="password"
               value={password}
+              placeholder="Password..."
               onChange={(e) => setPassword(e.target.value)}
+              border={0}
+              borderBottom="1px solid #921A1C"
+              _focus={{
+                borderBottom: '1px solid white !important',
+              }}
+              sx={{
+                '::placeholder': {
+                  color: 'white',
+                },
+              }}
             />
           </FormControl>
         </ModalBody>
-        <ModalFooter>
-          <Button mr={3} onClick={handleSubmit} isLoading={isLoading}>
+        <ModalFooter className="bg-black p-5 text-white">
+          <AppButton
+            onClick={() => {
+              handleSubmit()
+            }}
+            isLoading={isLoading}
+          >
             Submit
-          </Button>
+          </AppButton>
         </ModalFooter>
       </ModalContent>
     </Modal>
