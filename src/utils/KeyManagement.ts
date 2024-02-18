@@ -133,7 +133,7 @@ export default class KeyManagement {
       // @ts-ignore
       const transaction = db.transaction('keys', 'readonly')
       const store = transaction.objectStore('keys')
-      const request = store.get('encryptedKEK')
+      const request = store.get('encryptedMasterKey')
 
       request.onerror = () => reject(request.error)
       request.onsuccess = () => {

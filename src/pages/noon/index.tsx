@@ -127,6 +127,7 @@ function Noon({ axios }) {
         if (!encryptedKEKDetails) {
           throw new Error('Encrypted KEK details not found.')
         }
+        console.log('handlePasswordSubmit.')
 
         await KeyManagement.decryptAndSetMasterKey(
           {
