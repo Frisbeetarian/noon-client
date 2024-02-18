@@ -17,21 +17,19 @@ export default class MessageManagement {
     return KeyManagement.arrayBufferToBase64(encryptedMessage)
   }
 
-  static async decryptMessage(encryptedMessageBase64, password = '1234') {
+  static async decryptMessage(encryptedMessageBase64) {
     try {
       if (!KeyManagement.getMasterKey()) {
         throw new Error('Master Key is not set.')
       }
 
       // @ts-ignore
-      const { encryptedPrivateKey, iv, salt } =
+      const { encryptedPrivateKey, iv } =
         await KeyManagement.fetchEncryptedPrivateKeyDetails()
 
       const privateKey = await KeyManagement.decryptPrivateKey(
         encryptedPrivateKey,
-        iv,
-        salt,
-        password
+        iv
       )
       console.log('encryptedMessageBase64:', encryptedMessageBase64)
 
