@@ -34,7 +34,7 @@ import ChatControlsAndSearch from './ChatControlsAndSearch'
 import Video from './Video'
 import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
-import MessageUtility from '../utils/MessageManagement'
+import MessageManagement from '../utils/MessageManagement'
 import KeyManagement from '../utils/KeyManagement'
 
 function Chat({ axios }) {
@@ -125,7 +125,7 @@ function Chat({ axios }) {
       return
     }
 
-    const encryptedMessage = await MessageUtility.encryptMessage(
+    const encryptedMessage = await MessageManagement.encryptMessage(
       loggedInUser.user.publicKey,
       inputMessage
     )

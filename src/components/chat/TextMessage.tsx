@@ -11,7 +11,7 @@ import {
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import AppMenuList from '../AppComponents/AppMenuList'
 import { AiOutlineUser } from 'react-icons/ai'
-import MessageUtility from '../../utils/MessageManagement'
+import MessageManagement from '../../utils/MessageManagement'
 
 const TextMessage = ({
   content,
@@ -27,7 +27,7 @@ const TextMessage = ({
     const decryptAndSetContent = async () => {
       if (!isDeleted && content) {
         try {
-          const decrypted = await MessageUtility.decryptMessage(content)
+          const decrypted = await MessageManagement.decryptMessage(content)
           setDecryptedContent(decrypted)
         } catch (error) {
           console.error('Decryption error:', error)

@@ -1,6 +1,6 @@
 import KeyManagement from './KeyManagement'
 
-export default class MessageUtility {
+export default class MessageManagement {
   static async encryptMessage(
     publicKeyBase64: any,
     message: string | undefined
