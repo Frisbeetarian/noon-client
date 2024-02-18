@@ -3,6 +3,13 @@ export default class KeyManagement {
   static masterKey: CryptoKey | null = null
   static encryptedMasterKey: ArrayBuffer | null = null
 
+  static getMasterKey() {
+    if (!this.masterKey) {
+      throw new Error('Master Key is not available.')
+    }
+    return this.masterKey
+  }
+
   static async generateAndEncryptMasterKey(password: string) {
     this.masterKey = await window.crypto.subtle.generateKey(
       { name: 'AES-GCM', length: 256 },
@@ -139,8 +146,8 @@ export default class KeyManagement {
     })
   }
 
-  static setDecryptedKEK(decryptedKEK: CryptoKey) {
-    this.masterKey = decryptedKEK
+  static setMasterKeyInMemory(unencryptedMasterKey: CryptoKey) {
+    this.masterKey = unencryptedMasterKey
   }
 
   static clearKeys() {

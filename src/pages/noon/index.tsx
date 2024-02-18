@@ -62,6 +62,15 @@ function Noon({ axios }) {
     if (loggedInUser.user?.profile?.friends) {
       fetchFriendsPublicKey()
     }
+
+    try {
+      const masterKey = KeyManagement.getMasterKey()
+      console.log('Master key is already set in memory.')
+      onClose()
+    } catch (error) {
+      console.log('Master key is not set. Need to show password prompt.')
+      onOpen()
+    }
   }, [loggedInUser.user])
 
   const fetchFriendsPublicKey = async () => {
@@ -118,7 +127,7 @@ function Noon({ axios }) {
         password
       )
 
-      KeyManagement.setDecryptedKEK(decryptedKEK)
+      // KeyManagement.setMasterKeyInMemory(decryptedKEK)
 
       onClose()
     }
