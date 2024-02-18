@@ -50,7 +50,7 @@ function Noon({ axios }) {
   const loggedInUser = useSelector(getLoggedInUser)
   const toast = useToast()
   const showAppAlert = useAppAlert()
-  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true })
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false })
   const [validatePassword, { isLoading, isSuccess, isError }] =
     useValidatePasswordMutation()
 
@@ -64,7 +64,7 @@ function Noon({ axios }) {
     }
 
     try {
-      const masterKey = KeyManagement.getMasterKey()
+      KeyManagement.getMasterKey()
       console.log('Master key is already set in memory.')
       onClose()
     } catch (error) {
@@ -119,17 +119,29 @@ function Noon({ axios }) {
   }
 
   const handlePasswordSubmit = async (password) => {
-    const response = await validatePassword({ password }).unwrap()
+    try {
+      const response = await validatePassword({ password }).unwrap()
+      if (response.valid) {
+        const encryptedKEKDetails =
+          await KeyManagement.fetchEncryptedKEKDetails()
+        if (!encryptedKEKDetails) {
+          throw new Error('Encrypted KEK details not found.')
+        }
 
-    if (response.status === 200) {
-      const decryptedKEK = await KeyManagement.decryptAndSetMasterKey(
-        encryptedKEKDetails,
-        password
-      )
-
-      // KeyManagement.setMasterKeyInMemory(decryptedKEK)
-
-      onClose()
+        await KeyManagement.decryptAndSetMasterKey(
+          {
+            encryptedMasterKey: KeyManagement.base64ToArrayBuffer(
+              encryptedKEKDetails.encryptedMasterKey
+            ),
+            iv: KeyManagement.base64ToArrayBuffer(encryptedKEKDetails.iv),
+            salt: KeyManagement.base64ToArrayBuffer(encryptedKEKDetails.salt),
+          },
+          password
+        )
+        onClose()
+      }
+    } catch (error) {
+      console.error('Error decrypting KEK or validating password:', error)
     }
   }
 

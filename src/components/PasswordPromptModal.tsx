@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import AppButton from './AppComponents/AppButton'
 
-const PasswordPromptModal = ({ isOpen, onSubmit, isLoading }) => {
+const PasswordPromptModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
   const [password, setPassword] = useState('')
 
   const handleSubmit = () => {
@@ -22,7 +22,7 @@ const PasswordPromptModal = ({ isOpen, onSubmit, isLoading }) => {
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => {}}
+      onClose={onClose}
       closeOnOverlayClick={false}
       isCentered
     >
@@ -59,12 +59,7 @@ const PasswordPromptModal = ({ isOpen, onSubmit, isLoading }) => {
           </FormControl>
         </ModalBody>
         <ModalFooter className="bg-black p-5 text-white">
-          <AppButton
-            onClick={() => {
-              handleSubmit()
-            }}
-            isLoading={isLoading}
-          >
+          <AppButton onClick={handleSubmit} isLoading={isLoading}>
             Submit
           </AppButton>
         </ModalFooter>
