@@ -18,34 +18,43 @@ export default class MessageManagement {
   }
 
   static async decryptMessage(encryptedMessageBase64, password = '1234') {
-    // @ts-ignore
-    const { encryptedPrivateKey, iv, salt } =
-      await KeyManagement.fetchEncryptedPrivateKeyDetails()
+    try {
+      if (!KeyManagement.getMasterKey()) {
+        throw new Error('Master Key is not set.')
+      }
 
-    const privateKey = await KeyManagement.decryptPrivateKey(
-      encryptedPrivateKey,
-      iv,
-      salt,
-      password
-    )
-    console.log('encryptedMessageBase64:', encryptedMessageBase64)
+      // @ts-ignore
+      const { encryptedPrivateKey, iv, salt } =
+        await KeyManagement.fetchEncryptedPrivateKeyDetails()
 
-    const encryptedMessage = KeyManagement.base64ToArrayBuffer(
-      encryptedMessageBase64
-    )
+      const privateKey = await KeyManagement.decryptPrivateKey(
+        encryptedPrivateKey,
+        iv,
+        salt,
+        password
+      )
+      console.log('encryptedMessageBase64:', encryptedMessageBase64)
 
-    const decryptedMessage = await window.crypto.subtle.decrypt(
-      {
-        name: 'RSA-OAEP',
-      },
-      privateKey,
-      encryptedMessage
-    )
+      const encryptedMessage = KeyManagement.base64ToArrayBuffer(
+        encryptedMessageBase64
+      )
 
-    console.log('private key:', privateKey)
-    console.log('decryptedMessage:', decryptedMessage)
+      const decryptedMessage = await window.crypto.subtle.decrypt(
+        {
+          name: 'RSA-OAEP',
+        },
+        privateKey,
+        encryptedMessage
+      )
 
-    const decoder = new TextDecoder()
-    return decoder.decode(decryptedMessage)
+      console.log('private key:', privateKey)
+      console.log('decryptedMessage:', decryptedMessage)
+
+      const decoder = new TextDecoder()
+      return decoder.decode(decryptedMessage)
+    } catch (e) {
+      console.error('Error decrypting message:', e)
+      throw e
+    }
   }
 }
