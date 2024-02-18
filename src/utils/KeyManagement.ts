@@ -86,43 +86,53 @@ export default class KeyManagement {
     },
     password: string
   ) {
-    const enc = new TextEncoder()
-    const keyMaterial = await window.crypto.subtle.importKey(
-      'raw',
-      enc.encode(password),
-      'PBKDF2',
-      false,
-      ['deriveBits', 'deriveKey']
-    )
+    try {
+      const enc = new TextEncoder()
+      const keyMaterial = await window.crypto.subtle.importKey(
+        'raw',
+        enc.encode(password),
+        'PBKDF2',
+        false,
+        ['deriveBits', 'deriveKey']
+      )
 
-    const salt = this.base64ToArrayBuffer(encryptedMKDetails.salt)
-    const kek = await window.crypto.subtle.deriveKey(
-      {
-        name: 'PBKDF2',
-        salt: salt,
-        iterations: 100000,
-        hash: 'SHA-256',
-      },
-      keyMaterial,
-      { name: 'AES-GCM', length: 256 },
-      false,
-      ['decrypt']
-    )
+      // const salt = this.base64ToArrayBuffer(encryptedMKDetails.salt)
+      const kek = await window.crypto.subtle.deriveKey(
+        {
+          name: 'PBKDF2',
+          // @ts-ignore
+          salt: encryptedMKDetails.salt,
+          iterations: 100000,
+          hash: 'SHA-256',
+        },
+        keyMaterial,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['decrypt']
+      )
 
-    const iv = this.base64ToArrayBuffer(encryptedMKDetails.iv)
-    const decryptedMK = await window.crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv: iv },
-      kek,
-      encryptedMKDetails.encryptedMasterKey
-    )
+      // const iv = this.base64ToArrayBuffer(encryptedMKDetails.iv)
+      const decryptedMK = await window.crypto.subtle.decrypt(
+        {
+          name: 'AES-GCM',
+          // @ts-ignore
+          iv: encryptedMKDetails.iv,
+        },
+        kek,
+        encryptedMKDetails.encryptedMasterKey
+      )
 
-    this.masterKey = await window.crypto.subtle.importKey(
-      'raw',
-      decryptedMK,
-      { name: 'AES-GCM', length: 256 },
-      true,
-      ['encrypt', 'decrypt']
-    )
+      this.masterKey = await window.crypto.subtle.importKey(
+        'raw',
+        decryptedMK,
+        { name: 'AES-GCM', length: 256 },
+        true,
+        ['encrypt', 'decrypt']
+      )
+    } catch (error) {
+      console.log('Error:', error)
+      throw error
+    }
   }
 
   static async fetchEncryptedKEKDetails() {
