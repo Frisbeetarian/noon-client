@@ -45,9 +45,6 @@ export default class MessageManagement {
         encryptedMessage
       )
 
-      console.log('private key:', privateKey)
-      console.log('decryptedMessage:', decryptedMessage)
-
       const decoder = new TextDecoder()
       return decoder.decode(decryptedMessage)
     } catch (e) {

@@ -156,13 +156,13 @@ export default class KeyManagement {
     })
   }
 
-  static setMasterKeyInMemory(unencryptedMasterKey: CryptoKey) {
-    this.masterKey = unencryptedMasterKey
-  }
-
-  static clearKeys() {
-    this.sessionKey = null
-  }
+  // static setMasterKeyInMemory(unencryptedMasterKey: CryptoKey) {
+  //   this.masterKey = unencryptedMasterKey
+  // }
+  //
+  // static clearKeys() {
+  //   this.sessionKey = null
+  // }
 
   static async generateKeyPair() {
     try {
@@ -173,7 +173,7 @@ export default class KeyManagement {
           publicExponent: new Uint8Array([1, 0, 1]),
           hash: { name: 'SHA-256' },
         },
-        true, // whether the key is extractable (i.e., can be used in exportKey)
+        true,
         ['encrypt', 'decrypt']
       )
       return keyPair

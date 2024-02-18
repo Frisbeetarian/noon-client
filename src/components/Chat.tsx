@@ -25,7 +25,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import Header from './Header'
 import Messages from './Messages'
 
-import { getLoggedInUser } from '../store/users'
+import {
+  getLoggedInUser,
+  getFriendPublicKeyByProfileUuid,
+} from '../store/users'
 
 import { getCreateGroupComponent, getIsMobile } from '../store/ui'
 
@@ -47,6 +50,9 @@ function Chat({ axios }) {
 
   const activeConversation = useSelector(getActiveConversation)
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
+  const friendPublicKey = useSelector(
+    getFriendPublicKeyByProfileUuid(profile.uuid)
+  )
 
   const profile = useSelector(getActiveConversee)
   const [isOpen, setIsOpen] = useState(false)
@@ -125,8 +131,11 @@ function Chat({ axios }) {
       return
     }
 
+    const publicKeys = [loggedInUser.user.publicKey, friendPublicKey]
+
+    console.log('public keys:', publicKeys)
     const encryptedMessage = await MessageManagement.encryptMessage(
-      loggedInUser.user.publicKey,
+      publicKeys,
       inputMessage
     )
 

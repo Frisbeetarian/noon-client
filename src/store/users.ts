@@ -104,6 +104,16 @@ export const getLoggedInUser = createSelector(
   (user) => user
 )
 
+export const getFriendPublicKeyByProfileUuid = createSelector(
+  [
+    (state, profileUuid) => state.entities.users.user.profile.friends,
+    (state, profileUuid) => profileUuid,
+  ],
+  (friends, profileUuid) => {
+    return friends?.find((friend) => friend.uuid === profileUuid)?.publicKey
+  }
+)
+
 export const {
   setLoggedInUser,
   addFriendRequestEntry,
