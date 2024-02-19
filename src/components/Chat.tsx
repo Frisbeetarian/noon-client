@@ -168,7 +168,7 @@ function Chat({ axios }) {
             addMessageToActiveConversation({
               message: {
                 uuid: response.data.uuid as string,
-                content: encryptedMessage as string,
+                content: encryptedPayload.encryptedMessage as string,
                 sender: {
                   uuid: loggedInUser?.user?.profile?.uuid,
                   username: loggedInUser?.user?.profile?.username,
