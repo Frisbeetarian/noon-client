@@ -134,22 +134,23 @@ function Chat({ axios }) {
     const publicKeys = [loggedInUser.user.publicKey, friendPublicKey]
 
     console.log('public keys:', publicKeys)
-    const encryptedMessage = await MessageManagement.encryptMessage(
+    const encryptedPayload = await MessageManagement.encryptMessage(
       publicKeys,
       inputMessage
     )
 
-    console.log('encrypted message:', encryptedMessage)
+    console.log('encrypted message:', encryptedPayload)
     setInputMessage('')
 
     await axios
       .post('/api/messages', {
-        message: encryptedMessage,
+        message: encryptedPayload.encryptedMessage,
         type: 'text',
         src: '',
         conversationUuid: activeConversation.uuid,
         recipientUuid: profile.uuid,
         recipientUsername: profile.username,
+        encryptedKeys: encryptedPayload.encryptedKeys,
       })
       .then(function (response) {
         if (response.status === 200) {
