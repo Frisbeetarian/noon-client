@@ -16,10 +16,10 @@ export default class MessageManagement {
       encodedMessage
     )
 
-    const encryptedKeys = []
+    const encryptedKeys = new Set()
 
-    for (const publicKeyBase64 of publicKeys) {
-      const publicKey = await KeyManagement.importPublicKey(publicKeyBase64)
+    for (const key of publicKeys) {
+      const publicKey = await KeyManagement.importPublicKey(key.publicKey)
       const exportedSymmetricKey = await window.crypto.subtle.exportKey(
         'raw',
         symmetricKey
@@ -29,7 +29,11 @@ export default class MessageManagement {
         publicKey,
         exportedSymmetricKey
       )
-      encryptedKeys.push(KeyManagement.arrayBufferToBase64(encryptedKey))
+
+      encryptedKeys.add({
+        uuid: key.uuid,
+        key: [KeyManagement.arrayBufferToBase64(encryptedKey)],
+      })
     }
 
     return {

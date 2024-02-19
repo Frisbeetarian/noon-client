@@ -131,15 +131,24 @@ function Chat({ axios }) {
       return
     }
 
-    const publicKeys = [loggedInUser.user.publicKey, friendPublicKey]
+    // const publicKeys = [loggedInUser.user.publicKey, friendPublicKey]
+    const publicKeys = new Set()
+    publicKeys.add({
+      uuid: loggedInUser.user.profile.uuid,
+      publicKey: loggedInUser.user.publicKey,
+    })
 
-    console.log('public keys:', publicKeys)
+    publicKeys.add({
+      uuid: profile.uuid,
+      publicKey: friendPublicKey,
+    })
+
     const encryptedPayload = await MessageManagement.encryptMessage(
       publicKeys,
       inputMessage
     )
 
-    console.log('encrypted message:', encryptedPayload)
+    console.log('encrypted payload:', encryptedPayload)
     setInputMessage('')
 
     await axios
