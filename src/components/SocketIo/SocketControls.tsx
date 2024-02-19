@@ -58,8 +58,13 @@ function SocketControls({ axios }) {
     if (socket) {
       socket.on(
         'send-message',
-        ({ senderUuid, senderUsername, conversationUuid, message }) => {
-          const data = message
+        ({
+          senderUuid,
+          senderUsername,
+          conversationUuid,
+          message,
+          encryptedKey,
+        }) => {
           if (
             activeConversationSet === false ||
             conversationUuid !== activeConversation.uuid
@@ -76,7 +81,7 @@ function SocketControls({ axios }) {
             addMessageToActiveConversation({
               message: {
                 uuid: message.uuid,
-                content: data.content,
+                content: message.content,
                 // @ts-ignore
                 sender: { uuid: senderUuid, username: senderUsername },
                 from: 'other',
@@ -85,6 +90,7 @@ function SocketControls({ axios }) {
                 src: message.src,
                 //TODO get deleted from payload
                 deleted: false,
+                encryptedKey: encryptedKey[0],
                 updatedAt: new Date().toString(),
                 createdAt: new Date().toString(),
               },
