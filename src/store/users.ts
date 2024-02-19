@@ -104,13 +104,15 @@ export const getLoggedInUser = createSelector(
   (user) => user
 )
 
-export const getFriendPublicKeyByProfileUuid = createSelector(
+export const getFriendPublicKeyByUuid = createSelector(
   [
-    (state, profileUuid) => state.entities.users.user.profile.friends,
-    (state, profileUuid) => profileUuid,
+    (state: { entities: { users: UsersState } }) =>
+      state.entities.users.user?.profile?.friends || [],
+    (_, uuid: string) => uuid,
   ],
-  (friends, profileUuid) => {
-    return friends?.find((friend) => friend.uuid === profileUuid)?.publicKey
+  (friends, uuid) => {
+    const friend = friends.find((friend) => friend.uuid === uuid)
+    return friend ? friend.publicKey : undefined
   }
 )
 

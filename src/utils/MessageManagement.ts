@@ -1,21 +1,73 @@
 import KeyManagement from './KeyManagement'
 
 export default class MessageManagement {
-  static async encryptMessage(
-    publicKeyBase64: any,
-    message: string | undefined
-  ) {
-    const publicKey = await KeyManagement.importPublicKey(publicKeyBase64)
+  static async encryptMessage(publicKeys, message) {
+    const symmetricKey = await window.crypto.subtle.generateKey(
+      { name: 'AES-GCM', length: 256 },
+      true,
+      ['encrypt', 'decrypt']
+    )
+
     const encodedMessage = new TextEncoder().encode(message)
+    const iv = window.crypto.getRandomValues(new Uint8Array(12))
     const encryptedMessage = await window.crypto.subtle.encrypt(
-      {
-        name: 'RSA-OAEP',
-      },
-      publicKey,
+      { name: 'AES-GCM', iv },
+      symmetricKey,
       encodedMessage
     )
-    return KeyManagement.arrayBufferToBase64(encryptedMessage)
+
+    const encryptedKeys = []
+
+    for (const publicKeyBase64 of publicKeys) {
+      const publicKey = await KeyManagement.importPublicKey(publicKeyBase64)
+      const exportedSymmetricKey = await window.crypto.subtle.exportKey(
+        'raw',
+        symmetricKey
+      )
+      const encryptedKey = await window.crypto.subtle.encrypt(
+        { name: 'RSA-OAEP' },
+        publicKey,
+        exportedSymmetricKey
+      )
+      encryptedKeys.push(KeyManagement.arrayBufferToBase64(encryptedKey))
+    }
+
+    return {
+      encryptedMessage: KeyManagement.arrayBufferToBase64(encryptedMessage),
+      iv: KeyManagement.arrayBufferToBase64(iv),
+      encryptedKeys,
+    }
   }
+
+  // static async encryptMessage(publicKeys: any, message: string | undefined) {
+  //   // const publicKey = await KeyManagement.importPublicKey(publicKeyBase64)
+  //   const encodedMessage = new TextEncoder().encode(message)
+  //   let encryptedMessages = []
+  //
+  //   for (const publicKeyBase64 of publicKeys) {
+  //     const publicKey = await KeyManagement.importPublicKey(publicKeyBase64)
+  //     const encryptedMessage = await window.crypto.subtle.encrypt(
+  //       { name: 'RSA-OAEP' },
+  //       publicKey,
+  //       encodedMessage
+  //     )
+  //     encryptedMessages.push(
+  //       // @ts-ignore
+  //       KeyManagement.arrayBufferToBase64(encryptedMessage)
+  //     )
+  //   }
+  //
+  //   return encryptedMessages
+  //
+  //   // const encryptedMessage = await window.crypto.subtle.encrypt(
+  //   //   {
+  //   //     name: 'RSA-OAEP',
+  //   //   },
+  //   //   publicKey,
+  //   //   encodedMessage
+  //   // )
+  //   // return KeyManagement.arrayBufferToBase64(encryptedMessage)
+  // }
 
   static async decryptMessage(encryptedMessageBase64) {
     try {

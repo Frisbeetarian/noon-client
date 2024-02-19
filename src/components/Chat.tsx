@@ -28,6 +28,7 @@ import Messages from './Messages'
 import {
   getLoggedInUser,
   getFriendPublicKeyByProfileUuid,
+  getFriendPublicKeyByUuid,
 } from '../store/users'
 
 import { getCreateGroupComponent, getIsMobile } from '../store/ui'
@@ -38,7 +39,6 @@ import Video from './Video'
 import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
 import MessageManagement from '../utils/MessageManagement'
-import KeyManagement from '../utils/KeyManagement'
 
 function Chat({ axios }) {
   const dispatch = useDispatch()
@@ -50,13 +50,13 @@ function Chat({ axios }) {
 
   const activeConversation = useSelector(getActiveConversation)
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
-  const friendPublicKey = useSelector(
-    getFriendPublicKeyByProfileUuid(profile.uuid)
-  )
 
   const profile = useSelector(getActiveConversee)
   const [isOpen, setIsOpen] = useState(false)
   const toast = useToast()
+  const friendPublicKey = useSelector((state) =>
+    getFriendPublicKeyByUuid(state, profile?.uuid)
+  )
 
   useEffect(() => {
     setInnerHeight(window.innerHeight)
@@ -139,6 +139,7 @@ function Chat({ axios }) {
       inputMessage
     )
 
+    console.log('encrypted message:', encryptedMessage)
     setInputMessage('')
 
     await axios
