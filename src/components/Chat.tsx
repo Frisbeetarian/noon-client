@@ -148,7 +148,8 @@ function Chat({ axios }) {
       inputMessage
     )
 
-    console.log('encrypted payload:', encryptedPayload)
+    const keysIterator = encryptedPayload.encryptedKeys.values()
+
     setInputMessage('')
 
     await axios
@@ -159,7 +160,7 @@ function Chat({ axios }) {
         conversationUuid: activeConversation.uuid,
         recipientUuid: profile.uuid,
         recipientUsername: profile.username,
-        encryptedKeys: encryptedPayload.encryptedKeys,
+        encryptedKeys: Array.from(keysIterator),
       })
       .then(function (response) {
         if (response.status === 200) {
