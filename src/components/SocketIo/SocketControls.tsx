@@ -86,11 +86,11 @@ function SocketControls({ axios }) {
                 sender: { uuid: senderUuid, username: senderUsername },
                 from: 'other',
                 conversationUuid,
+                encryptedKey: encryptedKey,
                 type: message.type,
                 src: message.src,
                 //TODO get deleted from payload
                 deleted: false,
-                encryptedKey: encryptedKey[0],
                 updatedAt: new Date().toString(),
                 createdAt: new Date().toString(),
               },
