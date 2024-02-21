@@ -292,7 +292,6 @@ export default class KeyManagement {
       id: 'userPrivateKey',
       encryptedPrivateKey: encryptedKeyData.encryptedPrivateKey,
       iv: encryptedKeyData.iv,
-      salt: encryptedKeyData.salt,
     })
 
     await tx.complete
