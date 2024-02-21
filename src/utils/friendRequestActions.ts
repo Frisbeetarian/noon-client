@@ -16,6 +16,10 @@ const acceptFriendRequest = async ({
     })
 
     if (response.status === 200) {
+      const friendPublicKeyResponse = await axios.get(
+        `api/users/publicKeys/${friendRequest.uuid}`
+      )
+
       dispatch(setFriendFlagOnProfile({ profileUuid: friendRequest.uuid }))
       dispatch(
         removeFriendRequestEntry({
@@ -28,6 +32,7 @@ const acceptFriendRequest = async ({
           uuid: friendRequest.uuid,
           username: friendRequest.username,
           name: friendRequest.username,
+          publicKey: friendPublicKeyResponse.data.publicKey,
         })
       )
       dispatch(
