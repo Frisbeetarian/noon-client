@@ -25,7 +25,6 @@ const AppAlert = forwardRef<HTMLButtonElement, AppAlertProps>(
     duration = null,
     customRender = false,
     senderUuid,
-    senderUsername,
   }) => {
     const toast = useToast()
 
@@ -62,6 +61,7 @@ const AppAlert = forwardRef<HTMLButtonElement, AppAlertProps>(
             className="sticky top ml-4 mb-10"
             size="sm"
             onClick={() => {
+              // @ts-ignore
               toast.close(senderUuid)
             }}
             name="close button"

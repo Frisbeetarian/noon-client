@@ -29,8 +29,7 @@ const TextMessage = ({
         try {
           const decrypted = await MessageManagement.decryptMessage(
             content,
-            item.encryptedKey,
-            item.iv
+            item.encryptedKey
           )
           setDecryptedContent(decrypted)
         } catch (error) {

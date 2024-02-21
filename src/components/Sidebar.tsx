@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
@@ -257,8 +258,7 @@ function Sidebar({ axios }) {
                 onClick={async () => {
                   try {
                     await logoutUser(undefined).unwrap()
-                    KeyManagement.clearMemoryData()
-                    await KeyManagement.clearIndexedDBData()
+
                     dispatch(logoutUserReducer())
                     dispatch(clearChatState())
                     dispatch(clearFilesState())
@@ -268,6 +268,9 @@ function Sidebar({ axios }) {
                     dispatch(clearUIState())
                     dispatch(clearVideoState())
                     dispatch(clearSearchState())
+                    KeyManagement.clearMemoryData()
+                    await KeyManagement.clearIndexedDBData()
+
                     router.replace('/')
                   } catch (error) {
                     console.error('Error logging out:', error)

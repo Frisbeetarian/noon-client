@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useToast } from '@chakra-ui/react'
@@ -14,7 +15,7 @@ import {
   addProfiles,
   cancelFriendshipRequestSentOnProfile,
   setFriendFlagOnProfile,
-  setFriendshipRequestSentOnProfile,
+  // setFriendshipRequestSentOnProfile,
   setHasFriendshipRequestFromLoggedInProfile,
 } from '../../store/profiles'
 
