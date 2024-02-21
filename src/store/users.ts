@@ -96,6 +96,9 @@ const slice = createSlice({
         })
       }
     },
+    logoutUser: (_) => {
+      return initialState
+    },
   },
 })
 

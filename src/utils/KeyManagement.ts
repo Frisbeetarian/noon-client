@@ -96,7 +96,6 @@ export default class KeyManagement {
         ['deriveBits', 'deriveKey']
       )
 
-      // const salt = this.base64ToArrayBuffer(encryptedMKDetails.salt)
       const kek = await window.crypto.subtle.deriveKey(
         {
           name: 'PBKDF2',
@@ -111,7 +110,6 @@ export default class KeyManagement {
         ['decrypt']
       )
 
-      // const iv = this.base64ToArrayBuffer(encryptedMKDetails.iv)
       const decryptedMK = await window.crypto.subtle.decrypt(
         {
           name: 'AES-GCM',
@@ -155,14 +153,6 @@ export default class KeyManagement {
       }
     })
   }
-
-  // static setMasterKeyInMemory(unencryptedMasterKey: CryptoKey) {
-  //   this.masterKey = unencryptedMasterKey
-  // }
-  //
-  // static clearKeys() {
-  //   this.sessionKey = null
-  // }
 
   static async generateKeyPair() {
     try {
@@ -360,6 +350,7 @@ export default class KeyManagement {
     const dbRequest = indexedDB.open('noon-db')
 
     dbRequest.onsuccess = function (event) {
+      // @ts-ignore
       const db = event.target.result
 
       const transaction = db.transaction(['keys'], 'readwrite')
@@ -390,6 +381,7 @@ export default class KeyManagement {
     }
 
     dbRequest.onerror = function (event) {
+      // @ts-ignore
       console.error('Error opening database:', event.target.error)
     }
   }
