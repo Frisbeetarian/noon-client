@@ -27,6 +27,7 @@ import {
 } from '../store/chat'
 import SocketConnector from './SocketIo/SocketConnector'
 import {
+  clearUIState,
   getIsConversationOpen,
   getIsMobile,
   getSearchComponentState,
@@ -49,6 +50,8 @@ import { clearFilesState } from '../store/files'
 import { clearGroupsState } from '../store/groups'
 import { clearProfilesState } from '../store/profiles'
 import { clearSocketsState } from '../store/sockets'
+import { clearVideoState } from '../store/video'
+import { clearSearchState } from '../store/search'
 
 function Sidebar({ axios }) {
   const router = useRouter()
@@ -262,6 +265,9 @@ function Sidebar({ axios }) {
                     dispatch(clearGroupsState())
                     dispatch(clearProfilesState())
                     dispatch(clearSocketsState())
+                    dispatch(clearUIState())
+                    dispatch(clearVideoState())
+                    dispatch(clearSearchState())
                     router.replace('/')
                   } catch (error) {
                     console.error('Error logging out:', error)

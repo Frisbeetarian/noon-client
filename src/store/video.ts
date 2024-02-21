@@ -16,6 +16,9 @@ const slice = createSlice({
     setVideoFrameForConversation: (video, action: PayloadAction<boolean>) => {
       video.videoFrameOpen = action.payload
     },
+    clearVideoState: (_) => {
+      return initialState
+    },
   },
 })
 
@@ -24,5 +27,5 @@ export const getVideoFrameOpenState = createSelector(
   (video) => video.videoFrameOpen
 )
 
-export const { setVideoFrameForConversation } = slice.actions
+export const { setVideoFrameForConversation, clearVideoState } = slice.actions
 export default slice.reducer
