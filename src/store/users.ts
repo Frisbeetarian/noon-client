@@ -68,6 +68,37 @@ const slice = createSlice({
 
       if (users.user) users.user.profile.friends = friends
     },
+    setFriendsPublicKey: (
+      users,
+      action: PayloadAction<{ uuid: string; publicKey: string }[]>
+    ) => {
+      if (users.user && users.user.profile && users.user.profile.friends) {
+        users.user.profile.friends.forEach((friend) => {
+          const publicKeyEntry = action.payload.find(
+            (publicKey) => publicKey.uuid === friend.uuid
+          )
+
+          if (publicKeyEntry) {
+            friend.publicKey = publicKeyEntry.publicKey
+          }
+        })
+      }
+    },
+    setFriendPublicKey: (
+      users,
+      action: PayloadAction<{ uuid: string; publicKey: string }>
+    ) => {
+      if (users.user && users.user.profile && users.user.profile.friends) {
+        users.user.profile.friends.find((friend) => {
+          if (friend.uuid === action.payload.uuid) {
+            friend.publicKey = action.payload.publicKey
+          }
+        })
+      }
+    },
+    logoutUserReducer: (_) => {
+      return initialState
+    },
   },
 })
 
@@ -76,11 +107,26 @@ export const getLoggedInUser = createSelector(
   (user) => user
 )
 
+export const getFriendPublicKeyByUuid = createSelector(
+  [
+    (state: { entities: { users: UsersState } }) =>
+      state.entities.users.user?.profile?.friends || [],
+    (_, uuid: string) => uuid,
+  ],
+  (friends, uuid) => {
+    const friend = friends.find((friend) => friend.uuid === uuid)
+    return friend ? friend.publicKey : undefined
+  }
+)
+
 export const {
   setLoggedInUser,
   addFriendRequestEntry,
   removeFriendRequestEntry,
   addFriendEntry,
   removeFriendEntry,
+  setFriendsPublicKey,
+  setFriendPublicKey,
+  logoutUserReducer,
 } = slice.actions
 export default slice.reducer

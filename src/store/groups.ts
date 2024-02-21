@@ -29,6 +29,9 @@ const slice = createSlice({
       temp.splice(temp.indexOf(action.payload), 1)
       groups.participants = temp
     },
+    clearGroupsState: (_) => {
+      return initialState
+    },
   },
 })
 
@@ -42,5 +45,10 @@ export const getParticipants = createSelector(
   (groups) => groups.participants
 )
 
-export const { addParticipants, removeParticipants, clearState } = slice.actions
+export const {
+  addParticipants,
+  removeParticipants,
+  clearState,
+  clearGroupsState,
+} = slice.actions
 export default slice.reducer

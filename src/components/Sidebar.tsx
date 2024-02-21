@@ -19,10 +19,15 @@ import {
   SearchIcon,
 } from '@chakra-ui/icons'
 
-import { getLoggedInUser } from '../store/users'
-import { getSortedConversations, setConversations } from '../store/chat'
+import { getLoggedInUser, logoutUserReducer } from '../store/users'
+import {
+  clearChatState,
+  getSortedConversations,
+  setConversations,
+} from '../store/chat'
 import SocketConnector from './SocketIo/SocketConnector'
 import {
+  clearUIState,
   getIsConversationOpen,
   getIsMobile,
   getSearchComponentState,
@@ -40,6 +45,13 @@ import AppMenuList from './AppComponents/AppMenuList'
 import { useGetConversationsQuery } from '../store/api/conversationsApiSlice'
 import { useLogoutUserMutation } from '../store/api/usersApiSlice'
 import { AiOutlineUser } from 'react-icons/ai'
+import KeyManagement from '../utils/KeyManagement'
+import { clearFilesState } from '../store/files'
+import { clearGroupsState } from '../store/groups'
+import { clearProfilesState } from '../store/profiles'
+import { clearSocketsState } from '../store/sockets'
+import { clearVideoState } from '../store/video'
+import { clearSearchState } from '../store/search'
 
 function Sidebar({ axios }) {
   const router = useRouter()
@@ -245,6 +257,17 @@ function Sidebar({ axios }) {
                 onClick={async () => {
                   try {
                     await logoutUser(undefined).unwrap()
+                    KeyManagement.clearMemoryData()
+                    await KeyManagement.clearIndexedDBData()
+                    dispatch(logoutUserReducer())
+                    dispatch(clearChatState())
+                    dispatch(clearFilesState())
+                    dispatch(clearGroupsState())
+                    dispatch(clearProfilesState())
+                    dispatch(clearSocketsState())
+                    dispatch(clearUIState())
+                    dispatch(clearVideoState())
+                    dispatch(clearSearchState())
                     router.replace('/')
                   } catch (error) {
                     console.error('Error logging out:', error)

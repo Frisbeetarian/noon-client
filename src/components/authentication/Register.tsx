@@ -24,6 +24,7 @@ import {
 } from '../../store/ui'
 import AppButton from '../AppComponents/AppButton'
 import { useRegisterUserMutation } from '../../store/api/usersApiSlice'
+import KeyManagement from '../../utils/KeyManagement'
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -45,8 +46,37 @@ function Register() {
 
   const handleSubmit = async (values, { setErrors }) => {
     try {
-      await registerUser(values).unwrap()
-      router.replace('/noon')
+      const keyPair = await KeyManagement.generateKeyPair()
+      const publicKey = await KeyManagement.exportPublicKey(keyPair.publicKey)
+
+      const {
+        encryptedMasterKey,
+        iv: kekIV,
+        salt: kekSalt,
+      } = await KeyManagement.generateAndEncryptMasterKey(values.password)
+      await KeyManagement.storeEncryptedKEK({
+        encryptedMasterKey:
+          KeyManagement.arrayBufferToBase64(encryptedMasterKey),
+        iv: kekIV,
+        salt: kekSalt,
+      })
+
+      const { encryptedPrivateKey, iv } = await KeyManagement.encryptPrivateKey(
+        keyPair.privateKey
+      )
+
+      await KeyManagement.storeEncryptedKey({
+        encryptedPrivateKey: encryptedPrivateKey,
+        iv,
+      })
+
+      const registrationValues = { ...values, publicKey }
+
+      const response = await registerUser(registrationValues).unwrap()
+
+      if (response.status === 200) {
+        router.replace('/noon')
+      }
     } catch (error) {
       // @ts-ignore
       if (error.data?.errors) {

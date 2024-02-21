@@ -280,6 +280,7 @@ const slice = createSlice({
     ) => {
       const conversationUuid = action.payload.message.conversationUuid
 
+      console.log('action paylod add message:', action.payload)
       if (
         chat.activeConversation &&
         chat.activeConversation.uuid === conversationUuid
@@ -296,6 +297,7 @@ const slice = createSlice({
           type: action.payload.message.type,
           src: action.payload.message.src,
           deleted: action.payload.message.deleted,
+          encryptedKey: action.payload.message.encryptedKey,
           sender: {
             uuid: action.payload.message.sender?.uuid,
             username: action.payload.message.sender?.username,
@@ -316,6 +318,7 @@ const slice = createSlice({
             type: action.payload.message.type,
             src: action.payload.message.src,
             deleted: action.payload.message.deleted,
+            encryptedKey: action.payload.message.encryptedKey,
             sender: {
               uuid: action.payload.message.sender?.uuid,
               username: action.payload.message.sender?.username,
@@ -351,6 +354,7 @@ const slice = createSlice({
             type: action.payload.message.type,
             src: action.payload.message.src,
             deleted: action.payload.message.deleted,
+            encryptedKey: action.payload.message.encryptedKey,
             sender: {
               uuid: action.payload.message.sender?.uuid,
               username: action.payload.message.sender?.username,
@@ -679,6 +683,9 @@ const slice = createSlice({
         console.log('error:', e)
       }
     },
+    clearChatState: (_) => {
+      return initialState
+    },
   },
 })
 
@@ -735,6 +742,7 @@ export const {
   setActiveGroupInStore,
   removeParticipantFromGroup,
   deleteMessageInStore,
+  clearChatState,
 } = slice.actions
 
 export default slice.reducer

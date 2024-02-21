@@ -119,6 +119,9 @@ const slice = createSlice({
       state.rateLimited.retryAfter = 0
       state.rateLimited.refresh = new Date().getTime()
     },
+    clearUIState: (_) => {
+      return initialState
+    },
   },
 })
 
@@ -201,6 +204,7 @@ export const {
   setParticlesInitialized,
   rateLimitDetected,
   resetRateLimit,
+  clearUIState,
 } = slice.actions
 
 export default slice.reducer

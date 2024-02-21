@@ -25,7 +25,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import Header from './Header'
 import Messages from './Messages'
 
-import { getLoggedInUser } from '../store/users'
+import {
+  getLoggedInUser,
+  getFriendPublicKeyByProfileUuid,
+  getFriendPublicKeyByUuid,
+} from '../store/users'
 
 import { getCreateGroupComponent, getIsMobile } from '../store/ui'
 
@@ -34,6 +38,7 @@ import ChatControlsAndSearch from './ChatControlsAndSearch'
 import Video from './Video'
 import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
+import MessageManagement from '../utils/MessageManagement'
 
 function Chat({ axios }) {
   const dispatch = useDispatch()
@@ -49,6 +54,9 @@ function Chat({ axios }) {
   const profile = useSelector(getActiveConversee)
   const [isOpen, setIsOpen] = useState(false)
   const toast = useToast()
+  const friendPublicKey = useSelector((state) =>
+    getFriendPublicKeyByUuid(state, profile?.uuid)
+  )
 
   useEffect(() => {
     setInnerHeight(window.innerHeight)
@@ -123,17 +131,37 @@ function Chat({ axios }) {
       return
     }
 
-    const data = inputMessage
+    // const publicKeys = [loggedInUser.user.publicKey, friendPublicKey]
+    const publicKeys = new Set()
+    publicKeys.add({
+      uuid: loggedInUser.user.profile.uuid,
+      publicKey: loggedInUser.user.publicKey,
+    })
+
+    publicKeys.add({
+      uuid: profile.uuid,
+      publicKey: friendPublicKey,
+    })
+
+    const encryptedPayload = await MessageManagement.encryptMessage(
+      publicKeys,
+      inputMessage
+    )
+
+    console.log('encryptedPayload', encryptedPayload)
+    // const keysIterator = encryptedPayload.encryptedKeys.values()
+
     setInputMessage('')
 
     await axios
       .post('/api/messages', {
-        message: data,
+        message: encryptedPayload.encryptedMessage,
         type: 'text',
         src: '',
         conversationUuid: activeConversation.uuid,
         recipientUuid: profile.uuid,
         recipientUsername: profile.username,
+        encryptedKeys: encryptedPayload.encryptedKeys,
       })
       .then(function (response) {
         if (response.status === 200) {
@@ -141,7 +169,7 @@ function Chat({ axios }) {
             addMessageToActiveConversation({
               message: {
                 uuid: response.data.uuid as string,
-                content: data as string,
+                content: encryptedPayload.encryptedMessage as string,
                 sender: {
                   uuid: loggedInUser?.user?.profile?.uuid,
                   username: loggedInUser?.user?.profile?.username,
@@ -151,6 +179,7 @@ function Chat({ axios }) {
                 src: '',
                 deleted: false,
                 conversationUuid: activeConversation.uuid,
+                encryptedKey: response.data.encryptedKey,
                 updatedAt: new Date().toString(),
                 createdAt: new Date().toString(),
                 // deleted: ,

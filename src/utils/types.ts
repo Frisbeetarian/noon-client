@@ -5,6 +5,7 @@ export type User = {
   profile: ProfileInUser
   friendshipRequests: FriendshipRequest[]
   friends: Friend[]
+  publicKey: string
 }
 
 export type UserResponse = {
@@ -51,6 +52,7 @@ export type Friend = {
   uuid: string
   username: string
   name: string
+  publicKey?: string
 }
 
 export type FriendshipRequest = {

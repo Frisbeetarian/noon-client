@@ -118,6 +118,9 @@ const slice = createSlice({
         profile.isAFriend = false
       }
     },
+    clearProfilesState: (_) => {
+      return initialState
+    },
   },
 })
 
@@ -154,6 +157,7 @@ export const {
   setFriendFlagOnProfile,
   setHasFriendshipRequestFromLoggedInProfile,
   unsetHasFriendshipRequestFromLoggedInProfile,
+  clearProfilesState,
 } = slice.actions
 
 export default slice.reducer

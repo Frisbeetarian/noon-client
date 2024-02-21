@@ -35,6 +35,13 @@ export const usersApiSlice = createApi({
       }),
       invalidatesTags: ['User'],
     }),
+    validatePassword: builder.mutation({
+      query: (passwordData) => ({
+        url: '/users/validatePassword',
+        method: 'POST',
+        body: passwordData,
+      }),
+    }),
   }),
 })
 
@@ -43,4 +50,5 @@ export const {
   useRegisterUserMutation,
   useLoginUserMutation,
   useLogoutUserMutation,
+  useValidatePasswordMutation,
 } = usersApiSlice

@@ -17,93 +17,6 @@ const initialState: SocketsState = {
   auth: null,
 }
 
-// export const connectSocket = createAsyncThunk(
-//   'sockets/connect',
-//   async (auth, { dispatch, rejectWithValue }) => {
-//     try {
-//       const socket = await SocketManager.getInstance(auth)
-//       console.log('connected:', socket.connected)
-//
-//       // const sockSocketManager.getInstance().connect(auth)
-//       // socket.on('session', ({ sessionID, userID }) => {
-//       //   socket.auth = { sessionID }
-//       //   socket.userID = userID
-//       //   localStorage.setItem('sessionID', sessionID)
-//       // })
-//       //
-//       // socket.on('connect', () => {
-//       //   dispatch(setConnected(true))
-//       //   dispatch(setSocketId(socket.id))
-//       // })
-//       //
-//       // socket.on('disconnect', () => {
-//       //   dispatch(setConnected(false))
-//       // })
-//       //
-//       // socket.on('connect_error', (err) => {
-//       //   if (err.message === 'invalid username') {
-//       //     dispatch(setConnected(false))
-//       //   }
-//       // })
-//       //
-//       // socket.onAny((event, ...args) => {
-//       //   console.log(event, args)
-//       //
-//       //   if (event === 'send-friend-request') {
-//       //     const senderUuid = args[0].senderUuid
-//       //     const senderUsername = args[0].senderUsername
-//       //
-//       //     dispatch(
-//       //       addFriendRequestEntry({
-//       //         uuid: senderUuid,
-//       //         username: senderUsername,
-//       //         reverse: true,
-//       //       })
-//       //     )
-//       //
-//       //     // toast({ type: 'success' }, { senderUuid, senderUsername })
-//       //   }
-//       // })
-//       // return socket.id
-//     } catch (error) {
-//       return rejectWithValue(error)
-//     }
-//   }
-// )
-
-// export const disconnectSocket = createAsyncThunk(
-//   'sockets/disconnect',
-//   async (_, { dispatch }) => {
-//     SocketManager.disconnect()
-//     dispatch(setConnected(false))
-//     dispatch(setSocketId(null))
-//   }
-// )
-
-// export const getSocketInstance = createAsyncThunk(
-//   'sockets/getInstance',
-//   async (_, { dispatch }) => {
-//     const socket = SocketManager.getSocket()
-//
-//     if (socket) {
-//       // Perform operations with the socket instance
-//       // For example, you might want to listen to certain events
-//       socket.on('send-friend-request', (data) => {
-//         console.log('GOT FRIEND REQUEST')
-//         // Dispatch actions based on the event
-//         // dispatch(someReduxAction(data));
-//       })
-//
-//       // Return some relevant data or state if needed
-//       return { isConnected: socket.connected, socketId: socket.id }
-//     } else {
-//       // Handle the case where the socket is not connected/available
-//       // dispatch(someOtherReduxAction());
-//       return { isConnected: false }
-//     }
-//   }
-// )
-
 const socketsSlice = createSlice({
   name: 'sockets',
   initialState,
@@ -134,6 +47,9 @@ const socketsSlice = createSlice({
         state.socketId = socket.id
       }
     },
+    clearSocketsState: (_) => {
+      return initialState
+    },
   },
 })
 
@@ -158,5 +74,6 @@ export const {
   setSocketError,
   connectSocket,
   socketDisconnected,
+  clearSocketsState,
 } = socketsSlice.actions
 export default socketsSlice.reducer

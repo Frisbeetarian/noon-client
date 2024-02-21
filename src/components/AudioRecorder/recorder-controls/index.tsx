@@ -27,7 +27,6 @@ export default function RecorderControls({
                 title="Cancel recording"
                 onClick={cancelRecording}
               >
-                {/* <FontAwesomeIcon icon={faTimes} /> */}
                 <Icon as={ImCancelCircle} />
               </button>
             </Flex>

@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Head from 'next/head'
-import { useToast } from '@chakra-ui/react'
+import { useDisclosure, useToast } from '@chakra-ui/react'
 
 import {
   addFriendEntry,
   getLoggedInUser,
   removeFriendRequestEntry,
+  setFriendsPublicKey,
 } from '../../store/users'
 
 import { addConversation } from '../../store/chat'
@@ -23,7 +24,6 @@ import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
 import SocketConnectionProvider from '../../providers/SocketConnectionProvider'
 import {
-  cancelFriendshipRequestSentOnProfile,
   setFriendFlagOnProfile,
   unsetHasFriendshipRequestFromLoggedInProfile,
 } from '../../store/profiles'
@@ -33,6 +33,9 @@ import {
   rejectFriendRequest,
 } from '../../utils/friendRequestActions'
 import useAppAlert from '../../hooks/useAppAlert'
+import PasswordPromptModal from '../../components/PasswordPromptModal'
+import { useValidatePasswordMutation } from '../../store/api/usersApiSlice'
+import KeyManagement from '../../utils/KeyManagement'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
@@ -47,10 +50,45 @@ function Noon({ axios }) {
   const loggedInUser = useSelector(getLoggedInUser)
   const toast = useToast()
   const showAppAlert = useAppAlert()
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false })
+  const [validatePassword, { isLoading, isSuccess, isError }] =
+    useValidatePasswordMutation()
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  useEffect(() => {
+    if (loggedInUser.user?.profile?.friends) {
+      fetchFriendsPublicKey()
+    }
+
+    try {
+      KeyManagement.getMasterKey()
+      console.log('Master key is already set in memory.')
+      onClose()
+    } catch (error) {
+      console.log('Master key is not set. Need to show password prompt.')
+      onOpen()
+    }
+  }, [loggedInUser.user])
+
+  const fetchFriendsPublicKey = async () => {
+    if (!loggedInUser.user?.profile?.friends) return
+
+    try {
+      const friendsPublicKey = await axios.get(`api/users/publicKeys`)
+      if (
+        friendsPublicKey &&
+        friendsPublicKey.data &&
+        friendsPublicKey.data.length !== 0
+      ) {
+        dispatch(setFriendsPublicKey(friendsPublicKey.data))
+      }
+    } catch (error) {
+      console.error('Error fetching friends public keys:', error.message)
+    }
+  }
 
   const handleAcceptFriendRequest = (friendRequest) => {
     acceptFriendRequest({
@@ -78,6 +116,34 @@ function Noon({ axios }) {
       toastId: friendRequest.uuid + 'friend-request' + loggedInUser.user.uuid,
       toast,
     })
+  }
+
+  const handlePasswordSubmit = async (password) => {
+    try {
+      const response = await validatePassword({ password }).unwrap()
+      if (response.valid) {
+        const encryptedKEKDetails =
+          await KeyManagement.fetchEncryptedKEKDetails()
+        if (!encryptedKEKDetails) {
+          throw new Error('Encrypted KEK details not found.')
+        }
+
+        await KeyManagement.decryptAndSetMasterKey(
+          {
+            encryptedMasterKey: KeyManagement.base64ToArrayBuffer(
+              encryptedKEKDetails.encryptedMasterKey
+            ),
+            iv: KeyManagement.base64ToArrayBuffer(encryptedKEKDetails.iv),
+            salt: KeyManagement.base64ToArrayBuffer(encryptedKEKDetails.salt),
+          },
+          password
+        )
+
+        onClose()
+      }
+    } catch (error) {
+      console.error('Error decrypting KEK or validating password:', error)
+    }
   }
 
   useEffect(() => {
@@ -119,6 +185,13 @@ function Noon({ axios }) {
           {createGroupActive && <CreateGroupSidebar />}
         </SocketConnectionProvider>
       ) : null}
+
+      <PasswordPromptModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onSubmit={handlePasswordSubmit}
+        isLoading={isLoading}
+      />
     </div>
   )
 }
