@@ -96,7 +96,7 @@ const slice = createSlice({
         })
       }
     },
-    logoutUser: (_) => {
+    logoutUserReducer: (_) => {
       return initialState
     },
   },
@@ -127,5 +127,6 @@ export const {
   removeFriendEntry,
   setFriendsPublicKey,
   setFriendPublicKey,
+  logoutUserReducer,
 } = slice.actions
 export default slice.reducer

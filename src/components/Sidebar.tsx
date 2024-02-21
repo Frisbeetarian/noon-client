@@ -19,7 +19,7 @@ import {
   SearchIcon,
 } from '@chakra-ui/icons'
 
-import { getLoggedInUser } from '../store/users'
+import { getLoggedInUser, logoutUserReducer } from '../store/users'
 import { getSortedConversations, setConversations } from '../store/chat'
 import SocketConnector from './SocketIo/SocketConnector'
 import {
@@ -248,6 +248,7 @@ function Sidebar({ axios }) {
                     await logoutUser(undefined).unwrap()
                     KeyManagement.clearMemoryData()
                     await KeyManagement.clearIndexedDBData()
+                    dispatch(logoutUserReducer())
                     router.replace('/')
                   } catch (error) {
                     console.error('Error logging out:', error)
