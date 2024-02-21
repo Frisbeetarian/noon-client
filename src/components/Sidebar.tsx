@@ -246,6 +246,7 @@ function Sidebar({ axios }) {
                 onClick={async () => {
                   try {
                     await logoutUser(undefined).unwrap()
+                    KeyManagement.clearMemoryData()
                     await KeyManagement.clearIndexedDBData()
                     router.replace('/')
                   } catch (error) {

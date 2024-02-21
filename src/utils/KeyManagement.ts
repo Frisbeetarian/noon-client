@@ -393,4 +393,9 @@ export default class KeyManagement {
       console.error('Error opening database:', event.target.error)
     }
   }
+
+  static clearMemoryData() {
+    this.masterKey = null
+    this.encryptedMasterKey = null
+  }
 }
