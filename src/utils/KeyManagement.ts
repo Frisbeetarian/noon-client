@@ -355,4 +355,42 @@ export default class KeyManagement {
       throw error
     }
   }
+
+  static async clearIndexedDBData() {
+    const dbRequest = indexedDB.open('noon-db')
+
+    dbRequest.onsuccess = function (event) {
+      const db = event.target.result
+
+      const transaction = db.transaction(['keys'], 'readwrite')
+
+      transaction.onerror = function (event) {
+        console.error('Transaction error:', event.target.error)
+      }
+
+      const storesToClear = ['keys', 'anotherStore']
+      storesToClear.forEach((storeName) => {
+        const clearRequest = transaction.objectStore(storeName).clear()
+
+        clearRequest.onsuccess = function () {
+          console.log(`${storeName} store cleared.`)
+        }
+
+        clearRequest.onerror = function (event) {
+          console.error(
+            `Error clearing ${storeName} store:`,
+            event.target.error
+          )
+        }
+      })
+
+      transaction.oncomplete = function () {
+        console.log('All specified stores cleared.')
+      }
+    }
+
+    dbRequest.onerror = function (event) {
+      console.error('Error opening database:', event.target.error)
+    }
+  }
 }

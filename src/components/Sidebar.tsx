@@ -40,6 +40,7 @@ import AppMenuList from './AppComponents/AppMenuList'
 import { useGetConversationsQuery } from '../store/api/conversationsApiSlice'
 import { useLogoutUserMutation } from '../store/api/usersApiSlice'
 import { AiOutlineUser } from 'react-icons/ai'
+import KeyManagement from '../utils/KeyManagement'
 
 function Sidebar({ axios }) {
   const router = useRouter()
@@ -245,6 +246,7 @@ function Sidebar({ axios }) {
                 onClick={async () => {
                   try {
                     await logoutUser(undefined).unwrap()
+                    await KeyManagement.clearIndexedDBData()
                     router.replace('/')
                   } catch (error) {
                     console.error('Error logging out:', error)
