@@ -359,7 +359,7 @@ export default class KeyManagement {
         console.error('Transaction error:', event.target.error)
       }
 
-      const storesToClear = ['keys', 'anotherStore']
+      const storesToClear = ['keys']
       storesToClear.forEach((storeName) => {
         const clearRequest = transaction.objectStore(storeName).clear()
 
