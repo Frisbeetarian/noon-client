@@ -47,6 +47,7 @@ import { AiOutlineUser } from 'react-icons/ai'
 import KeyManagement from '../utils/KeyManagement'
 import { clearFilesState } from '../store/files'
 import { clearGroupsState } from '../store/groups'
+import { clearProfilesState } from '../store/profiles'
 
 function Sidebar({ axios }) {
   const router = useRouter()
@@ -258,6 +259,7 @@ function Sidebar({ axios }) {
                     dispatch(clearChatState())
                     dispatch(clearFilesState())
                     dispatch(clearGroupsState())
+                    dispatch(clearProfilesState())
                     router.replace('/')
                   } catch (error) {
                     console.error('Error logging out:', error)
