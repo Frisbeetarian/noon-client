@@ -1,5 +1,4 @@
 export default class KeyManagement {
-  static sessionKey = null
   static masterKey: CryptoKey | null = null
   static encryptedMasterKey: ArrayBuffer | null = null
 

@@ -15,7 +15,6 @@ import {
 } from '../../store/ui'
 import AppButton from '../AppComponents/AppButton'
 import { useLoginUserMutation } from '../../store/api/usersApiSlice'
-import useAppAlert from '../../hooks/useAppAlert'
 
 const LoginSchema = Yup.object().shape({
   usernameOrEmail: Yup.string()
@@ -32,13 +31,13 @@ function Login() {
   const router = useRouter()
   const dispatch = useDispatch()
   const [loginUser, { isLoading, isSuccess }] = useLoginUserMutation()
-  const showAppAlert = useAppAlert()
 
   const handleSubmit = async (values, { setErrors }) => {
     try {
       await loginUser(values).unwrap()
       router.replace('/noon')
     } catch (error) {
+      // @ts-ignore
       if (error.data?.errors) {
         // @ts-ignore
         setErrors(toErrorMap(error.data.errors))
