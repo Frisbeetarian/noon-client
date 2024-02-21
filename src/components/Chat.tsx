@@ -179,6 +179,7 @@ function Chat({ axios }) {
                 src: '',
                 deleted: false,
                 conversationUuid: activeConversation.uuid,
+                encryptedKey: response.data.encryptedKey,
                 updatedAt: new Date().toString(),
                 createdAt: new Date().toString(),
                 // deleted: ,
