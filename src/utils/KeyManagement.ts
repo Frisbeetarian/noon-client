@@ -255,6 +255,10 @@ export default class KeyManagement {
   }
 
   static async fetchEncryptedPrivateKeyDetails() {
+    if (!this.getMasterKey()) {
+      throw new Error('Master Key is not set.')
+    }
+
     const dbPromise = this.openDatabase()
     const db = await dbPromise
 
