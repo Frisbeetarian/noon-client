@@ -48,6 +48,7 @@ import KeyManagement from '../utils/KeyManagement'
 import { clearFilesState } from '../store/files'
 import { clearGroupsState } from '../store/groups'
 import { clearProfilesState } from '../store/profiles'
+import { clearSocketsState } from '../store/sockets'
 
 function Sidebar({ axios }) {
   const router = useRouter()
@@ -260,6 +261,7 @@ function Sidebar({ axios }) {
                     dispatch(clearFilesState())
                     dispatch(clearGroupsState())
                     dispatch(clearProfilesState())
+                    dispatch(clearSocketsState())
                     router.replace('/')
                   } catch (error) {
                     console.error('Error logging out:', error)
