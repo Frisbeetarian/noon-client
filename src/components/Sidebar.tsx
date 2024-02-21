@@ -45,6 +45,8 @@ import { useGetConversationsQuery } from '../store/api/conversationsApiSlice'
 import { useLogoutUserMutation } from '../store/api/usersApiSlice'
 import { AiOutlineUser } from 'react-icons/ai'
 import KeyManagement from '../utils/KeyManagement'
+import { clearFilesState } from '../store/files'
+import { clearGroupsState } from '../store/groups'
 
 function Sidebar({ axios }) {
   const router = useRouter()
@@ -254,7 +256,8 @@ function Sidebar({ axios }) {
                     await KeyManagement.clearIndexedDBData()
                     dispatch(logoutUserReducer())
                     dispatch(clearChatState())
-
+                    dispatch(clearFilesState())
+                    dispatch(clearGroupsState())
                     router.replace('/')
                   } catch (error) {
                     console.error('Error logging out:', error)

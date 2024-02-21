@@ -16,6 +16,9 @@ const slice = createSlice({
     uploadFile: (files, action) => {
       files.file = action.payload.file
     },
+    clearFilesState: (_) => {
+      return initialState
+    },
   },
 })
 
@@ -24,5 +27,5 @@ export const getUploadedFile = createSelector(
   (files) => files.file
 )
 
-export const { uploadFile } = slice.actions
+export const { uploadFile, clearFilesState } = slice.actions
 export default slice.reducer
