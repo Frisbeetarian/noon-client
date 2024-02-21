@@ -235,6 +235,7 @@ export default class KeyManagement {
       throw new Error('Master Key is not set.')
     }
 
+    console.log('private key before encryption:', privateKey)
     const exportedPrivateKey = await window.crypto.subtle.exportKey(
       'pkcs8',
       privateKey

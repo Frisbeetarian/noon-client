@@ -27,7 +27,11 @@ const TextMessage = ({
     const decryptAndSetContent = async () => {
       if (!isDeleted && content) {
         try {
-          const decrypted = await MessageManagement.decryptMessage(content)
+          const decrypted = await MessageManagement.decryptMessage(
+            content,
+            item.encryptedKey,
+            item.iv
+          )
           setDecryptedContent(decrypted)
         } catch (error) {
           console.error('Decryption error:', error)

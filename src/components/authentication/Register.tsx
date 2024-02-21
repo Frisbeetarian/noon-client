@@ -61,6 +61,7 @@ function Register() {
         salt: kekSalt,
       })
 
+      console.log('private key on register:', keyPair.privateKey)
       const { encryptedPrivateKey, iv, salt } =
         await KeyManagement.encryptPrivateKey(keyPair.privateKey)
 

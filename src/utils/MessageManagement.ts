@@ -1,111 +1,104 @@
 import KeyManagement from './KeyManagement'
 
 export default class MessageManagement {
-  static async encryptMessage(publicKeys, message) {
-    const symmetricKey = await window.crypto.subtle.generateKey(
+  static async generateSymmetricKey() {
+    return window.crypto.subtle.generateKey(
       { name: 'AES-GCM', length: 256 },
       true,
       ['encrypt', 'decrypt']
     )
+  }
 
+  static generateIV() {
+    return window.crypto.getRandomValues(new Uint8Array(12))
+  }
+
+  static async encryptMessage(publicKeys, message) {
+    const symmetricKey = await this.generateSymmetricKey()
+    const iv = this.generateIV()
     const encodedMessage = new TextEncoder().encode(message)
-    const iv = window.crypto.getRandomValues(new Uint8Array(12))
+
     const encryptedMessage = await window.crypto.subtle.encrypt(
       { name: 'AES-GCM', iv },
       symmetricKey,
       encodedMessage
     )
-
-    const encryptedKeys = new Set()
+    const encryptedKeys = []
 
     for (const key of publicKeys) {
-      const publicKey = await KeyManagement.importPublicKey(key.publicKey)
       const exportedSymmetricKey = await window.crypto.subtle.exportKey(
         'raw',
         symmetricKey
       )
+
+      const publicKey = await KeyManagement.importPublicKey(key.publicKey)
       const encryptedKey = await window.crypto.subtle.encrypt(
         { name: 'RSA-OAEP' },
         publicKey,
         exportedSymmetricKey
       )
-
-      encryptedKeys.add({
+      // @ts-ignore
+      encryptedKeys.push({
         uuid: key.uuid,
-        key: [KeyManagement.arrayBufferToBase64(encryptedKey)],
+        key: KeyManagement.arrayBufferToBase64(encryptedKey),
       })
     }
 
+    const combinedEncryptedMessage = new Uint8Array(
+      iv.length + encryptedMessage.byteLength
+    )
+    combinedEncryptedMessage.set(iv, 0)
+    combinedEncryptedMessage.set(new Uint8Array(encryptedMessage), iv.length)
+
     return {
-      encryptedMessage: KeyManagement.arrayBufferToBase64(encryptedMessage),
-      iv: KeyManagement.arrayBufferToBase64(iv),
+      encryptedMessage: KeyManagement.arrayBufferToBase64(
+        combinedEncryptedMessage
+      ),
       encryptedKeys,
     }
   }
 
-  // static async encryptMessage(publicKeys: any, message: string | undefined) {
-  //   // const publicKey = await KeyManagement.importPublicKey(publicKeyBase64)
-  //   const encodedMessage = new TextEncoder().encode(message)
-  //   let encryptedMessages = []
-  //
-  //   for (const publicKeyBase64 of publicKeys) {
-  //     const publicKey = await KeyManagement.importPublicKey(publicKeyBase64)
-  //     const encryptedMessage = await window.crypto.subtle.encrypt(
-  //       { name: 'RSA-OAEP' },
-  //       publicKey,
-  //       encodedMessage
-  //     )
-  //     encryptedMessages.push(
-  //       // @ts-ignore
-  //       KeyManagement.arrayBufferToBase64(encryptedMessage)
-  //     )
-  //   }
-  //
-  //   return encryptedMessages
-  //
-  //   // const encryptedMessage = await window.crypto.subtle.encrypt(
-  //   //   {
-  //   //     name: 'RSA-OAEP',
-  //   //   },
-  //   //   publicKey,
-  //   //   encodedMessage
-  //   // )
-  //   // return KeyManagement.arrayBufferToBase64(encryptedMessage)
-  // }
+  static async decryptMessage(encryptedMessageBase64, encryptedKeyBase64) {
+    // @ts-ignore
+    const { encryptedPrivateKey, iv: ivForPrivateKey } =
+      await KeyManagement.fetchEncryptedPrivateKeyDetails()
 
-  static async decryptMessage(encryptedMessageBase64) {
-    try {
-      if (!KeyManagement.getMasterKey()) {
-        throw new Error('Master Key is not set.')
-      }
+    const privateKey = await KeyManagement.decryptPrivateKey(
+      encryptedPrivateKey,
+      ivForPrivateKey
+    )
 
-      // @ts-ignore
-      const { encryptedPrivateKey, iv } =
-        await KeyManagement.fetchEncryptedPrivateKeyDetails()
+    const encryptedKey = KeyManagement.base64ToArrayBuffer(encryptedKeyBase64)
 
-      const privateKey = await KeyManagement.decryptPrivateKey(
-        encryptedPrivateKey,
-        iv
-      )
-      console.log('encryptedMessageBase64:', encryptedMessageBase64)
+    const symmetricKeyArrayBuffer = await window.crypto.subtle.decrypt(
+      { name: 'RSA-OAEP' },
+      privateKey,
+      encryptedKey
+    )
 
-      const encryptedMessage = KeyManagement.base64ToArrayBuffer(
-        encryptedMessageBase64
-      )
+    const symmetricKey = await window.crypto.subtle.importKey(
+      'raw',
+      symmetricKeyArrayBuffer,
+      { name: 'AES-GCM' },
+      true,
+      ['decrypt']
+    )
 
-      const decryptedMessage = await window.crypto.subtle.decrypt(
-        {
-          name: 'RSA-OAEP',
-        },
-        privateKey,
-        encryptedMessage
-      )
+    const combinedEncryptedMessage = KeyManagement.base64ToArrayBuffer(
+      encryptedMessageBase64
+    )
+    const ivForMessage = combinedEncryptedMessage.slice(0, 12)
+    const actualEncryptedMessage = combinedEncryptedMessage.slice(12)
 
-      const decoder = new TextDecoder()
-      return decoder.decode(decryptedMessage)
-    } catch (e) {
-      console.error('Error decrypting message:', e)
-      throw e
-    }
+    const decryptedMessageArrayBuffer = await window.crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: ivForMessage },
+      symmetricKey,
+      actualEncryptedMessage
+    )
+
+    const decoder = new TextDecoder()
+    const message = decoder.decode(decryptedMessageArrayBuffer)
+
+    return message
   }
 }
