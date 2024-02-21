@@ -20,7 +20,11 @@ import {
 } from '@chakra-ui/icons'
 
 import { getLoggedInUser, logoutUserReducer } from '../store/users'
-import { getSortedConversations, setConversations } from '../store/chat'
+import {
+  clearChatState,
+  getSortedConversations,
+  setConversations,
+} from '../store/chat'
 import SocketConnector from './SocketIo/SocketConnector'
 import {
   getIsConversationOpen,
@@ -249,6 +253,8 @@ function Sidebar({ axios }) {
                     KeyManagement.clearMemoryData()
                     await KeyManagement.clearIndexedDBData()
                     dispatch(logoutUserReducer())
+                    dispatch(clearChatState())
+
                     router.replace('/')
                   } catch (error) {
                     console.error('Error logging out:', error)

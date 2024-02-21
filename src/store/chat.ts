@@ -683,6 +683,9 @@ const slice = createSlice({
         console.log('error:', e)
       }
     },
+    clearChatState: (_) => {
+      return initialState
+    },
   },
 })
 
@@ -739,6 +742,7 @@ export const {
   setActiveGroupInStore,
   removeParticipantFromGroup,
   deleteMessageInStore,
+  clearChatState,
 } = slice.actions
 
 export default slice.reducer
