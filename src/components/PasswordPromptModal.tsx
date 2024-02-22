@@ -19,6 +19,12 @@ const PasswordPromptModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
     onSubmit(password)
   }
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSubmit()
+    }
+  }
+
   return (
     <Modal
       isOpen={isOpen}
@@ -37,7 +43,7 @@ const PasswordPromptModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
               Enter your password to continue:
             </FormLabel>
             <Input
-              autoFocus
+              autoFocus={true}
               className="m-0 bg-transparent pl-2 text-white"
               size="md"
               id="password"
@@ -45,6 +51,7 @@ const PasswordPromptModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
               value={password}
               placeholder="Password..."
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown}
               border={0}
               borderBottom="1px solid #921A1C"
               _focus={{
