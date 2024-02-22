@@ -97,8 +97,6 @@ function Chat({ axios }) {
         src: '',
         conversationUuid: activeConversation.uuid,
         encryptedKeys: encryptedPayload.encryptedKeys,
-        updatedAt: new Date().toISOString(),
-        createdAt: new Date().toISOString(),
       })
       .then((response) => {
         if (response.status === 200) {
