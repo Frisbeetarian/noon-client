@@ -24,11 +24,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Header from './Header'
 import Messages from './Messages'
 
-import {
-  getLoggedInUser,
-  getFriendPublicKeyByUuid,
-  getAllFriends,
-} from '../store/users'
+import { getLoggedInUser, getFriendPublicKeyByUuid } from '../store/users'
 
 import { getIsMobile } from '../store/ui'
 
