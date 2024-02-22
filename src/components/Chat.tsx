@@ -103,10 +103,14 @@ function Chat({ axios }) {
     setInputMessage('')
     await axios
       .post('/api/messages/groupMessages', {
-        message: inputMessage,
+        message: encryptedPayload.encryptedMessage,
         type: 'text',
         src: '',
         conversationUuid: activeConversation.uuid,
+        encryptedKeys: encryptedPayload.encryptedKeys,
+        participants: activeConversation.profiles.map(
+          (profile) => profile.uuid
+        ),
       })
       .then((response) => {
         if (response.status === 200) {
