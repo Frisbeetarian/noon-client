@@ -7,8 +7,16 @@ import {
   FormLabel,
   InputGroup,
   InputRightElement,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Stack,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react'
 import { Form, Formik } from 'formik'
 import { CheckIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
@@ -41,9 +49,27 @@ const RegisterSchema = Yup.object().shape({
 
 function Register() {
   const dispatch = useDispatch()
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const [showPassword, setShowPassword] = useState(false)
   const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation()
   const router = useRouter()
+
+  const handlePostRegistration = async (privateKey, passphrase) => {
+    const encryptedPrivateKeyData =
+      await KeyManagement.exportEncryptedPrivateKey(privateKey, passphrase)
+    setEncryptedPrivateKeyInfo(encryptedPrivateKeyData)
+    onOpen() // Open the modal
+  }
+
+  // Triggered when the "Download Private Key" button is clicked
+  const handleDownloadPrivateKey = () => {
+    if (!encryptedPrivateKeyInfo) return
+    KeyManagement.downloadEncryptedPrivateKey(
+      encryptedPrivateKeyInfo,
+      'my_private_key.txt'
+    )
+    onClose() // Optionally close the modal after download
+  }
 
   const handleSubmit = async (values, { setErrors }) => {
     try {
@@ -75,9 +101,10 @@ function Register() {
 
       const response = await registerUser(registrationValues).unwrap()
 
-      if (response.status === 200) {
-        router.replace('/noon')
-      }
+      // if (response.status === 200) {
+      //   onOpen()
+      //   // router.replace('/noon')
+      // }
     } catch (error) {
       // @ts-ignore
       if (error.data?.errors) {
@@ -218,6 +245,33 @@ function Register() {
       >
         Login?
       </Text>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Your Private Key</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>
+              Please download and securely store your private key. It's crucial
+              for accessing your encrypted data.
+            </Text>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={handleDownloadPrivateKey}
+            >
+              Download Private Key
+            </Button>
+            <Button variant="ghost" onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Stack>
   )
 }
