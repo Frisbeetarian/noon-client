@@ -25,6 +25,7 @@ interface UIAuthenticationState {
   showRegisterComponent: boolean
   showLoginComponent: boolean
   showForgotPasswordComponent: boolean
+  isRegistering: boolean
 }
 
 interface UICreateGroupState {
@@ -61,6 +62,7 @@ const initialState: UIState = {
     showRegisterComponent: true,
     showLoginComponent: false,
     showForgotPasswordComponent: false,
+    isRegistering: false,
   },
   createGroup: {
     active: false,
@@ -118,6 +120,9 @@ const slice = createSlice({
       state.rateLimited.message = ''
       state.rateLimited.retryAfter = 0
       state.rateLimited.refresh = new Date().getTime()
+    },
+    setIsRegistering: (state, action: PayloadAction<boolean>) => {
+      state.authentication.isRegistering = action.payload
     },
     clearUIState: (_) => {
       return initialState
@@ -190,6 +195,11 @@ export const getRateLimited = createSelector(
   (ui) => ui.rateLimited
 )
 
+export const getIsRegistering = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.authentication.isRegistering
+)
+
 export const {
   setShowRegisterComponent,
   setShowLoginComponent,
@@ -204,6 +214,7 @@ export const {
   setParticlesInitialized,
   rateLimitDetected,
   resetRateLimit,
+  setIsRegistering,
   clearUIState,
 } = slice.actions
 
