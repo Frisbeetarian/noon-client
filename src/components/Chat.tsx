@@ -95,49 +95,54 @@ function Chat({ axios }) {
       publicKey: loggedInUser.user.publicKey,
     })
 
+    const encryptedPayload = await MessageManagement.encryptMessage(
+      publicKeys,
+      inputMessage
+    )
+
     setInputMessage('')
-    // await axios
-    //   .post('/api/messages/groupMessages', {
-    //     message: inputMessage,
-    //     type: 'text',
-    //     src: '',
-    //     conversationUuid: activeConversation.uuid,
-    //   })
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       dispatch(
-    //         addMessageToActiveConversation({
-    //           message: {
-    //             uuid: response.data?.uuid as string,
-    //             content: inputMessage,
-    //             sender: {
-    //               uuid: loggedInUser?.user?.profile?.uuid,
-    //               username: loggedInUser?.user?.profile?.username,
-    //             },
-    //             from: 'me',
-    //             type: 'text',
-    //             src: '',
-    //             deleted: false,
-    //             conversationUuid: activeConversation.uuid,
-    //             updatedAt: new Date().toString(),
-    //             createdAt: new Date().toString(),
-    //           },
-    //           loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-    //         })
-    //       )
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     if (error.response.status !== 429) {
-    //       toast({
-    //         title: `Error sending message.`,
-    //         position: 'bottom-right',
-    //         isClosable: true,
-    //         status: 'error',
-    //         duration: 5000,
-    //       })
-    //     }
-    //   })
+    await axios
+      .post('/api/messages/groupMessages', {
+        message: inputMessage,
+        type: 'text',
+        src: '',
+        conversationUuid: activeConversation.uuid,
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch(
+            addMessageToActiveConversation({
+              message: {
+                uuid: response.data?.uuid as string,
+                content: inputMessage,
+                sender: {
+                  uuid: loggedInUser?.user?.profile?.uuid,
+                  username: loggedInUser?.user?.profile?.username,
+                },
+                from: 'me',
+                type: 'text',
+                src: '',
+                deleted: false,
+                conversationUuid: activeConversation.uuid,
+                updatedAt: new Date().toString(),
+                createdAt: new Date().toString(),
+              },
+              loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+            })
+          )
+        }
+      })
+      .catch((error) => {
+        if (error.response.status !== 429) {
+          toast({
+            title: `Error sending message.`,
+            position: 'bottom-right',
+            isClosable: true,
+            status: 'error',
+            duration: 5000,
+          })
+        }
+      })
   }
 
   const handleSendMessage = async () => {
