@@ -56,7 +56,6 @@ function Chat({ axios }) {
   const friendPublicKey = useSelector((state) =>
     getFriendPublicKeyByUuid(state, profile?.uuid)
   )
-  const friends = useSelector(getAllFriends)
 
   useEffect(() => {
     setInnerHeight(window.innerHeight)
@@ -81,17 +80,13 @@ function Chat({ axios }) {
 
     const publicKeys = activeConversation.profiles
       .map((profile) => {
-        const friend = friends.find((f) => f.uuid === profile.uuid)
-        return friend
-          ? { uuid: friend.uuid, publicKey: friend.publicKey }
-          : null
+        return {
+          uuid: profile.uuid,
+          username: profile.username,
+          publicKey: profile.publicKey,
+        }
       })
       .filter((pk) => pk !== null)
-
-    publicKeys.push({
-      uuid: loggedInUser.user.profile.uuid,
-      publicKey: loggedInUser.user.publicKey,
-    })
 
     const encryptedPayload = await MessageManagement.encryptMessage(
       publicKeys,
