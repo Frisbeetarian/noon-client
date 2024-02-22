@@ -96,13 +96,17 @@ function Register() {
       const { encryptedPrivateKey, iv } = await KeyManagement.encryptPrivateKey(
         keyPair.privateKey
       )
-
       await KeyManagement.storeEncryptedKey({
         encryptedPrivateKey: encryptedPrivateKey,
         iv,
       })
 
-      const registrationValues = { ...values, publicKey }
+      const registrationValues = {
+        ...values,
+        publicKey,
+        iv: kekIV,
+        salt: kekSalt,
+      }
 
       await registerUser(registrationValues).unwrap()
 
