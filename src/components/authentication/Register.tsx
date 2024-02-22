@@ -27,6 +27,7 @@ import { useRouter } from 'next/router'
 import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
 import {
+  setIsRegistering,
   setShowForgotPasswordComponent,
   setShowLoginComponent,
   setShowRegisterComponent,
@@ -73,6 +74,7 @@ function Register() {
 
   const handleSubmit = async (values, { setErrors }) => {
     try {
+      dispatch(setIsRegistering(true))
       const keyPair = await KeyManagement.generateKeyPair()
       const publicKey = await KeyManagement.exportPublicKey(keyPair.publicKey)
 
@@ -100,11 +102,11 @@ function Register() {
       const registrationValues = { ...values, publicKey }
 
       const response = await registerUser(registrationValues).unwrap()
+      onOpen()
 
-      // if (response.status === 200) {
-      //   onOpen()
-      //   // router.replace('/noon')
-      // }
+      if (response.status === 200) {
+        // router.replace('/noon')
+      }
     } catch (error) {
       // @ts-ignore
       if (error.data?.errors) {
@@ -117,162 +119,178 @@ function Register() {
   }
 
   return (
-    <Stack
-      spacing={8}
-      mx={'auto'}
-      maxW={'xlg'}
-      py={12}
-      px={6}
-      className=" z-10"
-    >
-      <Box boxShadow={'lg'} p={8} className="border border-red-500 z-10">
-        <Formik
-          initialValues={{ email: '', username: '', password: '' }}
-          validationSchema={RegisterSchema}
-          validateOnBlur={false}
-          validateOnChange={false}
-          onSubmit={handleSubmit}
-        >
-          {({ isSubmitting }) => (
-            <Form>
-              <Stack spacing={8} className="text-white">
-                <FormControl id="username" isRequired>
-                  <FormLabel
-                    style={{ fontSize: '1.1rem' }}
-                    requiredIndicator={
-                      <span style={{ color: 'text-black', marginLeft: '5px' }}>
-                        *
-                      </span>
-                    }
-                  >
-                    Username
-                  </FormLabel>
+    <>
+      <Stack
+        spacing={8}
+        mx={'auto'}
+        maxW={'xlg'}
+        py={12}
+        px={6}
+        className=" z-10"
+      >
+        <Box boxShadow={'lg'} p={8} className="border border-red-500 z-10">
+          <Formik
+            initialValues={{ email: '', username: '', password: '' }}
+            validationSchema={RegisterSchema}
+            validateOnBlur={false}
+            validateOnChange={false}
+            onSubmit={handleSubmit}
+          >
+            {({ isSubmitting }) => (
+              <Form>
+                <Stack spacing={8} className="text-white">
+                  <FormControl id="username" isRequired>
+                    <FormLabel
+                      style={{ fontSize: '1.1rem' }}
+                      requiredIndicator={
+                        <span
+                          style={{ color: 'text-black', marginLeft: '5px' }}
+                        >
+                          *
+                        </span>
+                      }
+                    >
+                      Username
+                    </FormLabel>
 
-                  <InputField
-                    name="username"
-                    placeholder="Username"
-                    label=""
-                    color="white"
-                    // @ts-ignore
-                    size="lg"
-                  />
-                </FormControl>
-
-                <FormControl id="email" isRequired>
-                  <FormLabel
-                    style={{ fontSize: '1.1rem' }}
-                    requiredIndicator={
-                      <span style={{ color: 'text-black', marginLeft: '5px' }}>
-                        *
-                      </span>
-                    }
-                  >
-                    Email address
-                  </FormLabel>
-
-                  <InputField
-                    name="email"
-                    placeholder="Email address"
-                    label=""
-                    color="white"
-                    // @ts-ignore
-                    size="lg"
-                  />
-                </FormControl>
-
-                <FormControl id="password" isRequired>
-                  <FormLabel
-                    style={{ fontSize: '1.1rem' }}
-                    requiredIndicator={
-                      <span style={{ color: 'text-black', marginLeft: '5px' }}>
-                        *
-                      </span>
-                    }
-                  >
-                    Password
-                  </FormLabel>
-
-                  <InputGroup m={0} p={0} className="">
                     <InputField
-                      name="password"
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Password"
+                      name="username"
+                      placeholder="Username"
                       label=""
                       color="white"
                       // @ts-ignore
                       size="lg"
                     />
+                  </FormControl>
 
-                    <InputRightElement h={'full'} className="mt-1">
-                      <Button
-                        variant={'ghost'}
-                        onClick={() =>
-                          setShowPassword((showPassword) => !showPassword)
-                        }
-                      >
-                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                      </Button>
-                    </InputRightElement>
-                  </InputGroup>
-                </FormControl>
+                  <FormControl id="email" isRequired>
+                    <FormLabel
+                      style={{ fontSize: '1.1rem' }}
+                      requiredIndicator={
+                        <span
+                          style={{ color: 'text-black', marginLeft: '5px' }}
+                        >
+                          *
+                        </span>
+                      }
+                    >
+                      Email address
+                    </FormLabel>
 
-                <Stack spacing={10} pt={2}>
-                  <AppButton
-                    className="w-1/2 ml-auto"
-                    type="submit"
-                    size="md"
-                    isLoading={isSubmitting || isLoading}
-                    disabled={isSuccess}
-                    // @ts-ignore
-                    rightIcon={isSuccess ? <CheckIcon color="white" /> : null}
-                  >
-                    {isSuccess ? 'Registered' : 'Register'}
-                  </AppButton>
+                    <InputField
+                      name="email"
+                      placeholder="Email address"
+                      label=""
+                      color="white"
+                      // @ts-ignore
+                      size="lg"
+                    />
+                  </FormControl>
+
+                  <FormControl id="password" isRequired>
+                    <FormLabel
+                      style={{ fontSize: '1.1rem' }}
+                      requiredIndicator={
+                        <span
+                          style={{ color: 'text-black', marginLeft: '5px' }}
+                        >
+                          *
+                        </span>
+                      }
+                    >
+                      Password
+                    </FormLabel>
+
+                    <InputGroup m={0} p={0} className="">
+                      <InputField
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Password"
+                        label=""
+                        color="white"
+                        // @ts-ignore
+                        size="lg"
+                      />
+
+                      <InputRightElement h={'full'} className="mt-1">
+                        <Button
+                          variant={'ghost'}
+                          onClick={() =>
+                            setShowPassword((showPassword) => !showPassword)
+                          }
+                        >
+                          {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
+                  </FormControl>
+
+                  <Stack spacing={10} pt={2}>
+                    <AppButton
+                      className="w-1/2 ml-auto"
+                      type="submit"
+                      size="md"
+                      isLoading={isSubmitting || isLoading}
+                      disabled={isSuccess}
+                      // @ts-ignore
+                      rightIcon={isSuccess ? <CheckIcon color="white" /> : null}
+                    >
+                      {isSuccess ? 'Registered' : 'Register'}
+                    </AppButton>
+                  </Stack>
                 </Stack>
-              </Stack>
-            </Form>
-          )}
-        </Formik>
-      </Box>
+              </Form>
+            )}
+          </Formik>
+        </Box>
 
-      <Text
-        className="text-lg text-red-500 cursor-pointer z-10 menlo font-bold"
-        onClick={() => {
-          dispatch(setShowLoginComponent(true))
-          dispatch(setShowRegisterComponent(false))
-          dispatch(setShowForgotPasswordComponent(false))
-        }}
+        <Text
+          className="text-lg text-red-500 cursor-pointer z-10 menlo font-bold"
+          onClick={() => {
+            dispatch(setShowLoginComponent(true))
+            dispatch(setShowRegisterComponent(false))
+            dispatch(setShowForgotPasswordComponent(false))
+          }}
+        >
+          Login?
+        </Text>
+      </Stack>
+
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        closeOnOverlayClick={false}
+        className="z-50"
+        isCentered
+        closeOnEsc={false}
       >
-        Login?
-      </Text>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Your Private Key</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text>
-              Please download and securely store your private key. It's crucial
-              for accessing your encrypted data.
+          <ModalHeader className="bg-red-500 p-5 text-white">
+            Your Private Key
+          </ModalHeader>
+
+          <ModalBody className="bg-black p-5 text-white ">
+            <Text className="my-5">
+              Please download and securely store your private key. It is crucial
+              for accessing your encrypted data in case you need to login from a
+              different device or the data stored on this device is cleared.
+              Recovery is impossible if you lose your private key and no longer
+              have access to this device.
             </Text>
           </ModalBody>
 
-          <ModalFooter>
-            <Button
-              colorScheme="blue"
-              mr={3}
-              onClick={handleDownloadPrivateKey}
-            >
+          <ModalFooter className="bg-black p-5 text-white">
+            <AppButton mr={3} onClick={handleDownloadPrivateKey}>
               Download Private Key
-            </Button>
-            <Button variant="ghost" onClick={onClose}>
-              Close
-            </Button>
+            </AppButton>
+            {/*<AppButton variant="ghost" onClick={onClose}>*/}
+            {/*  Close*/}
+            {/*</AppButton>*/}
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Stack>
+    </>
   )
 }
 

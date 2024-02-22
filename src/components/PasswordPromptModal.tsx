@@ -43,6 +43,7 @@ const PasswordPromptModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
       onClose={onClose}
       closeOnOverlayClick={false}
       isCentered
+      closeOnEsc={false}
     >
       <ModalOverlay />
       <ModalContent>
