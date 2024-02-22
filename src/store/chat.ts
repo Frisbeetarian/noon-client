@@ -288,9 +288,7 @@ const slice = createSlice({
         chat.activeConversation.messages.unshift({
           uuid: action.payload.message.uuid,
           content: action.payload.message.content,
-          conversationUuid: action.payload.message.conversationUuid,
-          // updatedAt: new Date().getTime(),
-          // createdAt: new Date().getTime(),
+          conversationUuid,
           updatedAt: action.payload.message.updatedAt,
           createdAt: action.payload.message.createdAt,
           from: action.payload.message.from,
@@ -311,7 +309,7 @@ const slice = createSlice({
           conversationn.messages.unshift({
             uuid: action.payload.message.uuid,
             content: action.payload.message.content,
-            conversationUuid: action.payload.message.conversationUuid,
+            conversationUuid,
             updatedAt: new Date().toString(),
             createdAt: new Date().toString(),
             from: action.payload.message.from,
@@ -347,7 +345,7 @@ const slice = createSlice({
           conversationn.messages.unshift({
             uuid: action.payload.message.uuid,
             content: action.payload.message.content,
-            conversationUuid: action.payload.message.conversationUuid,
+            conversationUuid,
             updatedAt: action.payload.message.updatedAt,
             createdAt: action.payload.message.createdAt,
             from: action.payload.message.from,
