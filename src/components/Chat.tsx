@@ -97,9 +97,8 @@ function Chat({ axios }) {
         src: '',
         conversationUuid: activeConversation.uuid,
         encryptedKeys: encryptedPayload.encryptedKeys,
-        participants: activeConversation.profiles.map(
-          (profile) => profile.uuid
-        ),
+        updatedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       })
       .then((response) => {
         if (response.status === 200) {
@@ -118,8 +117,8 @@ function Chat({ axios }) {
                 deleted: false,
                 conversationUuid: activeConversation.uuid,
                 encryptedKey: response.data.encryptedKey,
-                updatedAt: new Date().toISOString(),
-                createdAt: new Date().toISOString(),
+                updatedAt: response.data.updatedAt,
+                createdAt: response.data.createdAt,
               },
               loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
             })
