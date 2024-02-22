@@ -29,6 +29,7 @@ import {
   getLoggedInUser,
   getFriendPublicKeyByProfileUuid,
   getFriendPublicKeyByUuid,
+  getAllFriends,
 } from '../store/users'
 
 import { getCreateGroupComponent, getIsMobile } from '../store/ui'
@@ -57,6 +58,7 @@ function Chat({ axios }) {
   const friendPublicKey = useSelector((state) =>
     getFriendPublicKeyByUuid(state, profile?.uuid)
   )
+  const friends = useSelector(getAllFriends)
 
   useEffect(() => {
     setInnerHeight(window.innerHeight)
@@ -79,51 +81,63 @@ function Chat({ axios }) {
       return
     }
 
-    const data = inputMessage
-    setInputMessage('')
+    const publicKeys = activeConversation.profiles
+      .map((profile) => {
+        const friend = friends.find((f) => f.uuid === profile.uuid)
+        return friend
+          ? { uuid: friend.uuid, publicKey: friend.publicKey }
+          : null
+      })
+      .filter((pk) => pk !== null)
 
-    await axios
-      .post('/api/messages/groupMessages', {
-        message: data,
-        type: 'text',
-        src: '',
-        conversationUuid: activeConversation.uuid,
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          dispatch(
-            addMessageToActiveConversation({
-              message: {
-                uuid: response.data?.uuid as string,
-                content: data,
-                sender: {
-                  uuid: loggedInUser?.user?.profile?.uuid,
-                  username: loggedInUser?.user?.profile?.username,
-                },
-                from: 'me',
-                type: 'text',
-                src: '',
-                deleted: false,
-                conversationUuid: activeConversation.uuid,
-                updatedAt: new Date().toString(),
-                createdAt: new Date().toString(),
-              },
-              loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
-            })
-          )
-        }
-      })
-      .catch((error) => {
-        if (error.response.status !== 429) {
-          toast({
-            title: `Error sending message.`,
-            position: 'bottom-right',
-            isClosable: true,
-            status: 'error',
-            duration: 5000,
-          })
-        }
-      })
+    publicKeys.push({
+      uuid: loggedInUser.user.profile.uuid,
+      publicKey: loggedInUser.user.publicKey,
+    })
+
+    setInputMessage('')
+    // await axios
+    //   .post('/api/messages/groupMessages', {
+    //     message: inputMessage,
+    //     type: 'text',
+    //     src: '',
+    //     conversationUuid: activeConversation.uuid,
+    //   })
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       dispatch(
+    //         addMessageToActiveConversation({
+    //           message: {
+    //             uuid: response.data?.uuid as string,
+    //             content: inputMessage,
+    //             sender: {
+    //               uuid: loggedInUser?.user?.profile?.uuid,
+    //               username: loggedInUser?.user?.profile?.username,
+    //             },
+    //             from: 'me',
+    //             type: 'text',
+    //             src: '',
+    //             deleted: false,
+    //             conversationUuid: activeConversation.uuid,
+    //             updatedAt: new Date().toString(),
+    //             createdAt: new Date().toString(),
+    //           },
+    //           loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
+    //         })
+    //       )
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     if (error.response.status !== 429) {
+    //       toast({
+    //         title: `Error sending message.`,
+    //         position: 'bottom-right',
+    //         isClosable: true,
+    //         status: 'error',
+    //         duration: 5000,
+    //       })
+    //     }
+    //   })
   }
 
   const handleSendMessage = async () => {

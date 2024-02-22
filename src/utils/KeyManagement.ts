@@ -316,6 +316,7 @@ export default class KeyManagement {
       if (!this.getMasterKey()) {
         throw new Error('Master Key is not set.')
       }
+
       const encryptedPrivateKey = this.base64ToArrayBuffer(
         encryptedPrivateKeyBase64
       )

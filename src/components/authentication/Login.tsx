@@ -49,7 +49,7 @@ function Login() {
 
   return (
     <Stack spacing={8} mx={'auto'} maxW={'xlg'} py={12} px={6} className="z-10">
-      <Box boxShadow={'lg'} p={8} className="border border-red-500 z-10 ">
+      <Box boxShadow={'lg'} p={8} className="border border-red-500 z-10">
         <Formik
           initialValues={{
             usernameOrEmail: '',
