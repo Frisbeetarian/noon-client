@@ -118,8 +118,8 @@ function Chat({ axios }) {
                 deleted: false,
                 conversationUuid: activeConversation.uuid,
                 encryptedKey: response.data.encryptedKey,
-                updatedAt: new Date().toString(),
-                createdAt: new Date().toString(),
+                updatedAt: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
               },
               loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
             })
@@ -189,9 +189,8 @@ function Chat({ axios }) {
                 deleted: false,
                 conversationUuid: activeConversation.uuid,
                 encryptedKey: response.data.encryptedKey,
-                updatedAt: new Date().toString(),
-                createdAt: new Date().toString(),
-                // deleted: ,
+                updatedAt: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
               },
               loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
             })
