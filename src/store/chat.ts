@@ -196,45 +196,6 @@ const slice = createSlice({
       chat.conversationsThatHaveUnreadMessagesForProfile =
         newConversationsThatHaveUnreadMessagesForProfile
     },
-
-    // setConversations: (chat, action: PayloadAction<ConversationPayload>) => {
-    //   const conversationsArray: ExtendedConversation[] = []
-    //
-    //   // Promise.all(
-    //   action.payload.conversationsToSend?.map((conversation) => {
-    //     const conversationObject = { ...conversation }
-    //
-    //     const converseeObject = conversationObject.profiles.find(
-    //       (element) => element.uuid !== action.payload.loggedInProfileUuid
-    //     )
-    //
-    //     const callObject = conversationObject.calls?.find(
-    //       (call) => call.profileUuid === action.payload.loggedInProfileUuid
-    //     )
-    //
-    //     if (
-    //       conversation.unreadMessages !== 0 &&
-    //       conversation.profileThatHasUnreadMessages ===
-    //         action.payload.loggedInProfileUuid
-    //     ) {
-    //       chat.conversationsThatHaveUnreadMessagesForProfile.push(
-    //         conversation.uuid
-    //       )
-    //     }
-    //
-    //     if (conversationObject.calls && callObject) {
-    //       conversationObject.pendingCall = callObject.pendingCall
-    //       conversationObject.ongoingCall = callObject.ongoingCall
-    //     }
-    //
-    //     conversationObject.conversee = converseeObject
-    //     // chat.conversationController.conversee = converseeObject
-    //     conversationsArray.push(conversationObject)
-    //   })
-    //   // )
-    //
-    //   chat.conversations = conversationsArray
-    // },
     addMessagesToConversation: (
       chat,
       action: PayloadAction<MessagesPayload>
@@ -288,9 +249,7 @@ const slice = createSlice({
         chat.activeConversation.messages.unshift({
           uuid: action.payload.message.uuid,
           content: action.payload.message.content,
-          conversationUuid: action.payload.message.conversationUuid,
-          // updatedAt: new Date().getTime(),
-          // createdAt: new Date().getTime(),
+          conversationUuid,
           updatedAt: action.payload.message.updatedAt,
           createdAt: action.payload.message.createdAt,
           from: action.payload.message.from,
@@ -311,9 +270,9 @@ const slice = createSlice({
           conversationn.messages.unshift({
             uuid: action.payload.message.uuid,
             content: action.payload.message.content,
-            conversationUuid: action.payload.message.conversationUuid,
-            updatedAt: new Date().toString(),
-            createdAt: new Date().toString(),
+            conversationUuid,
+            updatedAt: action.payload.message.updatedAt,
+            createdAt: action.payload.message.createdAt,
             from: action.payload.message.from,
             type: action.payload.message.type,
             src: action.payload.message.src,
@@ -347,7 +306,7 @@ const slice = createSlice({
           conversationn.messages.unshift({
             uuid: action.payload.message.uuid,
             content: action.payload.message.content,
-            conversationUuid: action.payload.message.conversationUuid,
+            conversationUuid,
             updatedAt: action.payload.message.updatedAt,
             createdAt: action.payload.message.createdAt,
             from: action.payload.message.from,
@@ -436,77 +395,8 @@ const slice = createSlice({
         conversationFromStack.ongoingCall = false
       }
 
-      // chat.activeConversation ??= null
       chat.activeConversation = conversationObject
     },
-    // setActiveConversation: (
-    //   chat,
-    //   action: PayloadAction<ConversationPayload | null>
-    // ) => {
-    //   if (action.payload === null) {
-    //     chat.activeConversation = null
-    //     return
-    //   }
-    //
-    //   const index = chat.conversationsThatHaveUnreadMessagesForProfile.indexOf(
-    //     action.payload.conversation?.uuid as string
-    //   )
-    //
-    //   if (index > -1) {
-    //     chat.conversationsThatHaveUnreadMessagesForProfile.splice(index, 1)
-    //   }
-    //
-    //   const conversationObject: ExtendedConversation = {
-    //     ...action.payload.conversation,
-    //   }
-    //
-    //   const conversationFromStack = chat.conversations?.find(
-    //     (conversation) => conversation.uuid === conversationObject.uuid
-    //   )
-    //
-    //   const callInConversationStack = conversationFromStack?.calls.find(
-    //     (call) => call.profileUuid === action.payload?.loggedInProfileUuid
-    //   )
-    //
-    //   conversationObject.pendingCall = callInConversationStack?.pendingCall
-    //   if (conversationFromStack) {
-    //     conversationFromStack.unreadMessages = 0
-    //     conversationFromStack.profileThatHasUnreadMessages = null
-    //     conversationFromStack.ongoingCall = false
-    //   }
-    //
-    //   if (!action.payload.conversation?.messages) {
-    //     conversationObject.messages = []
-    //   } else {
-    //     const messagesArray: Message[] = []
-    //
-    //     action.payload.conversation?.messages.map((message) => {
-    //       const messageObject = { ...message }
-    //
-    //       messageObject.from =
-    //         messageObject.sender.uuid === action.payload?.loggedInProfileUuid
-    //           ? 'me'
-    //           : 'other'
-    //
-    //       messagesArray.push(messageObject)
-    //     })
-    //
-    //     const sortedMessage = messagesArray.sort(
-    //       (a, b) => (b.createdAt as any) - (a.createdAt as any)
-    //     )
-    //
-    //     conversationObject.messages = [...sortedMessage]
-    //   }
-    //
-    //   if (!chat['activeConversation']) {
-    //     chat['activeConversation'] = null
-    //   }
-    //
-    //   console.log('conversationObject', conversationObject)
-    //   if (chat.activeConversation) {
-    //     chat.activeConversation = <ExtendedConversation>conversationObject
-    //   }
-    // },
     setOngoingCall: (
       chat
       // action: PayloadAction<{
@@ -537,7 +427,6 @@ const slice = createSlice({
 
       const conversationObject = { ...action.payload.conversation }
 
-      // Find the conversation in the stack to update its state
       const conversationIndex = chat.conversations?.findIndex(
         (conversation) => conversation.uuid === conversationObject.uuid
       )
@@ -552,6 +441,7 @@ const slice = createSlice({
       if (!action.payload.conversation?.messages) {
         conversationObject.messages = []
       } else {
+        console.log('messages array:', action.payload.conversation?.messages)
         const messagesArray = action.payload.conversation.messages
           .map((message) => ({
             ...message,

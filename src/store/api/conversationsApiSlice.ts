@@ -6,9 +6,20 @@ export const conversationsApiSlice = createApi({
     baseUrl: `${process.env.NEXT_PUBLIC_URL}/api`,
     credentials: 'include',
   }),
+  tagTypes: ['Conversations', 'Messages'],
   endpoints: (builder) => ({
     getConversations: builder.query({
       query: () => '/conversations',
+      providesTags: (result, _, __) =>
+        result
+          ? [
+              ...result.map(({ uuid }) => ({
+                type: 'Conversations',
+                id: uuid,
+              })),
+              'Conversations',
+            ]
+          : ['Conversations'],
     }),
     getMessagesForConversation: builder.query({
       query: ({ conversationUuid, limit = 20, cursor }) => {
@@ -18,6 +29,9 @@ export const conversationsApiSlice = createApi({
         }
         return queryString
       },
+      providesTags: (_, __, arg) => [
+        { type: 'Messages', id: arg.conversationUuid },
+      ],
     }),
   }),
 })

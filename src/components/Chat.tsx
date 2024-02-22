@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 import {
   Flex,
@@ -25,13 +24,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import Header from './Header'
 import Messages from './Messages'
 
-import {
-  getLoggedInUser,
-  getFriendPublicKeyByProfileUuid,
-  getFriendPublicKeyByUuid,
-} from '../store/users'
+import { getLoggedInUser, getFriendPublicKeyByUuid } from '../store/users'
 
-import { getCreateGroupComponent, getIsMobile } from '../store/ui'
+import { getIsMobile } from '../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 
@@ -79,15 +74,29 @@ function Chat({ axios }) {
       return
     }
 
-    const data = inputMessage
-    setInputMessage('')
+    const publicKeys = activeConversation.profiles
+      .map((profile) => {
+        return {
+          uuid: profile.uuid,
+          username: profile.username,
+          publicKey: profile.publicKey,
+        }
+      })
+      .filter((pk) => pk !== null)
 
+    const encryptedPayload = await MessageManagement.encryptMessage(
+      publicKeys,
+      inputMessage
+    )
+
+    setInputMessage('')
     await axios
       .post('/api/messages/groupMessages', {
-        message: data,
+        message: encryptedPayload.encryptedMessage,
         type: 'text',
         src: '',
         conversationUuid: activeConversation.uuid,
+        encryptedKeys: encryptedPayload.encryptedKeys,
       })
       .then((response) => {
         if (response.status === 200) {
@@ -95,7 +104,7 @@ function Chat({ axios }) {
             addMessageToActiveConversation({
               message: {
                 uuid: response.data?.uuid as string,
-                content: data,
+                content: encryptedPayload.encryptedMessage as string,
                 sender: {
                   uuid: loggedInUser?.user?.profile?.uuid,
                   username: loggedInUser?.user?.profile?.username,
@@ -105,8 +114,9 @@ function Chat({ axios }) {
                 src: '',
                 deleted: false,
                 conversationUuid: activeConversation.uuid,
-                updatedAt: new Date().toString(),
-                createdAt: new Date().toString(),
+                encryptedKey: response.data.encryptedKey,
+                updatedAt: response.data.updatedAt,
+                createdAt: response.data.createdAt,
               },
               loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
             })
@@ -131,7 +141,6 @@ function Chat({ axios }) {
       return
     }
 
-    // const publicKeys = [loggedInUser.user.publicKey, friendPublicKey]
     const publicKeys = new Set()
     publicKeys.add({
       uuid: loggedInUser.user.profile.uuid,
@@ -147,9 +156,6 @@ function Chat({ axios }) {
       publicKeys,
       inputMessage
     )
-
-    console.log('encryptedPayload', encryptedPayload)
-    // const keysIterator = encryptedPayload.encryptedKeys.values()
 
     setInputMessage('')
 
@@ -180,9 +186,8 @@ function Chat({ axios }) {
                 deleted: false,
                 conversationUuid: activeConversation.uuid,
                 encryptedKey: response.data.encryptedKey,
-                updatedAt: new Date().toString(),
-                createdAt: new Date().toString(),
-                // deleted: ,
+                updatedAt: response.data.updatedAt,
+                createdAt: response.data.createdAt,
               },
               loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
             })
@@ -220,7 +225,8 @@ function Chat({ axios }) {
         <ChatControlsAndSearch />
       </div>
 
-      <Modal isOpen={isOpen}>
+      {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
+      <Modal isOpen={isOpen} onClose={() => {}}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader className="bg-black p-5 text-red-500">
@@ -254,7 +260,6 @@ function Chat({ axios }) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
       {activeConversation && activeConversation.type === 'group' ? (
         <Flex
           className="flex-col p-0 box-content"
@@ -278,7 +283,6 @@ function Chat({ axios }) {
           )}
         </Flex>
       ) : null}
-
       {profile && activeConversation && activeConversation.type === 'pm' ? (
         <Flex
           className="flex-col p-0 box-content"
@@ -302,7 +306,6 @@ function Chat({ axios }) {
           )}
         </Flex>
       ) : null}
-
       {activeConversation ? (
         <Flex
           w="100%"
