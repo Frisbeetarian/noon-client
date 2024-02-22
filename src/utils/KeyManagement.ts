@@ -275,6 +275,29 @@ export default class KeyManagement {
     })
   }
 
+  static downloadEncryptedPrivateKey(data, filename = 'privateKey.txt') {
+    const blob = new Blob([JSON.stringify(data)], { type: 'text/plain' })
+    const href = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = href
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(href)
+  }
+
+  static async exportEncryptedPrivateKey() {
+    try {
+      const { encryptedPrivateKey, iv } =
+        await this.fetchEncryptedPrivateKeyDetails()
+      return { encryptedPrivateKey, iv }
+    } catch (error) {
+      console.error('Error exporting encrypted private key:', error)
+      throw error
+    }
+  }
+
   static async storeEncryptedKey(encryptedKeyData) {
     const dbPromise = this.openDatabase()
     const db: any = await dbPromise

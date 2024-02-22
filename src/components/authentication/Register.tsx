@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react'
 import {
   Box,
@@ -9,7 +8,6 @@ import {
   InputRightElement,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -22,7 +20,6 @@ import { Form, Formik } from 'formik'
 import { CheckIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
-import { useRouter } from 'next/router'
 
 import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
@@ -53,23 +50,29 @@ function Register() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [showPassword, setShowPassword] = useState(false)
   const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation()
-  const router = useRouter()
+  const [isDownloadingPrivateKeyLoading, setIsDownloadingPrivateKeyLoading] =
+    useState(false)
 
-  const handlePostRegistration = async (privateKey, passphrase) => {
-    const encryptedPrivateKeyData =
-      await KeyManagement.exportEncryptedPrivateKey(privateKey, passphrase)
-    setEncryptedPrivateKeyInfo(encryptedPrivateKeyData)
-    onOpen() // Open the modal
-  }
+  const handleDownloadPrivateKey = async () => {
+    try {
+      setIsDownloadingPrivateKeyLoading(true)
 
-  // Triggered when the "Download Private Key" button is clicked
-  const handleDownloadPrivateKey = () => {
-    if (!encryptedPrivateKeyInfo) return
-    KeyManagement.downloadEncryptedPrivateKey(
-      encryptedPrivateKeyInfo,
-      'my_private_key.txt'
-    )
-    onClose() // Optionally close the modal after download
+      const encryptedPrivateKeyData =
+        await KeyManagement.exportEncryptedPrivateKey()
+
+      if (!encryptedPrivateKeyData) return
+
+      KeyManagement.downloadEncryptedPrivateKey(
+        encryptedPrivateKeyData,
+        'YourEncryptedPrivateKey.txt'
+      )
+      setIsDownloadingPrivateKeyLoading(false)
+
+      dispatch(setIsRegistering(false))
+    } catch (e) {
+      // @ts-ignore
+      console.error(e.message)
+    }
   }
 
   const handleSubmit = async (values, { setErrors }) => {
@@ -101,12 +104,9 @@ function Register() {
 
       const registrationValues = { ...values, publicKey }
 
-      const response = await registerUser(registrationValues).unwrap()
-      onOpen()
+      await registerUser(registrationValues).unwrap()
 
-      if (response.status === 200) {
-        // router.replace('/noon')
-      }
+      onOpen()
     } catch (error) {
       // @ts-ignore
       if (error.data?.errors) {
@@ -260,7 +260,6 @@ function Register() {
         isOpen={isOpen}
         onClose={onClose}
         closeOnOverlayClick={false}
-        className="z-50"
         isCentered
         closeOnEsc={false}
       >
@@ -281,12 +280,13 @@ function Register() {
           </ModalBody>
 
           <ModalFooter className="bg-black p-5 text-white">
-            <AppButton mr={3} onClick={handleDownloadPrivateKey}>
+            <AppButton
+              mr={3}
+              onClick={handleDownloadPrivateKey}
+              isLoading={isDownloadingPrivateKeyLoading}
+            >
               Download Private Key
             </AppButton>
-            {/*<AppButton variant="ghost" onClick={onClose}>*/}
-            {/*  Close*/}
-            {/*</AppButton>*/}
           </ModalFooter>
         </ModalContent>
       </Modal>
