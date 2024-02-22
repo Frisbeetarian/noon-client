@@ -535,7 +535,6 @@ const slice = createSlice({
 
       const conversationObject = { ...action.payload.conversation }
 
-      // Find the conversation in the stack to update its state
       const conversationIndex = chat.conversations?.findIndex(
         (conversation) => conversation.uuid === conversationObject.uuid
       )

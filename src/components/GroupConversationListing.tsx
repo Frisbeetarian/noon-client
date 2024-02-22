@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import {
   Avatar,
@@ -8,7 +7,6 @@ import {
   Menu,
   MenuButton,
   MenuItem,
-  MenuList,
   useToast,
 } from '@chakra-ui/react'
 
@@ -34,13 +32,7 @@ import {
 } from '../store/ui'
 import withAxios from '../utils/withAxios'
 import AppMenuList from './AppComponents/AppMenuList'
-import {
-  AiOutlineCi,
-  AiOutlineClear,
-  AiOutlineGroup,
-  AiOutlineUser,
-} from 'react-icons/ai'
-// import toast from '../store/middleware/toast'
+import { AiOutlineGroup } from 'react-icons/ai'
 
 function GroupConversationListing({ conversation, i, axios }) {
   const dispatch = useDispatch()

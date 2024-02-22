@@ -6,6 +6,7 @@ export const conversationsApiSlice = createApi({
     baseUrl: `${process.env.NEXT_PUBLIC_URL}/api`,
     credentials: 'include',
   }),
+  tagTypes: ['Conversations', 'Messages'],
   endpoints: (builder) => ({
     getConversations: builder.query({
       query: () => '/conversations',
