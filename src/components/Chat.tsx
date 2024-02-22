@@ -186,8 +186,8 @@ function Chat({ axios }) {
                 deleted: false,
                 conversationUuid: activeConversation.uuid,
                 encryptedKey: response.data.encryptedKey,
-                updatedAt: new Date().toISOString(),
-                createdAt: new Date().toISOString(),
+                updatedAt: response.data.updatedAt,
+                createdAt: response.data.createdAt,
               },
               loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
             })
