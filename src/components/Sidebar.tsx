@@ -268,8 +268,8 @@ function Sidebar({ axios }) {
                     dispatch(clearUIState())
                     dispatch(clearVideoState())
                     dispatch(clearSearchState())
-                    KeyManagement.clearMemoryData()
-                    await KeyManagement.clearIndexedDBData()
+                    // KeyManagement.clearMemoryData()
+                    // await KeyManagement.clearIndexedDBData()
 
                     router.replace('/')
                   } catch (error) {

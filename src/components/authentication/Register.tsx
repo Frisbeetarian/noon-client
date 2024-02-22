@@ -66,7 +66,7 @@ function Register() {
         encryptedPrivateKeyData,
         'YourEncryptedPrivateKey.txt'
       )
-      setIsDownloadingPrivateKeyLoading(false)
+      // setIsDownloadingPrivateKeyLoading(false)
 
       dispatch(setIsRegistering(false))
     } catch (e) {
