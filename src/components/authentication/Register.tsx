@@ -107,7 +107,8 @@ function Register() {
       const registrationValues = {
         ...values,
         publicKey,
-        iv: kekIV,
+        masterKeyIV: kekIV,
+        privateKeyIV: iv,
         salt: kekSalt,
       }
 

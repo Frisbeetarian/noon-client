@@ -61,7 +61,7 @@ function Login() {
       try {
         await KeyManagement.storeEncryptedKEK(
           keys.encryptedMasterKey,
-          loginResponse?.iv,
+          loginResponse?.masterKeyIV,
           loginResponse?.salt,
           true
         )
@@ -70,7 +70,7 @@ function Login() {
             encryptedMasterKey: KeyManagement.base64ToArrayBuffer(
               keys.encryptedMasterKey
             ),
-            iv: KeyManagement.base64ToArrayBuffer(loginResponse?.iv),
+            iv: KeyManagement.base64ToArrayBuffer(loginResponse?.masterKeyIV),
             salt: KeyManagement.base64ToArrayBuffer(loginResponse?.salt),
           },
           password
@@ -78,6 +78,7 @@ function Login() {
 
         await KeyManagement.storeEncryptedKey({
           encryptedPrivateKey: keys.encryptedPrivateKey,
+          iv: loginResponse?.privateKeyIV,
         })
 
         dispatch(setIsRegistering(false))

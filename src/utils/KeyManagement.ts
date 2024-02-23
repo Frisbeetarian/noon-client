@@ -58,13 +58,15 @@ export default class KeyManagement {
 
   static async storeEncryptedKEK(
     encryptedKEKDetails,
-    iv = null,
-    salt = null,
+    iv,
+    salt,
     fromLogin = false
   ) {
     const dbPromise = this.openDatabase()
     const db = await dbPromise
     console.log('encryptedKEKDetails:', encryptedKEKDetails)
+    console.log('encryptedKEKDetails iv :', iv)
+    console.log('encryptedKEKDetails iv:', salt)
     // @ts-ignore
     const tx = db.transaction('keys', 'readwrite')
     const store = tx.objectStore('keys')
@@ -93,6 +95,7 @@ export default class KeyManagement {
     password: string
   ) {
     try {
+      console.log('iv in decrypt master key:', encryptedMKDetails.iv)
       const enc = new TextEncoder()
       const keyMaterial = await window.crypto.subtle.importKey(
         'raw',
@@ -133,8 +136,6 @@ export default class KeyManagement {
         true,
         ['encrypt', 'decrypt']
       )
-
-      console.log('this masterkey:', this.masterKey)
     } catch (error) {
       console.log('Error:', error)
       throw error
@@ -320,6 +321,8 @@ export default class KeyManagement {
   }
 
   static async storeEncryptedKey(encryptedKeyData) {
+    console.log('iv in store encrypted key:', encryptedKeyData.iv)
+
     const dbPromise = this.openDatabase()
     const db: any = await dbPromise
 
