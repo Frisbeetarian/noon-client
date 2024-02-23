@@ -89,12 +89,11 @@ function Register() {
         iv: kekIV,
         salt: kekSalt,
       } = await KeyManagement.generateAndEncryptMasterKey(values.password)
-      await KeyManagement.storeEncryptedKEK({
-        encryptedMasterKey:
-          KeyManagement.arrayBufferToBase64(encryptedMasterKey),
-        iv: kekIV,
-        salt: kekSalt,
-      })
+      await KeyManagement.storeEncryptedKEK(
+        KeyManagement.arrayBufferToBase64(encryptedMasterKey),
+        kekIV,
+        kekSalt
+      )
 
       const { encryptedPrivateKey, iv } = await KeyManagement.encryptPrivateKey(
         keyPair.privateKey
