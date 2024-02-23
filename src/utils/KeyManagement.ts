@@ -56,19 +56,26 @@ export default class KeyManagement {
     }
   }
 
-  static async storeEncryptedKEK(encryptedKEKDetails) {
+  static async storeEncryptedKEK(
+    encryptedKEKDetails,
+    iv = null,
+    salt = null,
+    fromLogin = false
+  ) {
     const dbPromise = this.openDatabase()
     const db = await dbPromise
-
+    console.log('encryptedKEKDetails:', encryptedKEKDetails)
     // @ts-ignore
     const tx = db.transaction('keys', 'readwrite')
     const store = tx.objectStore('keys')
 
     await store.put({
       id: 'encryptedMasterKey',
-      encryptedMasterKey: encryptedKEKDetails.encryptedMasterKey,
-      iv: encryptedKEKDetails.iv,
-      salt: encryptedKEKDetails.salt,
+      encryptedMasterKey: !fromLogin
+        ? encryptedKEKDetails.encryptedMasterKey
+        : encryptedKEKDetails,
+      iv: !iv ? encryptedKEKDetails.iv : iv,
+      salt: !salt ? encryptedKEKDetails.salt : salt,
     })
 
     await tx.complete
@@ -243,8 +250,8 @@ export default class KeyManagement {
     }
   }
 
-  static async fetchEncryptedPrivateKeyDetails() {
-    if (!this.getMasterKey()) {
+  static async fetchEncryptedPrivateKeyDetails(dontCheckForMasterKey = false) {
+    if (!dontCheckForMasterKey && !this.getMasterKey()) {
       throw new Error('Master Key is not set.')
     }
 

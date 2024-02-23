@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import * as Yup from 'yup'
@@ -44,22 +44,34 @@ const LoginSchema = Yup.object().shape({
 
 function Login() {
   // const router = useRouter()
+  const fileInputRef = useRef(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const dispatch = useDispatch()
   const [loginUser, { isLoading, isSuccess }] = useLoginUserMutation()
+  const [password, setPassword] = useState('')
+  const [loginResponse, setLoginResponse] = useState(null)
 
   const handleFileUpload = async (event) => {
     const fileReader = new FileReader()
     fileReader.onload = async (e) => {
       const keys = JSON.parse(e.target.result)
+
+      console.log('e.target.result:', keys.encryptedMasterKey)
+
       try {
+        await KeyManagement.storeEncryptedKEK(
+          keys.encryptedMasterKey,
+          loginResponse?.iv,
+          loginResponse?.salt,
+          true
+        )
         await KeyManagement.decryptAndSetMasterKey(
           {
             encryptedMasterKey: KeyManagement.base64ToArrayBuffer(
               keys.encryptedMasterKey
             ),
-            iv: KeyManagement.base64ToArrayBuffer(keys.iv),
-            salt: KeyManagement.base64ToArrayBuffer(keys.salt),
+            iv: KeyManagement.base64ToArrayBuffer(loginResponse?.iv),
+            salt: KeyManagement.base64ToArrayBuffer(loginResponse?.salt),
           },
           password
         )
@@ -73,8 +85,17 @@ function Login() {
   const handleSubmit = async (values, { setErrors }) => {
     try {
       dispatch(setIsRegistering(true))
+      setPassword(values.password)
 
       const response = await loginUser(values).unwrap()
+      setLoginResponse(response)
+      try {
+        await KeyManagement.fetchEncryptedPrivateKeyDetails(true)
+        await KeyManagement.fetchEncryptedKEKDetails()
+      } catch (e) {
+        onOpen()
+      }
+
       console.log('response from login:', response)
 
       // router.replace('/noon')
@@ -89,6 +110,7 @@ function Login() {
     }
   }
 
+  // @ts-ignore
   return (
     <>
       <Stack
@@ -239,7 +261,7 @@ function Login() {
             Upload Private Keys
           </ModalHeader>
 
-          <ModalBody className="bg-black p-5 text-white ">
+          <ModalBody className="bg-black p-5 text-white">
             <Text className="my-5">
               Logging in from a new device. Please upload the file that contains
               your private keys. This is the file that you downloaded when you
@@ -248,12 +270,16 @@ function Login() {
           </ModalBody>
 
           <ModalFooter className="bg-black p-5 text-white">
-            <AppButton
-              mr={3}
-              onClick={handleFileUpload}
-              // isLoading={isDownloadingPrivateKeyLoading}
-            >
-              Download Private Key
+            <input
+              type="file"
+              style={{ display: 'none' }}
+              onChange={handleFileUpload}
+              ref={fileInputRef}
+            />
+
+            {/*@ts-ignore*/}
+            <AppButton mr={3} onClick={() => fileInputRef.current.click()}>
+              Upload Private Key
             </AppButton>
           </ModalFooter>
         </ModalContent>
