@@ -67,11 +67,11 @@ function Register() {
       KeyManagement.downloadEncryptedPrivateKey(
         encryptedPrivateKeyData.encryptedPrivateKey,
         encryptedKEKDetails.encryptedMasterKey,
-        'YourEncryptedData.txt'
+        'YourEncryptedKeys.txt'
       )
       setIsDownloadingPrivateKeyLoading(false)
 
-      // dispatch(setIsRegistering(false))
+      dispatch(setIsRegistering(false))
     } catch (e) {
       // @ts-ignore
       console.error(e.message)
