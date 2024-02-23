@@ -32,6 +32,7 @@ import {
 import AppButton from '../AppComponents/AppButton'
 import { useRegisterUserMutation } from '../../store/api/usersApiSlice'
 import KeyManagement from '../../utils/KeyManagement'
+import { useRouter } from 'next/router'
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -52,6 +53,7 @@ function Register() {
   const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation()
   const [isDownloadingPrivateKeyLoading, setIsDownloadingPrivateKeyLoading] =
     useState(false)
+  const router = useRouter()
 
   const handleDownloadPrivateKey = async () => {
     try {
@@ -65,11 +67,13 @@ function Register() {
       if (!encryptedPrivateKeyData || !encryptedKEKDetails) return
 
       KeyManagement.downloadEncryptedPrivateKey(
-        encryptedPrivateKeyData.encryptedPrivateKey,
+        encryptedPrivateKeyData,
         encryptedKEKDetails.encryptedMasterKey,
         'YourEncryptedKeys.txt'
       )
-      setIsDownloadingPrivateKeyLoading(false)
+
+      // setIsDownloadingPrivateKeyLoading(false)
+      router.replace('/noon')
 
       dispatch(setIsRegistering(false))
     } catch (e) {
@@ -89,6 +93,7 @@ function Register() {
         iv: kekIV,
         salt: kekSalt,
       } = await KeyManagement.generateAndEncryptMasterKey(values.password)
+
       await KeyManagement.storeEncryptedKEK(
         KeyManagement.arrayBufferToBase64(encryptedMasterKey),
         kekIV,

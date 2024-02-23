@@ -64,20 +64,15 @@ export default class KeyManagement {
   ) {
     const dbPromise = this.openDatabase()
     const db = await dbPromise
-    console.log('encryptedKEKDetails:', encryptedKEKDetails)
-    console.log('encryptedKEKDetails iv :', iv)
-    console.log('encryptedKEKDetails iv:', salt)
     // @ts-ignore
     const tx = db.transaction('keys', 'readwrite')
     const store = tx.objectStore('keys')
 
     await store.put({
       id: 'encryptedMasterKey',
-      encryptedMasterKey: !fromLogin
-        ? encryptedKEKDetails.encryptedMasterKey
-        : encryptedKEKDetails,
-      iv: !iv ? encryptedKEKDetails.iv : iv,
-      salt: !salt ? encryptedKEKDetails.salt : salt,
+      encryptedMasterKey: encryptedKEKDetails,
+      iv: iv,
+      salt: salt,
     })
 
     await tx.complete

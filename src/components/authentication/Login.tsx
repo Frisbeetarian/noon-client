@@ -56,8 +56,6 @@ function Login() {
     fileReader.onload = async (e) => {
       const keys = JSON.parse(e.target.result)
 
-      console.log('e.target.result:', keys.encryptedMasterKey)
-
       try {
         await KeyManagement.storeEncryptedKEK(
           keys.encryptedMasterKey,
@@ -65,6 +63,7 @@ function Login() {
           loginResponse?.salt,
           true
         )
+
         await KeyManagement.decryptAndSetMasterKey(
           {
             encryptedMasterKey: KeyManagement.base64ToArrayBuffer(
@@ -97,11 +96,31 @@ function Login() {
 
       const response = await loginUser(values).unwrap()
       setLoginResponse(response)
+      let encryptedMasterKeyDetails
+
       try {
         await KeyManagement.fetchEncryptedPrivateKeyDetails(true)
-        await KeyManagement.fetchEncryptedKEKDetails()
+        encryptedMasterKeyDetails =
+          await KeyManagement.fetchEncryptedKEKDetails()
       } catch (e) {
         onOpen()
+      } finally {
+        await KeyManagement.decryptAndSetMasterKey(
+          {
+            encryptedMasterKey: KeyManagement.base64ToArrayBuffer(
+              encryptedMasterKeyDetails.encryptedMasterKey
+            ),
+            iv: KeyManagement.base64ToArrayBuffer(encryptedMasterKeyDetails.iv),
+            salt: KeyManagement.base64ToArrayBuffer(
+              encryptedMasterKeyDetails.salt
+            ),
+          },
+          values.password
+        )
+
+        // router.replace('/noon')
+
+        dispatch(setIsRegistering(false))
       }
       // dispatch(setIsRegistering(false))
 
