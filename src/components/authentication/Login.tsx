@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react'
-import { useRouter } from 'next/router'
 import { useDispatch } from 'react-redux'
 import * as Yup from 'yup'
 import {
@@ -18,6 +17,7 @@ import {
 } from '@chakra-ui/react'
 import { CheckIcon } from '@chakra-ui/icons'
 import { Field, Form, Formik } from 'formik'
+import { useRouter } from 'next/router'
 
 import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
@@ -43,13 +43,13 @@ const LoginSchema = Yup.object().shape({
 })
 
 function Login() {
-  // const router = useRouter()
   const fileInputRef = useRef(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const dispatch = useDispatch()
   const [loginUser, { isLoading, isSuccess }] = useLoginUserMutation()
   const [password, setPassword] = useState('')
   const [loginResponse, setLoginResponse] = useState(null)
+  const router = useRouter()
 
   const handleFileUpload = async (event) => {
     const fileReader = new FileReader()
@@ -87,6 +87,7 @@ function Login() {
       }
     }
     fileReader.readAsText(event.target.files[0])
+    router.replace('/noon')
   }
 
   const handleSubmit = async (values, { setErrors }) => {
