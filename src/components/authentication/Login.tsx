@@ -75,6 +75,12 @@ function Login() {
           },
           password
         )
+
+        await KeyManagement.storeEncryptedKey({
+          encryptedPrivateKey: keys.encryptedPrivateKey,
+        })
+
+        dispatch(setIsRegistering(false))
       } catch (error) {
         console.error('Error decrypting keys:', error)
       }
@@ -95,6 +101,7 @@ function Login() {
       } catch (e) {
         onOpen()
       }
+      // dispatch(setIsRegistering(false))
 
       console.log('response from login:', response)
 

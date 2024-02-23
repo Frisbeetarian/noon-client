@@ -133,6 +133,8 @@ export default class KeyManagement {
         true,
         ['encrypt', 'decrypt']
       )
+
+      console.log('this masterkey:', this.masterKey)
     } catch (error) {
       console.log('Error:', error)
       throw error
