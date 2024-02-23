@@ -60,15 +60,18 @@ function Register() {
       const encryptedPrivateKeyData =
         await KeyManagement.exportEncryptedPrivateKey()
 
-      if (!encryptedPrivateKeyData) return
+      const encryptedKEKDetails = await KeyManagement.fetchEncryptedKEKDetails()
+
+      if (!encryptedPrivateKeyData || !encryptedKEKDetails) return
 
       KeyManagement.downloadEncryptedPrivateKey(
-        encryptedPrivateKeyData,
-        'YourEncryptedPrivateKey.txt'
+        encryptedPrivateKeyData.encryptedPrivateKey,
+        encryptedKEKDetails.encryptedMasterKey,
+        'YourEncryptedData.txt'
       )
-      // setIsDownloadingPrivateKeyLoading(false)
+      setIsDownloadingPrivateKeyLoading(false)
 
-      dispatch(setIsRegistering(false))
+      // dispatch(setIsRegistering(false))
     } catch (e) {
       // @ts-ignore
       console.error(e.message)

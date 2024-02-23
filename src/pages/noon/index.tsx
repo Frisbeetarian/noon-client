@@ -65,10 +65,8 @@ function Noon({ axios }) {
 
     try {
       KeyManagement.getMasterKey()
-      console.log('Master key is already set in memory.')
       onClose()
     } catch (error) {
-      console.log('Master key is not set. Need to show password prompt.')
       onOpen()
     }
   }, [loggedInUser.user])
