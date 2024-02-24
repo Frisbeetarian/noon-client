@@ -132,7 +132,7 @@ export default class KeyManagement {
     }
   }
 
-  static async fetchEncryptedKEKDetails() {
+  static async fetchEncryptedKEKDetails(userUuid) {
     const dbPromise = this.openDatabase()
     const db = await dbPromise
 
@@ -140,7 +140,7 @@ export default class KeyManagement {
       // @ts-ignore
       const transaction = db.transaction('keys', 'readonly')
       const store = transaction.objectStore('keys')
-      const request = store.get('encryptedMasterKey')
+      const request = store.get(`${userUuid}_encryptedMasterKey`)
 
       request.onerror = () => reject(request.error)
       request.onsuccess = () => {
@@ -243,7 +243,10 @@ export default class KeyManagement {
     }
   }
 
-  static async fetchEncryptedPrivateKeyDetails(dontCheckForMasterKey = false) {
+  static async fetchEncryptedPrivateKeyDetails(
+    dontCheckForMasterKey = false,
+    userUuid
+  ) {
     if (!dontCheckForMasterKey && !this.getMasterKey()) {
       throw new Error('Master Key is not set.')
     }
@@ -255,7 +258,7 @@ export default class KeyManagement {
       // @ts-ignore
       const transaction = db.transaction('keys', 'readonly')
       const store = transaction.objectStore('keys')
-      const request = store.get('userPrivateKey')
+      const request = store.get(`${userUuid}_encryptedPrivateKey`)
 
       request.onerror = function () {
         reject(request.error)
@@ -275,11 +278,11 @@ export default class KeyManagement {
     })
   }
 
-  static async exportEncryptedPrivateKey() {
+  static async exportEncryptedPrivateKey(userUuid) {
     try {
       // @ts-ignore
       const { encryptedPrivateKey } =
-        await this.fetchEncryptedPrivateKeyDetails()
+        await this.fetchEncryptedPrivateKeyDetails(false, userUuid)
       return { encryptedPrivateKey }
     } catch (error) {
       console.error('Error exporting encrypted private key:', error)

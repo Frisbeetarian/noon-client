@@ -57,30 +57,33 @@ function Login() {
       const keys = JSON.parse(e.target.result)
 
       try {
-        await KeyManagement.storeEncryptedKEK(
-          keys.encryptedMasterKey,
-          loginResponse?.masterKeyIV,
-          loginResponse?.salt,
-          true
-        )
+        if (loginResponse) {
+          await KeyManagement.storeEncryptedKEK(
+            keys.encryptedMasterKey,
+            loginResponse.masterKeyIV,
+            loginResponse.salt,
+            loginResponse.uuid
+          )
 
-        await KeyManagement.decryptAndSetMasterKey(
-          {
-            encryptedMasterKey: KeyManagement.base64ToArrayBuffer(
-              keys.encryptedMasterKey
-            ),
-            iv: KeyManagement.base64ToArrayBuffer(loginResponse?.masterKeyIV),
-            salt: KeyManagement.base64ToArrayBuffer(loginResponse?.salt),
-          },
-          password
-        )
+          await KeyManagement.decryptAndSetMasterKey(
+            {
+              encryptedMasterKey: KeyManagement.base64ToArrayBuffer(
+                keys.encryptedMasterKey
+              ),
+              iv: KeyManagement.base64ToArrayBuffer(loginResponse.masterKeyIV),
+              salt: KeyManagement.base64ToArrayBuffer(loginResponse.salt),
+            },
+            password
+          )
 
-        await KeyManagement.storeEncryptedKey({
-          encryptedPrivateKey: keys.encryptedPrivateKey,
-          iv: loginResponse?.privateKeyIV,
-        })
+          await KeyManagement.storeEncryptedKey({
+            encryptedPrivateKey: keys.encryptedPrivateKey,
+            iv: loginResponse.privateKeyIV,
+            userUuid: loginResponse.uuid,
+          })
 
-        dispatch(setIsRegistering(false))
+          dispatch(setIsRegistering(false))
+        }
       } catch (error) {
         console.error('Error decrypting keys:', error)
       }
@@ -99,9 +102,9 @@ function Login() {
       let encryptedMasterKeyDetails
 
       try {
-        await KeyManagement.fetchEncryptedPrivateKeyDetails(true)
+        await KeyManagement.fetchEncryptedPrivateKeyDetails(true, response.uuid)
         encryptedMasterKeyDetails =
-          await KeyManagement.fetchEncryptedKEKDetails()
+          await KeyManagement.fetchEncryptedKEKDetails(response.uuid)
       } catch (e) {
         onOpen()
       } finally {

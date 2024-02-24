@@ -48,28 +48,31 @@ const RegisterSchema = Yup.object().shape({
 
 function Register() {
   const dispatch = useDispatch()
+  const router = useRouter()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [showPassword, setShowPassword] = useState(false)
   const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation()
   const [isDownloadingPrivateKeyLoading, setIsDownloadingPrivateKeyLoading] =
     useState(false)
-  const router = useRouter()
+  const [registerResponse, setRegisterResponse] = useState(null)
 
   const handleDownloadPrivateKey = async () => {
     try {
       setIsDownloadingPrivateKeyLoading(true)
 
       const encryptedPrivateKeyData =
-        await KeyManagement.exportEncryptedPrivateKey()
+        await KeyManagement.exportEncryptedPrivateKey(registerResponse.uuid)
+      console.log('resiger response uuid:', registerResponse)
 
-      const encryptedKEKDetails = await KeyManagement.fetchEncryptedKEKDetails()
+      const encryptedKEKDetails = await KeyManagement.fetchEncryptedKEKDetails(
+        registerResponse?.uuid
+      )
 
       if (!encryptedPrivateKeyData || !encryptedKEKDetails) return
-
       KeyManagement.downloadEncryptedPrivateKey(
         encryptedPrivateKeyData,
         encryptedKEKDetails.encryptedMasterKey,
-        'YourEncryptedKeys.txt'
+        `noon_keys.txt`
       )
 
       // setIsDownloadingPrivateKeyLoading(false)
@@ -107,6 +110,7 @@ function Register() {
       }
 
       const response = await registerUser(registrationValues).unwrap()
+      setRegisterResponse(response)
 
       await KeyManagement.storeEncryptedKEK(
         KeyManagement.arrayBufferToBase64(encryptedMasterKey),
@@ -140,7 +144,7 @@ function Register() {
         maxW={'xlg'}
         py={12}
         px={6}
-        className=" z-10"
+        className="z-10"
       >
         <Box boxShadow={'lg'} p={8} className="border border-red-500 z-10">
           <Formik

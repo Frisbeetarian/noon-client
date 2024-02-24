@@ -121,7 +121,7 @@ function Noon({ axios }) {
       const response = await validatePassword({ password }).unwrap()
       if (response.valid) {
         const encryptedKEKDetails =
-          await KeyManagement.fetchEncryptedKEKDetails()
+          await KeyManagement.fetchEncryptedKEKDetails(loggedInUser.user.uuid)
         if (!encryptedKEKDetails) {
           throw new Error('Encrypted KEK details not found.')
         }
