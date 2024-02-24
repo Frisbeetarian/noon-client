@@ -250,7 +250,12 @@ function Sidebar({ axios }) {
               <SettingsIcon color="#921A1C" />
             </MenuButton>
 
-            <MenuList className="bg-black" bg="bg-black" border="none">
+            <AppMenuList
+              bg="black"
+              className="bg-red-500 text-black"
+              border="none"
+              borderRadius="0"
+            >
               <MenuItem
                 bg="bg-black"
                 className="bg-black"
@@ -279,7 +284,7 @@ function Sidebar({ axios }) {
               >
                 Logout
               </MenuItem>
-            </MenuList>
+            </AppMenuList>
           </Menu>
         </Flex>
       </Flex>
