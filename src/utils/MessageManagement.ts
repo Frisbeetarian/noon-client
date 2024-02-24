@@ -58,11 +58,16 @@ export default class MessageManagement {
     }
   }
 
-  static async decryptMessage(encryptedMessageBase64, encryptedKeyBase64) {
+  static async decryptMessage(
+    encryptedMessageBase64,
+    encryptedKeyBase64,
+    userUuid
+  ) {
     // @ts-ignore
     const { encryptedPrivateKey, iv: ivForPrivateKey } =
-      await KeyManagement.fetchEncryptedPrivateKeyDetails()
+      await KeyManagement.fetchEncryptedPrivateKeyDetails(false, userUuid)
 
+    console.log('encrypted private key:', ivForPrivateKey)
     const privateKey = await KeyManagement.decryptPrivateKey(
       encryptedPrivateKey,
       ivForPrivateKey

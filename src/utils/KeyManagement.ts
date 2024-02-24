@@ -251,6 +251,7 @@ export default class KeyManagement {
       throw new Error('Master Key is not set.')
     }
 
+    console.log('useruuid:', userUuid)
     const dbPromise = this.openDatabase()
     const db = await dbPromise
 
