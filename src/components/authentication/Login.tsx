@@ -124,8 +124,6 @@ function Login() {
       }
       // dispatch(setIsRegistering(false))
 
-      console.log('response from login:', response)
-
       // router.replace('/noon')
     } catch (error) {
       // @ts-ignore

@@ -94,19 +94,9 @@ function Register() {
         salt: kekSalt,
       } = await KeyManagement.generateAndEncryptMasterKey(values.password)
 
-      await KeyManagement.storeEncryptedKEK(
-        KeyManagement.arrayBufferToBase64(encryptedMasterKey),
-        kekIV,
-        kekSalt
-      )
-
       const { encryptedPrivateKey, iv } = await KeyManagement.encryptPrivateKey(
         keyPair.privateKey
       )
-      await KeyManagement.storeEncryptedKey({
-        encryptedPrivateKey: encryptedPrivateKey,
-        iv,
-      })
 
       const registrationValues = {
         ...values,
@@ -118,6 +108,16 @@ function Register() {
 
       await registerUser(registrationValues).unwrap()
 
+      await KeyManagement.storeEncryptedKEK(
+        KeyManagement.arrayBufferToBase64(encryptedMasterKey),
+        kekIV,
+        kekSalt
+      )
+
+      await KeyManagement.storeEncryptedKey({
+        encryptedPrivateKey: encryptedPrivateKey,
+        iv,
+      })
       onOpen()
     } catch (error) {
       // @ts-ignore

@@ -56,12 +56,7 @@ export default class KeyManagement {
     }
   }
 
-  static async storeEncryptedKEK(
-    encryptedKEKDetails,
-    iv,
-    salt,
-    fromLogin = false
-  ) {
+  static async storeEncryptedKEK(encryptedKEKDetails, iv, salt) {
     const dbPromise = this.openDatabase()
     const db = await dbPromise
     // @ts-ignore
@@ -316,8 +311,6 @@ export default class KeyManagement {
   }
 
   static async storeEncryptedKey(encryptedKeyData) {
-    console.log('iv in store encrypted key:', encryptedKeyData.iv)
-
     const dbPromise = this.openDatabase()
     const db: any = await dbPromise
 
