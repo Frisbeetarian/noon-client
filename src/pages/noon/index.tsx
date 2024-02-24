@@ -65,10 +65,8 @@ function Noon({ axios }) {
 
     try {
       KeyManagement.getMasterKey()
-      console.log('Master key is already set in memory.')
       onClose()
     } catch (error) {
-      console.log('Master key is not set. Need to show password prompt.')
       onOpen()
     }
   }, [loggedInUser.user])
@@ -123,7 +121,7 @@ function Noon({ axios }) {
       const response = await validatePassword({ password }).unwrap()
       if (response.valid) {
         const encryptedKEKDetails =
-          await KeyManagement.fetchEncryptedKEKDetails()
+          await KeyManagement.fetchEncryptedKEKDetails(loggedInUser.user.uuid)
         if (!encryptedKEKDetails) {
           throw new Error('Encrypted KEK details not found.')
         }

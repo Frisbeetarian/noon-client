@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Modal,
   ModalOverlay,
@@ -14,9 +14,27 @@ import AppButton from './AppComponents/AppButton'
 
 const PasswordPromptModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
   const [password, setPassword] = useState('')
+  const inputRef = useRef(null)
+
+  // @ts-ignore
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => {
+        // @ts-ignore
+        inputRef.current?.focus()
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [isOpen])
 
   const handleSubmit = () => {
     onSubmit(password)
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSubmit()
+    }
   }
 
   return (
@@ -25,6 +43,7 @@ const PasswordPromptModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
       onClose={onClose}
       closeOnOverlayClick={false}
       isCentered
+      closeOnEsc={false}
     >
       <ModalOverlay />
       <ModalContent>
@@ -37,7 +56,8 @@ const PasswordPromptModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
               Enter your password to continue:
             </FormLabel>
             <Input
-              autoFocus
+              ref={inputRef}
+              autoFocus={true}
               className="m-0 bg-transparent pl-2 text-white"
               size="md"
               id="password"
@@ -45,6 +65,7 @@ const PasswordPromptModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
               value={password}
               placeholder="Password..."
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDown}
               border={0}
               borderBottom="1px solid #921A1C"
               _focus={{

@@ -56,19 +56,18 @@ export default class KeyManagement {
     }
   }
 
-  static async storeEncryptedKEK(encryptedKEKDetails) {
+  static async storeEncryptedKEK(encryptedKEKDetails, iv, salt, userUuid) {
     const dbPromise = this.openDatabase()
     const db = await dbPromise
-
     // @ts-ignore
     const tx = db.transaction('keys', 'readwrite')
     const store = tx.objectStore('keys')
 
     await store.put({
-      id: 'encryptedMasterKey',
-      encryptedMasterKey: encryptedKEKDetails.encryptedMasterKey,
-      iv: encryptedKEKDetails.iv,
-      salt: encryptedKEKDetails.salt,
+      id: `${userUuid}_encryptedMasterKey`,
+      encryptedMasterKey: encryptedKEKDetails,
+      iv: iv,
+      salt: salt,
     })
 
     await tx.complete
@@ -86,6 +85,7 @@ export default class KeyManagement {
     password: string
   ) {
     try {
+      console.log('iv in decrypt master key:', encryptedMKDetails.iv)
       const enc = new TextEncoder()
       const keyMaterial = await window.crypto.subtle.importKey(
         'raw',
@@ -132,7 +132,7 @@ export default class KeyManagement {
     }
   }
 
-  static async fetchEncryptedKEKDetails() {
+  static async fetchEncryptedKEKDetails(userUuid) {
     const dbPromise = this.openDatabase()
     const db = await dbPromise
 
@@ -140,7 +140,7 @@ export default class KeyManagement {
       // @ts-ignore
       const transaction = db.transaction('keys', 'readonly')
       const store = transaction.objectStore('keys')
-      const request = store.get('encryptedMasterKey')
+      const request = store.get(`${userUuid}_encryptedMasterKey`)
 
       request.onerror = () => reject(request.error)
       request.onsuccess = () => {
@@ -243,11 +243,15 @@ export default class KeyManagement {
     }
   }
 
-  static async fetchEncryptedPrivateKeyDetails() {
-    if (!this.getMasterKey()) {
+  static async fetchEncryptedPrivateKeyDetails(
+    dontCheckForMasterKey = false,
+    userUuid
+  ) {
+    if (!dontCheckForMasterKey && !this.getMasterKey()) {
       throw new Error('Master Key is not set.')
     }
 
+    console.log('useruuid:', userUuid)
     const dbPromise = this.openDatabase()
     const db = await dbPromise
 
@@ -255,7 +259,7 @@ export default class KeyManagement {
       // @ts-ignore
       const transaction = db.transaction('keys', 'readonly')
       const store = transaction.objectStore('keys')
-      const request = store.get('userPrivateKey')
+      const request = store.get(`${userUuid}_encryptedPrivateKey`)
 
       request.onerror = function () {
         reject(request.error)
@@ -275,15 +279,54 @@ export default class KeyManagement {
     })
   }
 
-  static async storeEncryptedKey(encryptedKeyData) {
+  static async exportEncryptedPrivateKey(userUuid) {
+    try {
+      // @ts-ignore
+      const { encryptedPrivateKey } =
+        await this.fetchEncryptedPrivateKeyDetails(false, userUuid)
+      return { encryptedPrivateKey }
+    } catch (error) {
+      console.error('Error exporting encrypted private key:', error)
+      throw error
+    }
+  }
+
+  static downloadEncryptedPrivateKey(
+    encryptedPrivateKey,
+    encryptedMasterKey,
+    filename = 'noon-encrypted-data.txt'
+  ) {
+    const keys = {
+      encryptedPrivateKey: encryptedPrivateKey,
+      encryptedMasterKey: encryptedMasterKey,
+    }
+
+    const blob = new Blob([JSON.stringify(keys)], {
+      type: 'text/plain',
+    })
+    const href = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = href
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(href)
+  }
+
+  static async storeEncryptedKey(encryptedKeyData, isImporting = false) {
     const dbPromise = this.openDatabase()
     const db: any = await dbPromise
+
+    console.log(`${encryptedKeyData.userUuid}_encryptedMasterKey`)
 
     const tx = db.transaction('keys', 'readwrite')
     const store = tx.objectStore('keys')
     await store.put({
-      id: 'userPrivateKey',
-      encryptedPrivateKey: encryptedKeyData.encryptedPrivateKey,
+      id: `${encryptedKeyData.userUuid}_encryptedPrivateKey`,
+      encryptedPrivateKey: !isImporting
+        ? encryptedKeyData.encryptedPrivateKey
+        : encryptedKeyData.encryptedPrivateKey.encryptedPrivateKey,
       iv: encryptedKeyData.iv,
     })
 

@@ -1,9 +1,9 @@
 // @ts-nocheck
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { createSelector } from 'reselect'
-import { Conversation, Message, Profile, Sender } from '../generated/graphql'
+// import { Conversation, Message, Profile, Sender } from '../generated/graphql'
 
-// import { Conversation, Message, Profile } from '../utils/types'
+import { Conversation, Message, Profile, Sender } from '../utils/types'
 
 type ExtendedConversation = Conversation & {
   conversee: Sender | null | undefined

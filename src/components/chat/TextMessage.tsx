@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import {
   Avatar,
   Flex,
@@ -11,7 +12,9 @@ import {
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import AppMenuList from '../AppComponents/AppMenuList'
 import { AiOutlineUser } from 'react-icons/ai'
+
 import MessageManagement from '../../utils/MessageManagement'
+import { getLoggedInUser } from '../../store/users'
 
 const TextMessage = ({
   content,
@@ -21,6 +24,7 @@ const TextMessage = ({
   conversationType,
   deleteMessageHandler,
 }) => {
+  const loggedInUser = useSelector(getLoggedInUser)
   const [decryptedContent, setDecryptedContent] = useState('')
 
   useEffect(() => {
@@ -29,7 +33,8 @@ const TextMessage = ({
         try {
           const decrypted = await MessageManagement.decryptMessage(
             content,
-            item.encryptedKey
+            item.encryptedKey,
+            loggedInUser.user.uuid
           )
           setDecryptedContent(decrypted)
         } catch (error) {
