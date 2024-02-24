@@ -56,7 +56,7 @@ export default class KeyManagement {
     }
   }
 
-  static async storeEncryptedKEK(encryptedKEKDetails, iv, salt) {
+  static async storeEncryptedKEK(encryptedKEKDetails, iv, salt, userUuid) {
     const dbPromise = this.openDatabase()
     const db = await dbPromise
     // @ts-ignore
@@ -64,7 +64,7 @@ export default class KeyManagement {
     const store = tx.objectStore('keys')
 
     await store.put({
-      id: 'encryptedMasterKey',
+      id: `${userUuid}_encryptedMasterKey`,
       encryptedMasterKey: encryptedKEKDetails,
       iv: iv,
       salt: salt,
@@ -314,10 +314,12 @@ export default class KeyManagement {
     const dbPromise = this.openDatabase()
     const db: any = await dbPromise
 
+    console.log(`${encryptedKeyData.userUuid}_encryptedMasterKey`)
+
     const tx = db.transaction('keys', 'readwrite')
     const store = tx.objectStore('keys')
     await store.put({
-      id: 'userPrivateKey',
+      id: `${encryptedKeyData.userUuid}_encryptedPrivateKey`,
       encryptedPrivateKey: encryptedKeyData.encryptedPrivateKey,
       iv: encryptedKeyData.iv,
     })

@@ -106,17 +106,19 @@ function Register() {
         salt: kekSalt,
       }
 
-      await registerUser(registrationValues).unwrap()
+      const response = await registerUser(registrationValues).unwrap()
 
       await KeyManagement.storeEncryptedKEK(
         KeyManagement.arrayBufferToBase64(encryptedMasterKey),
         kekIV,
-        kekSalt
+        kekSalt,
+        response.uuid
       )
 
       await KeyManagement.storeEncryptedKey({
         encryptedPrivateKey: encryptedPrivateKey,
         iv,
+        userUuid: response.uuid,
       })
       onOpen()
     } catch (error) {
