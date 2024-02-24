@@ -314,7 +314,7 @@ export default class KeyManagement {
     URL.revokeObjectURL(href)
   }
 
-  static async storeEncryptedKey(encryptedKeyData) {
+  static async storeEncryptedKey(encryptedKeyData, isImporting = false) {
     const dbPromise = this.openDatabase()
     const db: any = await dbPromise
 
@@ -324,7 +324,9 @@ export default class KeyManagement {
     const store = tx.objectStore('keys')
     await store.put({
       id: `${encryptedKeyData.userUuid}_encryptedPrivateKey`,
-      encryptedPrivateKey: encryptedKeyData.encryptedPrivateKey,
+      encryptedPrivateKey: !isImporting
+        ? encryptedKeyData.encryptedPrivateKey
+        : encryptedKeyData.encryptedPrivateKey.encryptedPrivateKey,
       iv: encryptedKeyData.iv,
     })
 

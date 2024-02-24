@@ -76,11 +76,14 @@ function Login() {
             password
           )
 
-          await KeyManagement.storeEncryptedKey({
-            encryptedPrivateKey: keys.encryptedPrivateKey,
-            iv: loginResponse.privateKeyIV,
-            userUuid: loginResponse.uuid,
-          })
+          await KeyManagement.storeEncryptedKey(
+            {
+              encryptedPrivateKey: keys.encryptedPrivateKey,
+              iv: loginResponse.privateKeyIV,
+              userUuid: loginResponse.uuid,
+            },
+            true
+          )
 
           dispatch(setIsRegistering(false))
         }
