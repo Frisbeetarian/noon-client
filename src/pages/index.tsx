@@ -13,6 +13,7 @@ import {
   getShowRegisterComponent,
 } from '../store/ui'
 import AppParticles from '../components/AppComponents/AppParticles'
+import { EvervaultCard } from '../components/ui/evervaultCard'
 
 const meta = {
   title: 'Noon – Open source, secure, free communication platform.',
