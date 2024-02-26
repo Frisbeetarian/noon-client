@@ -1,6 +1,5 @@
 export default class KeyManagement {
   static masterKey: CryptoKey | null = null
-  static encryptedMasterKey: ArrayBuffer | null = null
 
   static getMasterKey() {
     if (!this.masterKey) {
@@ -43,14 +42,14 @@ export default class KeyManagement {
       this.masterKey
     )
     const iv = window.crypto.getRandomValues(new Uint8Array(12))
-    this.encryptedMasterKey = await window.crypto.subtle.encrypt(
+    const encryptedMasterKey = await window.crypto.subtle.encrypt(
       { name: 'AES-GCM', iv: iv },
       kek,
       exportedMK
     )
 
     return {
-      encryptedMasterKey: this.encryptedMasterKey,
+      encryptedMasterKey: encryptedMasterKey,
       iv: this.arrayBufferToBase64(iv),
       salt: this.arrayBufferToBase64(salt),
     }
@@ -426,6 +425,5 @@ export default class KeyManagement {
 
   static clearMemoryData() {
     this.masterKey = null
-    this.encryptedMasterKey = null
   }
 }
