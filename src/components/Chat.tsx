@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   Flex,
   Modal,
@@ -10,6 +11,7 @@ import {
   ModalOverlay,
   useToast,
 } from '@chakra-ui/react'
+
 import Footer from './Footer'
 
 import {
@@ -17,9 +19,6 @@ import {
   getActiveConversation,
   getActiveConversee,
 } from '../store/chat'
-
-import { getVideoFrameOpenState } from '../store/video'
-import { useDispatch, useSelector } from 'react-redux'
 
 import Header from './Header'
 import Messages from './Messages'
@@ -34,6 +33,7 @@ import Video from './Video'
 import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
 import MessageManagement from '../utils/MessageManagement'
+import { getVideoFrameOpenState } from '../store/video'
 
 function Chat({ axios }) {
   const dispatch = useDispatch()
@@ -113,6 +113,7 @@ function Chat({ axios }) {
                 type: 'text',
                 src: '',
                 deleted: false,
+                // @ts-ignore
                 conversationUuid: activeConversation.uuid,
                 encryptedKey: response.data.encryptedKey,
                 updatedAt: response.data.updatedAt,
@@ -184,6 +185,7 @@ function Chat({ axios }) {
                 type: 'text',
                 src: '',
                 deleted: false,
+                // @ts-ignore
                 conversationUuid: activeConversation.uuid,
                 encryptedKey: response.data.encryptedKey,
                 updatedAt: response.data.updatedAt,
@@ -206,11 +208,14 @@ function Chat({ axios }) {
         }
       })
   }
+  // <div className="h-[50rem] w-full dark:bg-black bg-white  dark:bg-grid-small-white/[0.2] bg-grid-small-black/[0.2] relative flex items-center justify-center">
+  //   {/* Radial gradient for the container to give a faded look */}
+  //   <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
   return (
     <Flex
       className={
-        'flex-col bg-red-500 text-white box-content relative z-50 md:z-0 chat-container'
+        'flex-col bg-red-500 text-white box-content relative z-50 md:z-0 chat-container bg-grid-small-black/[0.5]'
       }
       style={{
         flex: isMobile ? '1' : '0.75',
@@ -224,7 +229,6 @@ function Chat({ axios }) {
       >
         <ChatControlsAndSearch />
       </div>
-
       {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
       <Modal isOpen={isOpen} onClose={() => {}}>
         <ModalOverlay />

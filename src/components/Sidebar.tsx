@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
@@ -10,7 +9,6 @@ import {
   Menu,
   MenuButton,
   MenuItem,
-  MenuList,
   Spinner,
 } from '@chakra-ui/react'
 import {
@@ -250,7 +248,12 @@ function Sidebar({ axios }) {
               <SettingsIcon color="#921A1C" />
             </MenuButton>
 
-            <MenuList className="bg-black" bg="bg-black" border="none">
+            <AppMenuList
+              bg="black"
+              className="bg-red-500 text-black"
+              border="none"
+              borderRadius="0"
+            >
               <MenuItem
                 bg="bg-black"
                 className="bg-black"
@@ -279,7 +282,7 @@ function Sidebar({ axios }) {
               >
                 Logout
               </MenuItem>
-            </MenuList>
+            </AppMenuList>
           </Menu>
         </Flex>
       </Flex>
