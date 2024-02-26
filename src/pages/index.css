@@ -44,15 +44,12 @@ html {
     min-width: 40vw;
 }
 
-/* styles/globals.css */
 input::placeholder,
 textarea::placeholder {
     @apply text-black;
 }
 
 input, textarea {
-    /*border: none !important;*/
-    /*border-bottom: 1px solid #921A1C !important;*/
     outline: none !important;
     transition: border-color 0.3s !important;
 }

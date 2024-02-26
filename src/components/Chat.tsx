@@ -47,7 +47,7 @@ function Chat({ axios }) {
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
 
   const profile = useSelector(getActiveConversee)
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
   const toast = useToast()
   const friendPublicKey = useSelector((state) =>
     getFriendPublicKeyByUuid(state, profile?.uuid)

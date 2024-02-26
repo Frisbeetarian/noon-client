@@ -85,7 +85,6 @@ export default class KeyManagement {
     password: string
   ) {
     try {
-      console.log('iv in decrypt master key:', encryptedMKDetails.iv)
       const enc = new TextEncoder()
       const keyMaterial = await window.crypto.subtle.importKey(
         'raw',
@@ -224,7 +223,6 @@ export default class KeyManagement {
       throw new Error('Master Key is not set.')
     }
 
-    console.log('private key before encryption:', privateKey)
     const exportedPrivateKey = await window.crypto.subtle.exportKey(
       'pkcs8',
       privateKey
@@ -251,7 +249,6 @@ export default class KeyManagement {
       throw new Error('Master Key is not set.')
     }
 
-    console.log('useruuid:', userUuid)
     const dbPromise = this.openDatabase()
     const db = await dbPromise
 
@@ -317,8 +314,6 @@ export default class KeyManagement {
   static async storeEncryptedKey(encryptedKeyData, isImporting = false) {
     const dbPromise = this.openDatabase()
     const db: any = await dbPromise
-
-    console.log(`${encryptedKeyData.userUuid}_encryptedMasterKey`)
 
     const tx = db.transaction('keys', 'readwrite')
     const store = tx.objectStore('keys')
