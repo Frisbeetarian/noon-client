@@ -1,6 +1,6 @@
 import svgToDataUri from 'mini-svg-data-uri'
-import { colors } from 'tailwindcss/colors'
-import { flattenColorPalette } from 'tailwindcss/lib/util/flattenColorPalette'
+// import { colors } from 'tailwindcss/colors'
+import flattenColorPalette from 'tailwindcss/lib/util/flattenColorPalette'
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -31,7 +31,6 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/typography'),
-    addVariablesForColors,
     function ({ matchUtilities, theme }: any) {
       matchUtilities(
         {
@@ -55,15 +54,4 @@ module.exports = {
       )
     },
   ],
-}
-
-function addVariablesForColors({ addBase, theme }: any) {
-  let allColors = flattenColorPalette(theme('colors'))
-  let newVars = Object.fromEntries(
-    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
-  )
-
-  addBase({
-    ':root': newVars,
-  })
 }
