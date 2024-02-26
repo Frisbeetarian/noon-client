@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   Flex,
   Modal,
@@ -10,7 +11,6 @@ import {
   ModalOverlay,
   useToast,
 } from '@chakra-ui/react'
-import { useDispatch, useSelector } from 'react-redux'
 
 import Footer from './Footer'
 
