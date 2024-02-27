@@ -11,6 +11,7 @@ import {
   ModalOverlay,
   useDisclosure,
   useToast,
+  Text,
 } from '@chakra-ui/react'
 
 import Footer from './Footer'
@@ -239,16 +240,24 @@ function Chat({ axios }) {
       <Modal isOpen={isOpen} onClose={() => {}}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader className="bg-black p-5 text-red-500">
-            Welcome to NOON
+          <ModalHeader className="bg-red-500 p-5 text-white">
+            Welcome to NOON(ن)
           </ModalHeader>
-          <ModalCloseButton />
+          {/*<ModalCloseButton*/}
+          {/*  className="text-black"*/}
+          {/*  border={0}*/}
+          {/*  borderRadius={0}*/}
+          {/*/>*/}
           <ModalBody className="bg-black p-5 text-white">
-            <p>
+            <Text className="my-5">
               NOON(ن) is a whitelabel, open source, end to end encrypted, free
               communication platform for privacy and security minded
               individuals, organizations and communities. Please visit &nbsp;
-              <a href="https://muhammadsh.io/noon" target="_blank">
+              <a
+                href="https://muhammadsh.io/noon"
+                target="_blank"
+                className="border-b-2 border-red-500 hover:border-white transition-all duration-300 ease-in-out"
+              >
                 https://muhammadsh.io/noon
               </a>{' '}
               to go through the technical details behind the implementation and
@@ -260,7 +269,7 @@ function Chat({ axios }) {
               highly appreciate it if you could drop me bug reports on
               mohamad.sleimanhaidar@gmail.com if you encounter any issues and
               many thanks!
-            </p>
+            </Text>
           </ModalBody>
           <ModalFooter className="bg-black">
             <AppButton
