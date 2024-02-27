@@ -191,7 +191,7 @@ function Sidebar({ axios }) {
 
       <Flex
         className="flex-col pt-3 scroll-auto overflow-auto"
-        style={{ flex: '0.875' }}
+        style={{ height: '87.5vh' }}
       >
         {isLoading ? (
           <Flex className="items-center justify-center">
