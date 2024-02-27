@@ -139,8 +139,6 @@ function Noon({ axios }) {
         )
 
         onClose()
-
-        dispatch(setPasswordPromptSubmitted(true))
       }
     } catch (error) {
       console.error('Error decrypting KEK or validating password:', error)

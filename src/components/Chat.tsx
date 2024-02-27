@@ -26,7 +26,7 @@ import Messages from './Messages'
 
 import { getLoggedInUser, getFriendPublicKeyByUuid } from '../store/users'
 
-import { getIsMobile } from '../store/ui'
+import { getIsMobile, getPasswordPromptSubmitted } from '../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 
@@ -48,9 +48,10 @@ function Chat({ axios }) {
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
 
   const profile = useSelector(getActiveConversee)
-  const { isOpen, onClose } = useDisclosure({ defaultIsOpen: false })
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false })
 
   const toast = useToast()
+  const getPromptSubmitted = useSelector(getPasswordPromptSubmitted)
   const friendPublicKey = useSelector((state) =>
     getFriendPublicKeyByUuid(state, profile?.uuid)
   )
@@ -58,6 +59,13 @@ function Chat({ axios }) {
   useEffect(() => {
     setInnerHeight(window.innerHeight)
   }, [])
+
+  useEffect(() => {
+    console.log('getPromptSubmitted:', getPromptSubmitted)
+    if (getPromptSubmitted) {
+      onOpen()
+    }
+  }, [getPromptSubmitted])
 
   useEffect(() => {
     window.addEventListener('resize', () => {
@@ -210,9 +218,6 @@ function Chat({ axios }) {
         }
       })
   }
-  // <div className="h-[50rem] w-full dark:bg-black bg-white  dark:bg-grid-small-white/[0.2] bg-grid-small-black/[0.2] relative flex items-center justify-center">
-  //   {/* Radial gradient for the container to give a faded look */}
-  //   <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
   return (
     <Flex
