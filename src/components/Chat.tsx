@@ -61,7 +61,6 @@ function Chat({ axios }) {
   }, [])
 
   useEffect(() => {
-    console.log('getPromptSubmitted:', getPromptSubmitted)
     if (getPromptSubmitted) {
       onOpen()
     }
@@ -246,17 +245,21 @@ function Chat({ axios }) {
           <ModalCloseButton />
           <ModalBody className="bg-black p-5 text-white">
             <p>
-              NOON attempts to be a whitelabel, open source, free and secure
-              communication platform for security and privacy minded individuals
-              and organizations. This is a very early build and a lot of the
-              features are still being reworked. An initial working version was
-              constructed with Graphql but ive decided that it just wasnt worth
-              the overhead and am currently refactoring to a REST client.
-              Searching, befriending and private one on one chatting currently
-              {/* eslint-disable-next-line react/no-unescaped-entities */}
-              "works". Would highly appreciate it if you could drop me bug
-              reports on mohamad.sleimanhaidar@gmail.com if you encounter any
-              issues and many thanks!{' '}
+              NOON(ن) is a whitelabel, open source, end to end encrypted, free
+              communication platform for privacy and security minded
+              individuals, organizations and communities. Please visit &nbsp;
+              <a href="https://muhammadsh.io/noon" target="_blank">
+                https://muhammadsh.io/noon
+              </a>{' '}
+              to go through the technical details behind the implementation and
+              links to the repositories that make up the platform. This is an
+              early build and a lot of bugfixing and polishing is in progress,
+              however the vast majority of the features are functional. Please
+              keep in mind that as of 27-02-2024, images and voice notes are
+              still not encrypted and are stored on the server as is. Would
+              highly appreciate it if you could drop me bug reports on
+              mohamad.sleimanhaidar@gmail.com if you encounter any issues and
+              many thanks!
             </p>
           </ModalBody>
           <ModalFooter className="bg-black">
