@@ -204,7 +204,7 @@ const Footer = ({
           </AppButton>
         </Box>
 
-        <Box className="glowy flex items-center justify-end xs:w-1/4 mr-1 md:mr-2 md:w-1/6  ">
+        <Box className="glowy flex items-center justify-end xs:w-1/4 mr-1 md:mr-4 md:w-1/6  ">
           <AppButton
             size={isMobile ? 'sm' : 'md'}
             color="white"
