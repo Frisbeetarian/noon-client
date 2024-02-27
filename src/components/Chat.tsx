@@ -243,11 +243,7 @@ function Chat({ axios }) {
           <ModalHeader className="bg-red-500 p-5 text-white">
             Welcome to NOON(ن)
           </ModalHeader>
-          {/*<ModalCloseButton*/}
-          {/*  className="text-black"*/}
-          {/*  border={0}*/}
-          {/*  borderRadius={0}*/}
-          {/*/>*/}
+
           <ModalBody className="bg-black p-5 text-white">
             <Text className="my-5">
               NOON(ن) is a whitelabel, open source, end to end encrypted, free

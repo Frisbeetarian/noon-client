@@ -33,6 +33,8 @@ const Index = () => {
     'NOO',
     randomWait(),
     'NOON',
+    randomWait(),
+    'NOON(ن)',
     2000,
   ]
 
