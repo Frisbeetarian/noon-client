@@ -68,7 +68,7 @@ function CreateGroupSidebar({ axios }) {
         <h1 className="text-xl text-white border-red-500">Create Group</h1>
 
         <CloseButton
-          className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer mt-1 text-black"
+          className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer text-black"
           onClick={() => {
             dispatch(toggleCreateGroupActive(false))
           }}

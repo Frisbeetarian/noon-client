@@ -35,7 +35,7 @@ function SearchSidebar() {
         </h1>
 
         <CloseButton
-          className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer text-black "
+          className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer text-black"
           onClick={() => {
             dispatch(setSearchQuery(null))
             setSearchInput(null)
