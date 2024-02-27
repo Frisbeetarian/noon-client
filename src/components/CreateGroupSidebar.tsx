@@ -17,10 +17,9 @@ import {
 } from '../store/ui'
 
 import GroupParticipant from './GroupParticipant'
-import { getSocketAuthObject } from '../store/sockets'
 import { clearState, getParticipants } from '../store/groups'
 import { getLoggedInUser } from '../store/users'
-import { addConversation, setOngoingCall } from '../store/chat'
+import { addConversation } from '../store/chat'
 import { Form, Formik } from 'formik'
 import * as Yup from 'yup'
 import AppButton from './AppComponents/AppButton'
