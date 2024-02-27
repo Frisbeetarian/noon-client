@@ -26,7 +26,7 @@ import Messages from './Messages'
 
 import { getLoggedInUser, getFriendPublicKeyByUuid } from '../store/users'
 
-import { getIsMobile, getPasswordPromptSubmitted } from '../store/ui'
+import { getIsMobile } from '../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 
@@ -48,10 +48,9 @@ function Chat({ axios }) {
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
 
   const profile = useSelector(getActiveConversee)
-  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false })
+  const { isOpen, onClose } = useDisclosure({ defaultIsOpen: false })
 
   const toast = useToast()
-  const getPromptSubmitted = useSelector(getPasswordPromptSubmitted)
   const friendPublicKey = useSelector((state) =>
     getFriendPublicKeyByUuid(state, profile?.uuid)
   )
