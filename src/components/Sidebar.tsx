@@ -228,7 +228,7 @@ function Sidebar({ axios }) {
 
       <Flex
         className="flex justify-between items-center border-t border-red-500 box-content py-4 md:py-0 px-4 md:px-0"
-        style={{ flex: '0.075' }}
+        style={{ height: '7.5vh' }}
       >
         <Flex className="items-center px-2">
           <Avatar
