@@ -248,7 +248,11 @@ function Chat({ axios }) {
             <Text className="my-5">
               NOON(ن) is a whitelabel, open source, end to end encrypted, free
               communication platform for privacy and security minded
-              individuals, organizations and communities. Please visit &nbsp;
+              individuals, organizations and communities.
+            </Text>
+
+            <Text className="my-5">
+              Please visit &nbsp;
               <a
                 href="https://muhammadsh.io/noon"
                 target="_blank"
@@ -257,14 +261,21 @@ function Chat({ axios }) {
                 https://muhammadsh.io/noon
               </a>{' '}
               to go through the technical details behind the implementation and
-              links to the repositories that make up the platform. This is an
-              early build and a lot of bugfixing and polishing is in progress,
-              however the vast majority of the features are functional. Please
-              keep in mind that as of 27-02-2024, images and voice notes are
-              still not encrypted and are stored on the server as is. Would
-              highly appreciate it if you could drop me bug reports on
-              mohamad.sleimanhaidar@gmail.com if you encounter any issues and
-              many thanks!
+              links to the repositories that make up the platform.
+            </Text>
+
+            <Text className="my-5">
+              This is an early build and a lot of bugfixing and polishing is in
+              progress, however the vast majority of the features are
+              functional. Please keep in mind that as of{' '}
+              <span className="text-red-400">27-02-2024</span>, images and voice
+              notes are still not encrypted and are stored on the server as is.
+            </Text>
+
+            <Text className="my-5">
+              Would highly appreciate it if you could drop me bug reports on
+              mohamad.sleimanhaidar@gmail.com if you encounter any issues. Many
+              thanks and stay safe!
             </Text>
           </ModalBody>
           <ModalFooter className="bg-black">

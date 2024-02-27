@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useEffect, useState } from 'react'
 import {
   Box,
@@ -62,9 +61,20 @@ function CreateGroupSidebar({ axios }) {
 
   return (
     <div className="create-group-sidebar bg-black text-white w-10/12 md:w-3/4 xl:w-2/5">
-      <h1 className="text-xl mb-10 text-red-500 font-bold ">Create Group</h1>
+      <Flex
+        className="justify-center bg-red-500 p-5 mb-5 flex-col border-b border-red-500 border-l border-l-black"
+        style={{ height: '5vh' }}
+      >
+        <h1 className="text-xl text-white border-red-500">Create Group</h1>
 
-      <Flex className="flex-col md:flex-row items-center md:items-start ">
+        <CloseButton
+          className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer mt-1 text-black"
+          onClick={() => {
+            dispatch(toggleCreateGroupActive(false))
+          }}
+        />
+      </Flex>
+      <Flex className="flex-col md:flex-row items-center md:items-start p-5 pt-3">
         <Formik
           initialValues={{ name: '', description: '' }}
           validationSchema={createGroupSchema}
@@ -135,11 +145,11 @@ function CreateGroupSidebar({ axios }) {
           {({ isSubmitting }) => (
             <Form className="flex w-full md:w-2/4">
               <Stack spacing={4}>
-                <p className="text-red-500 font-bold  text-lg md:text-md">
+                <p className="pb-1 text-white text-xl md:text-md border-b border-red-500">
                   Group details
                 </p>
 
-                <HStack className="pl-1">
+                <HStack className="pl-1 mt-2">
                   <Box>
                     <FormControl id="name" isRequired>
                       <InputField
@@ -200,8 +210,10 @@ function CreateGroupSidebar({ axios }) {
         </Formik>
 
         {!isMobile && (
-          <Flex className="flex-col  w-2/4 box-content">
-            <p className="text-red-500 font-bold text-lg md:text-md">Friends</p>
+          <Flex className="flex-col w-2/4 box-content mt-2">
+            <p className="pb-1 text-white text-xl md:text-md border-b border-red-500">
+              Friends
+            </p>
 
             {friends ? (
               (friends as any).map((friend) => (
@@ -221,12 +233,6 @@ function CreateGroupSidebar({ axios }) {
             )}
           </Flex>
         )}
-        <CloseButton
-          className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer"
-          onClick={() => {
-            dispatch(toggleCreateGroupActive(false))
-          }}
-        />
       </Flex>
     </div>
   )

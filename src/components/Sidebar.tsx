@@ -107,7 +107,7 @@ function Sidebar({ axios }) {
     >
       <Flex
         className="items-center flex-col md:flex-row justify-between border-b border-red-500"
-        style={{ flex: '0.051' }}
+        style={{ height: '5vh' }}
       >
         <Flex className="w-full items-center">
           <Heading className="w-full px-4 py-4 md:py-0 text-red-500">
