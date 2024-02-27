@@ -9,6 +9,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useDisclosure,
   useToast,
 } from '@chakra-ui/react'
 
@@ -25,7 +26,7 @@ import Messages from './Messages'
 
 import { getLoggedInUser, getFriendPublicKeyByUuid } from '../store/users'
 
-import { getIsMobile } from '../store/ui'
+import { getIsMobile, getPasswordPromptSubmitted } from '../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 
@@ -47,8 +48,10 @@ function Chat({ axios }) {
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
 
   const profile = useSelector(getActiveConversee)
-  const [isOpen, setIsOpen] = useState(true)
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false })
+
   const toast = useToast()
+  const getPromptSubmitted = useSelector(getPasswordPromptSubmitted)
   const friendPublicKey = useSelector((state) =>
     getFriendPublicKeyByUuid(state, profile?.uuid)
   )
@@ -256,7 +259,8 @@ function Chat({ axios }) {
             <AppButton
               mr={3}
               onClick={() => {
-                setIsOpen(false)
+                // setIsOpen(false)
+                onClose()
               }}
             >
               Close

@@ -25,6 +25,7 @@ import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
 import {
   setIsRegistering,
+  setPasswordPromptSubmitted,
   setShowForgotPasswordComponent,
   setShowLoginComponent,
   setShowRegisterComponent,
@@ -75,7 +76,7 @@ function Register() {
         `noon_keys.txt`
       )
 
-      // setIsDownloadingPrivateKeyLoading(false)
+      dispatch(setPasswordPromptSubmitted(true))
       router.replace('/noon')
 
       dispatch(setIsRegistering(false))

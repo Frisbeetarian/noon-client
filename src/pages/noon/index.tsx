@@ -19,6 +19,7 @@ import {
   getCreateGroupActive,
   getIsConversationOpen,
   getIsMobile,
+  setPasswordPromptSubmitted,
 } from '../../store/ui'
 import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
@@ -138,6 +139,8 @@ function Noon({ axios }) {
         )
 
         onClose()
+
+        dispatch(setPasswordPromptSubmitted(true))
       }
     } catch (error) {
       console.error('Error decrypting KEK or validating password:', error)
