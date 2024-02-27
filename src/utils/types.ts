@@ -13,6 +13,11 @@ export type UserResponse = {
   user: User
 }
 
+export type RegisterResponse = {
+  errors: RegularError[]
+  user: User
+}
+
 export type ProfileInUser = {
   uuid: string
   username: string

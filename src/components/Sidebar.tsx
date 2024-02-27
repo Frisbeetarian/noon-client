@@ -107,11 +107,11 @@ function Sidebar({ axios }) {
     >
       <Flex
         className="items-center flex-col md:flex-row justify-between border-b border-red-500"
-        style={{ flex: '0.051' }}
+        style={{ height: '5vh' }}
       >
         <Flex className="w-full items-center">
           <Heading className="w-full px-4 py-4 md:py-0 text-red-500">
-            NOON
+            NOON(ن)
           </Heading>
 
           {isMobile && (
@@ -191,7 +191,7 @@ function Sidebar({ axios }) {
 
       <Flex
         className="flex-col pt-3 scroll-auto overflow-auto"
-        style={{ flex: '0.875' }}
+        style={{ height: '87.5vh' }}
       >
         {isLoading ? (
           <Flex className="items-center justify-center">
@@ -228,7 +228,7 @@ function Sidebar({ axios }) {
 
       <Flex
         className="flex justify-between items-center border-t border-red-500 box-content py-4 md:py-0 px-4 md:px-0"
-        style={{ flex: '0.075' }}
+        style={{ height: '7.5vh' }}
       >
         <Flex className="items-center px-2">
           <Avatar
@@ -286,7 +286,6 @@ function Sidebar({ axios }) {
           </Menu>
         </Flex>
       </Flex>
-      {/*</div>*/}
 
       {isMobile && <SocketControls />}
     </div>

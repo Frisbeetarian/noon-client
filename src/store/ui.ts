@@ -26,6 +26,7 @@ interface UIAuthenticationState {
   showLoginComponent: boolean
   showForgotPasswordComponent: boolean
   isRegistering: boolean
+  passwordPromptSubmitted: boolean
 }
 
 interface UICreateGroupState {
@@ -63,6 +64,7 @@ const initialState: UIState = {
     showLoginComponent: false,
     showForgotPasswordComponent: false,
     isRegistering: false,
+    passwordPromptSubmitted: false,
   },
   createGroup: {
     active: false,
@@ -123,6 +125,9 @@ const slice = createSlice({
     },
     setIsRegistering: (state, action: PayloadAction<boolean>) => {
       state.authentication.isRegistering = action.payload
+    },
+    setPasswordPromptSubmitted: (state, action: PayloadAction<boolean>) => {
+      state.authentication.passwordPromptSubmitted = action.payload
     },
     clearUIState: (_) => {
       return initialState
@@ -200,6 +205,11 @@ export const getIsRegistering = createSelector(
   (ui) => ui.authentication.isRegistering
 )
 
+export const getPasswordPromptSubmitted = createSelector(
+  (state) => state.entities.ui,
+  (ui) => ui.authentication.passwordPromptSubmitted
+)
+
 export const {
   setShowRegisterComponent,
   setShowLoginComponent,
@@ -215,6 +225,7 @@ export const {
   rateLimitDetected,
   resetRateLimit,
   setIsRegistering,
+  setPasswordPromptSubmitted,
   clearUIState,
 } = slice.actions
 

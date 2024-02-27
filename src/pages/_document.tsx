@@ -9,12 +9,6 @@ const meta = {
 }
 
 export default class Document extends NextDocument {
-  // static async getInitialProps(ctx) {
-  //   const initialProps = await NextDocument.getInitialProps(ctx)
-  //   const { asPath } = ctx.ctx.router
-  //   return { ...initialProps, asPath }
-  // }
-
   render() {
     return (
       <Html lang="en">

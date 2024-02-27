@@ -27,13 +27,32 @@ function SearchSidebar() {
   return (
     <div className="search-sidebar bg-black md:w-3/4 xl:w-2/5">
       <Flex
-        className="flex-col items-start justify-start"
-        style={{ flex: '0.7' }}
+        className="justify-center bg-red-500 p-5 mb-5 flex-col border-b border-red-500 border-l border-l-black"
+        style={{ height: '4.8vh' }}
       >
-        <p className="text-xl mt-4 mb-4">Search for profiles</p>
+        <h1 className="text-xl text-white border-red-500">
+          Search for profiles
+        </h1>
+
+        <CloseButton
+          className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer text-black"
+          onClick={() => {
+            dispatch(setSearchQuery(null))
+            setSearchInput(null)
+
+            dispatch(
+              setSearchComponent({
+                searchActive: false,
+              })
+            )
+          }}
+        />
       </Flex>
 
-      <Flex className="flex-col items-center relative" style={{ flex: '0.3' }}>
+      <Flex
+        className="flex-col items-center relative p-5 pt-3"
+        style={{ flex: '0.3' }}
+      >
         <InputGroup className="mb-10">
           <InputRightElement
             children={<SearchIcon color="#921A1C" />}
@@ -84,20 +103,6 @@ function SearchSidebar() {
       </Flex>
 
       {/*{searchComponentState.searchActive ? (*/}
-      <CloseButton
-        className="bg-black p-1 absolute top-0 right-5 m-4 text-2xl cursor-pointer"
-        color="#921A1C"
-        onClick={() => {
-          dispatch(setSearchQuery(null))
-          setSearchInput(null)
-
-          dispatch(
-            setSearchComponent({
-              searchActive: false,
-            })
-          )
-        }}
-      />
     </div>
   )
 }

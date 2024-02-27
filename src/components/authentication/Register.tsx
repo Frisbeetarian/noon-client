@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react'
 import {
   Box,
@@ -25,6 +26,7 @@ import { toErrorMap } from '../../utils/toErrorMap'
 import { InputField } from '../InputField'
 import {
   setIsRegistering,
+  setPasswordPromptSubmitted,
   setShowForgotPasswordComponent,
   setShowLoginComponent,
   setShowRegisterComponent,
@@ -62,7 +64,6 @@ function Register() {
 
       const encryptedPrivateKeyData =
         await KeyManagement.exportEncryptedPrivateKey(registerResponse?.uuid)
-      console.log('resiger response uuid:', registerResponse)
 
       const encryptedKEKDetails = await KeyManagement.fetchEncryptedKEKDetails(
         registerResponse?.uuid
@@ -75,7 +76,7 @@ function Register() {
         `noon_keys.txt`
       )
 
-      // setIsDownloadingPrivateKeyLoading(false)
+      dispatch(setPasswordPromptSubmitted(true))
       router.replace('/noon')
 
       dispatch(setIsRegistering(false))

@@ -1,6 +1,5 @@
 export default class KeyManagement {
   static masterKey: CryptoKey | null = null
-  static encryptedMasterKey: ArrayBuffer | null = null
 
   static getMasterKey() {
     if (!this.masterKey) {
@@ -43,14 +42,14 @@ export default class KeyManagement {
       this.masterKey
     )
     const iv = window.crypto.getRandomValues(new Uint8Array(12))
-    this.encryptedMasterKey = await window.crypto.subtle.encrypt(
+    const encryptedMasterKey = await window.crypto.subtle.encrypt(
       { name: 'AES-GCM', iv: iv },
       kek,
       exportedMK
     )
 
     return {
-      encryptedMasterKey: this.encryptedMasterKey,
+      encryptedMasterKey: encryptedMasterKey,
       iv: this.arrayBufferToBase64(iv),
       salt: this.arrayBufferToBase64(salt),
     }
@@ -85,7 +84,6 @@ export default class KeyManagement {
     password: string
   ) {
     try {
-      console.log('iv in decrypt master key:', encryptedMKDetails.iv)
       const enc = new TextEncoder()
       const keyMaterial = await window.crypto.subtle.importKey(
         'raw',
@@ -132,7 +130,7 @@ export default class KeyManagement {
     }
   }
 
-  static async fetchEncryptedKEKDetails(userUuid) {
+  static async fetchEncryptedKEKDetails(userUuid: string | null) {
     const dbPromise = this.openDatabase()
     const db = await dbPromise
 
@@ -224,7 +222,6 @@ export default class KeyManagement {
       throw new Error('Master Key is not set.')
     }
 
-    console.log('private key before encryption:', privateKey)
     const exportedPrivateKey = await window.crypto.subtle.exportKey(
       'pkcs8',
       privateKey
@@ -251,7 +248,6 @@ export default class KeyManagement {
       throw new Error('Master Key is not set.')
     }
 
-    console.log('useruuid:', userUuid)
     const dbPromise = this.openDatabase()
     const db = await dbPromise
 
@@ -279,7 +275,7 @@ export default class KeyManagement {
     })
   }
 
-  static async exportEncryptedPrivateKey(userUuid) {
+  static async exportEncryptedPrivateKey(userUuid: string | null) {
     try {
       // @ts-ignore
       const { encryptedPrivateKey } =
@@ -317,8 +313,6 @@ export default class KeyManagement {
   static async storeEncryptedKey(encryptedKeyData, isImporting = false) {
     const dbPromise = this.openDatabase()
     const db: any = await dbPromise
-
-    console.log(`${encryptedKeyData.userUuid}_encryptedMasterKey`)
 
     const tx = db.transaction('keys', 'readwrite')
     const store = tx.objectStore('keys')
@@ -431,6 +425,5 @@ export default class KeyManagement {
 
   static clearMemoryData() {
     this.masterKey = null
-    this.encryptedMasterKey = null
   }
 }

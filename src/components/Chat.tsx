@@ -4,12 +4,13 @@ import {
   Flex,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useDisclosure,
   useToast,
+  Text,
 } from '@chakra-ui/react'
 
 import Footer from './Footer'
@@ -25,7 +26,7 @@ import Messages from './Messages'
 
 import { getLoggedInUser, getFriendPublicKeyByUuid } from '../store/users'
 
-import { getIsMobile } from '../store/ui'
+import { getIsMobile, getPasswordPromptSubmitted } from '../store/ui'
 
 import ChatControlsAndSearch from './ChatControlsAndSearch'
 
@@ -47,8 +48,10 @@ function Chat({ axios }) {
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
 
   const profile = useSelector(getActiveConversee)
-  const [isOpen, setIsOpen] = useState(false)
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false })
+
   const toast = useToast()
+  const getPromptSubmitted = useSelector(getPasswordPromptSubmitted)
   const friendPublicKey = useSelector((state) =>
     getFriendPublicKeyByUuid(state, profile?.uuid)
   )
@@ -56,6 +59,12 @@ function Chat({ axios }) {
   useEffect(() => {
     setInnerHeight(window.innerHeight)
   }, [])
+
+  useEffect(() => {
+    if (getPromptSubmitted) {
+      onOpen()
+    }
+  }, [getPromptSubmitted])
 
   useEffect(() => {
     window.addEventListener('resize', () => {
@@ -208,9 +217,6 @@ function Chat({ axios }) {
         }
       })
   }
-  // <div className="h-[50rem] w-full dark:bg-black bg-white  dark:bg-grid-small-white/[0.2] bg-grid-small-black/[0.2] relative flex items-center justify-center">
-  //   {/* Radial gradient for the container to give a faded look */}
-  //   <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
   return (
     <Flex
@@ -233,30 +239,50 @@ function Chat({ axios }) {
       <Modal isOpen={isOpen} onClose={() => {}}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader className="bg-black p-5 text-red-500">
-            Welcome to NOON
+          <ModalHeader className="bg-red-500 p-5 text-white">
+            Welcome to NOON(ن)
           </ModalHeader>
-          <ModalCloseButton />
+
           <ModalBody className="bg-black p-5 text-white">
-            <p>
-              NOON attempts to be a whitelabel, open source, free and secure
-              communication platform for security and privacy minded individuals
-              and organizations. This is a very early build and a lot of the
-              features are still being reworked. An initial working version was
-              constructed with Graphql but ive decided that it just wasnt worth
-              the overhead and am currently refactoring to a REST client.
-              Searching, befriending and private one on one chatting currently
-              {/* eslint-disable-next-line react/no-unescaped-entities */}
-              "works". Would highly appreciate it if you could drop me bug
-              reports on mohamad.sleimanhaidar@gmail.com if you encounter any
-              issues and many thanks!{' '}
-            </p>
+            <Text className="my-5">
+              NOON(ن) is a whitelabel, open source, end to end encrypted, free
+              communication platform for privacy and security minded
+              individuals, organizations and communities.
+            </Text>
+
+            <Text className="my-5">
+              Please visit &nbsp;
+              <a
+                href="https://muhammadsh.io/noon"
+                target="_blank"
+                className="border-b-2 border-red-500 hover:border-white transition-all duration-300 ease-in-out"
+              >
+                https://muhammadsh.io/noon
+              </a>{' '}
+              to go through the technical details behind the implementation and
+              links to the repositories that make up the platform.
+            </Text>
+
+            <Text className="my-5">
+              This is an early build and a lot of bugfixing and polishing is in
+              progress, however the vast majority of the features are
+              functional. Please keep in mind that as of{' '}
+              <span className="text-red-400">27-02-2024</span>, images and voice
+              notes are still not encrypted and are stored on the server as is.
+            </Text>
+
+            <Text className="my-5">
+              Would highly appreciate it if you could drop me bug reports on
+              mohamad.sleimanhaidar@gmail.com if you encounter any issues. Many
+              thanks and stay safe!
+            </Text>
           </ModalBody>
           <ModalFooter className="bg-black">
             <AppButton
               mr={3}
               onClick={() => {
-                setIsOpen(false)
+                // setIsOpen(false)
+                onClose()
               }}
             >
               Close
@@ -315,7 +341,7 @@ function Chat({ axios }) {
           w="100%"
           flexDir="column"
           className="justify-center box-content"
-          style={{ height: isMobile ? '12.5vh' : '7.5vh' }}
+          style={{ height: isMobile ? '12.5vh' : '7.7vh' }}
         >
           {activeConversation.type === 'pm' ? (
             <Footer

@@ -19,6 +19,7 @@ import {
   getCreateGroupActive,
   getIsConversationOpen,
   getIsMobile,
+  setPasswordPromptSubmitted,
 } from '../../store/ui'
 import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
@@ -156,7 +157,7 @@ function Noon({ axios }) {
         showAppAlert({
           id: friendRequest.uuid + 'friend-request',
           title: `${friendRequest.username} sent you a friend request.`,
-          status: 'info', // 'success', 'error', 'warning', 'info'
+          status: 'info',
           duration: null,
           onAccept: () => handleAcceptFriendRequest(friendRequest),
           onReject: () => handleRejectFriendRequest(friendRequest),

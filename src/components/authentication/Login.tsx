@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import * as Yup from 'yup'
