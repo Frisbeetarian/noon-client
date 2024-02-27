@@ -130,7 +130,7 @@ export default class KeyManagement {
     }
   }
 
-  static async fetchEncryptedKEKDetails(userUuid) {
+  static async fetchEncryptedKEKDetails(userUuid: string | null) {
     const dbPromise = this.openDatabase()
     const db = await dbPromise
 
@@ -275,7 +275,7 @@ export default class KeyManagement {
     })
   }
 
-  static async exportEncryptedPrivateKey(userUuid) {
+  static async exportEncryptedPrivateKey(userUuid: string | null) {
     try {
       // @ts-ignore
       const { encryptedPrivateKey } =

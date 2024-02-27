@@ -13,6 +13,8 @@ export type UserResponse = {
   user: User
 }
 
+export type RegisterResponse = {}
+
 export type ProfileInUser = {
   uuid: string
   username: string

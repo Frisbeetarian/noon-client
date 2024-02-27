@@ -63,7 +63,6 @@ function Register() {
 
       const encryptedPrivateKeyData =
         await KeyManagement.exportEncryptedPrivateKey(registerResponse?.uuid)
-      console.log('resiger response uuid:', registerResponse)
 
       const encryptedKEKDetails = await KeyManagement.fetchEncryptedKEKDetails(
         registerResponse?.uuid

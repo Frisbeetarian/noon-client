@@ -92,7 +92,7 @@ function PrivateConversationListing({ conversation, i, axios }) {
     <Flex
       key={conversation.uuid}
       tabIndex={0}
-      className="items-center justify-between p-3 pl-5 border-b border-b-base-300 border-b-red-800 hover:border-b-red-500 focus:outline-none"
+      className="items-center justify-between p-3 pl-5 border-b border-r-2 border-r-black border-b-base-300 border-b-red-800 hover:border-b-red-500 focus:outline-none"
       style={{
         transition: 'all .0s',
         ...(activeConversation && activeConversation.uuid === conversation.uuid
@@ -100,7 +100,7 @@ function PrivateConversationListing({ conversation, i, axios }) {
               backgroundColor: '#921A1C',
               outline: 'none',
               boxShadow: 'none',
-              border: 'none',
+              marginLeft: '-1px',
             }
           : null),
       }}

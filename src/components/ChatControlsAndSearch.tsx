@@ -40,17 +40,19 @@ function ChatControlsAndSearch() {
         </Flex>
       )}
 
-      <SearchIcon
-        color="black"
-        className="p-1 m-4 text-2xl cursor-pointer"
-        onClick={() => {
-          dispatch(
-            setSearchComponent({
-              searchActive: true,
-            })
-          )
-        }}
-      />
+      <Flex>
+        <SearchIcon
+          color="black"
+          className="p-1 m-4 text-2xl cursor-pointer"
+          onClick={() => {
+            dispatch(
+              setSearchComponent({
+                searchActive: true,
+              })
+            )
+          }}
+        />
+      </Flex>
     </Flex>
   )
 }

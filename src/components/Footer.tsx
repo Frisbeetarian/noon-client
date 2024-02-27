@@ -207,6 +207,7 @@ const Footer = ({
         <Box className="glowy flex items-center justify-end xs:w-1/4 mr-1 md:mr-4 md:w-1/6  ">
           <AppButton
             size={isMobile ? 'sm' : 'md'}
+            padding={5}
             color="white"
             disabled={inputMessage.trim().length <= 0}
             onClick={handleSendMessage}

@@ -286,7 +286,6 @@ function Sidebar({ axios }) {
           </Menu>
         </Flex>
       </Flex>
-      {/*</div>*/}
 
       {isMobile && <SocketControls />}
     </div>
