@@ -22,8 +22,8 @@ function ChatControlsAndSearch() {
     <Flex
       className={
         isMobile
-          ? 'justify-between items-center px-3  w-full md:py-0  h-1/2'
-          : 'justify-end items-center px-3 pr-0 w-full md:py-0  h-1/2'
+          ? 'justify-between items-center px-3 w-full md:py-0 h-1/2'
+          : 'justify-end items-center px-3 pr-0 w-full md:py-0 h-1/2'
       }
     >
       {searchActive && <SearchSidebar />}
@@ -40,17 +40,20 @@ function ChatControlsAndSearch() {
         </Flex>
       )}
 
-      <Flex className="bg-black px-5 h-full" style={{ height: '5vh' }}>
+      <Flex
+        className="bg-black px-5 h-full hover:text-red-500 cursor-pointer"
+        style={{ height: '5vh' }}
+        onClick={() => {
+          dispatch(
+            setSearchComponent({
+              searchActive: true,
+            })
+          )
+        }}
+      >
         <SearchIcon
           // color="red-500"
           className="p-1 m-4 text-2xl cursor-pointer"
-          onClick={() => {
-            dispatch(
-              setSearchComponent({
-                searchActive: true,
-              })
-            )
-          }}
         />
       </Flex>
     </Flex>
