@@ -342,7 +342,7 @@ function Chat({ axios }) {
           w="100%"
           flexDir="column"
           className="justify-center box-content"
-          style={{ height: isMobile ? '12.5vh' : '7.5vh' }}
+          style={{ height: isMobile ? '12.5vh' : '7.7vh' }}
         >
           {activeConversation.type === 'pm' ? (
             <Footer
