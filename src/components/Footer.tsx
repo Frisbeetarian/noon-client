@@ -134,7 +134,7 @@ const Footer = ({ handleSendMessage, axios }) => {
           onKeyPress={(e) => {
             if (e.key === 'Enter') {
               handleSendMessage(inputMessage)
-              e.target.value = null
+              setInputMessage('')
             }
           }}
           value={inputMessage}
