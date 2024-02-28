@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useToast } from '@chakra-ui/react'
 
@@ -52,8 +52,15 @@ function SocketControls({ axios }) {
   const activeConversationSet = useSelector(getActiveConversationSet)
   const activeConversation = useSelector(getActiveConversation)
   const socketAuthObject = useSelector(getSocketAuthObject)
-  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
+  // const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const showAppAlert = useAppAlert()
+
+  const socket = useMemo(() => {
+    if (socketAuthObject && Object.keys(socketAuthObject).length > 0) {
+      return SocketManager.getInstance(socketAuthObject)?.getSocket()
+    }
+    return null
+  }, [socketAuthObject])
 
   useEffect(() => {
     if (socket) {
@@ -163,6 +170,7 @@ function SocketControls({ axios }) {
       )
 
       socket.on('send-friend-request', ({ senderUuid, senderUsername }) => {
+        console.log('SEND FRIEND REQUEST')
         dispatch(
           addFriendRequestEntry({
             uuid: senderUuid,
@@ -356,7 +364,7 @@ function SocketControls({ axios }) {
         socket.off('search-results')
       }
     }
-  }, [socket, socketAuthObject, loggedInUser])
+  }, [socket, socketAuthObject])
 
   return null
 }

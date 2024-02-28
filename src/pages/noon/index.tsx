@@ -54,6 +54,7 @@ function Noon({ axios }) {
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false })
   const [validatePassword, { isLoading, isSuccess, isError }] =
     useValidatePasswordMutation()
+  const [localFriendRequests, setLocalFriendRequests] = useState(null)
 
   useEffect(() => {
     setMounted(true)
@@ -152,6 +153,8 @@ function Noon({ axios }) {
       loggedInUser.user?.profile?.friendshipRequests &&
       loggedInUser.user?.profile?.friendshipRequests.length !== 0
     ) {
+      console.log('logged in user:', loggedInUser)
+
       loggedInUser.user.profile.friendshipRequests.forEach((friendRequest) => {
         if (!friendRequest.reverse) return
         showAppAlert({
@@ -165,7 +168,7 @@ function Noon({ axios }) {
         })
       })
     }
-  }, [loggedInUser.user.profile])
+  }, [loggedInUser.user.profile?.friendshipRequests])
 
   if (!mounted) return null
 
