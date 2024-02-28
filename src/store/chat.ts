@@ -241,7 +241,6 @@ const slice = createSlice({
     ) => {
       const conversationUuid = action.payload.message.conversationUuid
 
-      console.log('action paylod add message:', action.payload)
       if (
         chat.activeConversation &&
         chat.activeConversation.uuid === conversationUuid
@@ -441,7 +440,6 @@ const slice = createSlice({
       if (!action.payload.conversation?.messages) {
         conversationObject.messages = []
       } else {
-        console.log('messages array:', action.payload.conversation?.messages)
         const messagesArray = action.payload.conversation.messages
           .map((message) => ({
             ...message,

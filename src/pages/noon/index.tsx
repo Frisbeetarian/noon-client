@@ -151,8 +151,6 @@ function Noon({ axios }) {
       loggedInUser.user?.profile?.friendshipRequests &&
       loggedInUser.user?.profile?.friendshipRequests.length !== 0
     ) {
-      console.log('logged in user:', loggedInUser)
-
       loggedInUser.user.profile.friendshipRequests.forEach((friendRequest) => {
         if (!friendRequest.reverse || friendRequest.isNew) return
 
