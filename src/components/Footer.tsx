@@ -24,12 +24,7 @@ import withAxios from '../utils/withAxios'
 import AppButton from './AppComponents/AppButton'
 import useAppAlert from '../hooks/useAppAlert'
 
-const Footer = ({
-  inputMessage,
-  setInputMessage,
-  handleSendMessage,
-  axios,
-}) => {
+const Footer = ({ handleSendMessage, axios }) => {
   const socketAuthObject = useSelector(getSocketAuthObject)
 
   const hiddenFileInput = useRef(null)
@@ -39,10 +34,10 @@ const Footer = ({
   const [isUploading, setIsUploading] = useState(false)
   const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const isMobile = useSelector(getIsMobile)
+  const [inputMessage, setInputMessage] = useState('')
 
   const activeConversation = useSelector(getActiveConversation)
   const loggedInUser = useSelector(getLoggedInUser)
-  const activeConversee = useSelector(getActiveConversee)
 
   const { recorderState, ...handlers }: UseRecorder = useRecorder(axios)
 
@@ -138,7 +133,8 @@ const Footer = ({
           }}
           onKeyPress={(e) => {
             if (e.key === 'Enter') {
-              handleSendMessage()
+              handleSendMessage(inputMessage)
+              setInputMessage('')
             }
           }}
           value={inputMessage}

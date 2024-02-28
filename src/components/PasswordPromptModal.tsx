@@ -47,11 +47,11 @@ const PasswordPromptModal = ({ isOpen, onClose, onSubmit, isLoading }) => {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader className="bg-black p-5 text-white">
+        <ModalHeader className="bg-red-500 p-5 text-white">
           Password Required
         </ModalHeader>
-        <ModalBody className="bg-black p-5 text-white">
-          <FormControl>
+        <ModalBody className="bg-black p-5  text-white">
+          <FormControl className="my-5">
             <FormLabel htmlFor="password">
               Enter your password to continue:
             </FormLabel>

@@ -67,7 +67,6 @@ export default class MessageManagement {
     const { encryptedPrivateKey, iv: ivForPrivateKey } =
       await KeyManagement.fetchEncryptedPrivateKeyDetails(false, userUuid)
 
-    console.log('encrypted private key:', ivForPrivateKey)
     const privateKey = await KeyManagement.decryptPrivateKey(
       encryptedPrivateKey,
       ivForPrivateKey

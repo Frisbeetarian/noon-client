@@ -19,7 +19,6 @@ import {
   getCreateGroupActive,
   getIsConversationOpen,
   getIsMobile,
-  setPasswordPromptSubmitted,
 } from '../../store/ui'
 import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
@@ -153,7 +152,8 @@ function Noon({ axios }) {
       loggedInUser.user?.profile?.friendshipRequests.length !== 0
     ) {
       loggedInUser.user.profile.friendshipRequests.forEach((friendRequest) => {
-        if (!friendRequest.reverse) return
+        if (!friendRequest.reverse || friendRequest.isNew) return
+
         showAppAlert({
           id: friendRequest.uuid + 'friend-request',
           title: `${friendRequest.username} sent you a friend request.`,
@@ -165,7 +165,7 @@ function Noon({ axios }) {
         })
       })
     }
-  }, [loggedInUser.user.profile])
+  }, [loggedInUser.user.profile?.friendshipRequests])
 
   if (!mounted) return null
 

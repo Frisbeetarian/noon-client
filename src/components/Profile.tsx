@@ -101,6 +101,7 @@ function Profile({ profile, axios }) {
             uuid: profile.uuid,
             username: profile.username,
             reverse: false,
+            isNew: true,
           })
         )
 
