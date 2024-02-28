@@ -28,7 +28,7 @@ function SearchSidebar() {
     <div className="search-sidebar bg-black md:w-3/4 xl:w-2/5">
       <Flex
         className="justify-center bg-red-500 p-5 mb-5 flex-col border-b border-red-500 border-l border-l-black"
-        style={{ height: '4.8vh' }}
+        style={{ height: '5vh' }}
       >
         <h1 className="text-xl text-white border-red-500">
           Search for profiles

@@ -42,7 +42,7 @@ function Chat({ axios }) {
   const isMobile = useSelector(getIsMobile)
   const [innerHeight, setInnerHeight] = useState(0)
 
-  const [inputMessage, setInputMessage] = useState('')
+  // const [inputMessage, setInputMessage] = useState('')
 
   const activeConversation = useSelector(getActiveConversation)
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
@@ -78,7 +78,7 @@ function Chat({ axios }) {
     }
   })
 
-  const handleSendGroupMessage = async () => {
+  const handleSendGroupMessage = async (inputMessage) => {
     if (!inputMessage.trim().length) {
       return
     }
@@ -146,7 +146,7 @@ function Chat({ axios }) {
       })
   }
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = async (inputMessage) => {
     if (!inputMessage.trim().length) {
       return
     }
@@ -167,7 +167,7 @@ function Chat({ axios }) {
       inputMessage
     )
 
-    setInputMessage('')
+    // setInputMessage('')
 
     await axios
       .post('/api/messages', {
@@ -344,17 +344,9 @@ function Chat({ axios }) {
           style={{ height: isMobile ? '12.5vh' : '7.7vh' }}
         >
           {activeConversation.type === 'pm' ? (
-            <Footer
-              inputMessage={inputMessage}
-              setInputMessage={setInputMessage}
-              handleSendMessage={handleSendMessage}
-            />
+            <Footer handleSendMessage={handleSendMessage} />
           ) : (
-            <Footer
-              inputMessage={inputMessage}
-              setInputMessage={setInputMessage}
-              handleSendMessage={handleSendGroupMessage}
-            />
+            <Footer handleSendMessage={handleSendGroupMessage} />
           )}
         </Flex>
       ) : null}
