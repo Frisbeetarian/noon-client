@@ -42,8 +42,6 @@ function Chat({ axios }) {
   const isMobile = useSelector(getIsMobile)
   const [innerHeight, setInnerHeight] = useState(0)
 
-  // const [inputMessage, setInputMessage] = useState('')
-
   const activeConversation = useSelector(getActiveConversation)
   const videoFrameOpenState = useSelector(getVideoFrameOpenState)
 
@@ -98,7 +96,6 @@ function Chat({ axios }) {
       inputMessage
     )
 
-    setInputMessage('')
     await axios
       .post('/api/messages/groupMessages', {
         message: encryptedPayload.encryptedMessage,
@@ -166,8 +163,6 @@ function Chat({ axios }) {
       publicKeys,
       inputMessage
     )
-
-    // setInputMessage('')
 
     await axios
       .post('/api/messages', {
