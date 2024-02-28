@@ -52,7 +52,6 @@ function SocketControls({ axios }) {
   const activeConversationSet = useSelector(getActiveConversationSet)
   const activeConversation = useSelector(getActiveConversation)
   const socketAuthObject = useSelector(getSocketAuthObject)
-  // const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
   const showAppAlert = useAppAlert()
 
   const socket = useMemo(() => {
@@ -176,6 +175,7 @@ function SocketControls({ axios }) {
             uuid: senderUuid,
             username: senderUsername,
             reverse: true,
+            isNew: true,
           })
         )
 

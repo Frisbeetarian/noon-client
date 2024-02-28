@@ -19,7 +19,6 @@ import {
   getCreateGroupActive,
   getIsConversationOpen,
   getIsMobile,
-  setPasswordPromptSubmitted,
 } from '../../store/ui'
 import SocketControls from '../../components/SocketIo/SocketControls'
 import CreateGroupSidebar from '../../components/CreateGroupSidebar'
@@ -54,7 +53,6 @@ function Noon({ axios }) {
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: false })
   const [validatePassword, { isLoading, isSuccess, isError }] =
     useValidatePasswordMutation()
-  const [localFriendRequests, setLocalFriendRequests] = useState(null)
 
   useEffect(() => {
     setMounted(true)
@@ -156,7 +154,8 @@ function Noon({ axios }) {
       console.log('logged in user:', loggedInUser)
 
       loggedInUser.user.profile.friendshipRequests.forEach((friendRequest) => {
-        if (!friendRequest.reverse) return
+        if (!friendRequest.reverse || friendRequest.isNew) return
+
         showAppAlert({
           id: friendRequest.uuid + 'friend-request',
           title: `${friendRequest.username} sent you a friend request.`,

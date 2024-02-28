@@ -139,4 +139,5 @@ export type FriendRequest = {
   uuid: string
   username: string
   reverse: boolean
+  isNew: boolean
 }
