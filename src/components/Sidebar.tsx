@@ -118,8 +118,11 @@ function Sidebar({ axios }) {
             <IconButton
               bg="transparent"
               className="mr-4 cursor-pointer"
-              children={<SearchIcon color="green.500" />}
+              children={<SearchIcon color="red.500" />}
               aria-label="search icon"
+              _focus={{ outline: 'none', bg: 'transparent' }}
+              _hover={{ bg: 'transparent' }}
+              _active={{ bg: 'transparent' }}
               onClick={() => {
                 dispatch(setChatContainerHeight('52.5vh'))
                 dispatch(
