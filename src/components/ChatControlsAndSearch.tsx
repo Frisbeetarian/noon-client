@@ -40,7 +40,7 @@ function ChatControlsAndSearch() {
         </Flex>
       )}
 
-      {!isMobile ?? (
+      {!isMobile ? (
         <Flex
           className="bg-black px-5 h-full hover:text-red-500 cursor-pointer"
           style={{ height: '5vh' }}
@@ -54,7 +54,7 @@ function ChatControlsAndSearch() {
         >
           <SearchIcon className="p-1 m-4 text-2xl cursor-pointer" />
         </Flex>
-      )}
+      ) : null}
     </Flex>
   )
 }

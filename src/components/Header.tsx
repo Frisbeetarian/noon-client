@@ -82,7 +82,14 @@ const Header = () => {
   }, [activeConversee, socket, loggedInUser.user?.profile?.uuid])
 
   return (
-    <Flex w="100%" className="flex-col items-center justify-between">
+    <Flex
+      w="100%"
+      className={
+        isMobile
+          ? 'flex-col items-center justify-between'
+          : 'flex-col p-3 justify-between'
+      }
+    >
       <Flex
         className={
           isMobile ? 'flex-col items-start px-1' : 'items-center px-1 md:px-3'
