@@ -27,6 +27,7 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
       children,
       rightIcon = null,
       type = 'button',
+      size = 'md',
       ...rest
     },
     ref
@@ -43,6 +44,7 @@ const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(
         // @ts-ignore
         rightIcon={rightIcon}
         type={type}
+        size={size}
         {...rest}
       >
         {children}

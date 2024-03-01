@@ -164,10 +164,13 @@ function Profile({ profile, axios }) {
 
       {profile.hasSentFriendshipRequestToProfile ? (
         <Flex position="relative">
-          <AppButton disabled={true}>Friendship request sent</AppButton>
+          <AppButton disabled={true} size={isMobile ? 'xs' : 'md'}>
+            Friend request sent
+          </AppButton>
           <AppButton
             onClick={handleCancelFriendRequest}
             isLoading={isCancelFriendRequestLoading}
+            size={isMobile ? 'xs' : 'md'}
           >
             Cancel
           </AppButton>
@@ -191,7 +194,7 @@ function Profile({ profile, axios }) {
           </AppButton>
         </Flex>
       ) : (
-        <Box className={isMobile ? 'w-2/4' : ''}>
+        <Box className={isMobile ? 'w-2/4  flex justify-end' : ''}>
           {profile.isAFriend ? (
             <Flex cursor="pointer" w="full" h="full" alignItems="center">
               <ChatIcon mr={3} mt={1} />
@@ -200,6 +203,7 @@ function Profile({ profile, axios }) {
             <AppButton
               onClick={handleSendFriendRequest}
               isLoading={isFriendRequestLoading}
+              size={isMobile ? 'xs' : 'md'}
             >
               Send friend request
             </AppButton>
