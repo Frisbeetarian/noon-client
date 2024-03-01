@@ -24,6 +24,7 @@ import { getLoggedInUser } from '../store/users'
 import { setVideoFrameForConversation } from '../store/video'
 import { getIsMobile } from '../store/ui'
 import { getSocketAuthObject } from '../store/sockets'
+import { AiOutlineGroup } from 'react-icons/ai'
 
 const Header = () => {
   const socketAuthObject = useSelector(getSocketAuthObject)
@@ -81,60 +82,70 @@ const Header = () => {
   }, [activeConversee, socket, loggedInUser.user?.profile?.uuid])
 
   return (
-    <Flex w="100%" className="items-center justify-between">
-      <Flex className="items-center px-1 md:px-3">
-        <Avatar
-          size={isMobile ? 'sm' : 'md'}
-          bg="black"
-          name={
-            activeConversation.type === 'pm'
-              ? activeConversee.username
-              : activeConversation.name
-          }
-        >
+    <Flex w="100%" className="flex-col items-center justify-between">
+      <Flex
+        className={
+          isMobile ? 'flex-col items-start px-1' : 'items-center px-1 md:px-3'
+        }
+      >
+        <Flex>
           {activeConversation.type === 'pm' ? (
-            <AvatarBadge
-              className="-mt-1 mr-1"
-              outline="0"
-              border="2px solid black"
-              boxSize={isMobile ? '1.1em' : '1.1em'}
-              bg={online !== 'true' ? 'yellow.500' : 'green.500'}
-            />
-          ) : null}
-        </Avatar>
+            <Avatar
+              size={isMobile ? 'sm' : 'md'}
+              bg="black"
+              name={activeConversee.username}
+              className={isMobile ? 'mr-2' : ''}
+            >
+              <AvatarBadge
+                className="-mt-1 mr-1"
+                outline="0"
+                border="2px solid black"
+                boxSize={isMobile ? '1.1em' : '1.1em'}
+                bg={online !== 'true' ? 'yellow.500' : 'green.500'}
+              />
+            </Avatar>
+          ) : (
+            <Avatar
+              className={isMobile ? 'mr-2' : ''}
+              size={isMobile ? 'sm' : 'md'}
+              bg="black"
+              name={activeConversation.name}
+              icon={<AiOutlineGroup fontSize="1rem" />}
+            ></Avatar>
+          )}
 
-        <Flex
-          flexDirection={isMobile ? 'column' : 'column'}
-          mx="3"
-          my="5"
-          justify="center"
-        >
-          <Text fontSize="lg" fontWeight="bold">
-            {activeConversation.type === 'pm'
-              ? activeConversee.username
-              : activeConversation.name}
-          </Text>
-
-          {activeConversation.type === 'pm' ? (
-            <Text color="green.500" fontSize="sm">
-              {online === 'true' ? (
-                'Online'
-              ) : (
-                <span className="text-yellow-500">Offline</span>
-              )}
+          <Flex flexDirection={isMobile ? 'column' : 'column'}>
+            <Text fontSize={isMobile ? 'lg' : 'lg'} fontWeight="bold">
+              {activeConversation.type === 'pm'
+                ? activeConversee.username
+                : activeConversation.name}
             </Text>
-          ) : null}
-        </Flex>
 
-        {activeConversation.type === 'group'
-          ? activeConversation.profiles.map((item, index) => {
-              return (
-                <Text key={index} className="mr-2">
-                  {item.username},
-                </Text>
-              )
-            })
-          : null}
+            {activeConversation.type === 'pm' ? (
+              <Text color="green.500" fontSize="sm">
+                {online === 'true' ? (
+                  'Online'
+                ) : (
+                  <span className="text-yellow-500">Offline</span>
+                )}
+              </Text>
+            ) : null}
+          </Flex>
+        </Flex>
+        <Flex className="">
+          {activeConversation.type === 'group'
+            ? activeConversation.profiles.map((item, index) => {
+                return (
+                  <Text
+                    key={index}
+                    className={isMobile ? 'mr-2 text-sm' : 'mr-2'}
+                  >
+                    {item.username},
+                  </Text>
+                )
+              })
+            : null}
+        </Flex>
       </Flex>
 
       {activeConversation?.pendingCall ? (

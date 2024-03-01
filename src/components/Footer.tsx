@@ -110,7 +110,7 @@ const Footer = ({ handleSendMessage, axios }) => {
   }
 
   return (
-    <Flex className="bg-black items-center box-content h-full  justify-between">
+    <Flex className="bg-black items-center box-content h-full justify-between ">
       <Box className="w-1/2 md:w-3/6 relative z-10">
         <Input
           autoFocus
@@ -170,40 +170,41 @@ const Footer = ({ handleSendMessage, axios }) => {
           />
         </Box>
 
-        <Box className="flex items-center justify-center xs:w-1/4 mr-1 md:mr-2">
-          <AppButton
-            size={isMobile ? 'sm' : 'md'}
-            title="Start call"
-            isDisabled={true}
-            onClick={async () => {
-              dispatch(setVideoFrameForConversation(true))
+        {!isMobile ?? (
+          <Box className="flex items-center justify-center xs:w-1/4 mr-1 md:mr-2">
+            <AppButton
+              size={isMobile ? 'sm' : 'md'}
+              title="Start call"
+              isDisabled={true}
+              onClick={async () => {
+                dispatch(setVideoFrameForConversation(true))
 
-              activeConversation.profiles.map(async (profile) => {
-                socket?.emit('set-pending-call-for-conversation', {
-                  from: loggedInUser.user?.profile?.uuid,
-                  fromUsername: loggedInUser.user?.profile?.username,
-                  to: profile.uuid,
-                  toUsername: profile.username,
-                  conversationUuid: activeConversation.uuid,
+                activeConversation.profiles.map(async (profile) => {
+                  socket?.emit('set-pending-call-for-conversation', {
+                    from: loggedInUser.user?.profile?.uuid,
+                    fromUsername: loggedInUser.user?.profile?.username,
+                    to: profile.uuid,
+                    toUsername: profile.username,
+                    conversationUuid: activeConversation.uuid,
+                  })
+
+                  // await setPendingCallForConversation({
+                  //   variables: {
+                  //     conversationUuid: activeConversation.uuid,
+                  //     profileUuid: profile.uuid,
+                  //   },
+                  // })
                 })
-
-                // await setPendingCallForConversation({
-                //   variables: {
-                //     conversationUuid: activeConversation.uuid,
-                //     profileUuid: profile.uuid,
-                //   },
-                // })
-              })
-            }}
-          >
-            <PhoneIcon className="" />
-          </AppButton>
-        </Box>
-
-        <Box className="glowy flex items-center justify-end xs:w-1/4 mr-1 md:mr-4 md:w-1/6  ">
+              }}
+            >
+              <PhoneIcon className="" />
+            </AppButton>
+          </Box>
+        )}
+        <Box className=" flex items-center justify-end xs:w-1/4 mr-1 md:mr-4 md:w-1/6  ">
           <AppButton
-            size={isMobile ? 'sm' : 'md'}
-            padding={5}
+            size={isMobile ? 'xs' : 'md'}
+            padding={isMobile ? 4 : 5}
             color="white"
             disabled={inputMessage.trim().length <= 0}
             onClick={handleSendMessage}
