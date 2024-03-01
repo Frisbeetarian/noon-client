@@ -11,6 +11,7 @@ import {
   getSearchQuery,
   setSearchLoading,
 } from '../store/search'
+import { getIsMobile } from '../store/ui'
 
 function SearchController({ axios }) {
   const dispatch = useDispatch()
@@ -18,6 +19,7 @@ function SearchController({ axios }) {
   const searchQuery = useSelector(getSearchQuery)
   const profilesFromStore = useSelector(getProfiles)
   const searchLoading = useSelector(getSearchIsLoading)
+  const isMobile: number = useSelector(getIsMobile)
 
   async function searchProfiles(searchQuery) {
     await axios.post('/api/search', { query: searchQuery })

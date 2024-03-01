@@ -13,13 +13,14 @@ import {
   setSearchComponent,
   getSearchComponentState,
   setChatContainerHeight,
+  getIsMobile,
 } from '../store/ui'
 
 function ChatControlsAndSearchForMobile() {
   const ref = React.useRef()
   const dispatch = useDispatch()
   // const profile = useSelector(getActiveConversee)
-  // const isMobile = useSelector(getIsMobile)
+  const isMobile = useSelector(getIsMobile)
 
   const searchQuery = useSelector(getSearchQuery)
   const searchComponentState = useSelector(getSearchComponentState)
@@ -34,7 +35,7 @@ function ChatControlsAndSearchForMobile() {
         height: searchComponentState.containerHeight,
         transition: 'all .5s',
         marginTop: '+0.5px',
-        zIndex: '200',
+        zIndex: '1',
       }}
     >
       <Flex className="flex-col px-3 justify-start  h-full w-full ">
@@ -138,7 +139,10 @@ function ChatControlsAndSearchForMobile() {
         </Flex>
 
         {searchInput && searchComponentState.searchActive ? (
-          <Flex className="w-full mt-4" style={{ flex: '1' }}>
+          <Flex
+            className={isMobile ? 'w-full mt-0' : 'w-full'}
+            style={{ flex: '1' }}
+          >
             <SearchController />
           </Flex>
         ) : null}

@@ -147,19 +147,28 @@ function Sidebar({ axios }) {
               className="mr-3 bg-red-500 text-black"
               border="none"
               borderRadius="0"
+              style={{
+                zIndex: 10,
+              }}
             />
 
             <AppMenuList
               bg="black"
-              className="bg-red-500 text-black"
+              className="bg-red-500 text-black z-10"
               border="none"
               borderRadius="0"
+              style={{
+                zIndex: 10,
+              }}
             >
               <MenuItem
                 bg="black"
-                className="bg-red-500 text-black"
+                className="bg-red-500 text-black z-10"
                 border="none"
                 icon={<EditIcon />}
+                style={{
+                  zIndex: 100,
+                }}
                 onClick={async () => {
                   // dispatch(setActiveConversationSet(false))
                   // dispatch(setActiveConversee(null))

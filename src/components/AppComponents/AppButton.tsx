@@ -12,6 +12,7 @@ interface AppButtonProps extends ButtonProps {
   disabled?: boolean | undefined
   rightIcon?: typeof CheckIcon
   type?: 'button' | 'submit' | 'reset' | undefined
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 }
 
 const AppButton = forwardRef<HTMLButtonElement, AppButtonProps>(

@@ -22,11 +22,13 @@ import {
   rejectFriendRequest,
 } from '../utils/friendRequestActions'
 import { addConversation } from '../store/chat'
+import { getIsMobile } from '../store/ui'
 
 function Profile({ profile, axios }) {
   const dispatch = useDispatch()
   const loggedInUser = useSelector(getLoggedInUser)
   const toast = useToast()
+  const isMobile: number = useSelector(getIsMobile)
   const [isFriendRequestLoading, setIsFriendRequestLoading] = useState(false)
   const [isCancelFriendRequestLoading, setIsCancelFriendRequestLoading] =
     useState(false)
@@ -151,9 +153,11 @@ function Profile({ profile, axios }) {
       key={profile.uuid}
       alignItems="center"
       justifyContent="space-between"
-      className="w-full h-12 my-5 relative"
+      className={
+        isMobile ? 'w-full h-8 my-3 relative' : 'w-full h-12 my-5 relative'
+      }
     >
-      <Flex alignItems="center">
+      <Flex alignItems="center" className={isMobile ? 'w-1/3' : ''}>
         <Avatar name={profile.username} size="sm" mr={2} bg="red.500" />
         <p>{profile.username}</p>
       </Flex>
@@ -177,6 +181,7 @@ function Profile({ profile, axios }) {
           >
             Accept
           </AppButton>
+
           <AppButton
             bg="black"
             onClick={handleRejectFriendRequest}
@@ -186,7 +191,7 @@ function Profile({ profile, axios }) {
           </AppButton>
         </Flex>
       ) : (
-        <Box>
+        <Box className={isMobile ? 'w-2/4' : ''}>
           {profile.isAFriend ? (
             <Flex cursor="pointer" w="full" h="full" alignItems="center">
               <ChatIcon mr={3} mt={1} />
