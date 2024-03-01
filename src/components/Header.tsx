@@ -90,39 +90,33 @@ const Header = () => {
           : 'flex-col p-3 justify-between'
       }
     >
-      <Flex
-        className={
-          isMobile ? 'flex-col items-start px-1' : 'items-center px-1 md:px-3'
-        }
-      >
-        <Flex>
-          {activeConversation.type === 'pm' ? (
-            <Avatar
-              size={isMobile ? 'sm' : 'md'}
-              bg="black"
-              name={activeConversee.username}
-              className={isMobile ? 'mr-2' : ''}
-            >
-              <AvatarBadge
-                className="-mt-1 mr-1"
-                outline="0"
-                border="2px solid black"
-                boxSize={isMobile ? '1.1em' : '1.1em'}
-                bg={online !== 'true' ? 'yellow.500' : 'green.500'}
-              />
-            </Avatar>
-          ) : (
-            <Avatar
-              className={isMobile ? 'mr-2' : ''}
-              size={isMobile ? 'sm' : 'md'}
-              bg="black"
-              name={activeConversation.name}
-              icon={<AiOutlineGroup fontSize="1rem" />}
-            ></Avatar>
-          )}
-
+      <Flex className={isMobile ? ' items-center px-1' : '  px-1 md:px-3'}>
+        {activeConversation.type === 'pm' ? (
+          <Avatar
+            size={isMobile ? 'sm' : 'md'}
+            bg="black"
+            name={activeConversee.username}
+            className={isMobile ? 'mr-2' : 'mr-2'}
+          >
+            <AvatarBadge
+              className="-mt-1 mr-1"
+              outline="0"
+              border="2px solid black"
+              boxSize={isMobile ? '1.1em' : '1.1em'}
+              bg={online !== 'true' ? 'yellow.500' : 'green.500'}
+            />
+          </Avatar>
+        ) : (
+          <Avatar
+            className={isMobile ? 'mr-2' : 'mr-2'}
+            size={isMobile ? 'sm' : 'md'}
+            bg="black"
+            icon={<AiOutlineGroup fontSize="1rem" />}
+          ></Avatar>
+        )}
+        <Flex className="flex-col">
           <Flex flexDirection={isMobile ? 'column' : 'column'}>
-            <Text fontSize={isMobile ? 'lg' : 'lg'} fontWeight="bold">
+            <Text fontSize={isMobile ? 'md' : 'lg'} fontWeight="bold">
               {activeConversation.type === 'pm'
                 ? activeConversee.username
                 : activeConversation.name}
@@ -138,20 +132,22 @@ const Header = () => {
               </Text>
             ) : null}
           </Flex>
-        </Flex>
-        <Flex className="">
-          {activeConversation.type === 'group'
-            ? activeConversation.profiles.map((item, index) => {
-                return (
-                  <Text
-                    key={index}
-                    className={isMobile ? 'mr-2 text-sm' : 'mr-2'}
-                  >
-                    {item.username},
-                  </Text>
-                )
-              })
-            : null}
+
+          <Flex className="">
+            {activeConversation.type === 'group'
+              ? activeConversation.profiles.map((item, index) => {
+                  return (
+                    <Text
+                      key={index}
+                      className={isMobile ? 'mr-2 text-sm' : 'mr-2'}
+                      fontSize={isMobile ? 'sm' : 'md'}
+                    >
+                      {item.username},
+                    </Text>
+                  )
+                })
+              : null}
+          </Flex>
         </Flex>
       </Flex>
 
