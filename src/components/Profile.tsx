@@ -154,12 +154,12 @@ function Profile({ profile, axios }) {
       alignItems="center"
       justifyContent="space-between"
       className={
-        isMobile ? 'w-full h-8 my-3 relative' : 'w-full h-12 my-5 relative'
+        isMobile ? 'w-full h-8 my-3 relative ' : 'w-full h-12 my-5 relative'
       }
     >
-      <Flex alignItems="center" className={isMobile ? 'w-1/3' : ''}>
+      <Flex alignItems="center" className={isMobile ? 'w-1/3  max-w-28' : ''}>
         <Avatar name={profile.username} size="sm" mr={2} bg="red.500" />
-        <p>{profile.username}</p>
+        <p className="text-wrap max-w-full">{profile.username}</p>
       </Flex>
 
       {profile.hasSentFriendshipRequestToProfile ? (
@@ -194,7 +194,7 @@ function Profile({ profile, axios }) {
           </AppButton>
         </Flex>
       ) : (
-        <Box className={isMobile ? 'w-2/4  flex justify-end' : ''}>
+        <Box className={isMobile ? 'w-2/3 flex justify-end' : ''}>
           {profile.isAFriend ? (
             <Flex cursor="pointer" w="full" h="full" alignItems="center">
               <ChatIcon mr={3} mt={1} />
