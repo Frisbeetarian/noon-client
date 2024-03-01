@@ -49,7 +49,11 @@ function SearchController({ axios }) {
           <Spinner />
         </Flex>
       ) : (
-        <Flex className="w-full flex-col">
+        <Flex
+          className="w-full flex-col overflow-y-auto"
+          // @ts-ignore
+          style={isMobile ? { height: '60vh' } : ''}
+        >
           {profilesFromStore && profilesFromStore.length !== 0 ? (
             [...Object.values(profilesFromStore)].map((profile, i) =>
               !profile ? null : (
