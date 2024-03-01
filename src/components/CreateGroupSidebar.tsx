@@ -59,10 +59,10 @@ function CreateGroupSidebar({ axios }) {
   }, [])
 
   return (
-    <div className="create-group-sidebar bg-black text-white w-10/12 md:w-3/4 xl:w-2/5">
+    <div className="create-group-sidebar bg-black text-white w-full md:w-3/4 xl:w-2/5">
       <Flex
         className="justify-center bg-red-500 p-5 mb-5 flex-col border-b border-red-500 border-l border-l-black"
-        style={{ height: '5vh' }}
+        style={isMobile ? { height: '9vh' } : { height: '5vh' }}
       >
         <h1 className="text-xl text-white border-red-500">Create Group</h1>
 
