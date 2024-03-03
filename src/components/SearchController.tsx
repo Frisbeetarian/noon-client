@@ -50,9 +50,8 @@ function SearchController({ axios }) {
         </Flex>
       ) : (
         <Flex
-          className="w-full flex-col overflow-y-auto"
-          // @ts-ignore
-          style={isMobile ? { height: '60vh' } : ''}
+          className="w-full flex-col overflow-y-auto  "
+          style={{ height: isMobile ? '60vh' : '77.5vh' }}
         >
           {profilesFromStore && profilesFromStore.length !== 0 ? (
             [...Object.values(profilesFromStore)].map((profile, i) =>

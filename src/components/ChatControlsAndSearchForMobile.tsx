@@ -19,7 +19,6 @@ import {
 function ChatControlsAndSearchForMobile() {
   const ref = React.useRef()
   const dispatch = useDispatch()
-  // const profile = useSelector(getActiveConversee)
   const isMobile = useSelector(getIsMobile)
 
   const searchQuery = useSelector(getSearchQuery)
