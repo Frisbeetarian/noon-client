@@ -107,7 +107,7 @@ function Sidebar({ axios }) {
     >
       <Flex
         className="items-center flex-col md:flex-row justify-between border-b border-red-500"
-        style={{ height: '5vh' }}
+        style={isMobile ? { height: '10vh' } : { height: '5vh' }}
       >
         <Flex className="w-full items-center">
           <Heading className="w-full px-4 py-4 md:py-0 text-red-500">
@@ -118,8 +118,11 @@ function Sidebar({ axios }) {
             <IconButton
               bg="transparent"
               className="mr-4 cursor-pointer"
-              children={<SearchIcon color="green.500" />}
+              children={<SearchIcon color="red.500" />}
               aria-label="search icon"
+              _focus={{ outline: 'none', bg: 'transparent' }}
+              _hover={{ bg: 'transparent' }}
+              _active={{ bg: 'transparent' }}
               onClick={() => {
                 dispatch(setChatContainerHeight('52.5vh'))
                 dispatch(
@@ -144,19 +147,28 @@ function Sidebar({ axios }) {
               className="mr-3 bg-red-500 text-black"
               border="none"
               borderRadius="0"
+              style={{
+                zIndex: 10,
+              }}
             />
 
             <AppMenuList
               bg="black"
-              className="bg-red-500 text-black"
+              className="bg-red-500 text-black z-10"
               border="none"
               borderRadius="0"
+              style={{
+                zIndex: 10,
+              }}
             >
               <MenuItem
                 bg="black"
-                className="bg-red-500 text-black"
+                className="bg-red-500 text-black z-10"
                 border="none"
                 icon={<EditIcon />}
+                style={{
+                  zIndex: 100,
+                }}
                 onClick={async () => {
                   // dispatch(setActiveConversationSet(false))
                   // dispatch(setActiveConversee(null))

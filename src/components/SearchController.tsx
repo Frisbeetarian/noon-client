@@ -11,6 +11,7 @@ import {
   getSearchQuery,
   setSearchLoading,
 } from '../store/search'
+import { getIsMobile } from '../store/ui'
 
 function SearchController({ axios }) {
   const dispatch = useDispatch()
@@ -18,6 +19,7 @@ function SearchController({ axios }) {
   const searchQuery = useSelector(getSearchQuery)
   const profilesFromStore = useSelector(getProfiles)
   const searchLoading = useSelector(getSearchIsLoading)
+  const isMobile: number = useSelector(getIsMobile)
 
   async function searchProfiles(searchQuery) {
     await axios.post('/api/search', { query: searchQuery })
@@ -47,7 +49,10 @@ function SearchController({ axios }) {
           <Spinner />
         </Flex>
       ) : (
-        <Flex className="w-full flex-col">
+        <Flex
+          className="w-full flex-col overflow-y-auto  "
+          style={{ height: isMobile ? '60vh' : '77.5vh' }}
+        >
           {profilesFromStore && profilesFromStore.length !== 0 ? (
             [...Object.values(profilesFromStore)].map((profile, i) =>
               !profile ? null : (
