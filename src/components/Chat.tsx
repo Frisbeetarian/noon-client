@@ -2,27 +2,21 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Flex, useToast } from '@chakra-ui/react'
 
-import Footer from './Footer'
-
 import {
   addMessageToActiveConversation,
   getActiveConversation,
   getActiveConversee,
 } from '../store/chat'
-
 import Header from './Header'
 import Messages from './Messages'
-
 import { getLoggedInUser, getFriendPublicKeyByUuid } from '../store/users'
-
 import { getIsMobile } from '../store/ui'
-
 import ChatControlsAndSearch from './ChatControlsAndSearch'
-
 import Video from './Video'
 import withAxios from '../utils/withAxios'
 import MessageManagement from '../utils/MessageManagement'
 import { getVideoFrameOpenState } from '../store/video'
+import Footer from './Footer'
 
 function Chat({ axios }) {
   const dispatch = useDispatch()

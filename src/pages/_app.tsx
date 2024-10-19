@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { ChakraProvider, ColorModeProvider } from '@chakra-ui/react'
 
-import theme from '../theme'
 import './index.css'
 import { wrapper } from '../store/store'
 import '../components/SocketIo/Messages.css'
@@ -10,6 +9,7 @@ import '../components/AudioRecorder/recorder-controls/styles.css'
 import { getRateLimited, setIsMobile } from '../store/ui'
 import { useAuthCheck } from '../hooks/useAuthCheck'
 import useAppAlert from '../hooks/useAppAlert'
+import theme from '../theme'
 
 function MyApp({ Component, pageProps }): React.JSX.Element {
   useAuthCheck()
