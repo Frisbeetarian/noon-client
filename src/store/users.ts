@@ -1,24 +1,24 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { createSelector } from 'reselect'
-import { Friend, FriendRequest, User } from '../utils/types'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
+import { Friend, FriendRequest, User } from '../utils/types';
 
 interface UsersState {
-  user: User | Record<string, never> | null | undefined
+  user: User | Record<string, never> | null | undefined;
 }
 
 interface RemoveFriendEntryPayload {
-  profileUuid: string
-  friends: Friend[]
+  profileUuid: string;
+  friends: Friend[];
 }
 
 interface RemoveFriendRequestEntryPayload {
-  profileUuid: string
-  friendRequests: FriendRequest[]
+  profileUuid: string;
+  friendRequests: FriendRequest[];
 }
 
 const initialState: UsersState = {
   user: {},
-}
+};
 
 const slice = createSlice({
   name: 'users',
@@ -26,7 +26,7 @@ const slice = createSlice({
   reducers: {
     setLoggedInUser: (users, action: PayloadAction<User>) => {
       if (action.payload) {
-        users.user = action.payload
+        users.user = action.payload;
       }
     },
     addFriendRequestEntry: (users, action: PayloadAction<FriendRequest>) => {
@@ -34,10 +34,10 @@ const slice = createSlice({
         users.user.profile.friendshipRequests = [
           ...users.user.profile.friendshipRequests,
           action.payload,
-        ]
+        ];
       } else {
         // @ts-ignore
-        users.user.friendshipRequests = [action.payload]
+        users.user.friendshipRequests = [action.payload];
       }
     },
     removeFriendRequestEntry: (
@@ -48,14 +48,14 @@ const slice = createSlice({
         users.user.profile.friendshipRequests =
           users.user.profile.friendshipRequests.filter(
             (FREntry) => FREntry.uuid !== action.payload.profileUuid
-          )
+          );
       }
     },
     addFriendEntry: (users, action: PayloadAction<Friend>) => {
       try {
-        users.user?.profile?.friends?.push(action.payload)
+        users.user?.profile?.friends?.push(action.payload);
       } catch (e) {
-        console.log('error:', e)
+        console.log('error:', e);
       }
     },
     removeFriendEntry: (
@@ -64,9 +64,9 @@ const slice = createSlice({
     ) => {
       const friends = action.payload.friends.filter(
         (FREntry) => FREntry.uuid != action.payload.profileUuid
-      )
+      );
 
-      if (users.user) users.user.profile.friends = friends
+      if (users.user) users.user.profile.friends = friends;
     },
     setFriendsPublicKey: (
       users,
@@ -76,12 +76,12 @@ const slice = createSlice({
         users.user.profile.friends.forEach((friend) => {
           const publicKeyEntry = action.payload.find(
             (publicKey) => publicKey.uuid === friend.uuid
-          )
+          );
 
           if (publicKeyEntry) {
-            friend.publicKey = publicKeyEntry.publicKey
+            friend.publicKey = publicKeyEntry.publicKey;
           }
-        })
+        });
       }
     },
     setFriendPublicKey: (
@@ -91,21 +91,21 @@ const slice = createSlice({
       if (users.user && users.user.profile && users.user.profile.friends) {
         users.user.profile.friends.find((friend) => {
           if (friend.uuid === action.payload.uuid) {
-            friend.publicKey = action.payload.publicKey
+            friend.publicKey = action.payload.publicKey;
           }
-        })
+        });
       }
     },
     logoutUserReducer: (_) => {
-      return initialState
+      return initialState;
     },
   },
-})
+});
 
 export const getLoggedInUser = createSelector(
   (state) => state.entities.users,
   (user) => user
-)
+);
 
 export const getFriendPublicKeyByUuid = createSelector(
   [
@@ -114,15 +114,15 @@ export const getFriendPublicKeyByUuid = createSelector(
     (_, uuid: string) => uuid,
   ],
   (friends, uuid) => {
-    const friend = friends.find((friend) => friend.uuid === uuid)
-    return friend ? friend.publicKey : undefined
+    const friend = friends.find((friend) => friend.uuid === uuid);
+    return friend ? friend.publicKey : undefined;
   }
-)
+);
 
 export const getAllFriends = createSelector(
   [(state) => state.entities.users.user?.profile?.friends],
   (friends) => friends || []
-)
+);
 
 export const {
   setLoggedInUser,
@@ -133,5 +133,5 @@ export const {
   setFriendsPublicKey,
   setFriendPublicKey,
   logoutUserReducer,
-} = slice.actions
-export default slice.reducer
+} = slice.actions;
+export default slice.reducer;

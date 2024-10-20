@@ -1,5 +1,4 @@
-import React from 'react'
-import Image from 'next/image'
+import React from 'react';
 import {
   Flex,
   IconButton,
@@ -8,13 +7,24 @@ import {
   MenuButton,
   MenuItem,
   Avatar,
-} from '@chakra-ui/react'
-import { ChevronDownIcon } from '@chakra-ui/icons'
+  Image,
+} from '@chakra-ui/react';
+import { ChevronDownIcon } from '@chakra-ui/icons';
+import { AiOutlineUser } from 'react-icons/ai';
+import AppMenuList from '../AppComponents/AppMenuList';
 
-import AppMenuList from '../AppComponents/AppMenuList'
-import { AiOutlineUser } from 'react-icons/ai'
+interface ImageMessageProps {
+  src: string;
+  alt: string;
+  isMine: boolean;
+  isDeleted: boolean;
+  content: string;
+  item: any;
+  conversationType: 'group' | 'pm';
+  deleteMessageHandler: (item: any) => Promise<void>;
+}
 
-const ImageMessage = ({
+const ImageMessage: React.FC<ImageMessageProps> = ({
   src,
   alt,
   isMine,
@@ -26,85 +36,73 @@ const ImageMessage = ({
 }) => {
   return (
     <Flex
-      className="relative"
       alignSelf={isMine ? 'flex-end' : 'flex-start'}
       justifyContent={isMine ? 'flex-end' : 'flex-start'}
-      my={isMine ? '1' : '2'}
+      my={isMine ? 1 : 2}
       bg={isDeleted ? 'black' : 'transparent'}
-      p={isDeleted ? '3' : '0'}
-      style={{ position: 'relative' }}
+      p={isDeleted ? 3 : 0}
+      position="relative"
     >
-      {conversationType === 'group' && !isMine ? (
+      {conversationType === 'group' && !isMine && (
         <Flex>
           <Avatar
-            className="mr-2"
+            mr={2}
             size="xs"
             bg="black"
             name={item.sender.username}
             icon={<AiOutlineUser fontSize="1.5rem" />}
           />
         </Flex>
-      ) : null}
+      )}
 
       {!isDeleted ? (
-        <Flex
-          style={{
-            position: 'relative',
-            width: '100%',
-            height: 'auto',
-          }}
-        >
+        <Flex position="relative" w="100%">
           <Image
             src={src}
             alt={alt}
-            layout="intrinsic"
             objectFit="cover"
-            width={300}
-            height={300}
+            width="300px"
+            height="300px"
           />
         </Flex>
       ) : (
-        <Text className="">
-          <i className="text-gray-400">{content}</i>
+        <Text color="gray.400" fontStyle="italic">
+          {content}
         </Text>
       )}
 
-      {isMine && !isDeleted ? (
+      {isMine && !isDeleted && (
         <Menu>
           <MenuButton
-            className="bg-black ml-2"
+            bg="black"
+            ml={2}
             size="xs"
             as={IconButton}
             aria-label="Options"
             icon={<ChevronDownIcon />}
-            variant="none"
+            variant="unstyled"
           />
-
-          {/*<Portal>*/}
           <AppMenuList
-            bg="black"
-            className="bg-red-500 text-black"
+            bg="red.500"
+            color="black"
             border="none"
-            borderRadius="0"
+            borderRadius={0}
           >
             <MenuItem
-              // @ts-ignore
               size="xs"
-              bg="black"
-              className="bg-red-500 text-black text-sm"
+              bg="red.500"
+              color="black"
+              fontSize="sm"
               border="none"
-              onClick={async () => {
-                await deleteMessageHandler(item)
-              }}
+              onClick={() => deleteMessageHandler(item)}
             >
               Delete message
             </MenuItem>
           </AppMenuList>
-          {/*</Portal>*/}
         </Menu>
-      ) : null}
+      )}
     </Flex>
-  )
-}
+  );
+};
 
-export default ImageMessage
+export default ImageMessage;

@@ -1,4 +1,3 @@
-// Adjusted Chat.tsx
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Flex, useToast } from '@chakra-ui/react';
@@ -6,7 +5,7 @@ import { Flex, useToast } from '@chakra-ui/react';
 import Footer from './Footer';
 import Header from './Header';
 import Messages from './Messages';
-import Video from './Video';
+// import Video from './Video';
 import ChatControlsAndSearch from './ChatControlsAndSearch';
 
 import {

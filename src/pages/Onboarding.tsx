@@ -1,5 +1,5 @@
 // src/pages/Index.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Flex } from '@chakra-ui/react';
 import { TypeAnimation } from 'react-type-animation';
@@ -14,13 +14,24 @@ import {
   getShowRegisterComponent,
 } from '../store/ui';
 import AppParticles from '../components/AppComponents/AppParticles';
+import { useNavigate } from 'react-router-dom';
+import { getLoggedInUser } from '../store/users';
 
 const Onboarding: React.FC = () => {
+  const loggedInUser = useSelector(getLoggedInUser);
+  const navigate = useNavigate();
   const showRegisterComponent = useSelector(getShowRegisterComponent);
   const showLoginComponent = useSelector(getShowLoginComponent);
   const showForgotPasswordComponent = useSelector(
     getShowForgotPasswordComponent
   );
+
+  useEffect(() => {
+    if (loggedInUser && loggedInUser.user?.username) {
+      navigate('/noon', { replace: true });
+    }
+  }, [loggedInUser, navigate]);
+
   const particlesInitialized = useSelector(getParticlesInitialized);
 
   const generateRandomSequence = (): (string | number)[] => [

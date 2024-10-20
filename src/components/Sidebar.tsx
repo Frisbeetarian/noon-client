@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// import { useRouter } from 'next/router';
 import {
   Avatar,
   Flex,
@@ -17,7 +16,7 @@ import {
   EditIcon,
   SearchIcon,
 } from '@chakra-ui/icons';
-
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { getLoggedInUser, logoutUserReducer } from '../store/users';
 import {
   clearChatState,
@@ -39,7 +38,6 @@ import PrivateConversationListing from './PrivateConversationListing';
 import GroupConversationListing from './GroupConversationListing';
 import ChatControlsAndSearchForMobile from './ChatControlsAndSearchForMobile';
 import SocketControls from './SocketIo/SocketControls';
-import axiosInstance from '../utils/axiosInstance';
 import AppMenuList from './AppComponents/AppMenuList';
 import { useGetConversationsQuery } from '../store/api/conversationsApiSlice';
 import { useLogoutUserMutation } from '../store/api/usersApiSlice';
@@ -53,15 +51,14 @@ import { clearVideoState } from '../store/video';
 import { clearSearchState } from '../store/search';
 
 function Sidebar() {
-  // const router = useRouter();
+  const navigate = useNavigate(); // Initialize navigate
   const dispatch = useDispatch();
-  const isMobile: number = useSelector(getIsMobile);
+  const isMobile = useSelector(getIsMobile);
   const searchComponentState = useSelector(getSearchComponentState);
   const [innerHeight, setInnerHeight] = useState(0);
   const { data: conversations, isLoading } =
     useGetConversationsQuery(undefined);
-  const [logoutUser] = useLogoutUserMutation(undefined);
-
+  const [logoutUser] = useLogoutUserMutation();
   const loggedInUser = useSelector(getLoggedInUser);
   const isConversationOpen = useSelector(getIsConversationOpen);
   const getConversationsFromStore = useSelector(getSortedConversations);
@@ -75,23 +72,23 @@ function Sidebar() {
         })
       );
     }
-  }, [conversations, dispatch]);
+  }, [conversations, dispatch, loggedInUser]);
 
   useEffect(() => {
     setInnerHeight(window.innerHeight);
   }, []);
 
   useEffect(() => {
-    window.addEventListener('resize', () => {
+    const handleResize = () => {
       setInnerHeight(window.innerHeight);
-    });
+    };
+
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', () => {
-        console.log('removed');
-      });
+      window.removeEventListener('resize', handleResize);
     };
-  });
+  }, []);
 
   return (
     <div
@@ -119,7 +116,7 @@ function Sidebar() {
             <IconButton
               bg="transparent"
               className="mr-4 cursor-pointer"
-              children={<SearchIcon color="red.500" />}
+              icon={<SearchIcon color="red.500" />}
               aria-label="search icon"
               _focus={{ outline: 'none', bg: 'transparent' }}
               _hover={{ bg: 'transparent' }}
@@ -171,10 +168,6 @@ function Sidebar() {
                   zIndex: 100,
                 }}
                 onClick={async () => {
-                  // dispatch(setActiveConversationSet(false))
-                  // dispatch(setActiveConversee(null))
-                  // dispatch(setActiveConversation(null))
-                  // dispatch(setShouldPauseCheckHasMore(false))
                   dispatch(setCreateGroupComponent(true));
 
                   dispatch(
@@ -195,11 +188,11 @@ function Sidebar() {
           </Menu>
         </Flex>
 
-        {isMobile && searchComponentState.searchActive ? (
+        {isMobile && searchComponentState.searchActive && (
           <Flex className="w-full ">
             <ChatControlsAndSearchForMobile />
           </Flex>
-        ) : null}
+        )}
       </Flex>
 
       <Flex
@@ -213,7 +206,7 @@ function Sidebar() {
         ) : getConversationsFromStore &&
           getConversationsFromStore.length !== 0 ? (
           [...Object.values(getConversationsFromStore)].map((conversation, i) =>
-            !conversation ? null : (conversation as any).type === 'pm' ? (
+            !conversation ? null : conversation.type === 'pm' ? (
               <PrivateConversationListing
                 key={i}
                 conversation={conversation}
@@ -272,7 +265,7 @@ function Sidebar() {
                 border="none"
                 onClick={async () => {
                   try {
-                    await logoutUser(undefined).unwrap();
+                    await logoutUser().unwrap();
 
                     dispatch(logoutUserReducer());
                     dispatch(clearChatState());
@@ -284,9 +277,8 @@ function Sidebar() {
                     dispatch(clearVideoState());
                     dispatch(clearSearchState());
                     KeyManagement.clearMemoryData();
-                    // await KeyManagement.clearIndexedDBData()
 
-                    // router.replace('/');
+                    navigate('/', { replace: true });
                   } catch (error) {
                     console.error('Error logging out:', error);
                   }
