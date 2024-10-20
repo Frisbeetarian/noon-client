@@ -1,9 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const usersApiSlice = createApi({
   reducerPath: 'api/users',
   baseQuery: fetchBaseQuery({
-    baseUrl: `${process.env.NEXT_PUBLIC_URL}/api`,
+    baseUrl: `${import.meta.env.VITE_API_URL}/api`,
     credentials: 'include',
   }),
   tagTypes: ['User'],
@@ -43,7 +43,7 @@ export const usersApiSlice = createApi({
       }),
     }),
   }),
-})
+});
 
 export const {
   useGetMeQuery,
@@ -51,4 +51,4 @@ export const {
   useLoginUserMutation,
   useLogoutUserMutation,
   useValidatePasswordMutation,
-} = usersApiSlice
+} = usersApiSlice;

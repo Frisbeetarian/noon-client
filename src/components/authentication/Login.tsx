@@ -1,7 +1,7 @@
 // @ts-nocheck
-import React, { useRef, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import * as Yup from 'yup'
+import React, { useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import * as Yup from 'yup';
 import {
   Box,
   FormControl,
@@ -15,22 +15,22 @@ import {
   Stack,
   Text,
   useDisclosure,
-} from '@chakra-ui/react'
-import { CheckIcon } from '@chakra-ui/icons'
-import { Field, Form, Formik } from 'formik'
-import { useRouter } from 'next/router'
+} from '@chakra-ui/react';
+import { CheckIcon } from '@chakra-ui/icons';
+import { Field, Form, Formik } from 'formik';
+// import { useRouter } from 'next/router'
 
-import { toErrorMap } from '../../utils/toErrorMap'
-import { InputField } from '../InputField'
+import { toErrorMap } from '../../utils/toErrorMap';
+import { InputField } from '../InputField';
 import {
   setIsRegistering,
   setShowForgotPasswordComponent,
   setShowLoginComponent,
   setShowRegisterComponent,
-} from '../../store/ui'
-import AppButton from '../AppComponents/AppButton'
-import { useLoginUserMutation } from '../../store/api/usersApiSlice'
-import KeyManagement from '../../utils/KeyManagement'
+} from '../../store/ui';
+import AppButton from '../AppComponents/AppButton';
+import { useLoginUserMutation } from '../../store/api/usersApiSlice';
+import KeyManagement from '../../utils/KeyManagement';
 
 const LoginSchema = Yup.object().shape({
   usernameOrEmail: Yup.string()
@@ -41,21 +41,21 @@ const LoginSchema = Yup.object().shape({
     .min(4, 'Password is too short.')
     .max(120, 'Password is too long.')
     .required('Password is required.'),
-})
+});
 
 function Login() {
-  const fileInputRef = useRef(null)
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const dispatch = useDispatch()
-  const [loginUser, { isLoading, isSuccess }] = useLoginUserMutation()
-  const [password, setPassword] = useState('')
-  const [loginResponse, setLoginResponse] = useState(null)
-  const router = useRouter()
+  const fileInputRef = useRef(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch = useDispatch();
+  const [loginUser, { isLoading, isSuccess }] = useLoginUserMutation();
+  const [password, setPassword] = useState('');
+  const [loginResponse, setLoginResponse] = useState(null);
+  // const router = useRouter()
 
   const handleFileUpload = async (event) => {
-    const fileReader = new FileReader()
+    const fileReader = new FileReader();
     fileReader.onload = async (e) => {
-      const keys = JSON.parse(e.target.result)
+      const keys = JSON.parse(e.target.result);
 
       try {
         if (loginResponse) {
@@ -64,7 +64,7 @@ function Login() {
             loginResponse.masterKeyIV,
             loginResponse.salt,
             loginResponse.uuid
-          )
+          );
 
           await KeyManagement.decryptAndSetMasterKey(
             {
@@ -75,7 +75,7 @@ function Login() {
               salt: KeyManagement.base64ToArrayBuffer(loginResponse.salt),
             },
             password
-          )
+          );
 
           await KeyManagement.storeEncryptedKey(
             {
@@ -84,33 +84,36 @@ function Login() {
               userUuid: loginResponse.uuid,
             },
             true
-          )
+          );
 
-          dispatch(setIsRegistering(false))
+          dispatch(setIsRegistering(false));
         }
       } catch (error) {
-        console.error('Error decrypting keys:', error)
+        console.error('Error decrypting keys:', error);
       }
-    }
-    fileReader.readAsText(event.target.files[0])
-    router.replace('/noon')
-  }
+    };
+    fileReader.readAsText(event.target.files[0]);
+    // router.replace('/noon')
+  };
 
   const handleSubmit = async (values, { setErrors }) => {
     try {
-      dispatch(setIsRegistering(true))
-      setPassword(values.password)
+      dispatch(setIsRegistering(true));
+      setPassword(values.password);
 
-      const response = await loginUser(values).unwrap()
-      setLoginResponse(response)
-      let encryptedMasterKeyDetails
+      const response = await loginUser(values).unwrap();
+      setLoginResponse(response);
+      let encryptedMasterKeyDetails;
 
       try {
-        await KeyManagement.fetchEncryptedPrivateKeyDetails(true, response.uuid)
+        await KeyManagement.fetchEncryptedPrivateKeyDetails(
+          true,
+          response.uuid
+        );
         encryptedMasterKeyDetails =
-          await KeyManagement.fetchEncryptedKEKDetails(response.uuid)
+          await KeyManagement.fetchEncryptedKEKDetails(response.uuid);
       } catch (e) {
-        onOpen()
+        onOpen();
       } finally {
         await KeyManagement.decryptAndSetMasterKey(
           {
@@ -123,11 +126,11 @@ function Login() {
             ),
           },
           values.password
-        )
+        );
 
         // router.replace('/noon')
 
-        dispatch(setIsRegistering(false))
+        dispatch(setIsRegistering(false));
       }
       // dispatch(setIsRegistering(false))
 
@@ -136,12 +139,12 @@ function Login() {
       // @ts-ignore
       if (error.data?.errors) {
         // @ts-ignore
-        setErrors(toErrorMap(error.data.errors))
+        setErrors(toErrorMap(error.data.errors));
       } else {
-        console.error('Error logging user in:', error)
+        console.error('Error logging user in:', error);
       }
     }
-  }
+  };
 
   // @ts-ignore
   return (
@@ -272,9 +275,9 @@ function Login() {
         <Text
           className="text-lg text-red-500 cursor-pointer z-10 menlo font-bold"
           onClick={() => {
-            dispatch(setShowRegisterComponent(true))
-            dispatch(setShowLoginComponent(false))
-            dispatch(setShowForgotPasswordComponent(false))
+            dispatch(setShowRegisterComponent(true));
+            dispatch(setShowLoginComponent(false));
+            dispatch(setShowForgotPasswordComponent(false));
           }}
         >
           Register?
@@ -318,7 +321,7 @@ function Login() {
         </ModalContent>
       </Modal>
     </>
-  )
+  );
 }
 
-export default Login
+export default Login;

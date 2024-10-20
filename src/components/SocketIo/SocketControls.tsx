@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useToast } from '@chakra-ui/react'
+import { useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useToast } from '@chakra-ui/react';
 
 import {
   addFriendEntry,
@@ -9,7 +9,7 @@ import {
   getLoggedInUser,
   removeFriendEntry,
   removeFriendRequestEntry,
-} from '../../store/users'
+} from '../../store/users';
 
 import {
   addProfiles,
@@ -17,7 +17,7 @@ import {
   setFriendFlagOnProfile,
   // setFriendshipRequestSentOnProfile,
   setHasFriendshipRequestFromLoggedInProfile,
-} from '../../store/profiles'
+} from '../../store/profiles';
 
 import {
   addConversation,
@@ -32,34 +32,35 @@ import {
   setActiveConversee,
   setPendingCall,
   setShouldPauseCheckHasMore,
-} from '../../store/chat'
+} from '../../store/chat';
 
-import SocketManager from './SocketManager'
+import SocketManager from './SocketManager';
 
-import { getSocketAuthObject } from '../../store/sockets'
-import withAxios from '../../utils/withAxios'
-import { setSearchLoading } from '../../store/search'
-import useAppAlert from '../../hooks/useAppAlert'
+import { getSocketAuthObject } from '../../store/sockets';
+import axiosInstance from '../utils/axiosInstance';
+
+import { setSearchLoading } from '../../store/search';
+import useAppAlert from '../../hooks/useAppAlert';
 import {
   acceptFriendRequest,
   rejectFriendRequest,
-} from '../../utils/friendRequestActions'
+} from '../../utils/friendRequestActions';
 
-function SocketControls({ axios }) {
-  const dispatch = useDispatch()
-  const toast = useToast()
-  const loggedInUser = useSelector(getLoggedInUser)
-  const activeConversationSet = useSelector(getActiveConversationSet)
-  const activeConversation = useSelector(getActiveConversation)
-  const socketAuthObject = useSelector(getSocketAuthObject)
-  const showAppAlert = useAppAlert()
+function SocketControls() {
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const loggedInUser = useSelector(getLoggedInUser);
+  const activeConversationSet = useSelector(getActiveConversationSet);
+  const activeConversation = useSelector(getActiveConversation);
+  const socketAuthObject = useSelector(getSocketAuthObject);
+  const showAppAlert = useAppAlert();
 
   const socket = useMemo(() => {
     if (socketAuthObject && Object.keys(socketAuthObject).length > 0) {
-      return SocketManager.getInstance(socketAuthObject)?.getSocket()
+      return SocketManager.getInstance(socketAuthObject)?.getSocket();
     }
-    return null
-  }, [socketAuthObject])
+    return null;
+  }, [socketAuthObject]);
 
   useEffect(() => {
     if (socket) {
@@ -103,9 +104,9 @@ function SocketControls({ axios }) {
               },
               loggedInProfileUuid: loggedInUser.user?.profile.uuid,
             })
-          )
+          );
         }
-      )
+      );
 
       socket.on('message-deleted', ({ messageUuid, conversationUuid }) => {
         dispatch(
@@ -115,8 +116,8 @@ function SocketControls({ axios }) {
             deleted: true,
             conversationUuid: conversationUuid,
           })
-        )
-      })
+        );
+      });
 
       socket.on(
         'send-file',
@@ -164,12 +165,12 @@ function SocketControls({ axios }) {
               },
               loggedInProfileUuid: loggedInUser.user?.profile.uuid,
             })
-          )
+          );
         }
-      )
+      );
 
       socket.on('send-friend-request', ({ senderUuid, senderUsername }) => {
-        console.log('SEND FRIEND REQUEST')
+        console.log('SEND FRIEND REQUEST');
         dispatch(
           addFriendRequestEntry({
             uuid: senderUuid,
@@ -177,13 +178,13 @@ function SocketControls({ axios }) {
             reverse: true,
             isNew: true,
           })
-        )
+        );
 
         dispatch(
           setHasFriendshipRequestFromLoggedInProfile({
             profileUuid: senderUuid,
           })
-        )
+        );
 
         showAppAlert({
           id: senderUuid + 'friend-request',
@@ -215,8 +216,8 @@ function SocketControls({ axios }) {
               toast,
             }),
           customRender: true,
-        })
-      })
+        });
+      });
 
       socket.on(
         'friendship-request-accepted',
@@ -226,7 +227,7 @@ function SocketControls({ axios }) {
               profileUuid: senderUuid,
               friendRequests: loggedInUser.user?.friendshipRequests,
             })
-          )
+          );
 
           dispatch(
             addFriendEntry({
@@ -234,14 +235,14 @@ function SocketControls({ axios }) {
               username: senderUsername,
               name: senderUsername,
             })
-          )
+          );
 
           dispatch(
             addConversation({
               conversation: conversation,
               loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
             })
-          )
+          );
 
           showAppAlert({
             id: senderUuid,
@@ -251,9 +252,9 @@ function SocketControls({ axios }) {
             duration: 5000,
             customRender: true,
             description: `You are now friends with ${senderUsername}.`,
-          })
+          });
         }
-      )
+      );
 
       socket.on('cancel-friend-request', ({ senderUuid, senderUsername }) => {
         dispatch(
@@ -261,7 +262,7 @@ function SocketControls({ axios }) {
             profileUuid: senderUuid,
             friendRequests: loggedInUser.user?.friendshipRequests,
           })
-        )
+        );
 
         showAppAlert({
           id: senderUuid,
@@ -271,8 +272,8 @@ function SocketControls({ axios }) {
           duration: 5000,
           senderUuid,
           senderUsername,
-        })
-      })
+        });
+      });
 
       socket.on('unfriend', ({ senderUuid, conversationUuid }) => {
         dispatch(
@@ -280,20 +281,20 @@ function SocketControls({ axios }) {
             profileUuid: senderUuid,
             friends: loggedInUser.user?.profile?.friends,
           })
-        )
+        );
 
-        dispatch(removeConversation({ conversationUuid }))
+        dispatch(removeConversation({ conversationUuid }));
 
         if (
           activeConversation &&
           activeConversation.uuid === conversationUuid
         ) {
-          dispatch(setActiveConversationSet(false))
-          dispatch(setActiveConversee(null))
-          dispatch(setActiveConversation(null))
-          dispatch(setShouldPauseCheckHasMore(false))
+          dispatch(setActiveConversationSet(false));
+          dispatch(setActiveConversee(null));
+          dispatch(setActiveConversation(null));
+          dispatch(setShouldPauseCheckHasMore(false));
         }
-      })
+      });
 
       socket.on('added-to-group', ({ conversation }) => {
         dispatch(
@@ -301,8 +302,8 @@ function SocketControls({ axios }) {
             conversation,
             loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
           })
-        )
-      })
+        );
+      });
 
       socket.on(
         'left-group',
@@ -310,17 +311,17 @@ function SocketControls({ axios }) {
           fromUuid,
           conversationUuid,
         }: {
-          fromUuid: string
-          conversationUuid: string
+          fromUuid: string;
+          conversationUuid: string;
         }) => {
           dispatch(
             removeParticipantFromGroup({
               conversationUuid: conversationUuid,
               participantUuid: fromUuid,
             })
-          )
+          );
         }
-      )
+      );
 
       socket.on(
         'set-pending-call-for-conversation',
@@ -333,40 +334,40 @@ function SocketControls({ axios }) {
               ongoingCall: false,
               conversationUuid,
             })
-          )
+          );
         }
-      )
+      );
 
       socket.on('search-results', (profiles) => {
-        dispatch(setSearchLoading(false))
+        dispatch(setSearchLoading(false));
 
         dispatch(
           addProfiles({
             profiles: profiles,
             loggedInUser: loggedInUser.user,
           })
-        )
-      })
+        );
+      });
     }
 
     return () => {
       if (socket) {
-        socket.off('send-friend-request')
-        socket.off('cancel-friend-request')
-        socket.off('friendship-request-accepted')
-        socket.off('unfriend')
-        socket.off('set-pending-call-for-conversation')
-        socket.off('invited-to-group')
-        socket.off('left-group')
-        socket.off('send-message')
-        socket.off('send-message-to-group')
-        socket.off('message-deleted')
-        socket.off('search-results')
+        socket.off('send-friend-request');
+        socket.off('cancel-friend-request');
+        socket.off('friendship-request-accepted');
+        socket.off('unfriend');
+        socket.off('set-pending-call-for-conversation');
+        socket.off('invited-to-group');
+        socket.off('left-group');
+        socket.off('send-message');
+        socket.off('send-message-to-group');
+        socket.off('message-deleted');
+        socket.off('search-results');
       }
-    }
-  }, [socket, socketAuthObject])
+    };
+  }, [socket, socketAuthObject]);
 
-  return null
+  return null;
 }
 
-export default withAxios(SocketControls)
+export default SocketControls;

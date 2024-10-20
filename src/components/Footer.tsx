@@ -1,45 +1,46 @@
 // @ts-nocheck
-import React, { useEffect, useRef, useState } from 'react'
-import { Flex, Input, Button, Box, Icon, useToast } from '@chakra-ui/react'
-import { PhoneIcon } from '@chakra-ui/icons'
+import React, { useEffect, useRef, useState } from 'react';
+import { Flex, Input, Button, Box, Icon, useToast } from '@chakra-ui/react';
+import { PhoneIcon } from '@chakra-ui/icons';
 
-import { useSelector, useDispatch } from 'react-redux'
-import { ImUpload2 } from 'react-icons/im'
+import { useSelector, useDispatch } from 'react-redux';
+import { ImUpload2 } from 'react-icons/im';
 
-import { getActiveConversation, getActiveConversee } from '../store/chat'
+import { getActiveConversation, getActiveConversee } from '../store/chat';
 
-import { setVideoFrameForConversation } from '../store/video'
+import { setVideoFrameForConversation } from '../store/video';
 
-import RecorderControls from './AudioRecorder/recorder-controls'
-import { UseRecorder } from './AudioRecorder/types/recorder'
-import useRecorder from './AudioRecorder/hooks/use-recorder'
+import RecorderControls from './AudioRecorder/recorder-controls';
+import { UseRecorder } from './AudioRecorder/types/recorder';
+import useRecorder from './AudioRecorder/hooks/use-recorder';
 
-import { getIsMobile } from '../store/ui'
+import { getIsMobile } from '../store/ui';
 
-import { getLoggedInUser } from '../store/users'
+import { getLoggedInUser } from '../store/users';
 
-import SocketManager from './SocketIo/SocketManager'
-import { getSocketAuthObject } from '../store/sockets'
-import withAxios from '../utils/withAxios'
-import AppButton from './AppComponents/AppButton'
-import useAppAlert from '../hooks/useAppAlert'
+import SocketManager from './SocketIo/SocketManager';
+import { getSocketAuthObject } from '../store/sockets';
+import axiosInstance from '../utils/axiosInstance';
+import AppButton from './AppComponents/AppButton';
+import useAppAlert from '../hooks/useAppAlert';
 
-const Footer = ({ handleSendMessage, axios }) => {
-  const socketAuthObject = useSelector(getSocketAuthObject)
+const Footer = ({ handleSendMessage }) => {
+  const socketAuthObject = useSelector(getSocketAuthObject);
 
-  const hiddenFileInput = useRef(null)
-  const dispatch = useDispatch()
-  const toast = useToast()
-  const showAppAlert = useAppAlert()
-  const [isUploading, setIsUploading] = useState(false)
-  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket()
-  const isMobile = useSelector(getIsMobile)
-  const [inputMessage, setInputMessage] = useState('')
+  const hiddenFileInput = useRef(null);
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const showAppAlert = useAppAlert();
+  const [isUploading, setIsUploading] = useState(false);
+  const socket = SocketManager.getInstance(socketAuthObject)?.getSocket();
+  const isMobile = useSelector(getIsMobile);
+  const [inputMessage, setInputMessage] = useState('');
 
-  const activeConversation = useSelector(getActiveConversation)
-  const loggedInUser = useSelector(getLoggedInUser)
+  const activeConversation = useSelector(getActiveConversation);
+  const loggedInUser = useSelector(getLoggedInUser);
 
-  const { recorderState, ...handlers }: UseRecorder = useRecorder(axios)
+  const { recorderState, ...handlers }: UseRecorder =
+    useRecorder(axiosInstance);
 
   // useEffect(() => {
   //   if (socket) {
@@ -54,11 +55,11 @@ const Footer = ({ handleSendMessage, axios }) => {
   // }, [activeConversee])
 
   const handleClick = () => {
-    ;(hiddenFileInput?.current as any).click()
-  }
+    (hiddenFileInput?.current as any).click();
+  };
   const handleChange = async (event) => {
-    const file = event.target.files[0]
-    console.log('event file:', file)
+    const file = event.target.files[0];
+    console.log('event file:', file);
 
     if (file.size > 1048576) {
       showAppAlert({
@@ -67,31 +68,35 @@ const Footer = ({ handleSendMessage, axios }) => {
         status: 'error',
         duration: 5000,
         isClosable: true,
-      })
-      return
+      });
+      return;
     }
-    setIsUploading(true)
+    setIsUploading(true);
 
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('conversationUuid', activeConversation.uuid)
-      formData.append('conversationType', activeConversation.type)
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('conversationUuid', activeConversation.uuid);
+      formData.append('conversationType', activeConversation.type);
 
       const participants = activeConversation.profiles.map(
         (profile) => profile.uuid
-      )
+      );
 
-      formData.append('participantUuids', participants.join(','))
+      formData.append('participantUuids', participants.join(','));
 
-      const response = await axios.post('/api/messages/uploadFile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const response = await axiosInstance.post(
+        '/api/messages/uploadFile',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
 
       if (response.status !== 200) {
-        throw new Error('Failed to upload the file. Please try again.')
+        throw new Error('Failed to upload the file. Please try again.');
       }
     } catch (error) {
       if (error?.response?.status !== 429) {
@@ -102,12 +107,12 @@ const Footer = ({ handleSendMessage, axios }) => {
           duration: 5000,
           isClosable: true,
           position: 'bottom-right',
-        })
+        });
       }
     } finally {
-      setIsUploading(false)
+      setIsUploading(false);
     }
-  }
+  };
 
   return (
     <Flex className="bg-black items-center box-content h-full justify-between ">
@@ -133,8 +138,8 @@ const Footer = ({ handleSendMessage, axios }) => {
           }}
           onKeyPress={(e) => {
             if (e.key === 'Enter') {
-              handleSendMessage(inputMessage)
-              setInputMessage('')
+              handleSendMessage(inputMessage);
+              setInputMessage('');
             }
           }}
           value={inputMessage}
@@ -163,11 +168,7 @@ const Footer = ({ handleSendMessage, axios }) => {
         </Box>
 
         <Box className="xs:w-1/4 flex items-center justify-end mr-1 md:mr-2">
-          <RecorderControls
-            recorderState={recorderState}
-            handlers={handlers}
-            axios={axios}
-          />
+          <RecorderControls recorderState={recorderState} handlers={handlers} />
         </Box>
 
         {!isMobile ?? (
@@ -177,7 +178,7 @@ const Footer = ({ handleSendMessage, axios }) => {
               title="Start call"
               isDisabled={true}
               onClick={async () => {
-                dispatch(setVideoFrameForConversation(true))
+                dispatch(setVideoFrameForConversation(true));
 
                 activeConversation.profiles.map(async (profile) => {
                   socket?.emit('set-pending-call-for-conversation', {
@@ -186,7 +187,7 @@ const Footer = ({ handleSendMessage, axios }) => {
                     to: profile.uuid,
                     toUsername: profile.username,
                     conversationUuid: activeConversation.uuid,
-                  })
+                  });
 
                   // await setPendingCallForConversation({
                   //   variables: {
@@ -194,7 +195,7 @@ const Footer = ({ handleSendMessage, axios }) => {
                   //     profileUuid: profile.uuid,
                   //   },
                   // })
-                })
+                });
               }}
             >
               <PhoneIcon className="" />
@@ -214,7 +215,7 @@ const Footer = ({ handleSendMessage, axios }) => {
         </Box>
       </Flex>
     </Flex>
-  )
-}
+  );
+};
 
-export default withAxios(Footer)
+export default Footer;

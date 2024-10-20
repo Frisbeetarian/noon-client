@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   Avatar,
   AvatarBadge,
@@ -8,11 +8,12 @@ import {
   MenuButton,
   MenuItem,
   useToast,
-} from '@chakra-ui/react'
-import { EditIcon, HamburgerIcon } from '@chakra-ui/icons'
-import { useDispatch, useSelector } from 'react-redux'
+} from '@chakra-ui/react';
+import { EditIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import axiosInstance from '../utils/axiosInstance';
 
-import { getLoggedInUser, removeFriendEntry } from '../store/users'
+import { getLoggedInUser, removeFriendEntry } from '../store/users';
 import {
   getActiveConversation,
   removeConversation,
@@ -20,24 +21,24 @@ import {
   setActiveConversationSet,
   setActiveConversee,
   setShouldPauseCheckHasMore,
-} from '../store/chat'
+} from '../store/chat';
 import {
   getIsMobile,
   setChatContainerHeight,
   setConversationOpen,
   setSearchComponent,
-} from '../store/ui'
-import { setVideoFrameForConversation } from '../store/video'
-import AppMenuList from './AppComponents/AppMenuList'
-import { AiOutlineUser } from 'react-icons/ai'
+} from '../store/ui';
+import { setVideoFrameForConversation } from '../store/video';
+import AppMenuList from './AppComponents/AppMenuList';
+import { AiOutlineUser } from 'react-icons/ai';
 
-function PrivateConversationListing({ conversation, i, axios }) {
-  const [, setProfile] = useState()
-  const toast = useToast()
-  const dispatch = useDispatch()
-  const loggedInUser = useSelector(getLoggedInUser)
-  const activeConversation = useSelector(getActiveConversation)
-  const isMobile = useSelector(getIsMobile)
+function PrivateConversationListing({ conversation, i }) {
+  const [, setProfile] = useState();
+  const toast = useToast();
+  const dispatch = useDispatch();
+  const loggedInUser = useSelector(getLoggedInUser);
+  const activeConversation = useSelector(getActiveConversation);
+  const isMobile = useSelector(getIsMobile);
 
   function setActiveConverseeFunction(profile, conversation) {
     dispatch(
@@ -47,45 +48,45 @@ function PrivateConversationListing({ conversation, i, axios }) {
         containerHeight: '5vh',
         inputPadding: '5px',
       })
-    )
+    );
 
     if (activeConversation) {
       if (conversation.uuid !== activeConversation.uuid) {
-        dispatch(setActiveConversationSet(false))
-        dispatch(setActiveConversee(null))
-        dispatch(setActiveConversation(null))
-        dispatch(setShouldPauseCheckHasMore(false))
-        dispatch(setVideoFrameForConversation(false))
+        dispatch(setActiveConversationSet(false));
+        dispatch(setActiveConversee(null));
+        dispatch(setActiveConversation(null));
+        dispatch(setShouldPauseCheckHasMore(false));
+        dispatch(setVideoFrameForConversation(false));
 
         // setTimeout(() => {
-        dispatch(setActiveConversationSet(true))
-        dispatch(setActiveConversee(profile))
+        dispatch(setActiveConversationSet(true));
+        dispatch(setActiveConversee(profile));
         dispatch(
           setActiveConversation({
             conversation: conversation,
             loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
           })
-        )
+        );
       }
     } else {
-      dispatch(setActiveConversationSet(false))
-      dispatch(setActiveConversee(null))
-      dispatch(setActiveConversation(null))
-      dispatch(setShouldPauseCheckHasMore(false))
+      dispatch(setActiveConversationSet(false));
+      dispatch(setActiveConversee(null));
+      dispatch(setActiveConversation(null));
+      dispatch(setShouldPauseCheckHasMore(false));
 
       // setTimeout(() => {
-      dispatch(setActiveConversationSet(true))
-      dispatch(setActiveConversee(profile))
+      dispatch(setActiveConversationSet(true));
+      dispatch(setActiveConversee(profile));
       dispatch(
         setActiveConversation({
           conversation: conversation,
           loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
         })
-      )
+      );
     }
 
-    dispatch(setConversationOpen(true))
-    dispatch(setChatContainerHeight(isMobile ? '82.5vh' : '87.5vh'))
+    dispatch(setConversationOpen(true));
+    dispatch(setChatContainerHeight(isMobile ? '82.5vh' : '87.5vh'));
   }
 
   return (
@@ -109,8 +110,8 @@ function PrivateConversationListing({ conversation, i, axios }) {
         <Flex
           className="items-center cursor-pointer flex-1"
           onClick={() => {
-            setActiveConverseeFunction(conversation.conversee, conversation)
-            setProfile(conversation.conversee)
+            setActiveConverseeFunction(conversation.conversee, conversation);
+            setProfile(conversation.conversee);
           }}
         >
           <Avatar
@@ -154,7 +155,7 @@ function PrivateConversationListing({ conversation, i, axios }) {
             border="none"
             icon={<EditIcon />}
             onClick={async () => {
-              await axios
+              await axiosInstance
                 .post('/api/profiles/unfriend', {
                   profileUuid: conversation.conversee.uuid,
                   conversationUuid: conversation.uuid,
@@ -166,22 +167,22 @@ function PrivateConversationListing({ conversation, i, axios }) {
                         profileUuid: conversation.conversee.uuid,
                         friends: loggedInUser.user?.profile?.friends,
                       })
-                    )
+                    );
 
                     dispatch(
                       removeConversation({
                         conversationUuid: conversation.uuid,
                       })
-                    )
+                    );
 
-                    dispatch(setActiveConversationSet(false))
-                    dispatch(setActiveConversee(null))
-                    dispatch(setActiveConversation(null))
-                    dispatch(setShouldPauseCheckHasMore(false))
+                    dispatch(setActiveConversationSet(false));
+                    dispatch(setActiveConversee(null));
+                    dispatch(setActiveConversation(null));
+                    dispatch(setShouldPauseCheckHasMore(false));
                   }
                 })
                 .catch((error) => {
-                  console.error(error)
+                  console.error(error);
 
                   toast({
                     title: `Error unfriending profile.`,
@@ -189,8 +190,8 @@ function PrivateConversationListing({ conversation, i, axios }) {
                     isClosable: true,
                     status: 'error',
                     duration: 5000,
-                  })
-                })
+                  });
+                });
             }}
           >
             Unfriend
@@ -207,7 +208,7 @@ function PrivateConversationListing({ conversation, i, axios }) {
         </AppMenuList>
       </Menu>
     </Flex>
-  )
+  );
 }
 
-export default PrivateConversationListing
+export default PrivateConversationListing;

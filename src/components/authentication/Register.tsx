@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -16,25 +16,25 @@ import {
   Stack,
   Text,
   useDisclosure,
-} from '@chakra-ui/react'
-import { Form, Formik } from 'formik'
-import { CheckIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-import * as Yup from 'yup'
-import { useDispatch } from 'react-redux'
+} from '@chakra-ui/react';
+import { Form, Formik } from 'formik';
+import { CheckIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
 
-import { toErrorMap } from '../../utils/toErrorMap'
-import { InputField } from '../InputField'
+import { toErrorMap } from '../../utils/toErrorMap';
+import { InputField } from '../InputField';
 import {
   setIsRegistering,
   setPasswordPromptSubmitted,
   setShowForgotPasswordComponent,
   setShowLoginComponent,
   setShowRegisterComponent,
-} from '../../store/ui'
-import AppButton from '../AppComponents/AppButton'
-import { useRegisterUserMutation } from '../../store/api/usersApiSlice'
-import KeyManagement from '../../utils/KeyManagement'
-import { useRouter } from 'next/router'
+} from '../../store/ui';
+import AppButton from '../AppComponents/AppButton';
+import { useRegisterUserMutation } from '../../store/api/usersApiSlice';
+import KeyManagement from '../../utils/KeyManagement';
+// import { useRouter } from 'next/router'
 
 const RegisterSchema = Yup.object().shape({
   username: Yup.string()
@@ -46,61 +46,61 @@ const RegisterSchema = Yup.object().shape({
     .min(4, 'Password is too short.')
     .max(120, 'Password is too long.')
     .required('Password is required.'),
-})
+});
 
 function Register() {
-  const dispatch = useDispatch()
-  const router = useRouter()
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [showPassword, setShowPassword] = useState(false)
-  const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation()
+  const dispatch = useDispatch();
+  // const router = useRouter()
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [showPassword, setShowPassword] = useState(false);
+  const [registerUser, { isLoading, isSuccess }] = useRegisterUserMutation();
   const [isDownloadingPrivateKeyLoading, setIsDownloadingPrivateKeyLoading] =
-    useState(false)
-  const [registerResponse, setRegisterResponse] = useState(null)
+    useState(false);
+  const [registerResponse, setRegisterResponse] = useState(null);
 
   const handleDownloadPrivateKey = async () => {
     try {
-      setIsDownloadingPrivateKeyLoading(true)
+      setIsDownloadingPrivateKeyLoading(true);
 
       const encryptedPrivateKeyData =
-        await KeyManagement.exportEncryptedPrivateKey(registerResponse?.uuid)
+        await KeyManagement.exportEncryptedPrivateKey(registerResponse?.uuid);
 
       const encryptedKEKDetails = await KeyManagement.fetchEncryptedKEKDetails(
         registerResponse?.uuid
-      )
+      );
 
-      if (!encryptedPrivateKeyData || !encryptedKEKDetails) return
+      if (!encryptedPrivateKeyData || !encryptedKEKDetails) return;
       KeyManagement.downloadEncryptedPrivateKey(
         encryptedPrivateKeyData,
         encryptedKEKDetails.encryptedMasterKey,
         `noon_keys.txt`
-      )
+      );
 
-      dispatch(setPasswordPromptSubmitted(true))
-      router.replace('/noon')
+      dispatch(setPasswordPromptSubmitted(true));
+      // router.replace('/noon')
 
-      dispatch(setIsRegistering(false))
+      dispatch(setIsRegistering(false));
     } catch (e) {
       // @ts-ignore
-      console.error(e.message)
+      console.error(e.message);
     }
-  }
+  };
 
   const handleSubmit = async (values, { setErrors }) => {
     try {
-      dispatch(setIsRegistering(true))
-      const keyPair = await KeyManagement.generateKeyPair()
-      const publicKey = await KeyManagement.exportPublicKey(keyPair.publicKey)
+      dispatch(setIsRegistering(true));
+      const keyPair = await KeyManagement.generateKeyPair();
+      const publicKey = await KeyManagement.exportPublicKey(keyPair.publicKey);
 
       const {
         encryptedMasterKey,
         iv: kekIV,
         salt: kekSalt,
-      } = await KeyManagement.generateAndEncryptMasterKey(values.password)
+      } = await KeyManagement.generateAndEncryptMasterKey(values.password);
 
       const { encryptedPrivateKey, iv } = await KeyManagement.encryptPrivateKey(
         keyPair.privateKey
-      )
+      );
 
       const registrationValues = {
         ...values,
@@ -108,34 +108,34 @@ function Register() {
         masterKeyIV: kekIV,
         privateKeyIV: iv,
         salt: kekSalt,
-      }
+      };
 
-      const response = await registerUser(registrationValues).unwrap()
-      setRegisterResponse(response)
+      const response = await registerUser(registrationValues).unwrap();
+      setRegisterResponse(response);
 
       await KeyManagement.storeEncryptedKEK(
         KeyManagement.arrayBufferToBase64(encryptedMasterKey),
         kekIV,
         kekSalt,
         response.uuid
-      )
+      );
 
       await KeyManagement.storeEncryptedKey({
         encryptedPrivateKey: encryptedPrivateKey,
         iv,
         userUuid: response.uuid,
-      })
-      onOpen()
+      });
+      onOpen();
     } catch (error) {
       // @ts-ignore
       if (error.data?.errors) {
         // @ts-ignore
-        setErrors(toErrorMap(error.data.errors))
+        setErrors(toErrorMap(error.data.errors));
       } else {
-        console.error('Error registering:', error)
+        console.error('Error registering:', error);
       }
     }
-  }
+  };
 
   return (
     <>
@@ -266,9 +266,9 @@ function Register() {
         <Text
           className="text-lg text-red-500 cursor-pointer z-10 menlo font-bold"
           onClick={() => {
-            dispatch(setShowLoginComponent(true))
-            dispatch(setShowRegisterComponent(false))
-            dispatch(setShowForgotPasswordComponent(false))
+            dispatch(setShowLoginComponent(true));
+            dispatch(setShowRegisterComponent(false));
+            dispatch(setShowForgotPasswordComponent(false));
           }}
         >
           Login?
@@ -310,7 +310,7 @@ function Register() {
         </ModalContent>
       </Modal>
     </>
-  )
+  );
 }
 
-export default Register
+export default Register;

@@ -1,22 +1,21 @@
-import { Flex } from '@chakra-ui/react'
-import { SearchIcon, ArrowLeftIcon } from '@chakra-ui/icons'
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { Flex } from '@chakra-ui/react';
+import { SearchIcon, ArrowLeftIcon } from '@chakra-ui/icons';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   setSearchComponent,
   getIsMobile,
   setConversationOpen,
   getIsSearchActive,
-} from '../store/ui'
-import SearchSidebar from './SearchSidebar'
-import Header from './Header'
-import withAxios from '../utils/withAxios'
+} from '../store/ui';
+import SearchSidebar from './SearchSidebar';
+import Header from './Header';
 
 function ChatControlsAndSearch() {
-  const dispatch = useDispatch()
-  const isMobile = useSelector(getIsMobile)
-  const searchActive = useSelector(getIsSearchActive)
+  const dispatch = useDispatch();
+  const isMobile = useSelector(getIsMobile);
+  const searchActive = useSelector(getIsSearchActive);
 
   return (
     <Flex
@@ -33,7 +32,7 @@ function ChatControlsAndSearch() {
           <ArrowLeftIcon
             className=" p-1 m-4 text-xl cursor-pointer "
             onClick={() => {
-              dispatch(setConversationOpen(false))
+              dispatch(setConversationOpen(false));
             }}
           />
           <Header></Header>
@@ -49,14 +48,14 @@ function ChatControlsAndSearch() {
               setSearchComponent({
                 searchActive: true,
               })
-            )
+            );
           }}
         >
           <SearchIcon className="p-1 m-4 text-2xl cursor-pointer" />
         </Flex>
       ) : null}
     </Flex>
-  )
+  );
 }
 
-export default withAxios(ChatControlsAndSearch)
+export default ChatControlsAndSearch;

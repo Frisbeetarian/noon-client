@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Avatar,
   AvatarBadge,
@@ -8,9 +8,9 @@ import {
   MenuButton,
   MenuItem,
   useToast,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 
-import { EditIcon, HamburgerIcon } from '@chakra-ui/icons'
+import { EditIcon, HamburgerIcon } from '@chakra-ui/icons';
 
 import {
   getActiveConversation,
@@ -20,33 +20,33 @@ import {
   setActiveConversee,
   setActiveGroupInStore,
   setShouldPauseCheckHasMore,
-} from '../store/chat'
+} from '../store/chat';
 
-import { useDispatch, useSelector } from 'react-redux'
-import { getLoggedInUser } from '../store/users'
+import { useDispatch, useSelector } from 'react-redux';
+import { getLoggedInUser } from '../store/users';
 
 import {
   setChatContainerHeight,
   setConversationOpen,
   setSearchComponent,
-} from '../store/ui'
-import withAxios from '../utils/withAxios'
-import AppMenuList from './AppComponents/AppMenuList'
-import { AiOutlineGroup } from 'react-icons/ai'
+} from '../store/ui';
+import AppMenuList from './AppComponents/AppMenuList';
+import { AiOutlineGroup } from 'react-icons/ai';
+import axiosInstance from '../utils/axiosInstance';
 
-function GroupConversationListing({ conversation, i, axios }) {
-  const dispatch = useDispatch()
+function GroupConversationListing({ conversation, i }) {
+  const dispatch = useDispatch();
 
-  const loggedInUser = useSelector(getLoggedInUser)
-  const activeConversation = useSelector(getActiveConversation)
-  const toast = useToast()
+  const loggedInUser = useSelector(getLoggedInUser);
+  const activeConversation = useSelector(getActiveConversation);
+  const toast = useToast();
 
   function setActiveGroup(conversation) {
-    dispatch(setActiveConversationSet(false))
-    dispatch(setActiveConversee(null))
-    dispatch(setActiveConversation(null))
-    dispatch(setShouldPauseCheckHasMore(false))
-    dispatch(setActiveGroupInStore(null))
+    dispatch(setActiveConversationSet(false));
+    dispatch(setActiveConversee(null));
+    dispatch(setActiveConversation(null));
+    dispatch(setShouldPauseCheckHasMore(false));
+    dispatch(setActiveGroupInStore(null));
 
     dispatch(
       setSearchComponent({
@@ -55,17 +55,17 @@ function GroupConversationListing({ conversation, i, axios }) {
         containerHeight: '5vh',
         inputPadding: '5px',
       })
-    )
+    );
 
-    dispatch(setChatContainerHeight('87.5vh'))
-    dispatch(setConversationOpen(true))
-    dispatch(setActiveConversationSet(true))
+    dispatch(setChatContainerHeight('87.5vh'));
+    dispatch(setConversationOpen(true));
+    dispatch(setActiveConversationSet(true));
     dispatch(
       setActiveGroupInStore({
         conversation,
         loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
       })
-    )
+    );
   }
 
   return (
@@ -88,7 +88,7 @@ function GroupConversationListing({ conversation, i, axios }) {
       <Flex
         className="items-center cursor-pointer flex-1"
         onClick={() => {
-          setActiveGroup(conversation)
+          setActiveGroup(conversation);
         }}
       >
         <Avatar
@@ -130,7 +130,7 @@ function GroupConversationListing({ conversation, i, axios }) {
             className="bg-gray-800 text-black"
             icon={<EditIcon />}
             onClick={async () => {
-              await axios
+              await axiosInstance
                 .post('/api/conversations/leaveGroup', {
                   groupUuid: conversation.uuid,
                 })
@@ -140,29 +140,29 @@ function GroupConversationListing({ conversation, i, axios }) {
                       removeConversation({
                         conversationUuid: conversation.uuid,
                       })
-                    )
+                    );
 
                     if (
                       activeConversation &&
                       activeConversation.uuid === conversation.uuid
                     ) {
-                      dispatch(setActiveConversationSet(false))
-                      dispatch(setActiveConversee(null))
-                      dispatch(setActiveConversation(null))
-                      dispatch(setShouldPauseCheckHasMore(false))
+                      dispatch(setActiveConversationSet(false));
+                      dispatch(setActiveConversee(null));
+                      dispatch(setActiveConversation(null));
+                      dispatch(setShouldPauseCheckHasMore(false));
                     }
                   }
                 })
                 .catch((error) => {
-                  console.error('An error occurred:', error.message)
+                  console.error('An error occurred:', error.message);
                   toast({
                     title: `Error creating group.`,
                     position: 'bottom-right',
                     isClosable: true,
                     status: 'error',
                     duration: 5000,
-                  })
-                })
+                  });
+                });
             }}
           >
             Leave group
@@ -170,7 +170,7 @@ function GroupConversationListing({ conversation, i, axios }) {
         </AppMenuList>
       </Menu>
     </Flex>
-  )
+  );
 }
 
-export default withAxios(GroupConversationListing)
+export default GroupConversationListing;

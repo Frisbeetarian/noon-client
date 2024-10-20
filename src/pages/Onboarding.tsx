@@ -1,29 +1,27 @@
-import React from 'react'
-import Head from 'next/head'
-import { Flex } from '@chakra-ui/react'
-import { TypeAnimation } from 'react-type-animation'
-import Register from '../components/authentication/Register'
-import Login from '../components/authentication/Login'
-import ForgotPassword from '../components/authentication/ForgotPassword'
-import { useSelector } from 'react-redux'
+// src/pages/Index.tsx
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { Flex } from '@chakra-ui/react';
+import { TypeAnimation } from 'react-type-animation';
+import Register from '../components/authentication/Register';
+import Login from '../components/authentication/Login';
+import ForgotPassword from '../components/authentication/ForgotPassword';
+import { useSelector } from 'react-redux';
 import {
   getParticlesInitialized,
   getShowForgotPasswordComponent,
   getShowLoginComponent,
   getShowRegisterComponent,
-} from '../store/ui'
-import AppParticles from '../components/AppComponents/AppParticles'
+} from '../store/ui';
+import AppParticles from '../components/AppComponents/AppParticles';
 
-const meta = {
-  title: 'Noon – Open source, secure, free communication platform.',
-}
-const Index = () => {
-  const showRegisterComponent = useSelector(getShowRegisterComponent)
-  const showLoginComponent = useSelector(getShowLoginComponent)
+const Onboarding: React.FC = () => {
+  const showRegisterComponent = useSelector(getShowRegisterComponent);
+  const showLoginComponent = useSelector(getShowLoginComponent);
   const showForgotPasswordComponent = useSelector(
     getShowForgotPasswordComponent
-  )
-  const particlesInitialized = useSelector(getParticlesInitialized)
+  );
+  const particlesInitialized = useSelector(getParticlesInitialized);
 
   const generateRandomSequence = (): (string | number)[] => [
     'N',
@@ -36,16 +34,16 @@ const Index = () => {
     randomWait(),
     'NOON(ن)',
     2000,
-  ]
+  ];
 
   const randomWait = (): number =>
-    Math.floor(Math.random() * (1250 - 300 + 1)) + 300
+    Math.floor(Math.random() * (1250 - 300 + 1)) + 300;
 
   return (
     <>
-      <Head>
-        <title>{meta.title}</title>
-      </Head>
+      <Helmet>
+        <title>Noon – Open source, secure, free communication platform.</title>
+      </Helmet>
 
       <Flex className="flex-col justify-center items-center bg-black text-red-500 h-screen">
         <p className="fixed top-12 text-4xl text-red-500 leading-tight z-10">
@@ -70,7 +68,6 @@ const Index = () => {
           >
             {showRegisterComponent && <Register />}
             {showLoginComponent && <Login />}
-
             {showForgotPasswordComponent && <ForgotPassword />}
           </Flex>
         )}
@@ -78,6 +75,7 @@ const Index = () => {
 
       <AppParticles />
     </>
-  )
-}
-export default Index
+  );
+};
+
+export default Onboarding;

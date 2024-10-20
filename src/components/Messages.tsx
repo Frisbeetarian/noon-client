@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from 'react'
-import { Flex } from '@chakra-ui/react'
-import { useDispatch, useSelector } from 'react-redux'
-import InfiniteScroll from 'react-infinite-scroll-component'
+import React, { useEffect, useState } from 'react';
+import { Flex } from '@chakra-ui/react';
+import { useDispatch, useSelector } from 'react-redux';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 import {
   getActiveConversation,
   setActiveConversationHasMoreMessages,
   deleteMessageInStore,
   addMessagesToConversation,
-} from '../store/chat'
-import { getLoggedInUser } from '../store/users'
-import { getIsMobile } from '../store/ui'
-import withAxios from '../utils/withAxios'
-import { useGetMessagesForConversationQuery } from '../store/api/conversationsApiSlice'
-import TextMessage from './chat/TextMessage'
-import ImageMessage from './chat/ImageMessage'
-import AudioMessage from './chat/AudioMessage'
+} from '../store/chat';
+import { getLoggedInUser } from '../store/users';
+import { getIsMobile } from '../store/ui';
+import axiosInstance from '../utils/axiosInstance';
+import { useGetMessagesForConversationQuery } from '../store/api/conversationsApiSlice';
+import TextMessage from './chat/TextMessage';
+import ImageMessage from './chat/ImageMessage';
+import AudioMessage from './chat/AudioMessage';
 
-const Messages = ({ axios }) => {
-  const dispatch = useDispatch()
-  const loggedInUser = useSelector(getLoggedInUser)
-  const activeConversation = useSelector(getActiveConversation)
-  const isMobile = useSelector(getIsMobile)
+const Messages = () => {
+  const dispatch = useDispatch();
+  const loggedInUser = useSelector(getLoggedInUser);
+  const activeConversation = useSelector(getActiveConversation);
+  const isMobile = useSelector(getIsMobile);
   const [cursor, setCursor] = useState(
     activeConversation.messages.length !== 0
       ? new Date(
@@ -30,10 +30,10 @@ const Messages = ({ axios }) => {
           ].createdAt
         ).getTime()
       : null
-  )
+  );
 
-  const [hasMore, setHasMore] = useState(true)
-  const [fetchMessages, setFetchMessages] = useState(false)
+  const [hasMore, setHasMore] = useState(true);
+  const [fetchMessages, setFetchMessages] = useState(false);
 
   const { data: messagesResponse } = useGetMessagesForConversationQuery(
     {
@@ -44,10 +44,10 @@ const Messages = ({ axios }) => {
     {
       skip: fetchMessages || !activeConversation?.uuid,
     }
-  )
+  );
 
   const loadMoreMessages = () => {
-    setFetchMessages(true)
+    setFetchMessages(true);
     if (messagesResponse?.hasMore) {
       setCursor(
         new Date(
@@ -55,7 +55,7 @@ const Messages = ({ axios }) => {
             messagesResponse.messages.length - 1
           ].createdAt
         ).getTime()
-      )
+      );
     }
 
     if (messagesResponse && messagesResponse.messages.length !== 0) {
@@ -65,39 +65,39 @@ const Messages = ({ axios }) => {
           messages: messagesResponse.messages,
           loggedInProfileUuid: loggedInUser.user.profile.uuid,
         })
-      )
+      );
 
-      setFetchMessages(false)
+      setFetchMessages(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (messagesResponse?.hasMore) {
-      setHasMore(true)
+      setHasMore(true);
     } else {
-      setHasMore(false)
+      setHasMore(false);
     }
-  }, [messagesResponse])
+  }, [messagesResponse]);
 
   async function handleCheckForHasMoreMessages() {
-    const hasMore = await axios.get(
+    const hasMore = await axiosInstance.get(
       'api/conversations/' + activeConversation.uuid + '/checkMessages'
-    )
+    );
 
-    setHasMore(hasMore)
+    setHasMore(hasMore);
     if (hasMore) {
-      dispatch(setActiveConversationHasMoreMessages(hasMore.data))
+      dispatch(setActiveConversationHasMoreMessages(hasMore.data));
     }
   }
 
   useEffect(() => {
     if (activeConversation) {
-      handleCheckForHasMoreMessages()
+      handleCheckForHasMoreMessages();
     }
-  }, [])
+  }, []);
 
   const deleteMessageHandler = async (item) => {
-    await axios
+    await axiosInstance
       .delete(
         `/api/messages?messageUuid=${item.uuid}&conversationUuid=${activeConversation.uuid}&from=${loggedInUser.user.profile.uuid}&type=${item.type}&src=${item.src}.`,
         {
@@ -117,13 +117,13 @@ const Messages = ({ axios }) => {
               deleted: true,
               conversationUuid: activeConversation.uuid,
             })
-          )
+          );
         }
       })
       .catch((error) => {
-        console.error(error)
-      })
-  }
+        console.error(error);
+      });
+  };
 
   return (
     <Flex
@@ -150,13 +150,13 @@ const Messages = ({ axios }) => {
         loader={null}
       >
         {activeConversation.messages.map((item, index) => {
-          const isMine = item.from === 'me'
+          const isMine = item.from === 'me';
 
           const commonProps = {
             key: index,
             isDeleted: item.deleted,
             isMine,
-          }
+          };
 
           if (item.type === 'text') {
             return (
@@ -168,7 +168,7 @@ const Messages = ({ axios }) => {
                 conversationType={activeConversation.type}
                 deleteMessageHandler={deleteMessageHandler}
               />
-            )
+            );
           } else if (item.type === 'image') {
             return (
               // eslint-disable-next-line react/jsx-key
@@ -181,7 +181,7 @@ const Messages = ({ axios }) => {
                 conversationType={activeConversation.type}
                 deleteMessageHandler={deleteMessageHandler}
               />
-            )
+            );
           } else if (item.type === 'audio') {
             return (
               // eslint-disable-next-line react/jsx-key
@@ -193,14 +193,14 @@ const Messages = ({ axios }) => {
                 conversationType={activeConversation.type}
                 deleteMessageHandler={deleteMessageHandler}
               />
-            )
+            );
           } else {
-            return null
+            return null;
           }
         })}
       </InfiniteScroll>
     </Flex>
-  )
-}
+  );
+};
 
-export default withAxios(Messages)
+export default Messages;

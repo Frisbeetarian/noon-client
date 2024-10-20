@@ -1,35 +1,35 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Flex, Spinner } from '@chakra-ui/react'
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Flex, Spinner } from '@chakra-ui/react';
 
-import { getLoggedInUser } from '../store/users'
-import { addProfiles, getProfiles } from '../store/profiles'
-import Profile from './Profile'
-import withAxios from '../utils/withAxios'
+import { getLoggedInUser } from '../store/users';
+import { addProfiles, getProfiles } from '../store/profiles';
+import Profile from './Profile';
 import {
   getSearchIsLoading,
   getSearchQuery,
   setSearchLoading,
-} from '../store/search'
-import { getIsMobile } from '../store/ui'
+} from '../store/search';
+import { getIsMobile } from '../store/ui';
+import axiosInstance from '../utils/axiosInstance';
 
-function SearchController({ axios }) {
-  const dispatch = useDispatch()
-  const loggedInUser = useSelector(getLoggedInUser)
-  const searchQuery = useSelector(getSearchQuery)
-  const profilesFromStore = useSelector(getProfiles)
-  const searchLoading = useSelector(getSearchIsLoading)
-  const isMobile: number = useSelector(getIsMobile)
+function SearchController() {
+  const dispatch = useDispatch();
+  const loggedInUser = useSelector(getLoggedInUser);
+  const searchQuery = useSelector(getSearchQuery);
+  const profilesFromStore = useSelector(getProfiles);
+  const searchLoading = useSelector(getSearchIsLoading);
+  const isMobile: number = useSelector(getIsMobile);
 
   async function searchProfiles(searchQuery) {
-    await axios.post('/api/search', { query: searchQuery })
+    await axiosInstance.post('/api/search', { query: searchQuery });
   }
 
   useEffect(() => {
     if (searchQuery !== '' && searchQuery !== null) {
-      searchProfiles(searchQuery)
+      searchProfiles(searchQuery);
     } else {
-      dispatch(setSearchLoading(false))
+      dispatch(setSearchLoading(false));
     }
 
     return () => {
@@ -38,9 +38,9 @@ function SearchController({ axios }) {
           profiles: [],
           loggedInUser: loggedInUser.user,
         })
-      )
-    }
-  }, [searchQuery])
+      );
+    };
+  }, [searchQuery]);
 
   return (
     <>
@@ -55,9 +55,7 @@ function SearchController({ axios }) {
         >
           {profilesFromStore && profilesFromStore.length !== 0 ? (
             [...Object.values(profilesFromStore)].map((profile, i) =>
-              !profile ? null : (
-                <Profile key={i} profile={profile} axios={axios} />
-              )
+              !profile ? null : <Profile key={i} profile={profile} />
             )
           ) : (
             <p>No search results</p>
@@ -65,7 +63,7 @@ function SearchController({ axios }) {
         </Flex>
       )}
     </>
-  )
+  );
 }
 
-export default withAxios(SearchController)
+export default SearchController;

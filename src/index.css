@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    font-family: 'Menlo', monospace;
+    overflow: hidden !important;
+}
+
+.menlo {
+    font-family: 'Menlo', monospace;
+
+}
+
+.chat-container {
+    /*height: calc(var(--vh, 1vh) * 100);*/
+    /*margin-top: 50px;*/
+}
+
+.search-sidebar {
+    position: absolute;
+    margin: 0;
+    height: 100vh;
+    z-index: 100;
+    opacity: 1;
+    top:0;
+    right: 0px;
+    transition: opacity 300ms ease, transform 300ms ease;
+    min-width: 40vw;
+}
+
+.create-group-sidebar {
+    position: absolute;
+    margin: 0;
+    height: 100vh;
+    z-index: 100;
+    opacity: 1;
+    top:0;
+    right: 0;
+    transition: opacity 300ms ease, transform 300ms ease;
+    min-width: 40vw;
+}
+
+input::placeholder,
+textarea::placeholder {
+    @apply text-black;
+}
+
+input, textarea {
+    outline: none !important;
+    transition: border-color 0.3s !important;
+}
+
+input:focus, textarea:focus {
+    border-color: black !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+@keyframes tiltAndMoveDiagonal {
+    0% {
+        background-image: linear-gradient(45deg, white 25%, #921A1C 50%, white 75%);
+        background-position: 0% 0%;
+    }
+    25% {
+        background-image: linear-gradient(60deg, white 25%, #921A1C 50%, white 75%);
+        background-position: 25% 25%;
+    }
+    50% {
+        background-image: linear-gradient(75deg, white 25%, #921A1C 50%, white 75%);
+        background-position: 50% 50%;
+    }
+    75% {
+        background-image: linear-gradient(60deg, white 25%, #921A1C 50%, white 75%);
+        background-position: 75% 75%;
+    }
+    100% {
+        background-image: linear-gradient(45deg, white 25%, #921A1C 50%, white 75%);
+        background-position: 100% 100%;
+    }
+}
+
+.noon-logo {
+    background: linear-gradient(45deg, white 25%, #921A1C 50%, white 75%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline;
+    background-size: 200% 200%;
+}
+
+.noon-logo.diagonal {
+    animation: tiltAndMoveDiagonal 10s ease infinite;
+}
+
+.scene {
+    width: 100vw;
+    height: 100vh;
+    font-family: sans-serif;
+    background-image: linear-gradient(
+            180deg,
+            hsl(240deg 100% 1%) 1%,
+            hsl(240deg 100% 3%) 17%,
+            hsl(240deg 100% 6%) 26%,
+            hsl(240deg 100% 9%) 37%,
+            hsl(240deg 100% 12%) 46%,
+            hsl(240deg 100% 15%) 53%,
+            hsl(240deg 100% 18%) 59%,
+            hsl(240deg 100% 21%) 65%,
+            hsl(240deg 100% 24%) 70%,
+            hsl(240deg 100% 27%) 74%,
+            hsl(240deg 100% 30%) 78%,
+            hsl(240deg 100% 33%) 81%,
+            hsl(240deg 100% 36%) 84%,
+            hsl(240deg 100% 39%) 87%,
+            hsl(240deg 100% 42%) 89%,
+            hsl(240deg 100% 45%) 91%,
+            hsl(240deg 100% 48%) 93%,
+            hsl(240deg 100% 51%) 95%,
+            hsl(240deg 100% 54%) 96%,
+            hsl(240deg 100% 57%) 97%,
+            hsl(240deg 100% 60%) 98%,
+            hsl(240deg 100% 63%) 99%,
+            hsl(240deg 100% 66%) 100%
+    );
+}
+.canvas {
+    z-index: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.chakra-avatar__initials {
+    color: white !important;
+}
+
+#chakra-toast-manager-bottom-right{
+    z-index: 150 !important;
+}

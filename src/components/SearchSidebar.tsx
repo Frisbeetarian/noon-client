@@ -1,28 +1,27 @@
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   CloseButton,
   Flex,
   Input,
   InputGroup,
   InputRightElement,
-} from '@chakra-ui/react'
-import { SearchIcon } from '@chakra-ui/icons'
+} from '@chakra-ui/react';
+import { SearchIcon } from '@chakra-ui/icons';
 
-import { getSearchComponentState, setSearchComponent } from '../store/ui'
-import SearchController from './SearchController'
+import { getSearchComponentState, setSearchComponent } from '../store/ui';
+import SearchController from './SearchController';
 import {
   getSearchQuery,
   setSearchLoading,
   setSearchQuery,
-} from '../store/search'
-import withAxios from '../utils/withAxios'
+} from '../store/search';
 
 function SearchSidebar() {
-  const dispatch = useDispatch()
-  const searchComponentState = useSelector(getSearchComponentState)
-  const [, setSearchInput] = useState(null)
-  const searchQuery = useSelector(getSearchQuery)
+  const dispatch = useDispatch();
+  const searchComponentState = useSelector(getSearchComponentState);
+  const [, setSearchInput] = useState(null);
+  const searchQuery = useSelector(getSearchQuery);
 
   return (
     <div className="search-sidebar bg-black md:w-3/4 xl:w-2/5">
@@ -37,14 +36,14 @@ function SearchSidebar() {
         <CloseButton
           className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer text-black"
           onClick={() => {
-            dispatch(setSearchQuery(null))
-            setSearchInput(null)
+            dispatch(setSearchQuery(null));
+            setSearchInput(null);
 
             dispatch(
               setSearchComponent({
                 searchActive: false,
               })
-            )
+            );
           }}
         />
       </Flex>
@@ -84,13 +83,15 @@ function SearchSidebar() {
             onKeyPress={(e) => {
               if (e.key === 'Enter') {
                 if ((e.target as HTMLInputElement).value !== searchQuery) {
-                  dispatch(setSearchQuery(null))
-                  setSearchInput(null)
-                  dispatch(setSearchQuery((e.target as HTMLInputElement).value))
+                  dispatch(setSearchQuery(null));
+                  setSearchInput(null);
+                  dispatch(
+                    setSearchQuery((e.target as HTMLInputElement).value)
+                  );
                   setSearchInput(
                     (e.target as any).value as React.SetStateAction<null>
-                  )
-                  dispatch(setSearchLoading(true))
+                  );
+                  dispatch(setSearchLoading(true));
                 }
               }
             }}
@@ -104,6 +105,6 @@ function SearchSidebar() {
 
       {/*{searchComponentState.searchActive ? (*/}
     </div>
-  )
+  );
 }
-export default withAxios(SearchSidebar)
+export default SearchSidebar;

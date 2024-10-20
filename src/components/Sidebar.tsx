@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+// import { useRouter } from 'next/router';
 import {
   Avatar,
   Flex,
@@ -10,21 +10,21 @@ import {
   MenuButton,
   MenuItem,
   Spinner,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 import {
   SettingsIcon,
   HamburgerIcon,
   EditIcon,
   SearchIcon,
-} from '@chakra-ui/icons'
+} from '@chakra-ui/icons';
 
-import { getLoggedInUser, logoutUserReducer } from '../store/users'
+import { getLoggedInUser, logoutUserReducer } from '../store/users';
 import {
   clearChatState,
   getSortedConversations,
   setConversations,
-} from '../store/chat'
-import SocketConnector from './SocketIo/SocketConnector'
+} from '../store/chat';
+import SocketConnector from './SocketIo/SocketConnector';
 import {
   clearUIState,
   getIsConversationOpen,
@@ -34,36 +34,37 @@ import {
   setCreateGroupComponent,
   setSearchComponent,
   toggleCreateGroupActive,
-} from '../store/ui'
-import PrivateConversationListing from './PrivateConversationListing'
-import GroupConversationListing from './GroupConversationListing'
-import ChatControlsAndSearchForMobile from './ChatControlsAndSearchForMobile'
-import SocketControls from './SocketIo/SocketControls'
-import withAxios from '../utils/withAxios'
-import AppMenuList from './AppComponents/AppMenuList'
-import { useGetConversationsQuery } from '../store/api/conversationsApiSlice'
-import { useLogoutUserMutation } from '../store/api/usersApiSlice'
-import { AiOutlineUser } from 'react-icons/ai'
-import KeyManagement from '../utils/KeyManagement'
-import { clearFilesState } from '../store/files'
-import { clearGroupsState } from '../store/groups'
-import { clearProfilesState } from '../store/profiles'
-import { clearSocketsState } from '../store/sockets'
-import { clearVideoState } from '../store/video'
-import { clearSearchState } from '../store/search'
+} from '../store/ui';
+import PrivateConversationListing from './PrivateConversationListing';
+import GroupConversationListing from './GroupConversationListing';
+import ChatControlsAndSearchForMobile from './ChatControlsAndSearchForMobile';
+import SocketControls from './SocketIo/SocketControls';
+import axiosInstance from '../utils/axiosInstance';
+import AppMenuList from './AppComponents/AppMenuList';
+import { useGetConversationsQuery } from '../store/api/conversationsApiSlice';
+import { useLogoutUserMutation } from '../store/api/usersApiSlice';
+import { AiOutlineUser } from 'react-icons/ai';
+import KeyManagement from '../utils/KeyManagement';
+import { clearFilesState } from '../store/files';
+import { clearGroupsState } from '../store/groups';
+import { clearProfilesState } from '../store/profiles';
+import { clearSocketsState } from '../store/sockets';
+import { clearVideoState } from '../store/video';
+import { clearSearchState } from '../store/search';
 
-function Sidebar({ axios }) {
-  const router = useRouter()
-  const dispatch = useDispatch()
-  const isMobile: number = useSelector(getIsMobile)
-  const searchComponentState = useSelector(getSearchComponentState)
-  const [innerHeight, setInnerHeight] = useState(0)
-  const { data: conversations, isLoading } = useGetConversationsQuery(undefined)
-  const [logoutUser] = useLogoutUserMutation(undefined)
+function Sidebar() {
+  // const router = useRouter();
+  const dispatch = useDispatch();
+  const isMobile: number = useSelector(getIsMobile);
+  const searchComponentState = useSelector(getSearchComponentState);
+  const [innerHeight, setInnerHeight] = useState(0);
+  const { data: conversations, isLoading } =
+    useGetConversationsQuery(undefined);
+  const [logoutUser] = useLogoutUserMutation(undefined);
 
-  const loggedInUser = useSelector(getLoggedInUser)
-  const isConversationOpen = useSelector(getIsConversationOpen)
-  const getConversationsFromStore = useSelector(getSortedConversations)
+  const loggedInUser = useSelector(getLoggedInUser);
+  const isConversationOpen = useSelector(getIsConversationOpen);
+  const getConversationsFromStore = useSelector(getSortedConversations);
 
   useEffect(() => {
     if (conversations && loggedInUser.user.username) {
@@ -72,25 +73,25 @@ function Sidebar({ axios }) {
           conversationsToSend: conversations,
           loggedInProfileUuid: loggedInUser?.user?.profile?.uuid,
         })
-      )
+      );
     }
-  }, [conversations, dispatch])
+  }, [conversations, dispatch]);
 
   useEffect(() => {
-    setInnerHeight(window.innerHeight)
-  }, [])
+    setInnerHeight(window.innerHeight);
+  }, []);
 
   useEffect(() => {
     window.addEventListener('resize', () => {
-      setInnerHeight(window.innerHeight)
-    })
+      setInnerHeight(window.innerHeight);
+    });
 
     return () => {
       window.removeEventListener('resize', () => {
-        console.log('removed')
-      })
-    }
-  })
+        console.log('removed');
+      });
+    };
+  });
 
   return (
     <div
@@ -124,7 +125,7 @@ function Sidebar({ axios }) {
               _hover={{ bg: 'transparent' }}
               _active={{ bg: 'transparent' }}
               onClick={() => {
-                dispatch(setChatContainerHeight('52.5vh'))
+                dispatch(setChatContainerHeight('52.5vh'));
                 dispatch(
                   setSearchComponent({
                     searchActive: true,
@@ -132,7 +133,7 @@ function Sidebar({ axios }) {
                     containerHeight: '40vh',
                     inputPadding: '10px',
                   })
-                )
+                );
               }}
             />
           )}
@@ -174,7 +175,7 @@ function Sidebar({ axios }) {
                   // dispatch(setActiveConversee(null))
                   // dispatch(setActiveConversation(null))
                   // dispatch(setShouldPauseCheckHasMore(false))
-                  dispatch(setCreateGroupComponent(true))
+                  dispatch(setCreateGroupComponent(true));
 
                   dispatch(
                     setSearchComponent({
@@ -183,9 +184,9 @@ function Sidebar({ axios }) {
                       containerHeight: '5vh',
                       inputPadding: '5px',
                     })
-                  )
+                  );
 
-                  dispatch(toggleCreateGroupActive(true))
+                  dispatch(toggleCreateGroupActive(true));
                 }}
               >
                 Create group
@@ -217,7 +218,6 @@ function Sidebar({ axios }) {
                 key={i}
                 conversation={conversation}
                 i={i}
-                axios={axios}
               />
             ) : (
               <GroupConversationListing
@@ -272,23 +272,23 @@ function Sidebar({ axios }) {
                 border="none"
                 onClick={async () => {
                   try {
-                    await logoutUser(undefined).unwrap()
+                    await logoutUser(undefined).unwrap();
 
-                    dispatch(logoutUserReducer())
-                    dispatch(clearChatState())
-                    dispatch(clearFilesState())
-                    dispatch(clearGroupsState())
-                    dispatch(clearProfilesState())
-                    dispatch(clearSocketsState())
-                    dispatch(clearUIState())
-                    dispatch(clearVideoState())
-                    dispatch(clearSearchState())
-                    KeyManagement.clearMemoryData()
+                    dispatch(logoutUserReducer());
+                    dispatch(clearChatState());
+                    dispatch(clearFilesState());
+                    dispatch(clearGroupsState());
+                    dispatch(clearProfilesState());
+                    dispatch(clearSocketsState());
+                    dispatch(clearUIState());
+                    dispatch(clearVideoState());
+                    dispatch(clearSearchState());
+                    KeyManagement.clearMemoryData();
                     // await KeyManagement.clearIndexedDBData()
 
-                    router.replace('/')
+                    // router.replace('/');
                   } catch (error) {
-                    console.error('Error logging out:', error)
+                    console.error('Error logging out:', error);
                   }
                 }}
               >
@@ -301,7 +301,7 @@ function Sidebar({ axios }) {
 
       {isMobile && <SocketControls />}
     </div>
-  )
+  );
 }
 
-export default withAxios(Sidebar)
+export default Sidebar;

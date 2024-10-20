@@ -1,5 +1,5 @@
-import axios from 'axios'
-import * as actions from '../api'
+import axios from 'axios';
+import * as actions from '../api';
 
 const api =
   ({ dispatch }) =>
@@ -7,34 +7,34 @@ const api =
   async (action) => {
     // if (!action.payload || !action.payload.then) {
     if (action.type !== actions.apiCallBegan.type) {
-      return next(action)
+      return next(action);
     }
     // }
 
-    const { url, method, data, onStart, onSuccess, onError } = action.payload
-    if (onStart) dispatch({ type: onStart })
-    next(action)
+    const { url, method, data, onStart, onSuccess, onError } = action.payload;
+    if (onStart) dispatch({ type: onStart });
+    next(action);
 
     try {
       const response = await axios.request({
-        baseURL: process.env.NEXT_PUBLIC_API_URL,
+        baseURL: import.meta.env.VITE_API_URL,
         url,
         method,
         data,
-      })
+      });
 
       // general
-      dispatch(actions.apiCallSucceeded(response.data))
+      dispatch(actions.apiCallSucceeded(response.data));
 
       //specific
-      if (onSuccess) dispatch({ type: onSuccess, payload: response.data })
+      if (onSuccess) dispatch({ type: onSuccess, payload: response.data });
     } catch (error) {
       // general
-      dispatch(actions.apiCallFailed(error.message))
+      dispatch(actions.apiCallFailed(error.message));
 
       // specific
-      if (onError) dispatch({ type: onError, payload: error.message })
+      if (onError) dispatch({ type: onError, payload: error.message });
     }
-  }
+  };
 
-export default api
+export default api;

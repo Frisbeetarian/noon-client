@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   CloseButton,
@@ -7,45 +7,46 @@ import {
   HStack,
   Stack,
   useToast,
-} from '@chakra-ui/react'
+} from '@chakra-ui/react';
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getIsMobile,
   setCreateGroupComponent,
   toggleCreateGroupActive,
-} from '../store/ui'
+} from '../store/ui';
 
-import GroupParticipant from './GroupParticipant'
-import { clearState, getParticipants } from '../store/groups'
-import { getLoggedInUser } from '../store/users'
-import { addConversation } from '../store/chat'
-import { Form, Formik } from 'formik'
-import * as Yup from 'yup'
-import AppButton from './AppComponents/AppButton'
-import withAxios from '../utils/withAxios'
-import { InputField } from './InputField'
-import useAppAlert from '../hooks/useAppAlert'
+import GroupParticipant from './GroupParticipant';
+import { clearState, getParticipants } from '../store/groups';
+import { getLoggedInUser } from '../store/users';
+import { addConversation } from '../store/chat';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import AppButton from './AppComponents/AppButton';
+import axiosInstance from '../utils/axiosInstance';
+
+import { InputField } from './InputField';
+import useAppAlert from '../hooks/useAppAlert';
 
 const createGroupSchema = Yup.object().shape({
   name: Yup.string()
     .min(3, 'Too Short!')
     .max(250, 'Too Long!')
     .required('Group name is required'),
-})
+});
 
-function CreateGroupSidebar({ axios }) {
-  const dispatch = useDispatch()
-  const participants = useSelector(getParticipants)
-  const loggedInUser = useSelector(getLoggedInUser)
-  const [friends, setFriends] = useState(null)
-  const [zeroFriendsError, setZeroFriendsError] = useState(false)
-  const toast = useToast()
-  const isMobile = useSelector(getIsMobile)
-  const showAppAlert = useAppAlert()
+function CreateGroupSidebar() {
+  const dispatch = useDispatch();
+  const participants = useSelector(getParticipants);
+  const loggedInUser = useSelector(getLoggedInUser);
+  const [friends, setFriends] = useState(null);
+  const [zeroFriendsError, setZeroFriendsError] = useState(false);
+  const toast = useToast();
+  const isMobile = useSelector(getIsMobile);
+  const showAppAlert = useAppAlert();
 
   useEffect(() => {
-    setFriends(loggedInUser?.user?.profile?.friends)
+    setFriends(loggedInUser?.user?.profile?.friends);
 
     // if (socket) {
     //   socket.on('set-ongoing-call-for-conversation', () => {
@@ -56,7 +57,7 @@ function CreateGroupSidebar({ axios }) {
     // return () => {
     //   if (socket) socket.off('set-ongoing-call-for-conversation')
     // }
-  }, [])
+  }, []);
 
   return (
     <div className="create-group-sidebar bg-black text-white w-full md:w-3/4 xl:w-2/5">
@@ -69,7 +70,7 @@ function CreateGroupSidebar({ axios }) {
         <CloseButton
           className="bg-black p-1 absolute top-0 right-0 m-4 text-2xl cursor-pointer text-black"
           onClick={() => {
-            dispatch(toggleCreateGroupActive(false))
+            dispatch(toggleCreateGroupActive(false));
           }}
         />
       </Flex>
@@ -85,27 +86,27 @@ function CreateGroupSidebar({ axios }) {
           ) => {
             try {
               if (participants.length !== 0) {
-                const participantsToSend = [...participants]
+                const participantsToSend = [...participants];
 
-                participantsToSend.push(loggedInUser.user?.profile?.uuid)
+                participantsToSend.push(loggedInUser.user?.profile?.uuid);
 
-                await axios
+                await axiosInstance
                   .post('/api/conversations', {
                     input: { ...values, type: 'group' },
                     participants: participantsToSend,
                   })
                   .then((response) => {
                     if (response.status === 200) {
-                      dispatch(clearState())
-                      dispatch(setCreateGroupComponent(false))
-                      dispatch(toggleCreateGroupActive(false))
+                      dispatch(clearState());
+                      dispatch(setCreateGroupComponent(false));
+                      dispatch(toggleCreateGroupActive(false));
 
                       dispatch(
                         addConversation({
                           conversation: response.data,
                           loggedInProfileUuid: loggedInUser.user?.profile?.uuid,
                         })
-                      )
+                      );
 
                       showAppAlert({
                         id: 'create-group-toast',
@@ -113,31 +114,31 @@ function CreateGroupSidebar({ axios }) {
                         status: 'success',
                         isClosable: true,
                         duration: 5000,
-                      })
+                      });
                     }
                   })
                   .catch((error) => {
-                    console.error('An error occurred:', error.message)
+                    console.error('An error occurred:', error.message);
                     toast({
                       title: `Error creating group.`,
                       position: 'bottom-right',
                       isClosable: true,
                       status: 'error',
                       duration: 5000,
-                    })
-                  })
+                    });
+                  });
               } else {
-                setZeroFriendsError(true)
+                setZeroFriendsError(true);
               }
             } catch (e) {
-              console.log('create group error:', e)
+              console.log('create group error:', e);
               toast({
                 title: `The server had a tantrum and refused to create your group. `,
                 position: 'bottom-right',
                 isClosable: true,
                 status: 'error',
                 duration: 5000,
-              })
+              });
             }
           }}
         >
@@ -234,7 +235,7 @@ function CreateGroupSidebar({ axios }) {
         )}
       </Flex>
     </div>
-  )
+  );
 }
 
-export default withAxios(CreateGroupSidebar)
+export default CreateGroupSidebar;
